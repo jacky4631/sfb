@@ -387,15 +387,6 @@ class _MySelfPageState extends State<MySelfPage>
                 personalNotifier.value = false;
                 onTapLogin(context, '/orderRetrieval');
               }),
-        if(!hidePonitsMall)
-        SelectTextItem(
-            title: '积分商城',
-            content: '积分当钱花',
-            onTap: () {
-              personalNotifier.value = false;
-              onTapLogin(context, '/pointsMall', args: {'integral': json['integral']});
-            },
-            leading: Icon(BaoIcons.shop, size: 20, color: Colors.black)),
         ]),
         {'br': 8, 'pd': [0, 1, 8,8],}
       ),

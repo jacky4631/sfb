@@ -12,7 +12,7 @@
 ---
 
 ### 💡 系统亮点：
->1.SpringBoot 框架开发业界主流，服务端暂不开源。  </br>
+>1.SpringBoot 框架开发业界主流，服务端暂不开源。  <br>
 >2.【前端】Web PC 管理端 Vue + Element UI，暂不开源。<br>
 >3.【前端】移动端使用 Flutter 框架。<br>
 
@@ -50,36 +50,21 @@
 WEBPC管理端：暂不提供演示，有需要可以联系微信jacky4631<br>
 
 ---
+#### 📞 技术交流
+* 扫码免费获取APP图标、启动图、上架图、APP隐私协议政策模板和APP分享模板
+* 扫码购买服务端源码和web管理端源码
+  ![](demoimages/qr.jpg)
+
 
 ### 💟 UI界面
 
 ### 📱 移动端预览
-![](demoimages/1.jpg)
+![](demoimages/1.png)
 ![](demoimages/2.png)
 ![](demoimages/3.png)
 ![](demoimages/4.png)
 ![](demoimages/5.png)
-![](demoimages/6.png)
-![](demoimages/7.png)
-![](demoimages/8.png)
-![](demoimages/9.png)
-![](demoimages/10.png)
-![](demoimages/11.png)
-![](demoimages/12.png)
-![](demoimages/13.png)
-![](demoimages/14.png)
-![](demoimages/15.png)
-![](demoimages/16.png)
-![](demoimages/17.png)
-![](demoimages/18.png)
-![](demoimages/19.png)
-![](demoimages/20.png)
 
-
-#### 📞 技术交流
-* 扫码免费获取APP图标、启动图、上架图、APP隐私协议政策html模板和APP分享的html模板
-* 扫码购买服务端和web管理端源码
-![](demoimages/qr.jpg)
 
 ---
 
