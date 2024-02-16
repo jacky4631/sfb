@@ -1,0 +1,102 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+//    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    compileSdkVersion 33
+    useLibrary 'org.apache.http.legacy'
+    defaultConfig {
+        applicationId "com.mailvor.sufenbao"
+
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        multiDexEnabled true
+        ndk {
+            //选择要添加的对应 cpu 类型的 .so 库。
+            abiFilters 'arm64-v8a', 'x86_64'
+            //需要运行在模拟器上，需要x86_64
+//            abiFilters 'armeabi-v7a', 'x86_64',  'arm64-v8a'
+        }
+        manifestPlaceholders = [
+                JPUSH_PKGNAME : applicationId,
+                JPUSH_APPKEY : "f4b96adeec4eb2a41d831551", // NOTE: JPush 上注册的包名对应的 Appkey.
+                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                applicationName : "io.flutter.app.FlutterApplication"
+        ]
+    }
+
+    signingConfigs {
+        //todo 这里的证书自己创建，为了保证百川图片在测试环境可用，打开下面debug注释，开发和打包使用同样的证书
+        //debug {
+        //    keyAlias "xxx"
+        //    keyPassword "xxx"
+        //    storeFile file('../keystore/xxx.jks')
+        //    storePassword "xxx"
+        //}
+        release {
+            keyAlias "xxx"
+            keyPassword "xxx"
+            storeFile file('../keystore/xxx.jks')
+            storePassword "xxx"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true //禁用混淆
+            shrinkResources false
+            zipAlignEnabled true//是否对APK包执行ZIP对齐优化，减小zip体积，增加运行效率
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    //注释下面的lint 以打开android查看完整AndroidManifest.xml
+    lint {
+        disable 'InvalidPackage'
+    }
+    namespace 'com.mailvor.sufenbao'
+    packagingOptions {//加上这些代码  More than one file was found with OS independent path 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/armeabi-v8a/libc++_shared.so'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+    }
+}
+
+flutter {
+    source '../..'
+}
+configurations {
+    all*.exclude group:"com.mpaas.android.anotations", module:"anotations-build"
+    all*.exclude group:"com.mpaas.toyger", module: "toyger-build"
+}
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}

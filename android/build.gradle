@@ -1,0 +1,36 @@
+buildscript {
+    ext.kotlin_version = '1.7.20'
+    repositories {
+         google()
+         jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        //取消注释这里 可以打开android查看完整AndroidManifest.xml
+//        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+         google()
+         jcenter()
+        maven {
+            url "https://mvn.cloud.alipay.com/nexus/content/repositories/open/"
+        }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

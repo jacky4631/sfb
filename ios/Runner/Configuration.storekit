@@ -1,0 +1,101 @@
+{
+	"identifier": "D910AAEF",
+	"nonRenewingSubscriptions": [
+
+	],
+	"products": [
+	    {
+        	"displayPrice": "298",
+        	"familyShareable": false,
+        	"internalID": "AE10D05D",
+        	"localizations": [{
+        		"description": "苏分宝星选月会员",
+        		"displayName": "星选月会员",
+        		"locale": "zh_CN"
+        	}],
+        	"productID": "00003",
+        	"referenceName": "00003",
+        	"type": "Consumable"
+        },
+	    {
+			"displayPrice": "1998",
+			"familyShareable": false,
+			"internalID": "AE10D05D",
+			"localizations": [{
+				"description": "苏分宝淘星选年会员",
+				"displayName": "淘星选年会员",
+				"locale": "zh_CN"
+			}],
+			"productID": "00005",
+			"referenceName": "00005",
+			"type": "Consumable"
+		},
+		{
+			"displayPrice": "1398",
+			"familyShareable": false,
+			"internalID": "AE10D05D",
+			"localizations": [{
+				"description": "苏分宝京星选年会员",
+				"displayName": "京星选年会员",
+				"locale": "zh_CN"
+			}],
+			"productID": "10005",
+			"referenceName": "10005",
+			"type": "Consumable"
+		},
+		{
+			"displayPrice": "1698",
+			"familyShareable": false,
+			"internalID": "AE10D05D",
+			"localizations": [{
+				"description": "苏分宝多星选年会员",
+				"displayName": "多星选年会员",
+				"locale": "zh_CN"
+			}],
+			"productID": "20005",
+			"referenceName": "20005",
+			"type": "Consumable"
+		},
+		{
+			"displayPrice": "1598",
+			"familyShareable": false,
+			"internalID": "AE10D05D",
+			"localizations": [{
+				"description": "苏分宝抖星选年会员",
+				"displayName": "抖星选年会员",
+				"locale": "zh_CN"
+			}],
+			"productID": "30005",
+			"referenceName": "30005",
+			"type": "Consumable"
+		},
+		{
+			"displayPrice": "998",
+			"familyShareable": false,
+			"internalID": "AE10D05D",
+			"localizations": [{
+				"description": "苏分宝唯星选年会员",
+				"displayName": "唯星选年会员",
+				"locale": "zh_CN"
+			}],
+			"productID": "40005",
+			"referenceName": "40005",
+			"type": "Consumable"
+		}
+	],
+	"settings": {
+
+	},
+	"subscriptionGroups": [{
+		"id": "D0FEE8D8",
+		"localizations": [
+
+		],
+		"name": "Example Subscriptions",
+		"subscriptions": []
+	}],
+	"version": {
+		"major": 2,
+		"minor": 0
+	}
+}
