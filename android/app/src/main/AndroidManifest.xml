@@ -101,7 +101,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <!--阿里百川,一定要用singleTask，这样登陆状态才在二次授权免登-->
-        <activity android:name="com.wxwx.flutter_alibc.web.WebViewActivity" android:launchMode="singleTask">
+        <activity android:name="com.wxwx.flutter_alibc.web.WebViewActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
