@@ -81,14 +81,14 @@ class _HelpFanliState extends State<HelpFanliPage> {
         'ct': true
       }, [
         PWidget.textIs('“简单', [Colors.white, 24, true], {}),
-        PWidget.textIs('三步', [Colors.yellow[800], 24, true], {}),
+        PWidget.textIs('四步', [Colors.yellow[800], 24, true], {}),
         PWidget.textIs('，轻松领红包”', [Colors.white, 24, true], {}),
       ]),
       PWidget.boxh(30),
       PWidget.container(
           PWidget.column([
-            PWidget.boxh(30),
-            PWidget.text('提  示 ', [
+            PWidget.boxh(10),
+            PWidget.text('【一】', [
               Colors.yellow[900],
               16,
               true
@@ -96,30 +96,9 @@ class _HelpFanliState extends State<HelpFanliPage> {
               'ct': true,
               'max': 2
             }, [
-              PWidget.textIs(' 通过平台购买任意商品都可拆红包 ', redStyle, {}),
-            ]),
-            PWidget.boxh(30),
-            PWidget.text('或  者 ', [
-              Colors.yellow[900],
-              16,
-              true
-            ], {
-              'ct': true,
-              'max': 2
-            },),
-
-            PWidget.boxh(30),
-            PWidget.text('第一步 ', [
-              Colors.yellow[900],
-              16,
-              true
-            ], {
-              'ct': true,
-              'max': 2
-            }, [
-              PWidget.textIs(' 打开 ', blackStyle, {}),
-              PWidget.textIs('淘宝/京东/拼多多/唯品会/抖音', redStyle, {}),
-              PWidget.textIs(' 任意一款你想要的商品', blackStyle, {}),
+              PWidget.textIsNormal(' 打开 ', blackStyle, {}),
+              PWidget.textIs('淘宝、京东、拼多多、唯品会、抖音', redStyle, {}),
+              PWidget.textIsNormal(' 任意一款你想要的商品', blackStyle, {}),
             ]),
             PWidget.boxh(10),
             PWidget.row([
@@ -136,7 +115,7 @@ class _HelpFanliState extends State<HelpFanliPage> {
               PWidget.image('assets/images/mall/dy.png', [32, 32]),
             ], '221'),
             PWidget.boxh(30),
-            PWidget.text('第二步 ', [
+            PWidget.text('【二】', [
               Colors.yellow[900],
               16,
               true
@@ -144,28 +123,45 @@ class _HelpFanliState extends State<HelpFanliPage> {
               'ct': true,
               'max': 2
             }, [
-              PWidget.textIs('点击右上角 ', blackStyle, {}),
+              PWidget.textIsNormal('点击右上角 ', blackStyle, {}),
               PWidget.textIs('分享', redStyle, {}),
-              PWidget.textIs('，然后点击 ', blackStyle, {}),
+              PWidget.textIsNormal('，然后点击 ', blackStyle, {}),
               PWidget.textIs('复制链接 ', redStyle, {}),
             ]),
             PWidget.container(
               PWidget.image('assets/images/help/copylink.png', [336, 150]),
             ),
             PWidget.boxh(20),
-            PWidget.text('第三步 ', [
+            PWidget.text('【三】', [
               Colors.yellow[900],
               16,
               true
             ], {
               'max': 2
             }, [
-              PWidget.textIs('打开 ', blackStyle, {}),
+              PWidget.textIsNormal('打开 ', blackStyle, {}),
               PWidget.textIs(APP_NAME, redStyle, {}),
-              PWidget.textIs('，领取优惠', blackStyle, {}),
+              PWidget.textIsNormal(' 领取优惠', blackStyle, {}),
             ]),
             PWidget.container(
               PWidget.image('assets/images/help/pickcou.png', [600, 250]),
+            ),
+
+            PWidget.boxh(20),
+            PWidget.text('【四】', [
+              Colors.yellow[900],
+              16,
+              true
+            ], {
+              'max': 2
+            }, [
+              PWidget.textIsNormal('成功下单，进入 ', blackStyle, {}),
+              PWidget.textIs('我的->订单中心', redStyle, {}),
+              PWidget.textIsNormal('，等待订单解锁，拆红包', blackStyle, {}),
+            ]),
+            PWidget.boxh(10),
+            PWidget.container(
+              PWidget.image('assets/images/help/chb.png', [600, 600]),
             ),
             PWidget.boxh(30),
           ]),

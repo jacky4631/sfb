@@ -105,6 +105,9 @@ class _FeeDetailPageState extends State<FeeDetailPage> {
   String dyFee = defP;
   num vipCount = defC;
   String vipFee = defP;
+
+  num mtCount = defC;
+  String mtFee = defP;
   @override
   void initState() {
     super.initState();
@@ -144,6 +147,7 @@ class _FeeDetailPageState extends State<FeeDetailPage> {
     Map pdd = detail['pdd']??{};
     Map dy = detail['dy']??{};
     Map vip = detail['vip']??{};
+    Map mt = detail['mt']??{};
     Map up = detail['up']??{};
 
     upCount = up[keyC]??defC;
@@ -158,6 +162,8 @@ class _FeeDetailPageState extends State<FeeDetailPage> {
     dyFee = dy[keyF]??defP;
     vipCount = vip[keyC]??defC;
     vipFee = vip[keyF]??defP;
+    mtCount = mt[keyC]??defC;
+    mtFee = mt[keyF]??defP;
 
     Color chColor = Colors.black;
     Color sColor = Colors.grey[600]!;
@@ -169,6 +175,7 @@ class _FeeDetailPageState extends State<FeeDetailPage> {
     }
     Widget arrowWidget = clickable ? PWidget.icon(Icons.arrow_forward_ios, [sColor, ts]) : SizedBox();
     bool showUpgrade = (cid == 2 || cid == 3 || cid == 7) ? false : true;
+    bool showMt = cid == 7 ? false : true;
 
     int pageOne = cid - 1;
     if(cid == 3) {
@@ -233,6 +240,15 @@ class _FeeDetailPageState extends State<FeeDetailPage> {
         DataCell(arrowWidget)
       ],onTap: clickable ? (){
         onclick(pageOne, 4, 'vip');
+      } : null),
+      if(showMt)
+      DataRow2(cells: [
+        DataCell(PWidget.text('美团', [chColor, ts])),
+        DataCell(PWidget.text(mtCount, [sColor, ts])),
+        DataCell(SingleChildScrollView(scrollDirection: Axis.horizontal,child: PWidget.text(mtFee, [sColor, ts]))),
+        DataCell(arrowWidget)
+      ],onTap: clickable ? (){
+        onclick(pageOne, 5, 'mt');
       } : null),
     ];
     double min = 0;

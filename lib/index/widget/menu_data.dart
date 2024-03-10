@@ -23,22 +23,23 @@ const List menuData = [
       "url": "/ninePage",
       'color': Color(0xfff9cc8c)
     },
+
     {
-      "title": "外卖红包",
-      "img":
-      "https://img.alicdn.com/imgextra/i2/2053469401/O1CN01ZiytSl2JJi9mY2paN_!!2053469401.png",
-      'path': 'assets/images/menu/8.gif',
-      "type": "1",
-      "url": "/waimai",
-    },
-    {
-      "title": "爆款验货",
+      "title": "美团红包",
       "img":
       "https://img.alicdn.com/imgextra/i3/2053469401/O1CN01FqA1ff2JJi9Jb6VCV_!!2053469401.gif",
-      'path': 'assets/images/menu/yanhuo.gif',
+      'path': 'assets/images/mt.gif',
       "type": "1",
-      "url": "/inspectGoodsPage",
+      "url": "/meiTuanPage",
       'color': Color(0xFFF12929),
+    },
+    {
+      "title": "饿了么",
+      "img":
+      "https://img.alicdn.com/imgextra/i2/2053469401/O1CN01ZiytSl2JJi9mY2paN_!!2053469401.png",
+      'path': 'assets/images/ele.gif',
+      "type": "1",
+      "url": "/elePage",
     },
     {
       'img': 'https://mailvor.oss-cn-shanghai.aliyuncs.com/sufenbao/fuli4.png',

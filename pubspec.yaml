@@ -1,6 +1,6 @@
 name: sufenbao
 description: sufenbao
-version: 3.0.1+91
+version: 3.0.5+92
 
 environment:
   sdk: ">=2.18.0 <=3.0.0"
@@ -86,6 +86,7 @@ dependencies:
   connectivity_plus: ^3.0.6
   webview_flutter: ^4.2.1
   device_info_plus: ^8.2.0
+  url_strategy: ^0.2.0
 dev_dependencies:
   mockito: ^5.4.0
   flutter_test:

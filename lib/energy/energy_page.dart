@@ -119,15 +119,15 @@ class _EnergyPageState extends State<EnergyPage>
                   PWidget.column([
                     PWidget.row([
                       PWidget.column([
-                        PWidget.text('淘', [Colors.white,14]),
+                        PWidget.image('assets/images/mall/tb.png', [18, 18], {'crr': 8}),
                         PWidget.boxh(8),
-                        PWidget.text('京', [Colors.white,14]),
+                        PWidget.image('assets/images/mall/jd.png', [18, 18], {'crr': 8}),
                         PWidget.boxh(8),
-                        PWidget.text('多', [Colors.white,14]),
+                        PWidget.image('assets/images/mall/pdd.png', [18, 18], {'crr': 8}),
                         PWidget.boxh(8),
-                        PWidget.text('抖', [Colors.white,14]),
+                        PWidget.image('assets/images/mall/dy.png', [18, 18], {'crr': 8}),
                         PWidget.boxh(8),
-                        PWidget.text('唯', [Colors.white,14]),
+                        PWidget.image('assets/images/mall/vip.png', [18, 18], {'crr': 8}),
                       ]),
                       PWidget.boxw(20),
                       PWidget.column([
@@ -182,19 +182,19 @@ class _EnergyPageState extends State<EnergyPage>
                   '热度规则',
                   [Colors.white, 16, true],
                 ),
+                PWidget.text('\t1.热度作用：获取用户下单后拆红包提成；', [Colors.white, 14], {'max': 2}),
                 PWidget.row([
-                  PWidget.text('\t1.赠送热度来源：加盟星选会员赠送，', [Colors.white, 14], {'max': 2}),
+                  PWidget.text('\t2.赠送热度来源：加盟星选会员赠送，', [Colors.white, 14], {'max': 2}),
                   PWidget.text('去加盟>', [Colors.white, 14], {'max': 2,
                       'td': TextDecoration.underline,'fun':(){
                         onTapLogin(context, '/tabVip', args: {'index': 0});
                       }}),
                 ]),
-                PWidget.text('\t2.推广热度来源：自购拆红包、用户拆红包、用户加盟星选会员；', [Colors.white, 14], {'max': 2}),
-                PWidget.text('\t3.热度作用：获取平台用户下单后拆红包提成；', [Colors.white, 14], {'max': 2}),
+                PWidget.text('\t3.推广热度来源：自购拆红包、用户拆红包、用户加盟星选会员；', [Colors.white, 14], {'max': 2}),
                 PWidget.text('\t4.点击+-设置每日消耗的热度；', [Colors.white, 14], {'max': 2}),
                 PWidget.text('\t5.热度每日消耗可设置范围50-500；', [Colors.white, 14], {'max': 2}),
-                PWidget.text('\t2.热度消耗越大当日热度订单越多；', [Colors.white, 14], {'max': 2}),
-                PWidget.text('\t3.热度不足时，当日不消耗；', [Colors.white, 14], {'max': 2}),
+                PWidget.text('\t6.热度消耗越大当日热度订单越多；', [Colors.white, 14], {'max': 2}),
+                PWidget.text('\t7.热度不足时，当日不消耗；', [Colors.white, 14], {'max': 2}),
               ])),
             ]
         ), [null, 700, Colours.app_main], {'pd':[0, 0, 20, 20]}

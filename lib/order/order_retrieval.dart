@@ -107,8 +107,6 @@ class _OrderRetrievalState extends State<OrderRetrieval> {
                             PWidget.textIs('唯品会', [Colours.app_main, 14]),
                             PWidget.textIs('、', [Colors.black54, 14]),
                             PWidget.textIs('美团外卖', [Colours.app_main, 14]),
-                            PWidget.textIs('、', [Colors.black54, 14]),
-                            PWidget.textIs('美团团购', [Colours.app_main, 14]),
                             PWidget.textIs('订单；', [Colors.black54, 14]),
                           ]
                       ),

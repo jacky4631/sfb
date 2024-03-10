@@ -153,15 +153,17 @@ class _TopChildState extends State<TopChild> {
   getPlatformName(platform) {
     switch(platform){
       case 'tb':
-        return '淘星选';
+        return '淘';
       case 'jd':
-        return '京星选';
+        return '京';
       case 'pdd':
-        return '多星选';
+        return '多';
       case 'dy':
-        return '抖星选';
+        return '抖';
       case 'vip':
-        return '唯星选';
+        return '唯';
+      case 'mt':
+        return '美团';
     }
   }
 }

@@ -1,3 +1,5 @@
+// import 'dart:html';
+
 /**
  *  Copyright (C) 2018-2024
  *  All rights reserved, Designed By www.mailvor.com
@@ -12,12 +14,14 @@ import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:sufenbao/service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../dialog/simple_privacy_dialog.dart';
 import '../me/listener/WxPayNotifier.dart';
 import '../util/colors.dart';
 import '../util/global.dart';
 import '../util/login_util.dart';
+import '../util/toast_utils.dart';
 import '../widget/custom_button.dart';
 
 class LoginFirst extends StatefulWidget {
@@ -34,6 +38,7 @@ class _LoginFirstState extends State<LoginFirst> {
   double fontSize = 0;
 
   bool showWechatLogin = false;
+  bool inWebWechat = false;
 
   @override
   void initState() {
@@ -55,13 +60,13 @@ class _LoginFirstState extends State<LoginFirst> {
       WeChatAuthResponse authResponse = res;
       if (authResponse.state == 'sufenbao_login' &&
           authResponse.errCode == 0 && authResponse.code != null) {
-          wechatLogin(authResponse.code);
+          wechatAppLogin(authResponse.code);
       }
     }
   }
 
-  Future wechatLogin(code) async {
-    var data = await BService.wechatLogin(code);
+  Future wechatAppLogin(code) async {
+    var data = await BService.wechatAppLogin(code);
     if(data['data']['openId'] != null) {
       Navigator.pushNamed(context, "/loginSecond", arguments: data['data']);
     } else {
@@ -75,8 +80,13 @@ class _LoginFirstState extends State<LoginFirst> {
 
   ///初始化函数
   Future initData() async {
-    var weChatInstalled = await isWeChatInstalled;
-    showWechatLogin = !Global.isWeb() && weChatInstalled;
+    if(Global.isWeb() && isWeChatBrowser()) {
+      inWebWechat = true;
+      showWechatLogin = true;
+    } else {
+      var weChatInstalled = await isWeChatInstalled;
+      showWechatLogin = weChatInstalled;
+    }
     setState(() {
 
     });
@@ -184,7 +194,31 @@ class _LoginFirstState extends State<LoginFirst> {
     }
   }
   Future getCode() async {
-    await sendWeChatAuth(scope: "snsapi_userinfo", state: "sufenbao_login");
+    //微信公众号登录
+    if(inWebWechat) {
+      String wechatId = await BService.getWechatId();
+      // String url = window.location.href;
+      String url = '';
+      String redirectUrl = '${url.substring(0, url.lastIndexOf('/'))}/blankPage';
+
+      String requestUrl =
+          "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +
+              wechatId +
+              "&redirect_uri=" +
+              redirectUrl +
+              "&response_type=code&scope=snsapi_userinfo&state=1#wechat_redirect";
+      Uri uri = Uri.parse(requestUrl);
+      bool canLaunch = await canLaunchUrl(uri);
+      if (canLaunch) {
+
+        bool launch = await launchUrl(uri);
+      } else {
+        ToastUtils.showToast('could not open link $requestUrl');
+      }
+    } else {
+      //微信app登录
+      await sendWeChatAuth(scope: "snsapi_userinfo", state: "sufenbao_login");
+    }
   }
 
   @override

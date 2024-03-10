@@ -6,7 +6,7 @@
 
 ### 📖 简介：
 
-苏分宝开源淘宝客APP系统，基于Java+Vue+Flutter开发，APP端由Flutter开发，代码全开源无加密，二开很方便，还支持免费商用，能满足企业淘宝客APP等经营需求，自用、做二开项目都很合适。
+苏分宝开源淘宝客APP系统，基于Java（SpringBoot）+Vue+Flutter开发，APP端由Flutter开发，代码全开源无加密，二开很方便，还支持免费商用，能满足企业淘宝客APP等经营需求，自用、做二开项目都很合适。
 
 
 ---
@@ -21,7 +21,7 @@
 ### 💻 运行环境及框架：
 ~~~
 1.	移动端Flutter开发框架
-2.	WEB Pc 管理后台使用Vue + Element UI 开发 兼容主流浏览器 ie11+
+2.	WEB PC 管理后台使用Vue + Element UI 开发 兼容主流浏览器 ie11+
 3.	后台服务 Java SpringBoot + Mybatis-plus + Mysql + redis
 4.	运行环境 linux, 需要Java环境和对应的数据库 redis
 5.	运行条件 Java 1.8 Mysql5.7
@@ -50,11 +50,6 @@
 WEBPC管理端：暂不提供演示，有需要可以扫描下面二维码<br>
 
 ---
-### 📞 技术交流
-* 扫码免费获取APP图标、启动图、上架图、APP隐私协议政策模板和APP分享模板
-* 扫码购买服务端源码和web管理端源码
-  ![](demoimages/qr.jpg)
-
 
 ### 💟 UI界面
 
@@ -65,6 +60,11 @@ WEBPC管理端：暂不提供演示，有需要可以扫描下面二维码<br>
 ![](demoimages/4.png)
 ![](demoimages/5.png)
 
+
+#### 📞 技术交流
+* 扫码免费获取APP图标、启动图、上架图、APP隐私协议政策html模板和APP分享的html模板
+* 扫码购买服务端和web管理端源码
+![](demoimages/qr.jpg)
 
 ---
 

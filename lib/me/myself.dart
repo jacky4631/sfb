@@ -395,13 +395,17 @@ class _MySelfPageState extends State<MySelfPage>
               title: '我的用户',
               onTap: () {
                 fansSearchNotifier.value = '';
-                //rechargeType 0=正式 1=体验 2=月卡
                 onTapLogin(context, '/fans');
               },
               leading: Icon(BaoIcons.fans, size: 20, color: Colors.black)),
           SelectTextItem(
               title: '分享App',
-              content: '用户购物返红包',
+              content: '邀请好友领现金',
+              contentWidget: shimmerWidget(Text('邀请好友领现金',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                      color: Colors.red, fontSize: 14)),
+                  color: Colors.red),
               onTap: () {
                 personalNotifier.value = false;
                 onTapLogin(context, '/sharePage');
@@ -736,47 +740,42 @@ class _MySelfPageState extends State<MySelfPage>
         items: <PopupMenuEntry<String>>[
           PopupMenuItem<String>(height: 28,value: 'Item01', child:
               PWidget.row([
-                PWidget.textNormal('淘',[Colors.black,12, true]),
+                PWidget.image('assets/images/mall/tb.png', [16, 16], {'crr': 8}),
+                PWidget.textNormal('热度：',[Colors.black,12, true]),
                 PWidget.boxw(2),
-                PWidget.textNormal('赠送: ${userEnergy['tbEnergy']}',[Colors.black,11]),
-                PWidget.boxw(2),
-                PWidget.textNormal('推广: ${userEnergy['tbTuiEnergy']}',[Colors.black,11])
+                PWidget.text('${userEnergy['tbEnergy'] + userEnergy['tbTuiEnergy']}',[Colors.black,11]),
               ])),
           PopupMenuDivider(height: 5,),
           PopupMenuItem<String>(height: 28,value: 'Item02', child:
           PWidget.row([
-            PWidget.textNormal('京',[Colors.black,12, true]),
+            PWidget.image('assets/images/mall/jd.png', [16, 16], {'crr': 8}),
+            PWidget.textNormal('热度：',[Colors.black,12, true]),
             PWidget.boxw(2),
-            PWidget.textNormal('赠送: ${userEnergy['jdEnergy']}',[Colors.black,11]),
-            PWidget.boxw(2),
-            PWidget.textNormal('推广: ${userEnergy['jdTuiEnergy']}',[Colors.black,11])
+            PWidget.text('${userEnergy['jdEnergy'] + userEnergy['jdTuiEnergy']}',[Colors.black,11]),
           ])),
           PopupMenuDivider(height: 5,),
           PopupMenuItem<String>(height: 28,value: 'Item03', child:
           PWidget.row([
-            PWidget.textNormal('多',[Colors.black,12, true]),
+            PWidget.image('assets/images/mall/pdd.png', [16, 16], {'crr': 8}),
+            PWidget.textNormal('热度：',[Colors.black,12, true]),
             PWidget.boxw(2),
-            PWidget.textNormal('赠送: ${userEnergy['pddEnergy']}',[Colors.black,11]),
-            PWidget.boxw(2),
-            PWidget.textNormal('推广: ${userEnergy['pddTuiEnergy']}',[Colors.black,11])
+            PWidget.text('${userEnergy['pddEnergy'] + userEnergy['pddTuiEnergy']}',[Colors.black,11]),
           ])),
           PopupMenuDivider(height: 5,),
           PopupMenuItem<String>(height: 28,value: 'Item04', child:
           PWidget.row([
-            PWidget.textNormal('抖',[Colors.black,12, true]),
+            PWidget.image('assets/images/mall/dy.png', [16, 16], {'crr': 8}),
+            PWidget.textNormal('热度：',[Colors.black,12, true]),
             PWidget.boxw(2),
-            PWidget.textNormal('赠送: ${userEnergy['dyEnergy']}',[Colors.black,11]),
-            PWidget.boxw(2),
-            PWidget.textNormal('推广: ${userEnergy['dyTuiEnergy']}',[Colors.black,11])
+            PWidget.text('${userEnergy['dyEnergy'] + userEnergy['dyTuiEnergy']}',[Colors.black,11]),
           ])),
           PopupMenuDivider(height: 5,),
           PopupMenuItem<String>(height: 28,value: 'Item05', child:
           PWidget.row([
-            PWidget.textNormal('唯',[Colors.black,12, true]),
+            PWidget.image('assets/images/mall/vip.png', [16, 16], {'crr': 8}),
+            PWidget.textNormal('热度：',[Colors.black,12, true]),
             PWidget.boxw(2),
-            PWidget.textNormal('赠送: ${userEnergy['vipEnergy']}',[Colors.black,11]),
-            PWidget.boxw(2),
-            PWidget.textNormal('推广: ${userEnergy['vipTuiEnergy']}',[Colors.black,11])
+            PWidget.text('${userEnergy['vipEnergy'] + userEnergy['vipTuiEnergy']}',[Colors.black,11]),
           ])),
           PopupMenuDivider(height: 5,),
           PopupMenuItem<String>(height: 35,value: 'Item06', child:

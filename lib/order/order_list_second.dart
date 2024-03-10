@@ -18,6 +18,7 @@ import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/vip/vip_detail_page.dart';
 
 import '../hb/red_packet.dart';
+import '../httpUrl.dart';
 import '../jd/jd_details_page.dart';
 import '../me/listener/PersonalNotifier.dart';
 import '../page/product_details.dart';
@@ -117,8 +118,8 @@ class _TopChildState extends State<TopChild> {
   var listDm = DataModel();
   Future<int> getListData({int page = 1, bool isRef = false}) async {
     int innerType = widget.data['innerType'];
-
-    var res = await BService.taoOrders(page, widget.index, level: widget.data['level'],
+    Map param = getPlatformData(widget.index, 0);
+    var res = await BService.taoOrders(page, param, level: widget.data['level'],
         innerType: innerType);
     if (res != null) listDm.addList(res['content'], isRef, res['totalElements']);
     setState(() {});
@@ -144,24 +145,56 @@ class _TopChildState extends State<TopChild> {
           listViewType: ListViewType.Separated,
           item: (i) {
             Map data = list[i] as Map;
-            if(widget.index == 0) {
-              return getTaoWidget(i, data);
-            } else if(widget.index == 1) {
-              return getMtWidget(i, data);
-            } else if(widget.index == 2) {
-              return getJdWidget(i, data);
-            } else if(widget.index == 3) {
-              return getPddWidget(i, data);
-            } else if(widget.index == 4) {
-              return getDyWidget(i, data);
-            } else if(widget.index == 5) {
-              return getVipWidget(i, data);
-            }
+            return getPlatformData(widget.index, 1, i: i, data: data);
 
           },
         );
       },
     );
+  }
+
+  /**
+   * type=0是接口数据， type = 1是组件数据
+   * */
+  getPlatformData(int index, int type,{i, data}) {
+    switch(index){
+      case 0:
+        if(type == 0) {
+          return { "api": API.taoOrders, "sort": 'tk_create_time'};
+        } else {
+          return getTaoWidget(i, data);
+        }
+      case 1:
+        if(type == 0) {
+          return { "api": API.jdOrders, "sort": 'order_time'};
+        } else {
+          return getJdWidget(i, data);
+        }
+      case 2:
+        if(type == 0) {
+          return { "api": API.pddOrders, "sort": 'order_create_time'};
+        } else {
+          return getPddWidget(i, data);
+        }
+      case 3:
+        if(type == 0) {
+          return { "api": API.dyOrders, "sort": 'pay_success_time'};
+        } else {
+          return getDyWidget(i, data);
+        }
+      case 4:
+        if(type == 0) {
+          return { "api": API.vipOrders, "sort": 'order_time'};
+        } else {
+          return getVipWidget(i, data);
+        }
+      case 5:
+        if(type == 0) {
+          return { "api": API.mtOrders, "sort": 'order_pay_time'};
+        } else {
+          return getMtWidget(i, data);
+        }
+    }
   }
 
   Widget getTaoWidget(i, data) {
@@ -259,7 +292,7 @@ class _TopChildState extends State<TopChild> {
 
     return PWidget.container(
       createGoodsDesc(data, data['shopName'],
-          data['uniqueItemId'],
+          data['orderId'],
           price,
           fee,
           data['orderPayTime'], 'mt',
@@ -304,17 +337,19 @@ class _TopChildState extends State<TopChild> {
         return;
       }
       num hb = res['data']['hb'];
-      String desc = '\n恭喜您获得$hb元红包';
+      String desc = '\n￥$hb';
 
       AwesomeDialog(
         dismissOnTouchOutside: false,
         dismissOnBackKeyPress: false,
         context: context,
         dialogType: DialogType.noHeader,
-        title: '红包提示',
+        title: '恭喜您获得',
+        titleTextStyle: TextStyle(color: Colors.white),
         desc: desc,
-        descTextStyle: TextStyle(color: Colors.red),
-        btnOkColor: Colours.app_main,
+        dialogBackgroundColor: Colors.redAccent,
+        descTextStyle: TextStyle(color: Colors.white,fontSize: 24),
+        btnOkColor: Color(0xFFE5CDA8),
         btnOkText: '确定',
         btnOkOnPress: () async {
           data['bind'] = 1;
@@ -409,8 +444,8 @@ class _TopChildState extends State<TopChild> {
     }
 
     String orderNo = orderSn.toString();
-    //下级订单和流量扶持订单 热度订单 隐藏订单后6位
-    if(widget.data['level'] > 0 || widget.data['innerType'] == 1 || widget.data['innerType'] == 2) {
+    //下级订单 热度订单 隐藏订单后6位
+    if(widget.data['level'] > 0 || widget.data['innerType'] == 2) {
       orderNo = orderNo.substring(0, orderNo.length-6) + '******';
     }
 

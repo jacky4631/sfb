@@ -123,8 +123,8 @@ class IOSPaymentState extends State {
       _inAppPurchase
           .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       iosPlatformAddition.setDelegate(null);
+      _subscription.cancel();
     }
-    _subscription.cancel();
     super.dispose();
   }
 

@@ -58,11 +58,8 @@ class _VipPageState extends State<VipPage> {
   String levelKey = 'level';
   int userLevel = 1;
   bool isDispose = false;
-  num expPrice = 0;
-  //rechargeType 0=正式 1=体验 2=月卡
+  //rechargeType 0=年卡 2=月卡
   int rechargeType = 0;
-  num expValid = 0;
-  Map expData = {};
   num valid = 0;
 
   Map helpUser = {};
@@ -83,9 +80,6 @@ class _VipPageState extends State<VipPage> {
     if(rechargeType == 0) {
       price = gradeModel['money'];
       valid = gradeModel['validDate'];
-    } else if(rechargeType == 1) {
-      price = expPrice;
-      valid = expValid;
     }
     //当前是否可以支付 如果用户过期或者选择的等级
     payEnabled = (userLevel == EXPIRED_LEVEL) || ((selectedGrade >= userLevel) && selectedGrade > 1 && price >0);
@@ -149,9 +143,6 @@ class _VipPageState extends State<VipPage> {
     } else if(data['data']['rechargeType'] != null) {
       rechargeType = data['data']['rechargeType'];
     }
-    if(rechargeType == 1) {
-      await getUserExp();
-    }
     _initGradeData(index);
     _pageNotifier.value = index.toDouble();
     _pageController =
@@ -163,14 +154,6 @@ class _VipPageState extends State<VipPage> {
       loading = false;
     });
   }
-  Future getUserExp() async {
-    Map userExp = await BService.userExp();
-    expPrice = userExp['price'];
-    expValid = userExp['valid'];
-    List exps = userExp['exps'];
-    expData = exps.firstWhere((e) => e['platform']==data['vipData']['platform'], orElse: () => {});
-  }
-
 
   @override
   void dispose() {
@@ -323,12 +306,10 @@ class _VipPageState extends State<VipPage> {
     String title = v['title'];
     String desc = v['content'];
 
-    if(title == '流量扶持') {
-      //todo 如果已经开启流量扶持，desc=已开启
-      titleWidget = shimmerWidget(PWidget.text(title, [Colors.black, 14]));
+    titleWidget = PWidget.text(title, [Colors.black, 14]);
+    if(userLevel == 5) {
       descWidget = shimmerWidget(PWidget.textNormal(desc, [Colors.black, 12]));
     } else {
-      titleWidget = PWidget.text(title, [Colors.black, 14]);
       descWidget = PWidget.textNormal(desc, [Colors.black, 12]);
     }
     return [
@@ -346,26 +327,12 @@ class _VipPageState extends State<VipPage> {
   }
 
   Widget createItem(index, size) {
-    int validDate = 0;
-    if (_grades.isNotEmpty) {
-      validDate = _grades[index]['validDate'];
-    }
     String expired = '';
-    if(rechargeType == 1) {
-      if(expData['remain'] != null) {
-        if(expData['remain'] == 0) {
-          expired = '已过期';
-        } else {
-          expired = '剩余${expData['remain']}天';
-        }
-      }
-    } else {
-      if (userinfo[data['vipData']['key']] == _grades[index]['grade'] && helpUser.isEmpty) {
-        expired = userinfo[data['vipData']['expKey']]??'';
-        if (expired.isNotEmpty) {
-          expired = expired.split(' ')[0];
-          expired = '$expired到期';
-        }
+    if (userinfo[data['vipData']['key']] == _grades[index]['grade'] && helpUser.isEmpty) {
+      expired = userinfo[data['vipData']['expKey']]??'';
+      if (expired.isNotEmpty) {
+        expired = expired.split(' ')[0];
+        expired = '$expired到期';
       }
     }
 
@@ -485,28 +452,13 @@ class _VipPageState extends State<VipPage> {
           return;
         }
         //支付
-        if(rechargeType == 1){
-          Navigator.pushNamed(context, '/cashierPage', arguments: {
-            "rechargeId": gradeModel['rechargeId'],
-            "platform": data['vipData']['platform'],
-            'price': price,
-            'valid': valid,
-            'rechargeType': rechargeType,
-            'user': helpUser
+        AwesomeDialog(
+            dialogType: DialogType.noHeader,
+            showCloseIcon: true,
+            context: context,
+            body: signCashierPage()
+        )..show();
 
-          }).then((value) => {
-            if(value != null && value as bool) {
-              refreshAfterPaySuccess()
-            }
-          });
-        } else {
-          AwesomeDialog(
-              dialogType: DialogType.noHeader,
-              showCloseIcon: true,
-              context: context,
-              body: signCashierPage()
-          )..show();
-        }
       },
     ), {'pd':[0,0,30,30]});
   }

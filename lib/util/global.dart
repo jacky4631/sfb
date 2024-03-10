@@ -302,7 +302,9 @@ class Global {
   }
   static Future kuParse(BuildContext context, v) async {
     ///点击事件
-    if(v['title'] == '加盟') {
+    if(v['title'] == '淘宝看视频领红包') {
+      Navigator.pushNamed(context, '/taoRedPage', arguments: v);
+    } else if(v['title'] == '加盟') {
       onTapLogin(context, '/tabVip', args: {'index':0});
     } else if(v['title'] == '低价爆款' || v['title'] == '1.9元包邮') {
       await LaunchApp.launchApp(homeUrl[v['key']]);
@@ -442,6 +444,8 @@ class Global {
   }
   static RegExp orderRegExp = RegExp(r'^[0-9-]+$');
   static bool isOrder(String order) {
+    //美团订单有空格 需要清除
+    order = order.replaceAll(" ", "");
     return orderRegExp.hasMatch(order);
   }
 
@@ -692,8 +696,8 @@ class Global {
     String version = packageInfo.version;
     Map res = await BService.updateConfig();
     if(res != null) {
-      String enable = res['enable'];
-      if(enable == '0') {
+      int enable = res['enable'];
+      if(enable == 0) {
         return;
       }
       String url;
@@ -716,9 +720,9 @@ class Global {
           || (curs.length > 2 && num.parse(las[0])==num.parse(curs[0]) &&
               num.parse(las[1])==num.parse(curs[1]) &&
               num.parse(las[2])>num.parse(curs[2]))) {
-        String forceUpdate = res['forceUpdate'];
+        int forceUpdate = res['forceUpdate'];
         showSignDialog(context, title:'新版本上线啦', desc: '立即更新', okTxt: '去更新',
-            forceUpdate: forceUpdate=='1', (){
+            forceUpdate: forceUpdate==1, (){
           LaunchApp.launchInBrowser(url);
           // launchUrl(Uri.parse(url));
         });

@@ -43,6 +43,10 @@ import 'package:sufenbao/me/vip/vip.dart';
 import 'package:sufenbao/order/integral_list.dart';
 import 'package:sufenbao/order/order_retrieval.dart';
 import 'package:sufenbao/page/AliRedPage.dart';
+import 'package:sufenbao/page/BlankPage.dart';
+import 'package:sufenbao/page/ElePage.dart';
+import 'package:sufenbao/page/MeiTuanPage.dart';
+import 'package:sufenbao/page/TaoRedPage.dart';
 import 'package:sufenbao/page/WaiMaiPage.dart';
 import 'package:sufenbao/page/big_coupon_page.dart';
 import 'package:sufenbao/page/brand_sale_page.dart';
@@ -68,6 +72,7 @@ import 'package:sufenbao/webview/alipay_webview.dart';
 import 'package:sufenbao/webview/custom_webview.dart';
 import 'package:sufenbao/webview/pay_webview.dart';
 import 'package:sufenbao/widget/camera/mask_camera.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'bindCard/supportBank_list.dart';
 import 'bindCard/verify_addCard.dart';
@@ -193,6 +198,10 @@ class SfbApp extends StatelessWidget {
       '/sellPage': (BuildContext context) => SellPage(arg),
 
       '/supportBankList': (BuildContext context) => SupportBankList(),
+      '/blankPage': (BuildContext context) => BlankPage(arg),
+      '/taoRedPage': (BuildContext context) => TaoRedPage(arg),
+      '/meiTuanPage': (BuildContext context) => MeiTuanPage(arg),
+      '/elePage': (BuildContext context) => ElePage(arg),
     };
     var widget = routes[settings.name];
 
@@ -250,7 +259,7 @@ void main() {
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitDown
   // ]);
-
+  setPathUrlStrategy();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(statusBarColor: Colors.transparent));

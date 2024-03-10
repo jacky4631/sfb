@@ -92,6 +92,8 @@ class _FirstPageState extends State<FirstPage> {
   Future<int> initData() async {
     huodongNotify.changeIsShowTabbar(false);
     agree = await Global.getAgree();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    await initThird(packageInfo);
     Global.init();
     await getBannerData();
     await getTilesData();
@@ -101,9 +103,7 @@ class _FirstPageState extends State<FirstPage> {
     await getListData(isRef: true);
     showHuodongDialog();
     initShake();
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await Global.update(packageInfo);
-    await initThird(packageInfo);
     return 0;
   }
 
@@ -163,9 +163,9 @@ class _FirstPageState extends State<FirstPage> {
   Future showHuodongDialog() async {
     Map? huodong = Global.homeUrl['huodong'];
     String? todayString = await Global.getTodayString();
-    if (agree && huodong != null && huodong.isNotEmpty && todayString == null) {
+    if (agree && huodong != null && huodong.isNotEmpty && todayString == null && !Global.isEmpty(huodong['img'])) {
       //如果今天没有显示过，
-      Global.showHuodongDialog(Global.homeUrl['huodong']);
+      Global.showHuodongDialog(huodong);
     }
   }
 
@@ -180,7 +180,11 @@ class _FirstPageState extends State<FirstPage> {
       res.removeWhere((element) {
         return (element['link_type'] == 3 && element['id'] != 380) || element['id'] == 530;
       });
-      // res.insertAll(0, pddBannerData);
+      const List tbHbData = [
+        {'title':'淘宝看视频领红包', 'key':'pddbanner1',
+          'img': 'https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/tbhbbanner.jpg'}
+      ];
+      res.insertAll(0, tbHbData);
       bannerDm.addList(res, true, 0);
     }
     setState(() {});

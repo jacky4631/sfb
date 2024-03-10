@@ -50,7 +50,7 @@ class _SpreadPage extends State<SpreadPage> {
               },
               decoration: InputDecoration(
                   counterText: "",
-                  hintText: "请输入好友邀请口令",
+                  hintText: "请输入邀请口令或者邀请人手机号",
                   hintStyle: TextStyle(color: Colors.grey),
                   suffixIconColor: Colors.grey,
                   border: InputBorder.none)),

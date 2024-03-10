@@ -70,9 +70,14 @@ abstract class API {
   static const goodsWordPDDHAODANKU = '/ku/pdd/goods/word';
   static const shortLink = '/ku/shortLink';
 
+  //库美团饿了么 美团暂不用
   static const waimaiActivityList = '/ku/waimai/list';
+  static const eleActivityList = '/ku/ele/list';
   static const waimaiActivityWord = '/ku/waimai/word';
 
+  //美团官方 使用
+  static const mtActivityList = '/mt/activity/list';
+  static const mtActivityWord = '/mt/activity/code';
 
   static const dyGoodsDetail = '/dy/goods/detail';
   static const dyWord = '/dy/word';
@@ -151,7 +156,8 @@ abstract class API {
   static const integralList = '/integral/list';
   //热度明细
   static const energyList = '/energy/list';
-  static const wechatLogin = '/wechat/app/auth';
+  static const wechatAppLogin = '/wechat/app/auth';
+  static const wechatLogin = '/wechat/auth';
   static const appleLogin = '/apple/app/auth';
   static const wechatBinding = '/wechat/app/binding';
   static const alipayBinding = '/alipay/app/binding';
@@ -182,7 +188,6 @@ abstract class API {
   static const extractList = '/extract/list';
 
   static const channelAuth = '/user/binding';
-  static const userExp = '/user/exp';
 
   static const payBind = '/pay/bind';
 
@@ -202,6 +207,8 @@ abstract class API {
   static const getLifeCityList = '/ku/dy/life/city/list';
   static const getLifeGoodsList = '/ku/dy/life/goods/list';
   static const getLifeGoodsWord = '/ku/dy/life/goods/word';
+
+  static const getWechatId = '/wechat/id';
 }
 
 final suClient = Dio(BaseOptions(

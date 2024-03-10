@@ -407,32 +407,14 @@ abstract class BService {
     );
     return res.data;
   }
-  static Future taoOrders(page, index,{innerType=0, level = 0}) async {
-    String api = API.taoOrders;
-    String sort = "tk_create_time";
-    if(index == 1) {
-      api = API.mtOrders;
-      sort = 'order_pay_time';
-    } else if( index == 2) {
-      api = API.jdOrders;
-      sort = 'order_time';
-    } else if( index == 3) {
-      api = API.pddOrders;
-      sort = 'order_create_time';
-    } else if( index == 4) {
-      api = API.dyOrders;
-      sort = 'pay_success_time';
-    } else if( index == 5) {
-      api = API.vipOrders;
-      sort = 'order_time';
-    }
+  static Future taoOrders(page, Map param, {innerType=0, level = 0}) async {
     await  setAuthInfo();
     var res = await suClient.get(
-        api,
+        param['api'],
       queryParameters: {
         'page': page - 1,
         'size': 10,
-        'sort': '$sort,desc',
+        'sort': '${param['sort']},desc',
         'innerType': innerType,
         'level': level
       },
@@ -514,6 +496,15 @@ abstract class BService {
         }
     );
     return res.data['data'];
+  }
+  static Future wechatAppLogin(code) async {
+    var res = await suClient.get(
+        API.wechatAppLogin,
+        queryParameters: {
+          'code': code
+        }
+    );
+    return res.data;
   }
   static Future wechatLogin(code) async {
     var res = await suClient.get(
@@ -1070,7 +1061,7 @@ abstract class BService {
     return res.data['data'];
   }
   static Future<Map> pay(rechargeId, platform,{payType = 1, uid,bankId, type = 0}) async {
-    //type 订单类型 0=加盟 1=体验卡
+    //type 订单类型 0=年卡
     await setAuthInfo();
     var res = await suClient.post(
         API.payChannel,
@@ -1308,13 +1299,6 @@ abstract class BService {
     );
     return res.data['data'];
   }
-  static Future<Map> userExp() async {
-    await setAuthInfo();
-    var res = await suClient.get(
-      API.userExp,
-    );
-    return res.data['data'];
-  }
   static Future<Map> payConfig() async {
     await setAuthInfo();
     var res = await suClient.get(
@@ -1363,6 +1347,12 @@ abstract class BService {
     );
     return res.data['data'];
   }
+  static Future eleActivityList() async {
+    var res = await suClient.get(
+        API.eleActivityList
+    );
+    return res.data['data'];
+  }
   static Future waimaiActivityWord(String activityId, int type) async {
     await setAuthInfo();
     var res = await suClient.get(
@@ -1374,6 +1364,26 @@ abstract class BService {
     );
     return res.data['data'];
   }
+
+
+  //美团活动和转链
+  static Future mtActivityList() async {
+    var res = await suClient.get(
+        API.mtActivityList
+    );
+    return res.data['data'];
+  }
+  static Future mtActivityWord(String activityId) async {
+    await setAuthInfo();
+    var res = await suClient.get(
+        API.mtActivityWord,
+        queryParameters: {
+          'activityId': activityId,
+        }
+    );
+    return res.data['data'];
+  }
+
   // 格式化数值
   static String formatNum(int number) {
     if(number == null) {
@@ -1597,6 +1607,14 @@ abstract class BService {
       queryParameters: {
         'id': id,
       },
+    );
+    return res.data['data'];
+  }
+
+  static Future<String> getWechatId() async {
+    await setAuthInfo();
+    var res = await suClient.get(
+        API.getWechatId,
     );
     return res.data['data'];
   }

@@ -1,3 +1,4 @@
+// import 'dart:html';
 /**
  *  Copyright (C) 2018-2024
  *  All rights reserved, Designed By www.mailvor.com
@@ -10,7 +11,7 @@ import 'package:sufenbao/util/global.dart';
 
 import '../me/listener/PersonalNotifier.dart';
 
-Future afterLogin(res, context, {close = 2}) async {
+Future afterLogin(res, context, {close = 2, redirectUrl = '/index'}) async {
   if (res['success']) {
     var data = res['data'];
     String redirect = data['redirect'];
@@ -18,14 +19,14 @@ Future afterLogin(res, context, {close = 2}) async {
     if(redirect == '1') {
       Navigator.pushNamed(context, '/loginCode', arguments: data);
     } else {
-      loginThenRoutingMe(context, data, close: close);
+      loginThenRoutingMe(context, data, close: close, redirectUrl: redirectUrl);
     }
   } else {
     ToastUtils.showToast(res['msg']);
   }
 }
 
-loginThenRoutingMe(context, data, {close =2}) {
+loginThenRoutingMe(context, data, {close =2, redirectUrl = '/index'}) {
   Global.saveUser(data['token'], data['expires_time']);
   Global.initJPush();
   personalNotifier.value = true;
@@ -34,7 +35,7 @@ loginThenRoutingMe(context, data, {close =2}) {
     Navigator.pop(context);
   }else if(close == 2) {
     Navigator.of(context).popUntil((route) {
-      return route.settings.name!.startsWith('/index');
+      return route.settings.name!.startsWith(redirectUrl);
     });
   }
 }
@@ -50,7 +51,7 @@ onTapLogin(context, url, {args}) {
       LoginShanyan.getInstance().openLoginAuthPlatformState();
       return;
     } else {
-
+      args['prePage'] = url;
       url = '/login';
     }
   }
@@ -74,5 +75,12 @@ onTapDialogLogin(BuildContext context, {fun, args}) async {
       fun();
     }
   }
+}
+/// 判断是否为微信浏览器
+bool isWeChatBrowser() {
+  final ua = '';
+  // final ua = window.navigator.userAgent.toLowerCase();
+  ToastUtils.showToast('ua$ua');
+  return ua.indexOf('micromessenger') != -1 && Global.isWeb();
 }
 

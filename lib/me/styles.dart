@@ -38,7 +38,7 @@ class TextStyles {
   static TextStyle orderTitle =
       ts(color: Colours.vip_black, fontSize: 16, fontWeight: FontWeight.normal);
   static TextStyle loading =
-      ts(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.normal);
+      ts(color: Colours.app_main, fontSize: 16, fontWeight: FontWeight.normal);
   static TextStyle shareTitle = ts(color: Colors.black, fontSize: 16);
   static TextStyle shareContent =
       ts(color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal);

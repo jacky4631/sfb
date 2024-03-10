@@ -151,7 +151,6 @@ class _TopChildState extends State<TopChild> {
           onRefresh: () => this.getListData(isRef: true),
           onLoading: () => this.getListData(page: p),
           padding: const EdgeInsets.all(12),
-          divider: const Divider(height: 2, color: Colors.grey),
           itemCount: list.length,
           listViewType: ListViewType.Separated,
           item: (i) {
@@ -160,7 +159,7 @@ class _TopChildState extends State<TopChild> {
             return PWidget.container(
               Global.openFadeContainer(createItem(i, data), ProductDetails(data)),
               [null, null, Colors.white],
-              {'crr': 8, },
+              {'crr': 8, 'mg': [0,8,0,0]},
             );
           },
         );
