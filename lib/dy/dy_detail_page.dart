@@ -217,7 +217,9 @@ class _DyDetailPageState extends State<DyDetailPage> {
     return PWidget.positioned(
       PWidget.container(
         PWidget.row([
-          PWidget.boxw(16),
+          PWidget.boxw(4),
+          createBottomBackArrow(context),
+          PWidget.boxw(8),
           btmBtnView('收藏', Icons.star_rate_rounded, () {
             BService.collectProduct(context, collect, goodsId, 'dy', img, title, startPrice, endPrice).then((value){
               getCollect();
@@ -478,7 +480,6 @@ class _DyDetailPageState extends State<DyDetailPage> {
             ]),
               {'pd': [8,0,12,8]},
             ),
-            getBuyTipWidget(color: Colours.dy_main)
           ]),
           [null, null, Colors.white],
         ),
