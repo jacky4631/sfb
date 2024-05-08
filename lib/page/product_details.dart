@@ -293,7 +293,9 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
     return PWidget.positioned(
       PWidget.container(
         PWidget.row([
-          PWidget.boxw(16),
+          PWidget.boxw(4),
+          createBottomBackArrow(context),
+          PWidget.boxw(8),
           btmBtnView('收藏', Icons.star_rate_rounded, () {
             BService.collectProduct(context, collect, suffixGoodsId,
                 'tb', listMainPic, title, startPrice, endPrice, originalId: goodsId).then((value){
@@ -552,7 +554,6 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
             ]),
               {'pd': [8,0,12,8]},
             ),
-            getBuyTipWidget()
           ]),
           [null, null, Colors.white],
           {'pd': [0,0,0,8]},

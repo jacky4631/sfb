@@ -233,7 +233,9 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
     return PWidget.positioned(
       PWidget.container(
         PWidget.row([
-          PWidget.boxw(16),
+          PWidget.boxw(4),
+          createBottomBackArrow(context),
+          PWidget.boxw(8),
           btmBtnView('收藏', Icons.star_rate_rounded, () {
             BService.collectProduct(context, collect, goodsId, 'pdd', img, title, startPrice, endPrice).then((value){
               getCollect();
@@ -328,6 +330,7 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
               [32, 32, if (!isGo) Colors.black26],
               {'br': 56, 'fun': () => Navigator.pop(context)},
             ),
+
             if (isGo) PWidget.spacer(),
             if (isGo)
               PWidget.row(
@@ -450,7 +453,6 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
             ]),
               {'pd': [8,0,12,8]},
             ),
-            getBuyTipWidget(color: Colours.pdd_main)
           ]),
           [null, null, Colors.white],
         ),

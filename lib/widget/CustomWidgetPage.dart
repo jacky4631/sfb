@@ -451,7 +451,14 @@ Widget getLevelWidget(level, platform){
 getVipBgImage(level){
   return 'assets/images/lv/vip_bg.png';
 }
-
+Widget createBottomBackArrow(context) {
+  return PWidget.container(
+    PWidget.icon(Icons.arrow_back_ios,
+        [Colors.black45, 24]),
+    [32, 32],
+    {'br': 56, 'fun': () => Navigator.pop(context)},
+  );
+}
 Widget getBuyTipWidget({color = Colors.red}) {
   return
     PWidget.container(PWidget.row([

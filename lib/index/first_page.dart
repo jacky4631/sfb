@@ -59,7 +59,7 @@ class _FirstPageState extends State<FirstPage> {
   ShakeAnimationController _shakeAnimationController = new ShakeAnimationController();
   Timer? timer;
   bool showHuodong = true;
-  late StreamSubscription subscription;
+  StreamSubscription? subscription;
   bool init = false;
   bool agree = false;
   ScrollController _scrollController = ScrollController();
@@ -154,7 +154,7 @@ class _FirstPageState extends State<FirstPage> {
       timer!.cancel();
     }
     if(subscription != null) {
-      subscription.cancel();
+      subscription?.cancel();
     }
     _scrollController.dispose();
     super.dispose();

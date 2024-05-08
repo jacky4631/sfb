@@ -207,7 +207,9 @@ class _VipDetailPageState extends State<VipDetailPage> {
     return PWidget.positioned(
       PWidget.container(
         PWidget.row([
-          PWidget.boxw(16),
+          PWidget.boxw(4),
+          createBottomBackArrow(context),
+          PWidget.boxw(8),
           btmBtnView('收藏', Icons.star_rate_rounded, () {
             BService.collectProduct(context, collect, goodsId, 'vip', img, title, startPrice, endPrice).then((value){
               getCollect();
@@ -461,7 +463,6 @@ class _VipDetailPageState extends State<VipDetailPage> {
             ]),
               {'pd': [8,0,12,8]},
             ),
-            getBuyTipWidget(color: Colours.vip_main)
           ]),
           [null, null, Colors.white],
         ),
