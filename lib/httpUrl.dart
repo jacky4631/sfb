@@ -36,7 +36,7 @@ abstract class API {
   static const pddGoodsWord = '/pdd/goods/word';
 
 
-  static const goodsWordJD = '/jd/goods/parse';
+  static const goodsWordJD = '/jd/goods/word';
   static const goodsDetailJD = '/jd/goods/detail';
   static const goodsListJD = '/jd/goods/list';
   static const brandListJD = '/jd/brand/list';

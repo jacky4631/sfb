@@ -333,7 +333,7 @@ class Global {
           LaunchApp.launchTb(context, url);
           return;
         } else if (terrace == 2) {
-          url = await BService.goodsWordJD(activityDetail['activity_url']);
+          url = await BService.goodsWordJD(activityDetail['activity_url'], null);
           Loading.hide(context);
           LaunchApp.launchJd(context, url);
           return;

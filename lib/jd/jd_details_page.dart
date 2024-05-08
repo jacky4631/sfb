@@ -95,7 +95,7 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
   ///详情数据
   var detailDm = DataModel<Map>(object: {'actualPrice': '', 'detailImages':[], 'dtitle':'', 'couponAmount':0});
   Future<int> getDetailData() async {
-    var goodsId = widget.data['skuId']??widget.data['itemId']
+    var goodsId = widget.data['skuId']??widget.data['itemId']??widget.data['sku_id']
         ??widget.data['productId']??widget.data['item_id'];
     goodsIdStr = goodsId.toString();
     res = await BService.goodsDetailJD(goodsId);
@@ -109,7 +109,7 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
       setState(() {
         loading = false;
       });
-      couponUrl = await BService.goodsWordJD(res['materialUrl'], couponLink: res['couponLink'], uid: widget.data['uid']);
+      couponUrl = await BService.goodsWordJD(res['itemId'], res['couponLink']);
     }else {
       ToastUtils.showToast('商品已下架');
       Navigator.pop(context);
@@ -204,7 +204,9 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
     return PWidget.positioned(
       PWidget.container(
         PWidget.row([
-          PWidget.boxw(16),
+          PWidget.boxw(4),
+          createBottomBackArrow(context),
+          PWidget.boxw(8),
           btmBtnView('收藏', Icons.star_rate_rounded, () {
             BService.collectProduct(context, collect, goodsIdStr, 'jd', img, title, startPrice, endPrice).then((value){
               getCollect();
@@ -429,7 +431,6 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
             ]),
               {'pd': [8,0,12,8]},
             ),
-            getBuyTipWidget()
           ]),
           [null, null, Colors.white],
         ),

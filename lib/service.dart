@@ -172,14 +172,13 @@ abstract class BService {
     return res.data['data'][0];
   }
 
-  static Future<String> goodsWordJD(itemUrl, {couponLink, uid}) async {
+  static Future<String> goodsWordJD(itemId,couponLink) async {
     await setAuthInfo();
     var res = await suClient.get(
       API.goodsWordJD,
       queryParameters: {
-        'itemUrl': itemUrl,
-        'couponLink': couponLink,
-        'uid': uid
+        'itemId': itemId,
+        'couponLink': couponLink
       },
     );
     return res.data['data'];
