@@ -1,6 +1,6 @@
 name: sufenbao
 description: sufenbao
-version: 3.0.5+92
+version: 3.0.8+95
 
 environment:
   sdk: ">=2.18.0 <=3.0.0"
