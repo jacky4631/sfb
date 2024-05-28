@@ -70,6 +70,7 @@ const PREFS_INVITE_CODE = 'inviteCode';
 const PREFS_GOODS_CODE = 'goodsCode';
 
 const int EXPIRED_LEVEL = 99;
+Fluwx fluwx = new Fluwx();
 // 所有Widget继承的抽象类
 class Global {
   //ios产品id
@@ -418,16 +419,16 @@ class Global {
   static launchMeituanWechat(context, {url}) {
     // Global.showLoading(context, text: '正在打开美团外卖小程序');
     Loading.show(context, text: '正在打开美团外卖小程序');
-    launchWeChatMiniProgram(
+    fluwx.open(target: MiniProgram(
             username: 'gh_870576f3c6f9',
             path: Global.isEmpty(url) ?
                 '/index/pages/h5/h5?f_userId=1&f_token=1&s_cps=1&weburl=https%3A%2F%2Fclick.meituan.com%2Ft%3Ft%3D1%26c%3D2%26p%3DyrY3Yr5z53F_'
-                : url)
+                : url))
         .then((value) => Loading.hide(context));
   }
 
   static launchEleWechat(path) async {
-    launchWeChatMiniProgram(username: 'gh_6506303a12bb', path: path);
+    fluwx.open(target: MiniProgram(username: 'gh_6506303a12bb', path: path));
   }
 
   static bool isEmpty(str) {
@@ -572,7 +573,7 @@ class Global {
         content: '您没有开启相机权限，开启后可用于设置头像、身份识别、人脸识别', okText: '去开启', cancelText: '我再想想',
         okPressed: pressed);
   }
-  static Future showHuodongDialog(data, {delaySeconds: 2, fun}) async {
+  static Future showHuodongDialog(data, {delaySeconds= 2, fun}) async {
     if(dialogShowing) {
       return;
     }
