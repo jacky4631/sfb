@@ -12,7 +12,7 @@ import 'package:shake_animation_widget/shake_animation_widget.dart';
 import '../service.dart';
 
 
-abstract class AuthTip{
+mixin class AuthTip<T>{
   ShakeAnimationController _shakeAnimationController = new ShakeAnimationController();
   Timer? timer;
   late bool showChannelWidget = false;
@@ -56,7 +56,10 @@ abstract class AuthTip{
     }
   }
 
-  tipClick();
+  tipClick() {
+    // TODO: implement tipClick
+    throw UnimplementedError();
+  }
 
   Widget createChannelAuthWidget(img) {
     return PWidget.positioned(

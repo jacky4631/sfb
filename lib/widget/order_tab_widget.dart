@@ -75,6 +75,8 @@ class _OrderTabWidgetState extends State<OrderTabWidget> with TickerProviderStat
           width: double.infinity,
           alignment: Alignment.center,
           child: TabBar(
+            dividerHeight: 0,
+            tabAlignment: TabAlignment.start,
             controller: tabCon,
             physics: MyBouncingScrollPhysics(),
             indicatorSize: TabBarIndicatorSize.label,

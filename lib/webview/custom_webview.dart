@@ -86,19 +86,13 @@ class _CustomWebViewState extends State<CustomWebView> {
                 InAppWebView(
                   key: webViewKey,
                   initialUrlRequest:
-                      URLRequest(url: Uri.parse(widget.data['url'])),
-                  initialOptions: InAppWebViewGroupOptions(
-                      crossPlatform: InAppWebViewOptions(
-                        useShouldOverrideUrlLoading: true,
-                        mediaPlaybackRequiresUserGesture: false,
-                      ),
-                      android: AndroidInAppWebViewOptions(
-                          useHybridComposition: true,
-                          //开启混合模式
-                          mixedContentMode: AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW),
-                      ios: IOSInAppWebViewOptions(
-                        allowsInlineMediaPlayback: true,
-                      )),
+                      URLRequest(url: WebUri(widget.data['url'])),
+                  initialSettings: InAppWebViewSettings(
+                    mixedContentMode: MixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+                    useShouldOverrideUrlLoading: true,
+                    mediaPlaybackRequiresUserGesture: false,
+                      allowsInlineMediaPlayback: true
+                  ),
                   pullToRefreshController: refresh ? pullToRefreshController : null,
                   onWebViewCreated: (controller) {
                     webViewController = controller;

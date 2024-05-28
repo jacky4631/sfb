@@ -106,7 +106,7 @@ class _CashRecordListPageState extends State<CashRecordListPage> {
           bottom: 0.0,
           left: 0.0,
           child: Text(createTime.split(' ').last,
-              style: Theme.of(context).textTheme.subtitle2),
+              style: Theme.of(context).textTheme.titleSmall),
         ),
         Positioned(
           bottom: 0.0,
@@ -116,7 +116,7 @@ class _CashRecordListPageState extends State<CashRecordListPage> {
             style: record['status'] == 1
                 ? TextStyle(
                     fontSize: 12,
-                    color: Theme.of(context).errorColor,
+                    color: Theme.of(context).colorScheme.error,
                   )
                 : const TextStyle(
                     fontSize: 12,

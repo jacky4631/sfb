@@ -226,7 +226,7 @@ class _CashPageState extends State<CashPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(extractIntervalDesc, style: Theme.of(context).textTheme.subtitle2),
+                Text(extractIntervalDesc, style: Theme.of(context).textTheme.titleSmall),
                 GestureDetector(
                   child: SizedBox(
                     height: 48.0,
@@ -379,7 +379,7 @@ class _CashPageState extends State<CashPage> {
               child: RichText(
                 text: TextSpan(
                   text: '预计',
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 12),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 12),
                   children: <TextSpan>[
                     TextSpan(text: extractFeeDesc, style: TextStyle(color: Color(0xFFFF8547))),
                   ],
@@ -442,7 +442,7 @@ class _CashPageState extends State<CashPage> {
                 child: RichText(
                   text: TextSpan(
                     text: '预计',
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 12),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 12),
                     children: <TextSpan>[
                       TextSpan(text: extractFeeDesc, style: TextStyle(color: Color(0xFFFF8547))),
                     ],

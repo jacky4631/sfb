@@ -103,6 +103,8 @@ class CustomButton extends StatelessWidget {
           border: Border.all(width: 1, color: textColor??_contrastColor),
           borderRadius: borderRadius,
         );
+      case CustomButtonStyle.wechat:
+      // TODO: Handle this case.
     }
   }
 

@@ -79,6 +79,8 @@ class _TabWidgetState extends State<TabWidget> with TickerProviderStateMixin {
           // ),
           // ),
           child: TabBar(
+            dividerHeight: 0,
+            tabAlignment: TabAlignment.start,
             controller: tabCon,
             physics: MyBouncingScrollPhysics(),
             indicatorSize: TabBarIndicatorSize.label,

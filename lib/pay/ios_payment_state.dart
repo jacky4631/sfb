@@ -247,10 +247,7 @@ class IOSPaymentState extends State {
               icon: const Icon(Icons.upgrade))
               : TextButton(
             style: TextButton.styleFrom(
-              backgroundColor: Colors.green[800],
-              // TODO(darrenaustin): Migrate to new API once it lands in stable: https://github.com/flutter/flutter/issues/105724
-              // ignore: deprecated_member_use
-              primary: Colors.white,
+              foregroundColor: Colors.white, backgroundColor: Colors.green[800],
             ),
             onPressed: () {
               //todo 调用接口预创建订单 返回orderId
@@ -331,10 +328,7 @@ class IOSPaymentState extends State {
         children: <Widget>[
           TextButton(
             style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              // TODO(darrenaustin): Migrate to new API once it lands in stable: https://github.com/flutter/flutter/issues/105724
-              // ignore: deprecated_member_use
-              primary: Colors.white,
+              foregroundColor: Colors.white, backgroundColor: Theme.of(context).primaryColor,
             ),
             onPressed: () => _inAppPurchase.restorePurchases(),
             child: const Text('Restore purchases'),
@@ -375,13 +369,14 @@ class IOSPaymentState extends State {
   }
 
   Future<bool> _verifyPurchase(PurchaseDetails purchaseDetails) async {
-    //todo 调用后台验证
+    //调用后台验证
     AppStorePurchaseDetails details = purchaseDetails as AppStorePurchaseDetails;
     String? orderId = details.skPaymentTransaction.payment.applicationUsername;
+    // var data1 = await BService.verifyIOS(details.verificationData.localVerificationData);
 
     Map data = await BService.payNotifyIOS(orderId, purchaseDetails.verificationData.serverVerificationData);
     return data['success'];
-    //todo 调用后台验证
+    //调用后台验证
     // IMPORTANT!! Always verify a purchase before delivering the product.
     // For the purpose of an example, we directly return true.
     // return Future<bool>.value(true);

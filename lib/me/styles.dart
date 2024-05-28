@@ -10,8 +10,8 @@ import '../util/dimens.dart';
 
 class TextStyles {
   static TextStyle textStyle(
-      {double fontSize: Dimens.font_sp12,
-      Color color: Colors.white,
+      {double fontSize= Dimens.font_sp12,
+      Color color= Colors.white,
       FontWeight? fontWeight}) {
     return TextStyle(
         fontSize: fontSize,
@@ -47,11 +47,11 @@ class TextStyles {
   static TextStyle nowMoneyBlack = ts(color: Colors.black, fontSize: 32.0,
       fontWeight: FontWeight.bold, fontFamily: 'headlinea');
   static TextStyle ts(
-      {double fontSize: Dimens.font_sp14,
-      Color color: Colors.white,
-      FontWeight fontWeight: FontWeight.bold,
-      TextDecoration decoration: TextDecoration.none,
-      String fontFamily: 'headlinea'}) {
+      {double fontSize= Dimens.font_sp14,
+      Color color= Colors.white,
+      FontWeight fontWeight= FontWeight.bold,
+      TextDecoration decoration= TextDecoration.none,
+      String fontFamily= 'headlinea'}) {
     return TextStyle(
         color: color,
         fontSize: fontSize,

@@ -21,7 +21,7 @@ class saveNetWorkImages {
   /// 保存图片到相册
   ///
   /// 默认为下载网络图片，如需下载资源图片，需要指定 [isAsset] 为 `true`。
-  static Future<void> saveImage(String imageUrl, {bool isAsset: false}) async {
+  static Future<void> saveImage(String imageUrl, {bool isAsset= false}) async {
     try {
       if (imageUrl == null) throw '保存失败，图片不存在！';
 

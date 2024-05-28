@@ -128,7 +128,7 @@ Widget rainbowText(String text, {onTap, colors, fontSize = 14.0, fontWeight = Fo
   ));
 }
 
-Widget shimmerWidget(Widget child, {color: Colors.red, highlightColor: Colors.yellow}) {
+Widget shimmerWidget(Widget child, {color= Colors.red, highlightColor= Colors.yellow}) {
   return Shimmer.fromColors(
     baseColor: color,
     highlightColor: highlightColor,
@@ -493,4 +493,17 @@ Widget getBuyTipWidget({color = Colors.red}) {
     ),
       {'pd': [8,12,12,8]},
     );
+}
+
+
+Widget btmBtnView(name, icon, fun, collect) {
+  return PWidget.column(
+    [
+      PWidget.icon(icon ?? Icons.star_rate_rounded, PFun.lg1(Colours.getCollectColor(name, collect))),
+      PWidget.boxh(4),
+      PWidget.textNormal(name ?? '收藏', [Colors.black45, 12])
+    ],
+    '220',
+    {'fun': fun},
+  );
 }
