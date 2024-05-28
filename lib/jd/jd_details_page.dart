@@ -211,13 +211,13 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
             BService.collectProduct(context, collect, goodsIdStr, 'jd', img, title, startPrice, endPrice).then((value){
               getCollect();
             });
-          }),
+          },collect),
           PWidget.boxw(24),
           PWidget.container(
             PWidget.row([
               if(showShareBuy)
               PWidget.container(
-                PWidget.text('转卖', [Colours.app_main, 14, true], {'ct': true}),
+                PWidget.textNormal('转卖', [Colours.app_main, 14, true], {'ct': true}),
                 [null, null, Color(0xffFAEDE0)],
                 {
                   'exp': true,
@@ -242,7 +242,7 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
                     PWidget.textIs('${detailDm.object?['actualPrice']??''} ', [Colors.white, 16, true]),
                     PWidget.textIs('¥${detailDm.object?['originPrice']??''}', [Colors.white54, 12], {'td': TextDecoration.lineThrough}),
                   ]),
-                  PWidget.text('领券购买', [Colors.white, 12], {'ct': true})
+                  PWidget.textNormal('领券购买', [Colors.white, 12], {'ct': true})
                 ], '221'),
                 [null, null, Colours.jd_main],
                 {'exp': true, 'fun': () =>
@@ -275,14 +275,6 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
       LaunchApp.launchJd(context, couponUrl);
     }
 
-  }
-  Widget btmBtnView(name, icon, fun) {
-    return PWidget.column(
-      [PWidget.icon(icon ?? Icons.star_rate_rounded, PFun.lg1(Colours.getCollectColor(name, collect))),
-        PWidget.boxh(4), PWidget.text(name ?? '收藏', PFun.lg1(Colors.black45))],
-      '000',
-      {'fun': fun},
-    );
   }
 
   void animateTo(offset) {
@@ -429,7 +421,7 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
             fee == 0 ? SizedBox() : PWidget.container(PWidget.row([
               getMoneyWidget(context, fee, JD, column: false),
             ]),
-              {'pd': [8,0,12,8]},
+              {'pd': [8,8,12,8]},
             ),
           ]),
           [null, null, Colors.white],
@@ -467,7 +459,8 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
                 String comments = BService.formatNum(data['comments']);
                 var goodsCommentShare = data['goodsCommentShare'];
 
-                return PWidget.text('评论数：$comments   好评率：$goodsCommentShare%', [Colors.black54]);
+                return PWidget.textNormal('评论数：$comments   好评率：$goodsCommentShare%',
+                    [Colors.black54, 12]);
               }),
             ], {
               'exp': 1,

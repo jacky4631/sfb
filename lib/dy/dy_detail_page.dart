@@ -224,13 +224,13 @@ class _DyDetailPageState extends State<DyDetailPage> {
             BService.collectProduct(context, collect, goodsId, 'dy', img, title, startPrice, endPrice).then((value){
               getCollect();
             });
-          }),
+          }, collect),
           PWidget.boxw(24),
           PWidget.container(
             PWidget.row([
               if(showShareBuy)
               PWidget.container(
-                PWidget.text('转卖', [Colours.app_main, 14, true], {'ct': true}),
+                PWidget.textNormal('转卖', [Colours.app_main, 14, true], {'ct': true}),
                 [null, null, Color(0xffFAEDE0)],
                 {
                   'exp': true,
@@ -238,18 +238,13 @@ class _DyDetailPageState extends State<DyDetailPage> {
                     onTapDialogLogin(context, fun: (){
                       res['list'][0]['klUrl'] = klDm.object?['dyPassword'];
                       Navigator.pushNamed(context, '/sellPage', arguments: {'res':res['list'][0],'platType':'DY'});
-                      // shareGoods(context,
-                      //   detailDm.object?['title'],
-                      //   null,
-                      //   detailDm.object?['price'],
-                      //   klDm.object?['dyZlink'])
                     })
                   }
                 },
               ),
               if(showShareBuy)
               PWidget.container(
-                PWidget.text(
+                PWidget.textNormal(
                     '口令购买', [Colors.white, 14, true], {'ct': true}),
                 [null, null, Colours.dy_main.withOpacity(0.75)],
                 {
@@ -261,7 +256,7 @@ class _DyDetailPageState extends State<DyDetailPage> {
                 },
               ),
               PWidget.container(
-                PWidget.text('立即购买', [Colors.white, 14], {'ct': true}),
+                PWidget.textNormal('立即购买', [Colors.white, 14], {'ct': true}),
                 [null, null, Colours.dy_main],
                 {
                   'exp': true,
@@ -302,18 +297,6 @@ class _DyDetailPageState extends State<DyDetailPage> {
       }
       LaunchApp.launchDy(context, klDm.object?['dyDeeplink'], klDm.object?['dyZlink']);
     }
-  }
-
-  Widget btmBtnView(name, icon, fun) {
-    return PWidget.column(
-      [
-        PWidget.icon(icon ?? Icons.star_rate_rounded, PFun.lg1(Colours.getCollectColor(name, collect))),
-        PWidget.boxh(4),
-        PWidget.text(name ?? '收藏', PFun.lg1(Colors.black45))
-      ],
-      '000',
-      {'fun': fun},
-    );
   }
 
   void animateTo(offset) {
@@ -478,7 +461,7 @@ class _DyDetailPageState extends State<DyDetailPage> {
             fee == 0 ? SizedBox() : PWidget.container(PWidget.row([
               getMoneyWidget(context, fee, DY, column: false, priceTxtColor: Colours.dy_main),
             ]),
-              {'pd': [8,0,12,8]},
+              {'pd': [8,8,12,8]},
             ),
           ]),
           [null, null, Colors.white],
@@ -494,11 +477,11 @@ class _DyDetailPageState extends State<DyDetailPage> {
                 PWidget.boxh(16),
               if(detailDm.object?['shopTotalScore'] != null)
                 Builder(builder: (context) {
-                  return PWidget.text(getScoreText(), [Colors.black54]);
+                  return PWidget.textNormal(getScoreText(), [Colors.black54,12]);
                 }),
               PWidget.boxh(16),
-              PWidget.text(
-                  detailDm.object?['logisticsInfo'],[Colors.black54], {'isOf': false}),
+              PWidget.textNormal(
+                  detailDm.object?['logisticsInfo'],[Colors.black54,12], {'isOf': false}),
             ], {
               'exp': 1,
             }),

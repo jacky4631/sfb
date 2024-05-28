@@ -240,27 +240,28 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
             BService.collectProduct(context, collect, goodsId, 'pdd', img, title, startPrice, endPrice).then((value){
               getCollect();
             });
-          }),
+          },collect),
           PWidget.boxw(24),
           PWidget.container(
             PWidget.row([
               if(showShareBuy)
               PWidget.container(
-                PWidget.text('转卖', [Colours.app_main, 14, true], {'ct': true}),
+                PWidget.textNormal('转卖', [Colours.app_main, 14, true], {'ct': true}),
                 [null, null, Color(0xffFAEDE0)],
                 {
                   'exp': true,
                   'fun': () {
-                    res['klUrl'] = klMap['mobileShortUrl'];
-                    Navigator.pushNamed(context, '/sellPage', arguments: {'res':res,'platType':'PDD'});
-                    // onTapDialogLogin(context, fun: share)
+                    onTapDialogLogin(context, fun: (){
+                      res['klUrl'] = klMap['mobileShortUrl'];
+                      Navigator.pushNamed(context, '/sellPage', arguments: {'res':res,'platType':'PDD'});
+                    });
                   }
                 },
               ),
               PWidget.container(
                 PWidget.ccolumn([
 
-                  PWidget.text('立即购买', [Colors.white, 16], {'ct': true})
+                  PWidget.textNormal('立即购买', [Colors.white, 16], {'ct': true})
                 ], '221'),
                 [null, null, Colours.pdd_main],
                 {'exp': true, 'fun': () => onTapDialogLogin(context,
@@ -294,23 +295,15 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
       }
       LaunchApp.launchPdd(context, klMap['mobileUrl'], klMap['mobileShortUrl'], fun: ()async
       {
-        bool installed = await isWeChatInstalled;
+        bool installed = await fluwx.isWeChatInstalled;
         if(installed) {
-          launchWeChatMiniProgram(
+          fluwx.open(target: MiniProgram(
             username: 'gh_0e7477744313',
             path: klMap['weAppPagePath'],
-          );
+          ));
         }
       });
     }
-  }
-  Widget btmBtnView(name, icon, fun) {
-    return PWidget.column(
-      [PWidget.icon(icon ?? Icons.star_rate_rounded, PFun.lg1(Colours.getCollectColor(name, collect))),
-        PWidget.boxh(4), PWidget.text(name ?? '收藏', PFun.lg1(Colors.black45))],
-      '000',
-      {'fun': fun},
-    );
   }
 
   void animateTo(offset) {
@@ -451,7 +444,7 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
             fee == 0 ? SizedBox() : PWidget.container(PWidget.row([
               getMoneyWidget(context, fee, PDD, column: false, priceTxtColor: Colours.pdd_main),
             ]),
-              {'pd': [8,0,12,8]},
+              {'pd': [8,8,12,8]},
             ),
           ]),
           [null, null, Colors.white],
@@ -471,7 +464,8 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
                 var servTxt = data?['servTxt'];
                 var descTxt = data?['descTxt'];
                 var shipTxt = data?['lgstTxt'];
-                return PWidget.text('描述：$descTxt   服务：$servTxt   物流：$shipTxt', [Colors.black54]);
+                return PWidget.textNormal('描述：$descTxt   服务：$servTxt   物流：$shipTxt',
+                    [Colors.black54, 12]);
               }),
             ], {
               'exp': 1,

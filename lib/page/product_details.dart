@@ -301,26 +301,28 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
                 'tb', listMainPic, title, startPrice, endPrice, originalId: goodsId).then((value){
                 getCollect();
             });
-          }),
+          },collect),
           PWidget.boxw(24),
           PWidget.container(
             PWidget.row([
               if(showShareBuy)
               PWidget.container(
-                PWidget.text('转卖', [Colours.app_main, 14, true], {'ct': true}),
+                PWidget.textNormal('转卖', [Colours.app_main, 14, true], {'ct': true}),
                 [null, null, Colours.share_bg],
                 {
                   'exp': true,
                   'fun': () {
-                    res['klUrl'] = klDm.object?['longTpwd'];
-                    Navigator.pushNamed(context, '/sellPage', arguments: {'res':res,'platType':'TB'});
-                    // onTapDialogLogin(context, fun: share)
+                    onTapDialogLogin(context, fun: (){
+                      res['klUrl'] = klDm.object?['longTpwd'];
+                      Navigator.pushNamed(context, '/sellPage', arguments: {'res':res,'platType':'TB'});
+
+                    });
                   }
                 },
               ),
               if(showShareBuy)
               PWidget.container(
-                PWidget.text('口令购买', [Colours.app_main, 14, true], {'ct': true}),
+                PWidget.textNormal('口令购买', [Colours.app_main, 14, true], {'ct': true}),
                 [null, null, Colours.hb_bg],
                 {
                   'exp': true,
@@ -332,7 +334,7 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
                 },
               ),
               PWidget.container(
-                PWidget.text('领券购买', [Colors.white, 14,true], {'ct': true}),
+                PWidget.textNormal('领券购买', [Colors.white, 14,true], {'ct': true}),
                 [null, null, Colours.app_main],
                 {
                   'exp': true,
@@ -351,19 +353,6 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
         {'pd': [8,MediaQuery.of(context).padding.bottom+8,8,8],},
       ),
       [null, detailDm.object!.isEmpty ? -64 : 0, 0, 0],
-    );
-  }
-
-  Widget btmBtnView(name, icon, fun) {
-
-    return PWidget.column(
-      [
-        PWidget.icon(icon ?? Icons.star_rate_rounded, PFun.lg1(Colours.getCollectColor(name, collect))),
-        PWidget.boxh(4),
-        PWidget.text(name ?? '收藏', PFun.lg1(Colors.black45))
-      ],
-      '000',
-      {'fun': fun},
     );
   }
 
@@ -608,7 +597,7 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
                 PWidget.text(detailDm.object?['shopName'], [Colors.black, 14, true],
                     {'exp': true}),
                 PWidget.container(
-                  PWidget.text('全部商品', [Colours.dark_text_color]),
+                  PWidget.textNormal('全部商品', [Colours.dark_text_color]),
                   [null, null, Colours.yellow_bg],
                   {'pd': PFun.lg(6, 7, 12, 12), 'br': 16,'fun':(){
                     LaunchApp.launchTb(context, shopDm.object?['shopLinks']);
@@ -630,8 +619,8 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
                 if(serviceScore == null || serviceScore == 0  || Global.isEmpty(serviceScore.toString())) {
                   serviceScore = 4.8;
                 }
-                return PWidget.text(
-                    '描述：$descScore   卖家：$serviceScore   物流：$shipScore', [Colors.black54]);
+                return PWidget.textNormal(
+                    '描述：$descScore   卖家：$serviceScore   物流：$shipScore', [Colors.black54, 12]);
               }),
             ], {
               'exp': 1,
