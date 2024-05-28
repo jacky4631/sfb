@@ -74,7 +74,8 @@ class _LocalPageState extends State<LocalPage> {
     // await getLifeCity();
 
     // 权限，获取GPS定位经纬度
-    if (await Permission.location.request().isGranted) {
+    bool locationGranted = await Permission.location.request().isGranted;
+    if (locationGranted) {
       var res = await FlutterZLocation.getCoordinate(accuracy: 1);
       if (res != null) {
         latitude = res.latitude;

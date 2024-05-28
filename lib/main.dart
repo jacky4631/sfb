@@ -10,6 +10,7 @@ import 'package:maixs_utils/util/utils.dart';
 import 'package:sufenbao/bindCard/addCard.dart';
 import 'package:sufenbao/dy/dy_detail_page.dart';
 import 'package:sufenbao/index/Index.dart';
+import 'package:sufenbao/index/local_page.dart';
 import 'package:sufenbao/jd/jd_details_page.dart';
 import 'package:sufenbao/jd/jd_index_page.dart';
 import 'package:sufenbao/login/login_code.dart';
@@ -202,6 +203,7 @@ class SfbApp extends StatelessWidget {
       '/taoRedPage': (BuildContext context) => TaoRedPage(arg),
       '/meiTuanPage': (BuildContext context) => MeiTuanPage(arg),
       '/elePage': (BuildContext context) => ElePage(arg),
+      '/localPage': (BuildContext context) => LocalPage(),
     };
     var widget = routes[settings.name];
 
