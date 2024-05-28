@@ -44,9 +44,9 @@ const List menuData = [
     {
       'img': 'https://mailvor.oss-cn-shanghai.aliyuncs.com/sufenbao/fuli4.png',
       'path': 'assets/images/menu/6.png',
-      'title': '捡漏清单',
+      'title': '本地团购',
       'type': '1',
-      'url': '/pickLeakPage',
+      'url': '/localPage',
       'color': Colors.green,
     },
     {
