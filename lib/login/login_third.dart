@@ -101,7 +101,7 @@ class _LoginThirdState extends State<LoginThird> {
           'account': mobile.replaceAll(' ', ''),
           'openId': widget.data['openId'],
           'captcha': code
-        }, options: new Options(receiveTimeout: 8000)
+        }, options: new Options(receiveTimeout: Duration(milliseconds: 8000))
     ).then((res) {
       //校验是否登录成功
       //登录成功 保存token
