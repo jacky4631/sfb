@@ -11,7 +11,7 @@ import 'package:flutter/foundation.dart';
 export 'httpUrl.dart';
 export 'io.dart';
 
-abstract class BBase {
+mixin class BBase {
   //通用链接 打包会自动使用线上链接
   // static final baseHost = kDebugMode ? 'http://192.168.0.108:8008' : 'https://sufenbao.mailvor.cn';
   //调试用

@@ -155,7 +155,7 @@ abstract class BService {
       API.parseContent2,
       queryParameters: {
         'content': content
-      }, options: new Options(receiveTimeout: 10000)
+      }, options: new Options(receiveTimeout: Duration(milliseconds: 10000))
     );
     return res.data;
   }
@@ -177,7 +177,7 @@ abstract class BService {
     var res = await suClient.get(
       API.goodsWordJD,
       queryParameters: {
-        'itemId': itemId,
+        'goodsId': itemId,
         'couponLink': couponLink
       },
     );
@@ -389,7 +389,7 @@ abstract class BService {
       queryParameters:{
         'type': type,
         'angle': angle
-      }, options: new Options(receiveTimeout: 30000)
+      }, options: new Options(receiveTimeout: Duration(milliseconds: 30000))
     );
     return res.data;
   }
@@ -417,7 +417,7 @@ abstract class BService {
         'innerType': innerType,
         'level': level
       },
-        options: new Options(receiveTimeout: 10000)
+        options: new Options(receiveTimeout: Duration(milliseconds: 10000))
     );
     return res.data;
   }
@@ -473,7 +473,7 @@ abstract class BService {
     );
     return res.data;
   }
-  static Future moneyList(page, {category = 'integral', type, platform}) async {
+  static Future moneyList(page, {category = 'integral', type, platform, unlockStatus}) async {
     await  setAuthInfo();
     var res = await suClient.get(
         API.integralList,
@@ -481,7 +481,8 @@ abstract class BService {
           'page': page,
           'category': category,
           'type': type,
-          'platform': platform
+          'platform': platform,
+          'unlockStatus': unlockStatus
         }
     );
     return res.data;
@@ -1124,7 +1125,19 @@ abstract class BService {
     );
     return res.data;
   }
-
+  static Future<Map> verifyIOS(receipt) async {
+    await setAuthInfo();
+    var res = await suClient.post(
+        "https://buy.itunes.apple.com/verifyReceipt",
+        data: {
+          'receipt-data': receipt,
+        },
+        options:Options(headers: {
+          "content-type":"application/json"
+        })
+    );
+    return res.data;
+  }
   static Future<List> hotWordsCenter() async {
     var res = await suClient.get(
       API.hotWordsCenter,
@@ -1286,7 +1299,7 @@ abstract class BService {
     var res = await suClient.post(
       API.userFaceResult,
       data: enc,
-        options: new Options(receiveTimeout: 30000)
+        options: new Options(receiveTimeout: Duration(milliseconds: 30000))
     );
     return res.data['data'];
   }
@@ -1538,7 +1551,7 @@ abstract class BService {
           'bankId' : id,
           'bankNo': cardNo,
           'phone':phone
-        },options: new Options(receiveTimeout: 8000)
+        },options: new Options(receiveTimeout: Duration(milliseconds: 8000))
     );
     return res.data??{};
   }
@@ -1616,5 +1629,17 @@ abstract class BService {
         API.getWechatId,
     );
     return res.data['data'];
+  }
+
+
+  static Future<Map> userFeedbackAdd(content) async {
+    await  setAuthInfo();
+    var res = await suClient.post(
+        API.userFeedbackAdd,
+        data: {
+          'feedback': content,
+        }
+    );
+    return res.data;
   }
 }

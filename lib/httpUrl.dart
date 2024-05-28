@@ -209,17 +209,20 @@ abstract class API {
   static const getLifeGoodsWord = '/ku/dy/life/goods/word';
 
   static const getWechatId = '/wechat/id';
+
+
+  static const userFeedbackAdd = '/user/feedback/add';
 }
 
 final suClient = Dio(BaseOptions(
   baseUrl: BBase.suUrl,
   responseType: ResponseType.json,
-  connectTimeout: 6000,
-  receiveTimeout: 6000,
+  connectTimeout: Duration(milliseconds: 6000),
+  receiveTimeout: Duration(milliseconds: 6000),
 ));
 
 final defaultClient = Dio(BaseOptions(
   responseType: ResponseType.json,
-  connectTimeout: 6000,
-  receiveTimeout: 6000,
+  connectTimeout: Duration(milliseconds: 6000),
+  receiveTimeout: Duration(milliseconds: 6000),
 ));
