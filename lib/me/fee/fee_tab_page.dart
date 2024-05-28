@@ -10,6 +10,7 @@ import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/me/fee/fee_page.dart';
+import 'package:sufenbao/util/global.dart';
 
 import '../../util/colors.dart';
 import '../../util/paixs_fun.dart';
@@ -124,9 +125,9 @@ class _FeeTabPageState extends State<FeeTabPage> {
       PWidget.column([
         PWidget.row([
           PWidget.column([
-            PWidget.text('账户余额 (元)', [Colors.white]),
+            PWidget.text('余额 (元)', [Colors.white]),
             PWidget.boxh(5),
-            RiseNumberText(widget.data['nowMoney'], prefixTxt: '￥', style: TextStyles.ts(fontSize: 18)),
+            RiseNumberText(Global.userinfo!.nowMoney + Global.userinfo!.unlockMoney, prefixTxt: '￥', style: TextStyles.ts(fontSize: 18)),
           ]),
           PWidget.spacer(),
           PWidget.container(PWidget.text('立即提现', [Colours.app_main]),

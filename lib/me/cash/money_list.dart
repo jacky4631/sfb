@@ -67,7 +67,8 @@ class _TopChildState extends State<TopChild> {
   Future<int> getListData({int page = 1, bool isRef = false}) async {
     String type = widget.data['type']??'';
     String platform = widget.data['platform']??'';
-    var res = await BService.moneyList(page, category: 'now_money', type: type, platform: platform);
+    var unlockStatus = widget.data['unlockStatus'];
+    var res = await BService.moneyList(page, category: 'now_money', type: type, platform: platform, unlockStatus: unlockStatus);
     if (res != null) listDm.addList(res['data'], isRef, res['total']);
     setState(() {});
     return listDm.flag;
@@ -87,14 +88,29 @@ class _TopChildState extends State<TopChild> {
           footer: buildCustomFooter(color: Colors.grey),
           onRefresh: () => this.getListData(isRef: true),
           onLoading: () => this.getListData(page: p),
+          padding: EdgeInsets.only(top: 8, bottom: 8),
           itemCount: list.length,
           listViewType: ListViewType.Separated,
           item: (i) {
             var data = list[i] as Map;
             String type = data['type'];
             String isPlus = (type == 'gain' || type== 'retail' || type == 'upgrade' || type=='system_add') ? '+' : '-';
-            num price = data['balance'];
             num changeIntegral = data['number'];
+            num unlockStatus = data['unlockStatus']??0;
+            String unlockStatusStr = '';
+            Color statusColor = Colors.black38;
+            //如果是提现不显示状态
+            if(type != 'extract') {
+              if(unlockStatus == 1) {
+                unlockStatusStr = '待解锁';
+                statusColor = Colors.red;
+              } else if (unlockStatus == 0) {
+                unlockStatusStr = '已结算';
+                statusColor = Colors.green;
+              } else {
+                unlockStatusStr = '已失效';
+              }
+            }
             return PWidget.container(
               PWidget.row(
                 [
@@ -104,25 +120,23 @@ class _TopChildState extends State<TopChild> {
                           [Colors.black.withOpacity(0.75), 14, true], {'exp': true}),
                       PWidget.textNormal(
                         '$isPlus${changeIntegral}元',
-                        [Colors.red.withOpacity(0.75), 16],
+                        [Colors.red.withOpacity(0.75), 14],
                       ),
                     ]),
                     PWidget.boxh(4),
                     PWidget.row([
-                      PWidget.textNormal(data['createTime'], [Colors.black45, 14],
-                          {'exp': true}),
-                      PWidget.textNormal(
-                        '余额：$price元',
-                        [Colors.black, 14],
-                      ),
+                      PWidget.textNormal(data['createTime'], [Colors.black54, 12]),
+                      PWidget.spacer(),
+                      PWidget.textNormal(unlockStatusStr, [statusColor, 12],),
                     ]),
                     PWidget.boxh(4),
-                    PWidget.textNormal('${data['mark']}', [Colors.black.withOpacity(0.75), 13], {'max':2,
+                    if(unlockStatus == 1)
+                      PWidget.textNormal('解锁时间：${data['unlockTime']}', [Colors.red, 12],),
+                    PWidget.boxh(4),
+                    PWidget.textNormal('${data['mark']}', [Colors.black54, 12], {'max':2,
                     'ss':StrutStyle(forceStrutHeight: true, height: 1, leading: 0.9),}),
-                    Divider(
-                      height: 1,
-                      color: Colors.grey,
-                    )
+
+                    Divider(height: 1, color: Colors.grey[200],),
                   ], {
                     'exp': 1,
                   }),

@@ -21,6 +21,7 @@ class Userinfo {
   String aliProfile = '';
   num spreadUid = 0;
   double nowMoney = 0;
+  double unlockMoney = 0;
   Userinfo();
 
   showName() {
@@ -46,7 +47,8 @@ class Userinfo {
         aliProfile = json['aliProfile']??'',
         spreadCount = json['spreadCount'],
         spreadUid = json['spreadUid'],
-        nowMoney = json['nowMoney'];
+        nowMoney = json['nowMoney'],
+        unlockMoney = json['unlockMoney'];
 
   Map<String, dynamic> toJson() => {
     'uid': uid,
@@ -64,6 +66,7 @@ class Userinfo {
     'aliProfile': aliProfile,
     'spreadCount': spreadCount,
     'spreadUid': spreadUid,
-    'nowMoney': nowMoney
+    'nowMoney': nowMoney,
+    'unlockMoney': unlockMoney
   };
 }

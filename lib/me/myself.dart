@@ -62,6 +62,7 @@ class _MySelfPageState extends State<MySelfPage>
   String codeX = '******';
   bool showCode = false;
   num nowMoney = 0;
+  num unlockMoney = 0;
   bool loading = true;
   bool showKefu = false;
   String levelName = '';
@@ -106,7 +107,7 @@ class _MySelfPageState extends State<MySelfPage>
       if (Global.isWeb()) {
         showKefu = true;
       } else {
-        showKefu = await isWeChatInstalled;
+        showKefu = await fluwx.isWeChatInstalled;
       }
     }catch(e) {
       flog(e);
@@ -128,6 +129,7 @@ class _MySelfPageState extends State<MySelfPage>
       nickName = userinfo.showName();
       code = userinfo.code;
       nowMoney = userinfo.nowMoney;
+      unlockMoney = userinfo.unlockMoney;
       //todo 刷新 积分 提现 粉丝
     });
 
@@ -283,9 +285,9 @@ class _MySelfPageState extends State<MySelfPage>
         PWidget.container(
             PWidget.column([
               PWidget.row([
-                PWidget.textNormal('可提现 ', [Colours.dark_text_color]),
+                PWidget.textNormal('余额 ', [Colours.dark_text_color]),
                 !Global.login ? PWidget.text('****',[Colors.white, 20, true]):
-                PWidget.text(nowMoney.toStringAsFixed(2),[Colors.white, 20, true],{},[
+                PWidget.text((nowMoney + unlockMoney).toStringAsFixed(2),[Colors.white, 20, true],{},[
                   PWidget.textIsNormal('元',[Colors.white, 14]),
                 ],),
                 PWidget.spacer(),
@@ -324,11 +326,11 @@ class _MySelfPageState extends State<MySelfPage>
             {'pd': PFun.lg(16, 8, 8, 8),'bd': PFun.bdAllLg(Colors.white),
               'br': PFun.lg(16, 16, 16, 16),'mg': PFun.lg(0, 0, 8, 8), 'fun': (){
               personalNotifier.value = false;
-              onTapLogin(context, '/feeTabPage', args: {'nowMoney': json['nowMoney'],'clickable':true});
+              onTapLogin(context, '/feeTabPage', args: {'clickable':true});
             }
             }
         ),
-        if(!Global.isIOS())
+        // if(!Global.isIOS())
         PWidget.container(
         Stack(children: <Widget>[
           Positioned(
@@ -464,9 +466,9 @@ class _MySelfPageState extends State<MySelfPage>
     if(Global.isWeb()) {
       launchUrl(Uri.parse(Global.qiyeWechatServiceWebUrl));
     } else {
-      openWeChatCustomerServiceChat(
+      fluwx.open(target: CustomerServiceChat(
           url: Global.qiyeWechatServiceUrl,
-          corpId: Global.qiyeWechatServiceCropId);
+          corpId: Global.qiyeWechatServiceCropId));
     }
   }
 
@@ -492,14 +494,14 @@ class _MySelfPageState extends State<MySelfPage>
 
   Widget _createSettingIcon(){
     return PWidget.container(PWidget.row([
-      PWidget.icon(BaoIcons.kefu, [
-        Colors.black54
-      ], {
-        'fun': () {
-          openCustomer();
-        }
-      }),
-      PWidget.boxw(8),
+      // PWidget.icon(BaoIcons.kefu, [
+      //   Colors.black54
+      // ], {
+      //   'fun': () {
+      //     openCustomer();
+      //   }
+      // }),
+      // PWidget.boxw(8),
       PWidget.icon(CupertinoIcons.gear_alt, [
         Colors.black54
       ], {

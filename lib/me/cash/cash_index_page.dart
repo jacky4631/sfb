@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
+import 'package:maixs_utils/widget/widget_tap.dart';
 import 'package:sufenbao/me/cash/widgets/click_item.dart';
 
 import '../../util/colors.dart';
 import '../../util/global.dart';
 import '../../service.dart';
+import '../../util/paixs_fun.dart';
 import '../../widget/rise_number_text.dart';
 import '../listener/PersonalNotifier.dart';
 import '../model/userinfo.dart';
@@ -28,7 +30,8 @@ class CashIndexPage extends StatefulWidget {
 
 class _CashIndexPageState extends State<CashIndexPage> {
   late Map<String, dynamic> json = {};
-  double cash = 0.0;
+  double nowMoney = 0.0;
+  double unlockMoney = 0.0;
   @override
   void initState() {
     super.initState();
@@ -40,8 +43,8 @@ class _CashIndexPageState extends State<CashIndexPage> {
     Userinfo userinfo = Userinfo.fromJson(json);
     Global.userinfo = userinfo;
     setState(() {
-      cash = userinfo.nowMoney;
-
+      nowMoney = userinfo.nowMoney;
+      unlockMoney = userinfo.unlockMoney;
     });
   }
 
@@ -60,7 +63,7 @@ class _CashIndexPageState extends State<CashIndexPage> {
               title: '提现',
               onTap: () {
                 //只要进入提现界面 回来就刷新个人中心余额和本页面余额
-                Navigator.pushNamed(context, '/cash', arguments: {'cash': cash})
+                Navigator.pushNamed(context, '/cash', arguments: {'cash': nowMoney})
                     .then((value) {
                     personalNotifier.value = true;
                     initData();
@@ -86,54 +89,70 @@ class _CashIndexPageState extends State<CashIndexPage> {
   }
 
   Widget _buildCard() {
-    return AspectRatio(
-      aspectRatio: 1.85,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 6.0),
-        padding: const EdgeInsets.all(6.0),
-        // color: Colours.app_main,
-        decoration: BoxDecoration(
-          // color: widget.data['cs'],
-          color: Colours.app_main,
-          borderRadius: BorderRadius.all(Radius.circular(16))
+    return PWidget.container(Column(
+      children: <Widget>[
+        _AccountMoney(
+          title: '可提现余额(元)',
+          money: '$nowMoney',
+          alignment: MainAxisAlignment.end,
+          moneyTextStyle: TextStyles.nowMoney,
+          onTap: (){
+            //只要进入提现界面 回来就刷新个人中心余额和本页面余额
+            Navigator.pushNamed(context, '/cash', arguments: {'cash': nowMoney})
+                .then((value) {
+              personalNotifier.value = true;
+              initData();
+            });
+          },
         ),
-        child: Column(
-          children: <Widget>[
-            _AccountMoney(
-              title: '当前余额(元)',
-              money: '$cash',
-              alignment: MainAxisAlignment.end,
-              moneyTextStyle: TextStyles.nowMoney,
-            ),
-            Expanded(
-              child: Row(
-                children: <Widget>[
-                  _AccountMoney(title: '累计结算金额',
-                      money: json['totalExtract'].toString()),
-                  // _AccountMoney(title: '累计发放佣金', money: '0.02'),
-                ],
-              ),
-            ),
-          ],
+        _AccountMoney(
+          title: '待解锁余额(元)',
+          money: '$unlockMoney',
+          alignment: MainAxisAlignment.end,
+          moneyTextStyle: TextStyles.nowMoney,
+          onTap: (){
+            //status=0 代表展示待解锁金额
+            Navigator.pushNamed(context, '/moneyList', arguments: {'unlockStatus': 1});
+          },
         ),
-      ),
-    );
+
+        Expanded(
+          child: Row(
+            children: <Widget>[
+              _AccountMoney(title: '累计结算金额',
+                  money: json['totalExtract'].toString()),
+              // _AccountMoney(title: '累计发放佣金', money: '0.02'),
+            ],
+          ),
+        ),
+      ],
+    ),[null, 250],
+        {
+          // 'bd': PFun.bdAllLg(Colors.white),
+          'pd':8,
+          'mg':8,
+          'br': PFun.lg(16, 16, 16, 16),
+          'gd': PFun.tl2brGd(Colours.app_main, Colours.app_main.withOpacity(0.7)),
+
+        });
   }
 }
 
 class _AccountMoney extends StatelessWidget {
-  
+
   const _AccountMoney({
     required this.title,
     required this.money,
     this.alignment,
-    this.moneyTextStyle
+    this.moneyTextStyle,
+    this.onTap
   });
 
   final String title;
   final String money;
   final MainAxisAlignment? alignment;
   final TextStyle? moneyTextStyle;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -146,15 +165,15 @@ class _AccountMoney extends StatelessWidget {
             const SizedBox(width: double.infinity),
             Text(title, style: const TextStyle(color: Colors.white, fontSize: 12)),
             PWidget.boxh(8),
-            RiseNumberText(
-              NumUtil.getDoubleByValueStr(money) ?? 0,
-              style: moneyTextStyle ?? const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'headlinea'
-              )
-            ),
+            WidgetTap(child: RiseNumberText(
+                NumUtil.getDoubleByValueStr(money) ?? 0,
+                style: moneyTextStyle ?? const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'headlinea'
+                )
+            ),onTap: this.onTap,),
           ],
         ),
       ),
