@@ -80,8 +80,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>您没有开启定位权限，开启后可用于查看附近团购商品</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Need location when in use</string>
+    <string>您没有开启定位权限，开启后可用于查看附近团购商品</string>
 	<key>NSCameraUsageDescription</key>
 	<string>您没有开启相机权限，开启后可用于设置头像、人脸识别</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

@@ -50,6 +50,7 @@ post_install do |installer|
               # dart: PermissionGroup. photos
               'PERMISSION_PHOTOS=1',
               'PERMISSION_PHOTOS_ADD_ONLY=1',
+              'PERMISSION_LOCATION=1',
             ]
       if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
         target.build_configurations.each do |config|
