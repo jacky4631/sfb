@@ -71,7 +71,7 @@ class _CashierPageState extends IOSPaymentState {
   }
 
   void _wechatPayCallback() {
-    BaseWeChatResponse res = wxPayNotifier.value;
+    WeChatResponse res = wxPayNotifier.value;
     if (res != null && res is WeChatPaymentResponse) {
       WeChatPaymentResponse payRes = res;
       if (payRes.errCode == 0) {
@@ -439,7 +439,7 @@ class _CashierPageState extends IOSPaymentState {
       }
       var product = super.products.firstWhere((element) => element.id==productId);
       //todo 需要修改
-      super.payIOS(data['localOrderId'], product);
+      super.payIOS(data['data']['localOrderId'], product);
 
     }
     //支付宝支付
@@ -502,15 +502,15 @@ class _CashierPageState extends IOSPaymentState {
       }
       Map result = data['data']??{};
       if (result['sign'] != null) {
-        payWithWeChat(
+        fluwx.pay(which: Payment(
           appId: result['appid'],
           partnerId: result['partnerid'],
           prepayId: result['prepayid'],
           packageValue: result['package'],
           nonceStr: result['noncestr'],
-          timeStamp: int.parse(result['timestamp']),
+          timestamp: int.parse(result['timestamp']),
           sign: result['sign'],
-        );
+        ));
       } else {
         ToastUtils.showToast('支付失败');
       }

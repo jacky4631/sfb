@@ -101,7 +101,7 @@ class _VipPageState extends State<VipPage> {
   }
 
   void _wechatPayCallback() {
-    BaseWeChatResponse res = wxPayNotifier.value;
+    WeChatResponse res = wxPayNotifier.value;
     if (res != null && res is WeChatPaymentResponse) {
       WeChatPaymentResponse payRes = res;
       if (payRes.errCode == 0) {
@@ -536,10 +536,10 @@ class _VipPageState extends State<VipPage> {
   }
 
   void press(BuildContext context) {
-    if(Global.isIOS()) {
-      ToastUtils.showToast("该设备不支持购买");
-      return;
-    }
+    // if(Global.isIOS()) {
+    //   ToastUtils.showToast("该设备不支持购买");
+    //   return;
+    // }
     Navigator.pushNamed(context, '/cashierPage', arguments: {
       "rechargeId": gradeModel['rechargeId'],
       "platform": data['vipData']['platform'],

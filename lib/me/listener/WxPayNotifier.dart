@@ -6,9 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:fluwx/fluwx.dart';
 
 //微信支付通知
-class WxPayNotifier extends ValueNotifier<BaseWeChatResponse> {
+class WxPayNotifier extends ValueNotifier<WeChatResponse> {
   WxPayNotifier(value) : super(value);
 }
 
-WxPayNotifier wxPayNotifier = new WxPayNotifier(BaseWeChatResponse.create('onShareResponse',
+WxPayNotifier wxPayNotifier = new WxPayNotifier(WeChatResponse.create('onShareResponse',
     {'type':1}));

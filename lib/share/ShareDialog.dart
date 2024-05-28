@@ -166,25 +166,13 @@ class ShareDialog {
       onTap: () {
         switch (index) {
           case 0: //微信好友
-            // shareToWeChat(WeChatShareWebPageModel(shareUrl,
-            //     title: APP_NAME,
-            //     description: "积分当钱花",
-            //     thumbnail: WeChatImage.asset("assets/images/logo.png"),
-            //     scene: WeChatScene.SESSION));
-            // shareToWeChat(WeChatShareTextModel(text, scene: WeChatScene.SESSION));
-              shareToWeChat(WeChatShareImageModel(WeChatImage.file(File(filePath)),
-                  scene: WeChatScene.SESSION));
+            fluwx.share(WeChatShareImageModel(WeChatImage.file(File(filePath)),
+                  scene: WeChatScene.session));
             _dismiss(context);
             break;
           case 1: //朋友圈
-            // shareToWeChat(WeChatShareWebPageModel(shareUrl,
-            //     title: APP_NAME,
-            //     description: "积分当钱花",
-            //     thumbnail: WeChatImage.asset("assets/images/logo.png"),
-            //     scene: WeChatScene.TIMELINE));
-            // shareToWeChat(WeChatShareTextModel(text, scene: WeChatScene.TIMELINE));
-            shareToWeChat(WeChatShareImageModel(WeChatImage.file(File(filePath)),
-                scene: WeChatScene.TIMELINE));
+            fluwx.share(WeChatShareImageModel(WeChatImage.file(File(filePath)),
+                scene: WeChatScene.timeline));
             _dismiss(context);
             break;
           case 2: //新浪微博

@@ -33,6 +33,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   bool isSign = false;
 
   bool loading = true;
+  bool authed = false;
 
   @override
   void initState() {
@@ -48,8 +49,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   }
 
   void _wechatBindingCallback() {
-    BaseWeChatResponse res = wxPayNotifier.value;
-    if (res != null && res is WeChatAuthResponse) {
+    WeChatResponse res = wxPayNotifier.value;
+    if (!authed && res != null && res is WeChatAuthResponse) {
+      authed = true;
       //返回的res.code就是授权code
       WeChatAuthResponse authResponse = res;
       if (authResponse.state == 'sufenbao_binding' &&
@@ -196,8 +198,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           if(wxProfile.isNotEmpty) {
             ToastUtils.showToast('微信已授权');
           } else {
-            sendWeChatAuth(scope: "snsapi_userinfo", state: "sufenbao_binding");
-
+            fluwx.authBy(which: NormalAuth(scope: "snsapi_userinfo", state: "sufenbao_binding"));
           }
         },
       ),
