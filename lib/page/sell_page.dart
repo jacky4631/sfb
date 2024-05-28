@@ -14,6 +14,7 @@ import 'package:maixs_utils/widget/views.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sufenbao/util/tao_util.dart';
 
+import '../me/model/userinfo.dart';
 import '../service.dart';
 import '../share/ShareDialog.dart';
 import '../util/colors.dart';
@@ -51,7 +52,33 @@ class _SellPageState extends State<SellPage> {
   var pic = '';
   Map<String, String> shareMap = {};
   String shareUrl = '';
+  bool loading = true;
 
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
+
+  Future initData() async {
+    if(Global.userinfo == null) {
+      Map<String, dynamic> json = await BService.userinfo(baseInfo: true);
+      if (json.isEmpty) {
+        return;
+      }
+      Global.userinfo = Userinfo.fromJson(json);
+    }
+    loading = false;
+    setState(() {
+
+    });
+    data = widget.data['res'];
+    detailDm.addObject(data);
+    String platType = widget.data['platType'];
+    iconPath = getIconPath(platType);
+    getPlatTypeDetail(platType);
+    initShareInfo();
+  }
   @override
   Widget build(BuildContext context) {
     return ScaffoldWidget(
@@ -133,7 +160,7 @@ class _SellPageState extends State<SellPage> {
                         PWidget.textNormal(
                             '— $APP_NAME 购物拆红包 —', [Colors.black, 14, true]),
                         PWidget.boxh(10),
-                        if(Global.login)
+                        if(!loading)
                         PWidget.textNormal(
                             '邀请口令：${Global.userinfo!.code}', [Colors.black, 12, true]),
                       ], '200'),
@@ -205,17 +232,6 @@ class _SellPageState extends State<SellPage> {
             )
           ],
         ));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    data = widget.data['res'];
-    detailDm.addObject(data);
-    String platType = widget.data['platType'];
-    iconPath = getIconPath(platType);
-    getPlatTypeDetail(platType);
-    initShareInfo();
   }
 
   Future initShareInfo() async {
