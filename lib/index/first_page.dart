@@ -5,7 +5,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_alibc/alibc_model.dart';
 import 'package:flutter_alibc/flutter_alibc.dart';
@@ -19,7 +18,6 @@ import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:shake_animation_widget/shake_animation_widget.dart';
 import 'package:sufenbao/index/widget/banner_widget.dart';
-import 'package:sufenbao/index/widget/everyone_widget.dart';
 import 'package:sufenbao/index/widget/tiles_widget.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/custom.dart';
@@ -64,6 +62,9 @@ class _FirstPageState extends State<FirstPage> {
   bool agree = false;
   ScrollController _scrollController = ScrollController();
   var _showBackTop = false;
+
+
+  var cancelable = null;
   @override
   void initState() {
     super.initState();
@@ -73,27 +74,12 @@ class _FirstPageState extends State<FirstPage> {
       setState(() => _showBackTop = _scrollController.position.pixels >= 800);
     });
   }
-  Future checkNet() async {
-    // final connectivityResult = await (Connectivity().checkConnectivity());
-    // if (connectivityResult != ConnectivityResult.mobile && connectivityResult != ConnectivityResult.wifi) {
-      subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-        // Got a new connectivity status!
-        if ((result == ConnectivityResult.mobile || result == ConnectivityResult.wifi) && !init) {
-          // I am connected to a mobile network.
-          initData();
-        } else {
-          init =false;
-        }
-      });
-    // }
-  }
 
   ///初始化函数
   Future<int> initData() async {
     huodongNotify.changeIsShowTabbar(false);
     agree = await Global.getAgree();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    await initThird(packageInfo);
     Global.init();
     await getBannerData();
     await getTilesData();
@@ -104,6 +90,7 @@ class _FirstPageState extends State<FirstPage> {
     showHuodongDialog();
     initShake();
     await Global.update(packageInfo);
+    initThird(packageInfo);
     return 0;
   }
 
@@ -112,12 +99,14 @@ class _FirstPageState extends State<FirstPage> {
       return;
     }
     if(!Global.isWeb()) {
-      bool init = await registerWxApi(
+      bool init = await fluwx.registerApi(
           appId: Global.wxAppId,
           universalLink: Global.wxUniversalLink);
       //监听微信授权返回结果 微信回调
-      weChatResponseEventHandler.distinct((a, b) => a == b).listen((res) {
-        wxPayNotifier.value = res;
+      cancelable = fluwx.addSubscriber((response) {
+        if (response is WeChatAuthResponse) {
+          wxPayNotifier.value = response;
+        }
       });
       initFaceService();
       await LoginShanyan.getInstance().init();
@@ -157,6 +146,9 @@ class _FirstPageState extends State<FirstPage> {
       subscription?.cancel();
     }
     _scrollController.dispose();
+    if(cancelable != null) {
+      cancelable.cancel();
+    }
     super.dispose();
   }
 

@@ -246,6 +246,8 @@ class _HomePageState extends State<HomePage>
       case AppLifecycleState.paused:
         print("应用处于不可见状态 后台======");
         break;
+      case AppLifecycleState.hidden:
+      // TODO: Handle this case.
     }
   }
 
