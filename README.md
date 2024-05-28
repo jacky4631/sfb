@@ -13,7 +13,7 @@
 
 ### 💡 系统亮点：
 >1.SpringBoot 框架开发业界主流，服务端暂不开源。  <br>
->2.【前端】Web PC 管理端 Vue + Element UI，暂不开源。<br>
+>2.【前端】Web PC 管理端 Vue + Element UI<br>
 >3.【前端】移动端使用 Flutter 框架。<br>
 
 ---
@@ -21,11 +21,11 @@
 ### 💻 运行环境及框架：
 ~~~
 1.	移动端Flutter开发框架
-2.	WEB PC 管理后台使用Vue + Element UI 开发 兼容主流浏览器 ie11+
+2.	WEB PC 管理后台使用Vue + Element UI 开发
 3.	后台服务 Java SpringBoot + Mybatis-plus + Mysql + redis
 4.	运行环境 linux, 需要Java环境和对应的数据库 redis
 5.	运行条件 Java 1.8 Mysql5.7
-6.	移动端调试环境 AndroidStudio Flutter3.7.10 Dart2.19.6
+6.	移动端调试环境 AndroidStudio Flutter3.22.1 Dart3.4.1
 ~~~
 ---
 
@@ -39,8 +39,8 @@
 6. node 14
 7. vue 2.x
 8. element ui 2.13
-9. Flutter3.7.10
-10.Dart2.19.6
+9. Flutter3.22.1
+10.Dart3.4.1
 ~~~
 
 ---
