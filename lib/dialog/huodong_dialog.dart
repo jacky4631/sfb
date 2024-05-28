@@ -64,6 +64,6 @@ class HuodongDialog extends Dialog {
     await LaunchApp.launch(context, url, package,
         webUrl: data['webUrl'],
         title: data['title'],
-        color: Color(int.parse('0xFF' + data['color'])));
+        color: Color(int.parse('0xFF' + data['color']??'FFFFFF')));
   }
 }

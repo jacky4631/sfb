@@ -69,7 +69,7 @@ class ContentParseDialog extends Dialog {
           PWidget.boxh(8),
           Column(
             children: [
-              PWidget.row([_createSearchButton(context, false),PWidget.boxw(10),_createButton(context, true)],
+              PWidget.row([_createSearchButton(context, false),PWidget.boxw(8),_createButton(context, true)],
               '221'
               ),
               PWidget.boxh(8),
@@ -172,7 +172,7 @@ class ContentParseDialog extends Dialog {
           }
         },
         child: Padding(
-          padding: EdgeInsets.only(left: 30, right: 30),
+          padding: EdgeInsets.only(left: 25, right: 25),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
