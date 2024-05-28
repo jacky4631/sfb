@@ -54,7 +54,7 @@ class _LoginFirstState extends State<LoginFirst> {
     super.dispose();
   }
   void _wechatLoginCallback() {
-    BaseWeChatResponse res = wxPayNotifier.value;
+    WeChatResponse res = wxPayNotifier.value;
     if (res != null && res is WeChatAuthResponse) {
       //返回的res.code就是授权code
       WeChatAuthResponse authResponse = res;
@@ -84,7 +84,7 @@ class _LoginFirstState extends State<LoginFirst> {
       inWebWechat = true;
       showWechatLogin = true;
     } else {
-      var weChatInstalled = await isWeChatInstalled;
+      var weChatInstalled = await fluwx.isWeChatInstalled;
       showWechatLogin = weChatInstalled;
     }
     setState(() {
@@ -217,7 +217,7 @@ class _LoginFirstState extends State<LoginFirst> {
       }
     } else {
       //微信app登录
-      await sendWeChatAuth(scope: "snsapi_userinfo", state: "sufenbao_login");
+      await fluwx.authBy(which: NormalAuth(scope: "snsapi_userinfo", state: "sufenbao_login"));
     }
   }
 
