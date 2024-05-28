@@ -114,22 +114,6 @@
 
         <!--一键登录SDK授权页activity-->
         <activity
-            android:name="com.chuanglan.shanyan_sdk.view.CmccLoginActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
-            android:theme="@style/MyTheme" />
-
-        <activity-alias
-            android:name="com.cmic.gen.sdk.view.GenLoginAuthActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
-            android:targetActivity="com.chuanglan.shanyan_sdk.view.CmccLoginActivity"
-            android:theme="@style/MyTheme" />
-        <activity
             android:name="com.chuanglan.shanyan_sdk.view.ShanYanOneKeyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"

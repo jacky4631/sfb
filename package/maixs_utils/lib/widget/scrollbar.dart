@@ -32,7 +32,7 @@ class CupertinoScrollbarWidget extends RawScrollbar {
           key: key,
           child: child,
           controller: controller,
-          isAlwaysShown: isAlwaysShown,
+          thumbVisibility: isAlwaysShown,
           thickness: thickness,
           radius: radius,
           fadeDuration: _kScrollbarFadeDuration,
@@ -109,6 +109,8 @@ class _CupertinoScrollbarWidgetState extends RawScrollbarState<CupertinoScrollba
       case Axis.horizontal:
         _pressStartAxisPosition = localPosition.dx;
         break;
+      case null:
+      // TODO: Handle this case.
     }
   }
 

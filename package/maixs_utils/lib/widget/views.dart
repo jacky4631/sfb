@@ -16,7 +16,6 @@ import '../util/utils.dart';
 import '../widget/sheet_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'CPicker_widget.dart';
-import 'bottom_sheet.dart';
 import 'button.dart';
 import 'inkbtn_widget.dart';
 import 'my_classicHeader.dart' as myh;
@@ -1523,7 +1522,7 @@ Widget buildTitleRight({
 Widget buildTwoText({
   String leftText = '5级',
   String nullValue = '暂无',
-  dynamic rightText = 'xxx',
+  dynamic rightText = '苏州迈沃通信有限公司',
   Color leftColor = Colors.black,
   Color rightColor = Colors.grey,
 }) {

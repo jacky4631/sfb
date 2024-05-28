@@ -8,11 +8,7 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:maixs_utils/widget/crop_page.dart';
-import 'package:maixs_utils/widget/route.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../config/net/Config.dart';
 import '../config/net/pgyer_api.dart';
 import '../widget/custom_route.dart';
@@ -26,20 +22,6 @@ Future<String?> uploadFile(PickedFile file) async {
   MultipartFile multipartFile = MultipartFile.fromBytes(
     byteData,
     filename: paths[paths.length - 1],
-  );
-  FormData formData = FormData.fromMap({"file": multipartFile});
-  var response = await http.post<String>('/app/common/addImage', data: formData);
-  return response.data;
-}
-
-///上传asset
-Future uploadAsset(Asset img) async {
-  ByteData byteData = await img.getByteData(quality: 50);
-  List<int> imageData = byteData.buffer.asUint8List();
-  MultipartFile multipartFile = MultipartFile.fromBytes(
-    imageData,
-    filename: img.name,
-    contentType: MediaType("image", "jpeg"),
   );
   FormData formData = FormData.fromMap({"file": multipartFile});
   var response = await http.post<String>('/app/common/addImage', data: formData);
@@ -175,9 +157,9 @@ close([map]) async {
 
 ///异常处理
 error(e, Function(dynamic, int, int) callback) {
-  var error = e as DioError;
+  var error = e as DioException;
   switch (error.type) {
-    case DioErrorType.response:
+    case DioExceptionType.badResponse:
       flog(error.response?.data);
       try {
         if (error.response?.data['message'] == null || error.response?.data['message'] == '') {
@@ -189,50 +171,29 @@ error(e, Function(dynamic, int, int) callback) {
         callback('系统繁忙，请稍后重试', 1, error.response!.statusCode!);
       }
       break;
-    case DioErrorType.other:
-      var str = error.message.contains('SocketException');
+    case DioExceptionType.unknown:
+      var str = error.message!.contains('SocketException');
       callback(str ? '系统繁忙，请稍后重试' : '请求错误', 2, 200);
       break;
-    case DioErrorType.connectTimeout:
+    case DioExceptionType.connectionTimeout:
       callback('连接超时', 3, 200);
       break;
-    case DioErrorType.sendTimeout:
+    case DioExceptionType.sendTimeout:
       callback('发送超时', 4, 200);
       break;
-    case DioErrorType.receiveTimeout:
+    case DioExceptionType.receiveTimeout:
       callback('接收超时', 5, 200);
       break;
-    case DioErrorType.cancel:
+    case DioExceptionType.cancel:
       callback('连接被取消', 6, 200);
       break;
+    case DioExceptionType.badCertificate:
+      callback('验签失败', 6, 200);
+      break;
+    case DioExceptionType.connectionError:
+      callback('接收错误', 5, 200);
+      break;
   }
-}
-
-///选择相册
-Future<List<AssetEntity>> pickImages({
-  RequestType requestType = RequestType.image,
-  maxImages = 9,
-  bool isCrop = false,
-  Function(dynamic)? cropFun,
-}) async {
-  var list = await AssetPicker.pickAssets(
-    context,
-  );
-  list = list ?? [];
-  if (isCrop) {
-    if (list.isNotEmpty) {
-      var file = await list.first.file;
-      jumpPage(
-        CropPage(file: file!),
-        callback: cropFun!,
-      );
-    }
-  } else if (list.isNotEmpty) {
-    var file = await list.first.file;
-    cropFun!(file);
-  }
-  flog(list);
-  return list;
 }
 
 /// 调起拨号页
@@ -246,7 +207,7 @@ void phoneTelURL(String phone) async {
 }
 
 /// 调起系统
-void lunTelURL(String type, {String msg: '分享失败！'}) async {
+void lunTelURL(String type, {String msg= '分享失败！'}) async {
   if (await canLaunch(type)) {
     await launch(type);
   } else {
