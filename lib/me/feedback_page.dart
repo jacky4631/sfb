@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
+import 'package:sufenbao/service.dart';
 
 import '../util/toast_utils.dart';
 
@@ -55,7 +56,7 @@ class _FeedbackPage extends State<FeedbackPage> {
                   hintStyle: TextStyle(color: Colors.grey),
                   suffixIconColor: Colors.grey,
                   border: InputBorder.none)),
-          Divider(),
+          Divider(height: 1, color: Colors.grey[200],),
           Padding(padding: EdgeInsets.only(top: 30)),
           Column(
             children: [
@@ -65,11 +66,12 @@ class _FeedbackPage extends State<FeedbackPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(25)),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if(_feedbackController.text == '') {
                       ToastUtils.showToast('请填写更多意见');
                       return;
                     }
+                    await BService.userFeedbackAdd(_feedbackController.text);
                     ToastUtils.showToast('反馈成功');
                     Navigator.pop(context);
                   },
