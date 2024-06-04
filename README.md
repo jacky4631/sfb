@@ -47,7 +47,8 @@
 
 ### 🎬 系统演示：
 移动端：应用市场搜索【苏分宝】 or 扫描下面二维码
-![](demoimages/app.png)<br>
+![](demoimages/app.png)
+
 管理端：有需要可以扫描下面二维码提供演示<br>
 ![](demoimages/qr.jpg)
 
