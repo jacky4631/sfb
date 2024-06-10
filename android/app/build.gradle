@@ -35,9 +35,8 @@ android {
         versionName flutterVersionName
         multiDexEnabled true
         ndk {
-            //选择要添加的对应 cpu 类型的 .so 库。
+            //选择要添加的对应 cpu 类型的 .so 库。todo 如果只是手机端，只需要设置arm64-v8a，如果需要模拟器运行，加上x86_64
             abiFilters 'arm64-v8a', 'x86_64'
-            //需要运行在模拟器上，需要x86_64
 //            abiFilters 'armeabi-v7a', 'x86_64',  'arm64-v8a'
         }
         manifestPlaceholders = [
@@ -50,17 +49,17 @@ android {
 
     signingConfigs {
         //todo 这里的证书自己创建，为了保证百川图片在测试环境可用，打开下面debug注释，开发和打包使用同样的证书
-        //debug {
-        //    keyAlias "xxx"
-        //    keyPassword "xxx"
-        //    storeFile file('../keystore/xxx.jks')
-        //    storePassword "xxx"
-        //}
-        release {
-            keyAlias "xxx"
-            keyPassword "xxx"
+        debug {
+            keyAlias "mailvor.com"
+            keyPassword "123456"
             storeFile file('../keystore/xxx.jks')
-            storePassword "xxx"
+            storePassword "123456"
+        }
+        release {
+            keyAlias "mailvor.com"
+            keyPassword "123456"
+            storeFile file('../keystore/xxx.jks')
+            storePassword "123456"
         }
     }
     buildTypes {
