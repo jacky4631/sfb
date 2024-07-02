@@ -223,8 +223,10 @@ class _SharePageState extends State<SharePage> {
     if (!Global.login) {
       return;
     }
+    Loading.show(context);
     boundaryKey = keyList[currentIndex];
     String filePath = await RepaintBoundaryUtils().captureImage();
+    Loading.hide(context);
     if (filePath != null) {
       ShareDialog.showShareDialog(context, filePath);
     }
@@ -259,7 +261,9 @@ class _SharePageState extends State<SharePage> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    if(_pageController != null) {
+      _pageController.dispose();
+    }
     super.dispose();
   }
 
