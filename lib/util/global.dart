@@ -334,7 +334,7 @@ class Global {
           LaunchApp.launchTb(context, url);
           return;
         } else if (terrace == 2) {
-          url = await BService.goodsWordJD(activityDetail['activity_url'], null);
+          url = await BService.goodsWordJD(activityDetail['activity_url'], null, null);
           Loading.hide(context);
           LaunchApp.launchJd(context, url);
           return;
@@ -565,7 +565,7 @@ class Global {
 
   static showPhotoDialog(pressed) {
     return Global.showDialog2(title: '温馨提示',
-        content: '您没有开启相册权限，开启后可用于设置头像、身份识别', okText: '去开启', cancelText: '我再想想',
+        content: '您没有开启相册权限，开启后可用于设置头像、身份识别、保存海报', okText: '去开启', cancelText: '我再想想',
         okPressed: pressed);
   }
   static showCameraDialog(pressed) {
@@ -733,6 +733,6 @@ class Global {
 
   static Future<int> getAndroidVersion() async {
     AndroidDeviceInfo androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
-    return int.parse(androidDeviceInfo.version.release);
+    return androidDeviceInfo.version.sdkInt;
   }
 }

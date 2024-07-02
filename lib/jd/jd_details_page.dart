@@ -109,7 +109,7 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
       setState(() {
         loading = false;
       });
-      couponUrl = await BService.goodsWordJD(res['itemId'], res['couponLink']);
+      couponUrl = await BService.goodsWordJD(res['itemId'], res['couponLink'], res['materialUrl']);
     }else {
       ToastUtils.showToast('商品已下架');
       Navigator.pop(context);
