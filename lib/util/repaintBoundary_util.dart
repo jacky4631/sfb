@@ -15,6 +15,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 
+import 'global.dart';
+
 //全局key-截图key
 GlobalKey boundaryKey = GlobalKey();
 
@@ -58,11 +60,22 @@ class RepaintBoundaryUtils {
       }
       return status.isGranted;
     } else {
-      var status = await Permission.storage.status;
-      if (status.isDenied) {
-        Map<Permission, PermissionStatus> statuses = await [
-          Permission.storage,
-        ].request();
+      int version = await Global.getAndroidVersion();
+      PermissionStatus status;
+      if(version>= 33) {
+        status = await Permission.photos.status;
+        if (status.isDenied) {
+          Map<Permission, PermissionStatus> statuses = await [
+            Permission.photos,
+          ].request();
+        }
+      } else {
+        status = await Permission.storage.status;
+        if (status.isDenied) {
+          Map<Permission, PermissionStatus> statuses = await [
+            Permission.storage,
+          ].request();
+        }
       }
       return status.isGranted;
     }
@@ -94,7 +107,13 @@ class RepaintBoundaryUtils {
         }
       } else {
         //安卓
-        var status = await Permission.storage.status;
+        int version = await Global.getAndroidVersion();
+        PermissionStatus status;
+        if(version>= 33) {
+          status = await Permission.photos.status;
+        } else {
+          status = await Permission.storage.status;
+        }
         if (status.isGranted) {
           print("Android已授权");
           Uint8List images = byteData!.buffer.asUint8List();
