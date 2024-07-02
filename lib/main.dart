@@ -237,6 +237,7 @@ class SfbApp extends StatelessWidget {
           title: APP_NAME,
           themeMode: ThemeMode.light,
           theme: ThemeData(
+            useMaterial3: false,
             primarySwatch: Colors.red,
             textTheme: Theme.of(context).textTheme,
             platform: TargetPlatform.iOS,
