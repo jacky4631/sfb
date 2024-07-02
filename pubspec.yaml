@@ -1,6 +1,6 @@
 name: sufenbao
 description: sufenbao
-version: 3.1.1+98
+version: 3.1.2+99
 
 environment:
   sdk: ">=3.0.0"
@@ -65,13 +65,14 @@ dependencies:
   animated_text_kit: ^4.2.2
   tobias:
     git:
-      url: https://gitee.com/jacky4631/tobias.git
+#      url: https://gitee.com/jacky4631/tobias.git
+      url: https://github.com/jacky4631/tobias.git
   flutter_alibc:
     git:
-      url: https://gitee.com/jacky4631/flutter_alibc_kit.git
+#      url: https://gitee.com/jacky4631/flutter_alibc_kit.git
+      url: https://github.com/jacky4631/flutter_alibc_kit.git
   flutter_ali_face_verify:
-    git:
-      url: https://gitee.com/jacky4631/flutter_ali_face_verify.git
+    path: package/flutter_ali_face_verify
   decimal: ^2.3.0
 
   chewie: ^1.8.1
@@ -79,9 +80,10 @@ dependencies:
   data_table_2: ^2.3.12
   shanyan:
     git:
-      url: https://gitee.com/chuanglan253/CLShanYan_Flutter.git
+      url: https://github.com/253CL/CLShanYan_Flutter.git
+#      url: https://gitee.com/chuanglan253/CLShanYan_Flutter.git
       path: shanyan
-      ref: v2.3.4.6
+      ref: v2.3.4.5
   signature: ^5.3.2
   encrypt: ^5.0.3
   connectivity_plus: ^6.0.3
