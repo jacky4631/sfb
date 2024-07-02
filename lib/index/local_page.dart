@@ -240,11 +240,11 @@ class _LocalPageState extends State<LocalPage> {
     List list = [];
     list = v['item_tag'];
     if (list.isNotEmpty) {
-      content0 = v['item_tag'][0]['content'].toString().isNotEmpty
-          ? v['item_tag'][0]['content']
+      content0 = v['item_tag'].isNotEmpty
+          ? v['item_tag'][0]
           : '';
-      content1 = v['item_tag'][1]['content'].toString().isNotEmpty
-          ? v['item_tag'][1]['content']
+      content1 = v['item_tag'][1].isNotEmpty
+          ? v['item_tag'][1]
           : '';
     }
     return PWidget.container(
