@@ -1,101 +1,166 @@
 {
-	"identifier": "D910AAEF",
-	"nonRenewingSubscriptions": [
+  "identifier" : "D910AAEF",
+  "nonRenewingSubscriptions" : [
 
-	],
-	"products": [
-	    {
-        	"displayPrice": "298",
-        	"familyShareable": false,
-        	"internalID": "AE10D05D",
-        	"localizations": [{
-        		"description": "苏分宝星选月会员",
-        		"displayName": "星选月会员",
-        		"locale": "zh_CN"
-        	}],
-        	"productID": "00003",
-        	"referenceName": "00003",
-        	"type": "Consumable"
-        },
-	    {
-			"displayPrice": "1998",
-			"familyShareable": false,
-			"internalID": "AE10D05D",
-			"localizations": [{
-				"description": "苏分宝淘星选年会员",
-				"displayName": "淘星选年会员",
-				"locale": "zh_CN"
-			}],
-			"productID": "00005",
-			"referenceName": "00005",
-			"type": "Consumable"
-		},
-		{
-			"displayPrice": "1398",
-			"familyShareable": false,
-			"internalID": "AE10D05D",
-			"localizations": [{
-				"description": "苏分宝京星选年会员",
-				"displayName": "京星选年会员",
-				"locale": "zh_CN"
-			}],
-			"productID": "10005",
-			"referenceName": "10005",
-			"type": "Consumable"
-		},
-		{
-			"displayPrice": "1698",
-			"familyShareable": false,
-			"internalID": "AE10D05D",
-			"localizations": [{
-				"description": "苏分宝多星选年会员",
-				"displayName": "多星选年会员",
-				"locale": "zh_CN"
-			}],
-			"productID": "20005",
-			"referenceName": "20005",
-			"type": "Consumable"
-		},
-		{
-			"displayPrice": "1598",
-			"familyShareable": false,
-			"internalID": "AE10D05D",
-			"localizations": [{
-				"description": "苏分宝抖星选年会员",
-				"displayName": "抖星选年会员",
-				"locale": "zh_CN"
-			}],
-			"productID": "30005",
-			"referenceName": "30005",
-			"type": "Consumable"
-		},
-		{
-			"displayPrice": "998",
-			"familyShareable": false,
-			"internalID": "AE10D05D",
-			"localizations": [{
-				"description": "苏分宝唯星选年会员",
-				"displayName": "唯星选年会员",
-				"locale": "zh_CN"
-			}],
-			"productID": "40005",
-			"referenceName": "40005",
-			"type": "Consumable"
-		}
-	],
-	"settings": {
+  ],
+  "products" : [
+    {
+      "displayPrice" : "298",
+      "familyShareable" : false,
+      "internalID" : "AE10D05D",
+      "localizations" : [
+        {
+          "description" : "苏分宝星选月会员",
+          "displayName" : "星选月会员",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "00003",
+      "referenceName" : "00003",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "1998",
+      "familyShareable" : false,
+      "internalID" : "4B81605A",
+      "localizations" : [
+        {
+          "description" : "苏分宝淘星选年会员",
+          "displayName" : "淘星选年会员",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "00005",
+      "referenceName" : "00005",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "1398",
+      "familyShareable" : false,
+      "internalID" : "8E2C0382",
+      "localizations" : [
+        {
+          "description" : "苏分宝京星选年会员",
+          "displayName" : "京星选年会员",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "10005",
+      "referenceName" : "10005",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "1698",
+      "familyShareable" : false,
+      "internalID" : "867E8D7E",
+      "localizations" : [
+        {
+          "description" : "苏分宝多星选年会员",
+          "displayName" : "多星选年会员",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "20005",
+      "referenceName" : "20005",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "1598",
+      "familyShareable" : false,
+      "internalID" : "BFA17CCC",
+      "localizations" : [
+        {
+          "description" : "苏分宝抖星选年会员",
+          "displayName" : "抖星选年会员",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "30005",
+      "referenceName" : "30005",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "998",
+      "familyShareable" : false,
+      "internalID" : "B4C9BCF3",
+      "localizations" : [
+        {
+          "description" : "苏分宝唯星选年会员",
+          "displayName" : "唯星选年会员",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "40005",
+      "referenceName" : "40005",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "D0FEE8D8",
+      "localizations" : [
 
-	},
-	"subscriptionGroups": [{
-		"id": "D0FEE8D8",
-		"localizations": [
+      ],
+      "name" : "Example Subscriptions",
+      "subscriptions" : [
 
-		],
-		"name": "Example Subscriptions",
-		"subscriptions": []
-	}],
-	"version": {
-		"major": 2,
-		"minor": 0
-	}
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
 }

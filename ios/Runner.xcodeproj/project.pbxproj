@@ -249,7 +249,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
+			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
 		E27DEC2FF3B8A6A17D4B56A4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -397,7 +397,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
-					"-l\"FMDB\"",
 					"-l\"JCore\"",
 					"-l\"JPush\"",
 					"-l\"OrderedSet\"",
@@ -727,7 +726,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
-					"-l\"FMDB\"",
 					"-l\"JCore\"",
 					"-l\"JPush\"",
 					"-l\"OrderedSet\"",
@@ -937,7 +935,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
-					"-l\"FMDB\"",
 					"-l\"JCore\"",
 					"-l\"JPush\"",
 					"-l\"OrderedSet\"",
