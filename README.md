@@ -12,22 +12,54 @@
 ---
 
 ### 💡 系统亮点：
->1.SpringBoot 框架开发业界主流，服务端暂不开源。  <br>
->2.【前端】Web PC 管理端 Vue + Element UI<br>
->3.【前端】移动端使用 Flutter 框架。<br>
+>1.【服务端】SpringBoot 框架开发业界主流<br>
+>2.【管理端】Vue + Element UI<br>
+>3.【APP端】移动端使用 Flutter 框架<br>
 
 ---
 
 ### 💻 运行环境及框架：
 ~~~
-1.	移动端Flutter开发框架
-2.	WEB PC 管理后台使用Vue + Element UI 开发
-3.	后台服务 Java SpringBoot + Mybatis-plus + Mysql + redis
-4.	运行环境 linux, 需要Java环境和对应的数据库 redis
-5.	运行条件 Java 1.8 Mysql5.7
-6.	移动端调试环境 AndroidStudio Flutter3.22.1 Dart3.4.1
+1.移动端Flutter开发框架
+2.WEB PC 管理后台使用Vue + Element UI 开发
+3.后台服务 Java SpringBoot + Mybatis-plus + Mysql + redis
+4.运行环境 linux, 需要Java环境和对应的数据库 redis
+5.运行条件 Java 1.8 Mysql5.7
+6.移动端调试环境 AndroidStudio Flutter3.22.1 Dart3.4.1
 ~~~
 ---
+
+### 💟 UI界面
+
+#### 📱 移动端预览
+![](demoimages/111.png)
+![](demoimages/222.png)
+![](demoimages/333.png)
+![](demoimages/444.png)
+![](demoimages/1.png)
+![](demoimages/2.png)
+![](demoimages/3.png)
+![](demoimages/4.png)
+![](demoimages/5.png)
+![](demoimages/6.png)
+![](demoimages/7.png)
+![](demoimages/8.png)
+![](demoimages/9.png)
+
+---
+
+### 🎬 系统演示：
+移动端：应用市场搜索【苏分宝】 or 扫描下面二维码<br>
+
+![](demoimages/app.png)
+
+---
+
+#### 📞 扫码购买服务端源码
+![](demoimages/qr.jpg)
+
+---
+
 
 ### 🔧 Java项目框架 和 WEB PC 项目运行环境
 ~~~
@@ -45,34 +77,6 @@
 
 ---
 
-### 🎬 系统演示：
-移动端：应用市场搜索【苏分宝】 or 扫描下面二维码<br>
-
-![](demoimages/app.png)
-
-管理端：有需要可以扫描下面二维码提供演示<br>
-![](demoimages/qr.jpg)
-
----
-
-### 💟 UI界面
-
-#### 📱 移动端预览
-![](demoimages/1.png)
-![](demoimages/2.png)
-![](demoimages/3.png)
-![](demoimages/4.png)
-![](demoimages/5.png)
-![](demoimages/6.png)
-![](demoimages/7.png)
-![](demoimages/8.png)
-![](demoimages/9.png)
-
-
-#### 📞 扫码购买服务端源码
-![](demoimages/qr.jpg)
-
----
 
 ### 🔔 使用须知
 1.允许用于个人学习、毕业设计、教学案例、公益事业、商业使用;<br>
