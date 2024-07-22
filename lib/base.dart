@@ -13,11 +13,11 @@ export 'io.dart';
 
 mixin class BBase {
   //通用链接 打包会自动使用线上链接
-  // static final baseHost = kDebugMode ? 'http://192.168.0.108:8008' : 'https://sufenbao.mailvor.cn';
+  // static final baseHost = kDebugMode ? 'http://192.168.0.108:8008' : 'https://demo.admin.mailvor.com';
   //调试用
   // static final baseHost = 'http://192.168.0.108:8008';
   //线上地址
-  static final baseHost = 'https://sufenbao.mailvor.cn';
+  static final baseHost = 'http://demo.admin.mailvor.com';
 
   static final suUrl = '${BBase.baseHost}/api';
 }

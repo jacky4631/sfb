@@ -65,12 +65,12 @@ dependencies:
   animated_text_kit: ^4.2.2
   tobias:
     git:
-#      url: https://gitee.com/jacky4631/tobias.git
-      url: https://github.com/jacky4631/tobias.git
+      url: https://gitee.com/jacky4631/tobias.git
+#      url: https://github.com/jacky4631/tobias.git
   flutter_alibc:
     git:
-#      url: https://gitee.com/jacky4631/flutter_alibc_kit.git
-      url: https://github.com/jacky4631/flutter_alibc_kit.git
+      url: https://gitee.com/jacky4631/flutter_alibc_kit.git
+#      url: https://github.com/jacky4631/flutter_alibc_kit.git
   flutter_ali_face_verify:
     path: package/flutter_ali_face_verify
   decimal: ^2.3.0
@@ -80,8 +80,8 @@ dependencies:
   data_table_2: ^2.3.12
   shanyan:
     git:
-      url: https://github.com/253CL/CLShanYan_Flutter.git
-#      url: https://gitee.com/chuanglan253/CLShanYan_Flutter.git
+#      url: https://github.com/253CL/CLShanYan_Flutter.git
+      url: https://gitee.com/chuanglan253/CLShanYan_Flutter.git
       path: shanyan
       ref: v2.3.4.5
   signature: ^5.3.2

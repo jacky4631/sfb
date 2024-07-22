@@ -513,11 +513,9 @@ packages:
   flutter_ali_face_verify:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "544bfc1ae1dc5f5749afeac165c829a82ec7873c"
-      url: "https://gitee.com/jacky4631/flutter_ali_face_verify.git"
-    source: git
+      path: "package/flutter_ali_face_verify"
+      relative: true
+    source: path
     version: "0.0.1"
   flutter_alibc:
     dependency: "direct main"
@@ -1456,8 +1454,8 @@ packages:
     dependency: "direct main"
     description:
       path: shanyan
-      ref: "v2.3.4.6"
-      resolved-ref: bdb0a6f660940b08dd516460f14fa97ff3e47d3e
+      ref: "v2.3.4.5"
+      resolved-ref: "2008dbf013b7f40c74cb5360b304208ed7091ede"
       url: "https://gitee.com/chuanglan253/CLShanYan_Flutter.git"
     source: git
     version: "2.3.4"
