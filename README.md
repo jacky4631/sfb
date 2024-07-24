@@ -42,9 +42,9 @@
     <img src="demoimages/333.png" title="" alt="image" width="200">
     <img src="demoimages/222.gif" title="" alt="image" width="200">
     <img src="demoimages/222.png" title="" alt="image" width="200">
+    <img src="demoimages/1.png" title="" alt="image">
 </div>
 
-<img src="demoimages/1.png" title="" alt="image">
 <img src="demoimages/2.png" title="" alt="image">
 <img src="demoimages/3.png" title="" alt="image">
 <img src="demoimages/4.png" title="" alt="image">
