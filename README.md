@@ -44,15 +44,15 @@
 
 ---
 
+### 📞 服务端源码咨询
+![](demoimages/qr.jpg)
+
+---
+
 ### 🎬 系统演示：
 移动端：应用市场搜索【苏分宝】 or 扫描下面二维码<br>
 
 ![](demoimages/app.png)
-
----
-
-#### 📞 服务端源码咨询
-![](demoimages/qr.jpg)
 
 ---
 
