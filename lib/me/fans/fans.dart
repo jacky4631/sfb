@@ -29,32 +29,37 @@ class Fans extends StatelessWidget {
   TextEditingController textCon = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    var tabDm = DataModel();
-    tabDm.addList([{'title':'金客','index':0},{'title':'银客','index':1}], true, 0);
+    Widget body;
+    if(Global.appInfo.spreadLevel == 2) {
+      body = TopChild({'title':'金客','index':0});
+    } else {
+      var tabDm = DataModel();
+      tabDm.addList([{'title':'金客','index':0},{'title':'银客','index':1}], true, 0);
+      body = AnimatedSwitchBuilder(
+        value: tabDm,
+        initialState: buildLoad(color: Colors.white),
+        listBuilder: (list, _, __) {
+          var tabList = list.map<Map>((m) => m).toList();
+          return OrderTabWidget(
+            color: Colours.app_main,
+            unselectedColor: Colors.black.withOpacity(0.5),
+            fontSize: 15,
+            tabList: tabList,
+            padding: EdgeInsets.only(bottom: 10),
+            indicatorColor: Colours.app_main,
+            indicatorWeight: 2,
+            tabPage: List.generate(list.length, (i) {
+              return TopChild(tabDm.list[i]);
+            }),
+          );
+        });
+    }
     return ScaffoldWidget(
       resizeToAvoidBottomInset: false,
       bgColor: Color(0xfffafafa),
       brightness: Brightness.dark,
       appBar:_searchBar(context),
-      body: AnimatedSwitchBuilder(
-            value: tabDm,
-            initialState: buildLoad(color: Colors.white),
-            listBuilder: (list, _, __) {
-              var tabList = list.map<Map>((m) => m).toList();
-              return OrderTabWidget(
-                color: Colours.app_main,
-                unselectedColor: Colors.black.withOpacity(0.5),
-                fontSize: 15,
-                tabList: tabList,
-                padding: EdgeInsets.only(bottom: 10),
-                indicatorColor: Colours.app_main,
-                indicatorWeight: 2,
-                tabPage: List.generate(list.length, (i) {
-                  return TopChild(tabDm.list[i]);
-                }),
-              );
-            },
-          )
+      body: body,
     );
   }
 
@@ -333,7 +338,7 @@ class _TopChildState extends State<TopChild> {
             PWidget.boxh(10),
             PWidget.text('$total', [Colors.black, 20]),
             PWidget.boxh(4),
-            PWidget.textNormal('我的金客', [Colors.black], ),
+            PWidget.textNormal(Global.appInfo.spreadLevel == 3 ? '我的金客' : '我的用户', [Colors.black], ),
               PWidget.boxh(4),
               PWidget.textNormal('去邀请 >',[Colours.app_main], {'fun':(){
                 onTapLogin(context, '/sharePage');

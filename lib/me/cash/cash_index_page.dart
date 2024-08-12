@@ -10,6 +10,7 @@ import 'package:maixs_utils/widget/views.dart';
 import 'package:maixs_utils/widget/widget_tap.dart';
 import 'package:sufenbao/me/cash/widgets/click_item.dart';
 
+import '../../dialog/extract_rule_dialog.dart';
 import '../../util/colors.dart';
 import '../../util/global.dart';
 import '../../service.dart';
@@ -52,7 +53,21 @@ class _CashIndexPageState extends State<CashIndexPage> {
   Widget build(BuildContext context) {
     return ScaffoldWidget(
         brightness: Brightness.dark,
-      appBar: buildTitle(context, title: '资金管理', widgetColor: Colors.black, leftIcon: Icon(Icons.arrow_back_ios)),
+      appBar: buildTitle(context, title: '资金管理', widgetColor: Colors.black,
+          leftIcon: Icon(Icons.arrow_back_ios),
+      rightWidget: PWidget.textNormal('提现规则', {'pd':[0,0,0,8]}), rightCallback: (){
+            showGeneralDialog(
+                context: context,
+                barrierDismissible:false,
+                barrierLabel: '',
+                transitionDuration: Duration(milliseconds: 200),
+                pageBuilder: (BuildContext context, Animation<double> animation,Animation<double> secondaryAnimation) {
+                  return Scaffold(backgroundColor: Colors.transparent, body:ExtractRuleDialog(
+                      {}, (){
+
+                  }));
+                });
+          }),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

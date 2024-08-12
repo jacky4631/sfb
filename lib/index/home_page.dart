@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage>
       if (!Global.isEmpty(content.trim()) && !Global.isOrder(content.trim())) {
         var length = content.length;
         //长度大于800 中止查券
-        if(length > 800) {
+        if(length > 1000) {
           return;
         }
 

@@ -51,17 +51,41 @@ class _HelpPage2State extends State<HelpPage2> {
                 ),
                 title: '产品功能'),
             createCard(
+                'invite',
+                icon: Icon(
+                  Icons.calculate_outlined,
+                  color: Colors.white,
+                  size: size,
+                ),
+                title: '邀请好友'),
+            createCard(
               'order',
                 icon: Icon(
-                  Icons.collections_bookmark,
+                  Icons.collections,
                   color: Colors.white,
                   size: size,
                 ),
                 title: '关于订单'),
             createCard(
+                'income',
+                icon: Icon(
+                  Icons.collections_bookmark,
+                  color: Colors.white,
+                  size: size,
+                ),
+                title: '关于收益'),
+            createCard(
+                'tixian',
+                icon: Icon(
+                  Icons.outbox,
+                  color: Colors.white,
+                  size: size,
+                ),
+                title: '关于提现'),
+            createCard(
               'youhui',
                 icon: Icon(
-                  Icons.calculate_outlined,
+                  Icons.countertops,
                   color: Colors.white,
                   size: size,
                 ),
@@ -74,15 +98,6 @@ class _HelpPage2State extends State<HelpPage2> {
                   size: size,
                 ),
                 title: '关于积分'),
-
-            createCard(
-                'tixian',
-                icon: Icon(
-                  Icons.calculate_outlined,
-                  color: Colors.white,
-                  size: size,
-                ),
-                title: '关于提现'),
           ],
           // squeeze: 1.0,
           // itemExtent: 180,

@@ -12,6 +12,7 @@ import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/me/fee/fee_page.dart';
 import 'package:sufenbao/util/global.dart';
 
+import '../../dialog/income_rule_dialog.dart';
 import '../../util/colors.dart';
 import '../../util/paixs_fun.dart';
 import '../../widget/order_tab_widget.dart';
@@ -39,14 +40,20 @@ class _FeeTabPageState extends State<FeeTabPage> {
   var tabDm = DataModel();
   ///初始化函数
   Future<int> initData() async {
-    tabDm.addList([
+    List list = [];
+    list.addAll([
       {'title':'总览','cid': 1},
       {'title':'自购','cid': 2},
-      {'title':'热度订单','cid': 7},
-      {'title':'金客','cid': 4},
-      {'title':'银客','cid': 5},
-      {'title':'已结算','cid': 6}
-    ], true, 0);
+      {'title':'热度订单','cid': 7}
+    ]);
+    if(Global.appInfo.spreadLevel == 3) {
+      list.add({'title':'金客','cid': 4});
+      list.add({'title':'银客','cid': 5});
+    } else {
+      list.add({'title':'用户','cid': 4});
+    }
+    list.add({'title':'已结算','cid': 6});
+    tabDm.addList(list, true, 0);
 
     setState(() {});
     return tabDm.flag;
@@ -69,7 +76,20 @@ class _FeeTabPageState extends State<FeeTabPage> {
             brightness: Brightness.light,
             appBar: buildTitle(context, title: widget.data['showName']!=null ? '${widget.data['showName']}的收益'
                 : '我的收益', widgetColor: Colors.white,
-                leftIcon: Icon(Icons.arrow_back_ios, color: Colors.white)),
+                leftIcon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                rightWidget: PWidget.textNormal('收益规则',[Colors.white], {'pd':[0,0,0,8]}), rightCallback: (){
+                  showGeneralDialog(
+                      context: context,
+                      barrierDismissible:false,
+                      barrierLabel: '',
+                      transitionDuration: Duration(milliseconds: 200),
+                      pageBuilder: (BuildContext context, Animation<double> animation,Animation<double> secondaryAnimation) {
+                        return Scaffold(backgroundColor: Colors.transparent, body:IncomeRuleDialog(
+                            {}, (){
+
+                        }));
+                      });
+                }),
             body: createGoodsList(),
           ),
         ],

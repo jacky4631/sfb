@@ -40,7 +40,7 @@ class _MyAppState extends State<ShopContractPage> {
     print("Start download file from internet!");
     try {
       String signContractUrl = widget.data == null ? "" : widget.data['url']??'';
-      final url = signContractUrl.isNotEmpty ? signContractUrl : Global.homeUrl['contractPreviewUrl'];
+      final url = signContractUrl.isNotEmpty ? signContractUrl : Global.appInfo.contractPreviewUrl??'';
       final filename = url.substring(url.lastIndexOf("/") + 1);
       var request = await HttpClient().getUrl(Uri.parse(url));
       var response = await request.close();

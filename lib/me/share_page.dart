@@ -13,6 +13,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sufenbao/util/repaintBoundary_util.dart';
 import 'package:sufenbao/widget/loading.dart';
 
+import '../dialog/invite_rule_dialog.dart';
 import '../service.dart';
 import '../share/ShareDialog.dart';
 import '../util/global.dart';
@@ -60,7 +61,20 @@ class _SharePageState extends State<SharePage> {
             leftIcon: Icon(
               Icons.arrow_back_ios,
               color: Colors.black,
-            )),
+            ),
+            rightWidget: PWidget.textNormal('邀请规则', {'pd':[0,0,0,8]}), rightCallback: (){
+              showGeneralDialog(
+                  context: context,
+                  barrierDismissible:false,
+                  barrierLabel: '',
+                  transitionDuration: Duration(milliseconds: 200),
+                  pageBuilder: (BuildContext context, Animation<double> animation,Animation<double> secondaryAnimation) {
+                    return Scaffold(backgroundColor: Colors.transparent, body:InviteRuleDialog(
+                        {}, (){
+
+                    }));
+                  });
+            }),
         body: createContent());
   }
 
@@ -98,7 +112,7 @@ class _SharePageState extends State<SharePage> {
                                 Positioned(
                                     top: 450.h,
                                     child: QrImageView(
-                                      data: Global.homeUrl['share'],
+                                      data: Global.appInfo.share,
                                       version: QrVersions.auto,
                                       size: 105,
                                       gapless: true,
@@ -246,9 +260,9 @@ class _SharePageState extends State<SharePage> {
     if (!Global.login) {
       return;
     }
-    String shareContent = Global.homeUrl['shareContent'];
+    String shareContent = Global.appInfo.shareContent;
     shareContent = shareContent
-        .replaceFirst("#url#", Global.homeUrl['share'])
+        .replaceFirst("#url#", Global.appInfo.share)
         .replaceFirst('#APPNAME#', APP_NAME);
     if (Global.userinfo != null) {
       shareContent = shareContent.replaceFirst(

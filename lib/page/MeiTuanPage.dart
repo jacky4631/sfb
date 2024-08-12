@@ -58,7 +58,7 @@ class _AliRedPageState extends State<MeiTuanPage> {
                 itemBuilder: (_, index) {
                   var activity = data[index];
                   var image = activity['img'];
-                  var imageRatio = 69/26;
+                  var imageRatio = 69/22;
                   return PWidget.container(
                       PWidget.stack([
                         PWidget.wrapperImage(

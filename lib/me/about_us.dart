@@ -141,40 +141,42 @@ class _AboutUsState extends State<AboutUs> {
     }
     String version = packageInfo.version;
     Map res = await BService.updateConfig();
-    if (res != null) {
-      String enable = res['enable'];
-      if (enable == '0') {
-        return;
-      }
-      String url;
-      String latestVersion;
-      if (Global.isIOS()) {
-        url = res['iosUrl'];
-        latestVersion = res['iosVersion'];
-      } else {
-        url = res['androidUrl'];
-        latestVersion = res['androidVersion'];
-      }
-      //1.0.15 需要判断第一个数字大于提示升级，第二个数字大于时提示升级 第三个数字大于时提示升级
-      List<String> curs = version.split('.');
-      List<String> las = latestVersion.split('.');
-      if (curs.length != las.length) {
-        return;
-      }
-      if(num.parse(las[0])>num.parse(curs[0])
-          || (num.parse(las[0])==num.parse(curs[0]) && num.parse(las[1])>num.parse(curs[1]))
-          || (curs.length > 2 && num.parse(las[0])==num.parse(curs[0]) &&
-              num.parse(las[1])==num.parse(curs[1]) &&
-              num.parse(las[2])>num.parse(curs[2]))) {
-        showSignDialog(context, title: '新版本上线啦', desc: '立即更新', okTxt: '去更新',
-            () {
-          LaunchApp.launchInBrowser(url);
-          // launchUrl(Uri.parse(url));
-        });
-      } else {
-        ToastUtils.showToast('暂无更新');
-        return;
-      }
+    if(res == null || res.isEmpty) {
+      return;
     }
+    String enable = res['enable']??'0';
+    if (enable == '0') {
+      return;
+    }
+    String url;
+    String latestVersion;
+    if (Global.isIOS()) {
+      url = res['iosUrl'];
+      latestVersion = res['iosVersion'];
+    } else {
+      url = res['androidUrl'];
+      latestVersion = res['androidVersion'];
+    }
+    //1.0.15 需要判断第一个数字大于提示升级，第二个数字大于时提示升级 第三个数字大于时提示升级
+    List<String> curs = version.split('.');
+    List<String> las = latestVersion.split('.');
+    if (curs.length != las.length) {
+      return;
+    }
+    if(num.parse(las[0])>num.parse(curs[0])
+        || (num.parse(las[0])==num.parse(curs[0]) && num.parse(las[1])>num.parse(curs[1]))
+        || (curs.length > 2 && num.parse(las[0])==num.parse(curs[0]) &&
+            num.parse(las[1])==num.parse(curs[1]) &&
+            num.parse(las[2])>num.parse(curs[2]))) {
+      showSignDialog(context, title: '新版本上线啦', desc: '立即更新', okTxt: '去更新',
+              () {
+            LaunchApp.launchInBrowser(url);
+            // launchUrl(Uri.parse(url));
+          });
+    } else {
+      ToastUtils.showToast('暂无更新');
+      return;
+    }
+
   }
 }

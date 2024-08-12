@@ -19,6 +19,7 @@ import 'package:maixs_utils/widget/views.dart';
 import 'package:shake_animation_widget/shake_animation_widget.dart';
 import 'package:sufenbao/index/widget/banner_widget.dart';
 import 'package:sufenbao/index/widget/tiles_widget.dart';
+import 'package:sufenbao/me/model/activity_info.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/custom.dart';
 import 'package:sufenbao/widget/CustomWidgetPage.dart';
@@ -118,8 +119,8 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   Future initShake() async {
-    if(Global.homeUrl['huodong']!= null) {
-      huodongImg = Global.homeUrl['huodong']['img'];
+    if(Global.appInfo.huodong!= null) {
+      huodongImg = Global.appInfo.huodong!.img;
     }
     if(Global.isEmpty(huodongImg)){
       return;
@@ -153,9 +154,9 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   Future showHuodongDialog() async {
-    Map? huodong = Global.homeUrl['huodong'];
+    ActivityInfo? huodong = Global.appInfo.huodong;
     String? todayString = await Global.getTodayString();
-    if (agree && huodong != null && huodong.isNotEmpty && todayString == null && !Global.isEmpty(huodong['img'])) {
+    if (agree && huodong != null && todayString == null && !Global.isEmpty(huodong.img)) {
       //如果今天没有显示过，
       Global.showHuodongDialog(huodong);
     }
@@ -172,11 +173,11 @@ class _FirstPageState extends State<FirstPage> {
       res.removeWhere((element) {
         return (element['link_type'] == 3 && element['id'] != 380) || element['id'] == 530;
       });
-      const List tbHbData = [
-        {'title':'淘宝看视频领红包', 'key':'pddbanner1',
-          'img': 'https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/tbhbbanner.jpg'}
-      ];
-      res.insertAll(0, tbHbData);
+      // const List tbHbData = [
+      //   {'title':'淘宝看视频领红包', 'key':'pddbanner1',
+      //     'img': 'https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/tbhbbanner.jpg'}
+      // ];
+      // res.insertAll(0, tbHbData);
       bannerDm.addList(res, true, 0);
     }
     setState(() {});
@@ -349,12 +350,12 @@ class _FirstPageState extends State<FirstPage> {
         ///抖动的幅度 取值范围为[0,1]
         shakeRange: 0.2,
         ///执行抖动动画的子Widget
-        child: PWidget.container(PWidget.wrapperImage(Global.homeUrl['huodong']['img'],[60,60],{'br':4}),
+        child: PWidget.container(PWidget.wrapperImage(Global.appInfo.huodong!.img,[60,60],{'br':4}),
             {'fun':() {
               setState(() {
                 showHuodong = false;
               });
-              Global.showHuodongDialog(Global.homeUrl['huodong'], delaySeconds: 0, fun: (){
+              Global.showHuodongDialog(Global.appInfo.huodong, delaySeconds: 0, fun: (){
                 setState(() {
                   showHuodong = true;
                 });

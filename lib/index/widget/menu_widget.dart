@@ -148,13 +148,6 @@ class _MenuWidgetState extends State<MenuWidget> {
   onTap(v) {
     if (v['type'] == '1') {
       Navigator.pushNamed(context, v['url']);
-    } else if (v['type'] == '2') {
-      if (Global.isIOS()) {
-        LaunchApp.launch(context, Global.homeUrl[v['url']], null,
-            webUrl: Global.homeUrl[v['url']]);
-      } else {
-        LaunchApp.launchApp(Global.homeUrl[v['url']]);
-      }
     } else {
       ///点击事件
       switch (v['title']) {

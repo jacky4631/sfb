@@ -10,10 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:sufenbao/util/launchApp.dart';
 
+import '../me/model/activity_info.dart';
 import '../util/paixs_fun.dart';
 
 class HuodongDialog extends Dialog {
-  final Map data;
+  final ActivityInfo data;
   final Function closeCallback;
   HuodongDialog(
     this.data,
@@ -25,7 +26,7 @@ class HuodongDialog extends Dialog {
   Widget build(BuildContext context) {
     return Stack(children: [
       PWidget.container(
-        PWidget.wrapperImage(data['img'], [
+        PWidget.wrapperImage(data.img, [
           350,
           350
         ], {
@@ -55,15 +56,12 @@ class HuodongDialog extends Dialog {
   }
 
   Future click(BuildContext context) async {
-    String package = data['package']??'';
-    String url = data['url'];
-    if (package.isEmpty) {
-      var data = LaunchApp.getPackageName(url);
-      package = data['package'];
-    }
+    String url = data.url;
+    var packageInfo = LaunchApp.getPackageName(url);
+    String package = packageInfo['package'];
     await LaunchApp.launch(context, url, package,
-        webUrl: data['webUrl'],
-        title: data['title'],
-        color: Color(int.parse('0xFF' + data['color']??'FFFFFF')));
+        webUrl: data.webUrl,
+        title: data.title,
+        color: Color(int.parse('0xFF' + data.color??'FFFFFF')));
   }
 }

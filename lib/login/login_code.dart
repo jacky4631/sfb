@@ -68,7 +68,7 @@ class _LoginCodeState extends State<LoginCode> {
 
   Future initSkipCode() async {
     //如果配置了全局可跳过 直接跳过
-    skipCode = Global.homeUrl['skipCode'] != null && Global.homeUrl['skipCode'] == '1';
+    skipCode = Global.appInfo.skipCode != null && Global.appInfo.skipCode == '1';
 
     //如果未配置跳过 校验是否是华为手机 是可跳过 因为华为不允许强制邀请码的app存在
     if(!skipCode) {

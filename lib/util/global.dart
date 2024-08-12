@@ -31,6 +31,8 @@ import '../dialog/contet_parse_dialog.dart';
 import '../dialog/huodong_dialog.dart';
 import '../dialog/pdd_auth_dialog.dart';
 import '../httpUrl.dart';
+import '../me/model/activity_info.dart';
+import '../me/model/app_info.dart';
 import '../me/model/commission_info.dart';
 import '../me/model/userinfo.dart';
 import '../widget/CustomWidgetPage.dart';
@@ -104,7 +106,7 @@ class Global {
   static int loginMustCode = 2;
   static Userinfo? userinfo;
   static CommissionInfo? commissionInfo;
-  static Map homeUrl = Map();
+  static AppInfo appInfo = AppInfo();
   static Future initPrefs() async {
     if(_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
@@ -116,7 +118,9 @@ class Global {
     if (token.isNotEmpty) {
       login = true;
     }
-    homeUrl = await BService.homeUrl();
+    Map<String, dynamic> data = await BService.homeUrl();
+
+    appInfo = AppInfo.fromJson(data);
   }
 
   static getDynamicCommission(num commission) {
@@ -307,8 +311,6 @@ class Global {
       Navigator.pushNamed(context, '/taoRedPage', arguments: v);
     } else if(v['title'] == '加盟') {
       onTapLogin(context, '/tabVip', args: {'index':0});
-    } else if(v['title'] == '低价爆款' || v['title'] == '1.9元包邮') {
-      await LaunchApp.launchApp(homeUrl[v['key']]);
     } else if(v['title'] == '捡漏清单') {
       Navigator.pushNamed(context, '/pickLeakPage', arguments: v);
     } else if (v['link_type'] == 4) {
@@ -402,7 +404,7 @@ class Global {
           tag = "gather_new";
           break;
       }
-      String url = '$BROWSER_BASE_URL${Global.homeUrl['kuCid']}&tmp=$tag&code=${Global.homeUrl['kuCid']}&sp=#/sp';
+      String url = '$BROWSER_BASE_URL${Global.appInfo.kuCid}&tmp=$tag&code=${Global.appInfo.kuCid}&sp=#/sp';
       Navigator.pushNamed(context, '/webview',
           arguments: {'url': url, 'title': v['title']});
     }
@@ -573,7 +575,7 @@ class Global {
         content: '您没有开启相机权限，开启后可用于设置头像、身份识别、人脸识别', okText: '去开启', cancelText: '我再想想',
         okPressed: pressed);
   }
-  static Future showHuodongDialog(data, {delaySeconds= 2, fun}) async {
+  static Future showHuodongDialog(ActivityInfo data, {delaySeconds= 2, fun}) async {
     if(dialogShowing) {
       return;
     }
@@ -696,38 +698,39 @@ class Global {
     }
     String version = packageInfo.version;
     Map res = await BService.updateConfig();
-    if(res != null) {
-      int enable = res['enable'];
-      if(enable == 0) {
-        return;
-      }
-      String url;
-      String latestVersion;
-      if(Global.isIOS()) {
-        url = res['iosUrl'];
-        latestVersion = res['iosVersion'];
-      } else {
-        url = res['androidUrl'];
-        latestVersion = res['androidVersion'];
-      }
-      //1.0.15 需要判断第一个数字大于提示升级，第二个数字大于时提示升级 第三个数字大于时提示升级
-      List<String> curs = version.split('.');
-      List<String> las = latestVersion.split('.');
-      if(curs.length != las.length) {
-        return;
-      }
-      if(num.parse(las[0])>num.parse(curs[0])
-          || (num.parse(las[0])==num.parse(curs[0]) && num.parse(las[1])>num.parse(curs[1]))
-          || (curs.length > 2 && num.parse(las[0])==num.parse(curs[0]) &&
-              num.parse(las[1])==num.parse(curs[1]) &&
-              num.parse(las[2])>num.parse(curs[2]))) {
-        int forceUpdate = res['forceUpdate'];
-        showSignDialog(context, title:'新版本上线啦', desc: '立即更新', okTxt: '去更新',
-            forceUpdate: forceUpdate==1, (){
-          LaunchApp.launchInBrowser(url);
-          // launchUrl(Uri.parse(url));
-        });
-      }
+    if(res == null || res.isEmpty) {
+      return;
+    }
+    int enable = res['enable']??'0';
+    if(enable == 0) {
+      return;
+    }
+    String url;
+    String latestVersion;
+    if(Global.isIOS()) {
+      url = res['iosUrl'];
+      latestVersion = res['iosVersion'];
+    } else {
+      url = res['androidUrl'];
+      latestVersion = res['androidVersion'];
+    }
+    //1.0.15 需要判断第一个数字大于提示升级，第二个数字大于时提示升级 第三个数字大于时提示升级
+    List<String> curs = version.split('.');
+    List<String> las = latestVersion.split('.');
+    if(curs.length != las.length) {
+      return;
+    }
+    if(num.parse(las[0])>num.parse(curs[0])
+        || (num.parse(las[0])==num.parse(curs[0]) && num.parse(las[1])>num.parse(curs[1]))
+        || (curs.length > 2 && num.parse(las[0])==num.parse(curs[0]) &&
+            num.parse(las[1])==num.parse(curs[1]) &&
+            num.parse(las[2])>num.parse(curs[2]))) {
+      int forceUpdate = res['forceUpdate'];
+      showSignDialog(context, title:'新版本上线啦', desc: '立即更新', okTxt: '去更新',
+          forceUpdate: forceUpdate==1, (){
+            LaunchApp.launchInBrowser(url);
+            // launchUrl(Uri.parse(url));
+          });
     }
   }
 

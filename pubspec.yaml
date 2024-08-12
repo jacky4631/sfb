@@ -1,6 +1,6 @@
 name: sufenbao
 description: sufenbao
-version: 3.1.2+99
+version: 3.1.8+101
 
 environment:
   sdk: ">=3.0.0"
@@ -118,9 +118,6 @@ flutter:
     - family: BaoIcons
       fonts:
         - asset: assets/fonts/icomoon.ttf
-    - family: headlinea
-      fonts:
-        - asset: assets/fonts/Alimama_ShuHeiTi_Bold.ttf
 
 flutter_intl:
   enabled: true

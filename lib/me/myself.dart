@@ -184,15 +184,13 @@ class _MySelfPageState extends State<MySelfPage>
     }
     await initUserFee();
     var cateId = '185';
-    if(Global.homeUrl['myCateId'] != null) {
-      cateId = Global.homeUrl['myCateId'];
-    } else {
-      var resCate = await BService.pickCate().catchError((v) {
-      });
-      if (resCate != null && resCate.isNotEmpty) {
-        cateId = resCate[0]['id'];
-      }
+
+    var resCate = await BService.pickCate().catchError((v) {
+    });
+    if (resCate != null && resCate.isNotEmpty) {
+      cateId = resCate[0]['id'];
     }
+
     var res = await BService.pickList(page, cateId).catchError((v) {
       listDm.toError('网络异常');
     });

@@ -46,7 +46,7 @@ class _AliRedPageState extends State<AliRedPage> {
           titleBarView(),
           PWidget.positioned(
             PWidget.container(
-              PWidget.text('复制 ${Global.homeUrl['alired']} 打开支付宝去搜索，红包拿来，实惠优享', [Colors.white, 12],{'max':2},),
+              PWidget.text('复制 ${Global.appInfo.alired} 打开支付宝去搜索，红包拿来，实惠优享', [Colors.white, 12],{'max':2},),
               [200, 60, Colors.transparent],
               {},
             ),
@@ -83,7 +83,7 @@ class _AliRedPageState extends State<AliRedPage> {
         // PWidget.text('复制口令，支付宝搜索领红包', [Color(0xFF7AB4FE), 14, true], {'ct': true}),
         {'pd': [8,MediaQuery.of(context).padding.bottom+8,70,70],
           'fun': () => {
-          FlutterClipboard.copy(Global.homeUrl['alired']).then(
+          FlutterClipboard.copy(Global.appInfo.alired).then(
                   (value){
                     ToastUtils.showToast('复制成功', bgColor: Color(0xFF4283D5));
         }

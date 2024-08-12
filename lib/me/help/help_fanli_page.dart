@@ -37,7 +37,7 @@ class _HelpFanliState extends State<HelpFanliPage> {
       brightness: Brightness.light,
       bgColor: Colours.app_main,
       appBar: buildTitle(context,
-          title: '拆红包教程',
+          title: '开红包教程',
           widgetColor: Colors.white,
           leftIcon: Icon(
             Icons.arrow_back_ios,
@@ -49,7 +49,7 @@ class _HelpFanliState extends State<HelpFanliPage> {
         return getWidgets()[i];
       }), {
         'wali': [0.0, 0.0],
-        'pd': [0,    20, 20, 20]
+        'pd': [0, 20, 20, 20]
       }),
     );
   }

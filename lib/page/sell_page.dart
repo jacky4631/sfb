@@ -258,7 +258,7 @@ class _SellPageState extends State<SellPage> {
       vars += '$key=${shareMap[key]}&';
     }
 
-    String longUrl = '${Global.homeUrl['shareGoods']}?$vars';
+    String longUrl = '${Global.appInfo.shareGoods}?$vars';
     //由接口做urlencode
     shareUrl = await BService.shortLink(Uri.encodeComponent(longUrl));
     setState(() {

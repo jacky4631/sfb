@@ -175,7 +175,7 @@ class _PayWebViewState extends State<PayWebView> with WidgetsBindingObserver {
       },
       onUpdateVisitedHistory: (controller, url, androidIsReload) {
         String urlStr = url.toString();
-        if (urlStr.startsWith(Global.homeUrl['yeePaySuccUrl'])||urlStr.startsWith(Global.homeUrl['yeePayFailUrl'])) {
+        if (urlStr.startsWith(Global.appInfo.yeePaySuccUrl??'')||urlStr.startsWith(Global.appInfo.yeePayFailUrl??'')) {
           //记录订单成功失败情况
           BService.rechargeResult(widget.data['orderId'], url.toString());
           Future.delayed(new Duration(seconds: 2), () {

@@ -90,8 +90,8 @@ class ShareDialog {
   }
   static show(BuildContext context, {shareText}) {
     if(Global.isEmpty(shareText)) {
-      String shareContent = Global.homeUrl['shareContent'];
-      shareContent = shareContent.replaceFirst("#url#", Global.homeUrl['share'])
+      String shareContent = Global.appInfo.shareContent;
+      shareContent = shareContent.replaceFirst("#url#", Global.appInfo.share)
           .replaceFirst('#APPNAME#', APP_NAME);
       if(Global.userinfo!=null) {
         shareContent = shareContent.replaceFirst("#code#", '邀请口令：${Global.userinfo!.code}\n━┉┉┉┉∞┉┉┉┉━\n');

@@ -43,13 +43,13 @@ class _TaoRedPageState extends State<TaoRedPage> {
             PWidget.stack([
               PWidget.wrapperImage('https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/tbhb2.jpg',
                   {'ar': 750 / 123}),
-              PWidget.textNormal('67💲I7udWmNlxLd₴ ${Global.homeUrl['taored']}  CZ0002 最少0.3元，至高2500元！帮我助力，你也可以领~'
+              PWidget.textNormal('67💲I7udWmNlxLd₴ ${Global.appInfo.taored}  CZ0002 最少0.3元，至高2500元！帮我助力，你也可以领~'
               ,[Colors.white], {'max':3, 'pd':[4, 2, 32, 24]})
             ]),
             
             PWidget.wrapperImage('https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/tbhb4.jpg',
                 {'ar': 750 / 146, 'fun':(){
-                  LaunchApp.launchTb(context, Global.homeUrl['taored']);
+                  LaunchApp.launchTb(context, Global.appInfo.taored);
                 }}),
           ]),
 

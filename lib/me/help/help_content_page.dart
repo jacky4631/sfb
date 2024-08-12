@@ -8,6 +8,7 @@ import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
+import '../../util/colors.dart';
 import '../../util/global.dart';
 
 class HelpContentPage extends StatefulWidget {
@@ -37,11 +38,11 @@ class _HelpContentPageState extends State<HelpContentPage> {
       appBar: buildTitle(context,
           title: widget.data['title'],
           widgetColor: Colors.black,
-          leftIcon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          )),
-      body: ListView.builder(
+          leftIcon: Icon(Icons.arrow_back_ios)
+      ),
+      body: ScaffoldWidget(
+        bgColor: Colours.bg_color,
+        body: ListView.builder(
         itemCount: list.length,
         itemBuilder: (_, index) {
           Map data = list[index];
@@ -54,23 +55,23 @@ class _HelpContentPageState extends State<HelpContentPage> {
                 width: double.infinity,
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Color(0xFF242526)
-                    : Color(0xFFFAFAFA),
+                    : Colors.grey[100],
                 padding: const EdgeInsets.only(left: 8.0),
                 height: 34.0,
-                child: PWidget.text(data['title'], [Colors.black, 16, true]),
+                child: PWidget.textNormal(data['title'], [Colors.black, 14, true]),
               ),
               content: _buildItem(index, data),
             ),
           );
         },
       ),
-    );
+    ));
   }
 
   Widget _buildItem(int index, Map record) {
     Widget container = PWidget.container(
       MergeSemantics(
-        child: PWidget.textNormal(record['content'],[Colors.black, 14, ],{'isOf':false}),
+        child: PWidget.textNormal(record['content'],[Colors.black, 14],{'isOf':false}),
       ),
       {'pd':[8,8,12,8]}
     );
@@ -89,7 +90,7 @@ const Map<String, List> helpData = {
     {
       'title': '红包怎么拆',
       'content':
-      '等待订单七天解锁，即可在“订单中心”拆开，部分异常订单需要等到下个月21号方可解锁拆开'
+      '等待订单七天解锁，即可在“订单中心”拆开，部分异常订单需要等到下个月21号方可解锁拆开。'
     },
     {
       'title': '一次买多个商品怎么做',
@@ -98,7 +99,7 @@ const Map<String, List> helpData = {
     },
     {
       'title':'除了淘宝天猫外，支持京东、拼多多么',
-      'content':'除淘宝天猫外，同时支持京东、拼多多、唯品会和抖音平台。'
+      'content':'除淘宝天猫外，同时支持京东、拼多多、美团外卖、唯品会和抖音平台。'
     },
     {
       'title': '怎么联系客服',
@@ -128,7 +129,7 @@ const Map<String, List> helpData = {
     {
       'title': '领取优惠券时，为什么提示“券已失效”',
       'content':
-      '有两种情况：\n\t① 超过了优惠券的领取期限；\n\t② 优惠券已经领完啦（下次请趁早！）'
+      '有两种情况：\n\t① 超过了优惠券的领取期限；\n\t② 优惠券已经领完啦（下次请趁早！）。'
     },
     {
       'title': '为什么付款价与标注的券后价不一致',
@@ -147,12 +148,12 @@ const Map<String, List> helpData = {
     {
       'title': '订单记录哪里查看',
       'content':
-      '首页点击右下角【我的】，进入个人中心，在【订单明细】查看订单明细'
+      '首页点击右下角【我的】，进入个人中心，在【订单明细】查看订单明细。'
     },
     {
       'title': '订单明细无法看到订单怎么办',
       'content':
-      '首页点击右下角【我的】，进入个人中心，在【订单找回】提交订单'
+      '首页点击右下角【我的】，进入个人中心，在【订单找回】提交订单。'
     },
     {'title':'订单找回失败怎么办',
     'content':'订单找回失败的原因一般如下：\n\t① 未通过$APP_NAME付款的订单，则找回失败。\n\t② 从你之前的购物车或待付款页面下单，则找回失败。\n\t③ 付款使用了淘宝红包，则找回失败。\n\t解决方法：退款重新拍；非以上原因，可联系客服协助解决。'},
@@ -197,30 +198,91 @@ const Map<String, List> helpData = {
   'jifen':[
     {
       'title':'积分怎么获得',
-      'content':'通过平台购买的商品都可获得10积分，其他积分获取方式敬请期待'
-    },
-    {
-      'title':'下单后没有获得积分怎么办',
-      'content':'订单需提交到平台，等待拆开红包后方可获得积分，没有自动提交的订单可以手动找回，首页点击右下角【我的】，进入个人中心，在【订单找回】提交订单'
+      'content':'通过平台签到可获得积分，其他积分获取方式敬请期待。'
     },
     {
       'title':'积分可以用来干什么',
-      'content':'① 积分可以兑换各种商品，首页点击右下角【我的】，进入个人中心，在【积分商城】兑换商品'
+      'content':'① 积分可以兑换各种商品，首页点击右下角【我的】，进入个人中心，在【积分商城】兑换商品。'
     },
   ],
 
   'tixian':[
     {
       'title':'如何提现',
-      'content':'首页点击右下角【我的】，进入个人中心，点击【立即提现】'
+      'content':'首页点击右下角【我的】，进入个人中心，点击【立即提现】->【提现】。'
     },
     {
       'title':'提现后打款到哪里',
-      'content':'目前仅支持提现到【支付宝】'
+      'content':'目前仅支持提现到【支付宝】。'
     },
     {
       'title':'提现后多久到账',
-      'content':'T+1天到账(T为工作日)'
+      'content':'T+1天到账(T为工作日)。'
+    },
+    {
+      'title':'提现金额限制多少',
+      'content':'单次最低提现金额1元，每天可提现一次。'
+    },
+    {
+      'title':'待解锁金额如何查看多久解锁',
+      'content':'【我的】->【立即提现】->【资金明细】。'
+    },
+  ],
+  'invite':[
+    {
+      'title':'如何邀请好友',
+      'content':'首页点击右下角【我的】，进入个人中心，点击【分享APP】，可以通过海报、链接和直接分享的方式邀请好友。'
+    },
+    {
+      'title':'邀请的好友如何查看',
+      'content':'首页点击右下角【我的】，进入个人中心，点击【粉丝】。'
+    },
+    {
+      'title':'什么是金客和银客',
+      'content':'金客是你自己邀请的好友，银客是你好友邀请的好友。'
+    },
+    {
+      'title':'邀请好友有直接奖励吗',
+      'content':'没有直接奖励，但是分享的好友在平台下单时，推荐人可以获得推荐奖金。'
+    },
+    {
+      'title':'邀请多少好友可以升级为VIP',
+      'content':'APP目前没有会员等级设置，但是邀请的好友下单越多，推荐奖金越多。'
+    },
+    {
+      'title':'用户下单我能得到多少奖金',
+      'content':'用户开红包奖金的20%，比如金客开红包得到100元，你能得到20元。'
+    },
+  ],
+
+  'income':[
+    {
+      'title':'如何得到收益',
+      'content':'1.自己在平台下单；2.用户在平台下单；3.分享商品海报。'
+    },
+    {
+      'title':'如何查看收益明细',
+      'content':'【我的】->【收益预估】。'
+    },
+    {
+      'title':'在平台下单后多久能提现',
+      'content':'在平台下单后打开订单红包，等待账单7天解锁方可提现。'
+    },
+    {
+      'title':'如何打开订单红包',
+      'content':'【我的】->【订单中心】，下单后可以立即打开。'
+    },
+    {
+      'title':'如何查看账单解锁时间',
+      'content':'【我的】->【立即提现】->【资金明细】。'
+    },
+    {
+      'title':'如何分享商品海报',
+      'content':'点击平台任一商品进入详情，点击【分享】。'
+    },
+    {
+      'title':'用户下单我能得到多少奖金',
+      'content':'用户开红包奖金的20%，比如用户开红包得到100元，你能得到20元。'
     },
   ]
 };

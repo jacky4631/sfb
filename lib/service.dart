@@ -214,7 +214,7 @@ abstract class BService {
     );
     return res.data;
   }
-  static Future<Map> homeUrl() async {
+  static Future<Map<String, dynamic>> homeUrl() async {
     var res = await suClient.get(
       API.homeUrl,
     );
@@ -1324,7 +1324,7 @@ abstract class BService {
     var res = await suClient.get(
       API.updateConfig,
     );
-    return res.data['data'];
+    return res.data['data']??{};
   }
 
   static Future<Map> getEnergy() async {

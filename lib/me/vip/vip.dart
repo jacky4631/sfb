@@ -178,37 +178,56 @@ class _VipPageState extends State<VipPage> {
           ToastUtils.showToast('自购可获得$term红包奖励');
         }
       }];
+    if(Global.appInfo.spreadLevel == 2) {
+      if(dOne > 0) {
+        list.add({'type': 1, 'path': 'assets/svg/fans.svg', 'title': '用户订单奖励',
+          'content': '用户订单额外奖励','color':Color(0XFFFFD700),
+          'fun': () {
+            ToastUtils.showToast('奖励用户订单拆红包的$dOne%');
+          }
+        });
+      }
+      if (selectedGrade != 1) {
+        list.add({'type': 1, 'path': 'assets/svg/member.svg', 'title': '用户加盟奖励',
+          'content': '用户加盟返红包','color':Color(0XFFFFD700),
+          'fun': () {
+            ToastUtils.showToast('奖励用户加盟的${userinfo['storeBrokerageRatio']}%');
+          }
+        });
+      }
+    } else {
+      if(dOne > 0) {
+        list.add({'type': 1, 'path': 'assets/svg/fans.svg', 'title': '金客订单奖励',
+          'content': '金客订单额外奖励','color':Color(0XFFFFD700),
+          'fun': () {
+            ToastUtils.showToast('奖励金客订单拆红包的$dOne%');
+          }
+        });
+      }
+      if(dTwo > 0) {
+        list.add({'type': 1, 'path': 'assets/svg/fans.svg', 'title': '银客订单奖励',
+          'content': '银客订单额外奖励','color':Color(0XFFC0C0C0),
+          'fun': () {
+            ToastUtils.showToast('奖励银客订单拆红包的$dTwo%');
+          }
+        });
+      }
+      if (selectedGrade != 1) {
+        list.add({'type': 1, 'path': 'assets/svg/member.svg', 'title': '金客加盟奖励',
+          'content': '金客加盟返红包','color':Color(0XFFFFD700),
+          'fun': () {
+            ToastUtils.showToast('奖励金客加盟的${userinfo['storeBrokerageRatio']}%');
+          }
+        });
+        list.add({'type': 1, 'path': 'assets/svg/member.svg', 'title': '银客加盟奖励',
+          'content': '银客加盟返红包','color':Color(0XFFC0C0C0),
+          'fun': () {
+            ToastUtils.showToast('奖励银客加盟的${userinfo['storeBrokerageTwo']}%');
+          }
+        });
+      }
+    }
 
-    if(dOne > 0) {
-      list.add({'type': 1, 'path': 'assets/svg/fans.svg', 'title': '金客订单奖励',
-        'content': '金客订单额外奖励','color':Color(0XFFFFD700),
-        'fun': () {
-          ToastUtils.showToast('奖励金客订单拆红包的$dOne%');
-        }
-      });
-    }
-    if(dTwo > 0) {
-      list.add({'type': 1, 'path': 'assets/svg/fans.svg', 'title': '银客订单奖励',
-        'content': '银客订单额外奖励','color':Color(0XFFC0C0C0),
-        'fun': () {
-          ToastUtils.showToast('奖励银客订单拆红包的$dTwo%');
-        }
-      });
-    }
-    if (selectedGrade != 1) {
-      list.add({'type': 1, 'path': 'assets/svg/member.svg', 'title': '金客加盟奖励',
-        'content': '金客加盟返红包','color':Color(0XFFFFD700),
-        'fun': () {
-          ToastUtils.showToast('奖励金客加盟的${userinfo['storeBrokerageRatio']}%');
-        }
-      });
-      list.add({'type': 1, 'path': 'assets/svg/member.svg', 'title': '银客加盟奖励',
-        'content': '银客加盟返红包','color':Color(0XFFC0C0C0),
-        'fun': () {
-          ToastUtils.showToast('奖励银客加盟的${userinfo['storeBrokerageTwo']}%');
-        }
-      });
-    }
     list.add({'type': 1, 'path': 'assets/svg/iphone.svg', 'title': '积分兑换', 'icon': BaoIcons.shop,
       'content': '苹果手机可兑',
       'fun': () {
