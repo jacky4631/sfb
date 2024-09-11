@@ -29,6 +29,11 @@
 ~~~
 ---
 
+### 🎬 系统演示
+[https://docs-sfb.mailvor.com](https://docs-sfb.mailvor.com/)
+
+---
+
 ### 💟 UI界面
 
 #### 📱 移动端预览
@@ -41,18 +46,6 @@
 <img src="demoimages/4.png" title="" alt="image">
 <img src="demoimages/5.png" title="" alt="image">
 <img src="demoimages/6.png" title="" alt="image">
-
----
-
-### 📞 服务端源码咨询
-![](demoimages/qr.jpg)
-
----
-
-### 🎬 系统演示：
-移动端：应用市场搜索【苏分宝】 or 扫描下面二维码<br>
-
-![](demoimages/app.png)
 
 ---
 
