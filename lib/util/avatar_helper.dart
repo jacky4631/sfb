@@ -26,12 +26,12 @@ class AvatarHelper{
         File file = await assets[0].file ??File('a');
 
         CroppedFile? croppedFile = await ImageCropper().cropImage(
-          cropStyle: CropStyle.circle,
+          // cropStyle: CropStyle.circle,
           compressQuality: 30,
           sourcePath: file.path,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square
-          ],
+          // aspectRatioPresets: [
+          //   CropAspectRatioPreset.square
+          // ],
           uiSettings: [
             AndroidUiSettings(
                 toolbarTitle: '裁剪头像',
