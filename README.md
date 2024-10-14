@@ -66,7 +66,7 @@
 ---
 
 ### 🎬 系统演示
-[https://docs-sfb.mailvor.com/docs/demo/demo.html](https://docs-sfb.mailvor.com/docs/demo/demo.html)
+[演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
 
 ---
 
@@ -111,7 +111,7 @@
 ---
 ### 🪪 版权信息
 本项目包含的第三方源码和二进制文件之版权信息另行标注。<br>
-版权所有Copyright © 2018-2024 by MAILVOR (https://www.mailvor.com)<br>
+版权所有Copyright © 2018-2024 by MAILVOR<br>
 All rights reserved。<br>
 苏分宝 商标和著作权所有者为苏州迈沃通信有限公司。<br>
 
