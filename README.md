@@ -66,7 +66,7 @@
 ---
 
 ### 🎬 系统演示
-[https://docs-sfb.mailvor.com](https://docs-sfb.mailvor.com/)
+[https://docs-sfb.mailvor.com/docs/demo/demo.html](https://docs-sfb.mailvor.com/docs/demo/demo.html)
 
 ---
 
