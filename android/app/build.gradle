@@ -91,6 +91,7 @@ flutter {
 configurations {
     all*.exclude group:"com.mpaas.android.anotations", module:"anotations-build"
     all*.exclude group:"com.mpaas.toyger", module: "toyger-build"
+    all*.exclude group:"com.alipay.android.phone.thirdparty", module: "utdid-build"
 }
 dependencies {
     implementation 'com.android.support:multidex:1.0.3'
