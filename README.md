@@ -61,7 +61,7 @@
 3.后台服务 Java SpringBoot + Mybatis-plus + Mysql + redis
 4.运行环境 linux, 需要Java环境和对应的数据库 redis
 5.运行条件 Java 1.8 Mysql5.7
-6.移动端调试环境 AndroidStudio Flutter3.24.3 Dart3.5.3
+6.移动端调试环境 AndroidStudio Flutter3.24.4 Dart3.5.4
 ~~~
 ---
 
@@ -96,8 +96,8 @@
 6. node 14
 7. vue 2.x
 8. element ui 2.13
-9. Flutter3.24.3
-10.Dart3.5.3
+9. Flutter3.24.4
+10.Dart3.5.4
 ~~~
 
 ---

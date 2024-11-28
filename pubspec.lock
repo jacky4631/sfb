@@ -514,17 +514,17 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2.0.1"
-      resolved-ref: af627ab1188cb9db23f63d5460e6a98c1e4cc788
+      ref: HEAD
+      resolved-ref: "20b341272bfa5263bc75fb0c7f78539f05f472c9"
       url: "https://gitee.com/jacky4631/flutter_ali_face_verify.git"
     source: git
-    version: "0.0.1"
+    version: "2.0.1"
   flutter_alibc:
     dependency: "direct main"
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "71efa896cd5bbe722e2f3db5a32e8979da61b6de"
+      resolved-ref: b20f75f3066debbd137d8dc718163d4f1d9b245f
       url: "https://gitee.com/jacky4631/flutter_alibc_kit.git"
     source: git
     version: "1.0.0-nullsafety"
@@ -832,11 +832,12 @@ packages:
   image_gallery_saver:
     dependency: "direct main"
     description:
-      name: image_gallery_saver
-      sha256: "467de169167b5c4e1ddde65395e4653c336a82f760b6700ea295085b7f2dd248"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.0.2"
+      path: "."
+      ref: HEAD
+      resolved-ref: b90100109202304f6c79c276020d0aa15d75d10f
+      url: "https://gitee.com/jacky4631/image_gallery_saver.git"
+    source: git
+    version: "2.0.3"
   image_picker:
     dependency: "direct main"
     description:
@@ -1196,6 +1197,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.1"
+  pay_ios:
+    dependency: "direct main"
+    description:
+      name: pay_ios
+      sha256: d87ccd6a25ea843bd88f689155543067d83a82c5f6ff963a6876f402820bf6c1
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.12"
+  pay_platform_interface:
+    dependency: transitive
+    description:
+      name: pay_platform_interface
+      sha256: "39a9f5fa4bafc59ce103bd5e84a6362113c6e58c361aed8dde9494b182fac400"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
   permission_handler:
     dependency: "direct main"
     description:
@@ -1253,13 +1270,13 @@ packages:
     source: hosted
     version: "6.0.2"
   photo_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: photo_manager
-      sha256: "1ddee48659025df5c80153a2e85c3fa0f5b5733ecffcda9769a9447da2c51352"
+      sha256: dc26184676b26d722d656073ca8fe29203d7631ec613aed1a9679de3aa1f52c2
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.1"
+    version: "3.6.3"
   photo_manager_image_provider:
     dependency: transitive
     description:
@@ -1449,8 +1466,8 @@ packages:
     description:
       path: shanyan
       ref: "v2.3.4.5"
-      resolved-ref: "2008dbf013b7f40c74cb5360b304208ed7091ede"
-      url: "https://gitee.com/chuanglan253/CLShanYan_Flutter.git"
+      resolved-ref: "0ae9dced21c94be981a364fa0e7e0399ef8284fd"
+      url: "https://gitee.com/jacky4631/CLShanYan_Flutter.git"
     source: git
     version: "2.3.4"
   shared_preferences:
@@ -1695,7 +1712,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "375533191ab7162396341d8a75be3a2f871aeee5"
+      resolved-ref: d30291835f89136069f5245a4e066905a8c17220
       url: "https://gitee.com/jacky4631/tobias.git"
     source: git
     version: "2.4.1"
