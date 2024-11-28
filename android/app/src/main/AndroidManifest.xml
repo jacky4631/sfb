@@ -128,5 +128,30 @@
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
             android:theme="@style/MyTheme" />
+
+        <activity
+            android:name="com.alibaba.alibclinkpartner.smartlink.ALPEntranceActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.alibaba.intent.action.GETWAY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="linkpartner"
+                    android:pathPrefix="/entrance"
+                    android:scheme="tbopen" />
+            </intent-filter>
+        </activity>
+        <receiver android:name="com.alibaba.baichuan.trade.biz.login.LoginBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="NOTIFY_LOGIN_SUCCESS" />
+                <action android:name="NOTIFY_LOGIN_FAILED" />
+                <action android:name="NOTIFY_LOGIN_CANCEL" />
+                <action android:name="NOTIFY_LOGOUT" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
