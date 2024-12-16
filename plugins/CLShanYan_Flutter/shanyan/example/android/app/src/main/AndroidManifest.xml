@@ -1,0 +1,59 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.shanyan_example">
+
+    <!-- io.flutter.app.FlutterApplication is an android.app.Application that
+         calls FlutterMain.startInitialization(this); in its onCreate method.
+         In most cases you can leave this as-is, but you if you want to provide
+         additional functionality it is fine to subclass or reimplement
+         FlutterApplication and put your custom class here. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <application
+        android:icon="@mipmap/appicon"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/appicon"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+        <activity
+            android:name="io.flutter.embedding.android.FlutterActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize">
+            <!-- This keeps the window background of the activity showing
+                 until Flutter renders its first frame. It can be removed if
+                 there is no splash screen (such as the default splash screen
+                 defined in @style/LaunchTheme). -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!--一键登录SDK授权页activity-->
+        <activity
+            android:name="com.chuanglan.shanyan_sdk.view.ShanYanOneKeyActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/MyTheme" />
+        <!--一键登录SDK协议页页activity-->
+        <activity
+            android:name="com.chuanglan.shanyan_sdk.view.CTCCPrivacyProtocolActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/MyTheme" />
+    </application>
+</manifest>

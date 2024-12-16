@@ -1,0 +1,125 @@
+PODS:
+  - AlipayVerifySDK (1.0.0.230217114243):
+    - AliyunIdentityManager
+    - APBToygerFacade
+    - APPSecuritySDK
+    - BioAuthAPI
+    - BioAuthEngine
+    - MPRemoteLogging
+    - OCRDetectSDKForTech
+    - ToygerService
+    - ZolozIdentityManager
+    - ZolozMobileRPC
+    - ZolozOpenPlatformBuild
+    - ZolozSensorServices
+    - ZolozUtility
+  - AliyunIdentityManager (1.0.0.230217114243):
+    - BioAuthEngine
+    - ZolozUtility
+  - AntVerify (1.0.0.230307112238):
+    - AlipayVerifySDK (= 1.0.0.230217114243)
+    - AliyunIdentityManager (= 1.0.0.230217114243)
+    - APBToygerFacade (= 1.2.10.221207104319)
+    - APPSecuritySDK (= 1.0.0.210812160250)
+    - BioAuthAPI (= 1.0.0.210506154224)
+    - BioAuthEngine (= 1.3.1.221207104143)
+    - MPRemoteLogging (= 1.3.1.230207193350)
+    - OCRDetectSDKForTech (= 1.0.0.220316184537)
+    - ToygerService (= 1.3.1.220419170722)
+    - ZolozIdentityManager (= 1.0.0.210205102931)
+    - ZolozMobileRPC (= 1.0.0.220316184537)
+    - ZolozOpenPlatformBuild (= 1.3.1.230207140645)
+    - ZolozSensorServices (= 1.3.1.221206174816)
+    - ZolozUtility (= 1.0.0.221014160516)
+  - APBToygerFacade (1.2.10.221207104319):
+    - BioAuthEngine
+    - ToygerService
+    - ZolozUtility
+  - APPSecuritySDK (1.0.0.210812160250)
+  - BioAuthAPI (1.0.0.210506154224)
+  - BioAuthEngine (1.3.1.221207104143):
+    - BioAuthAPI
+    - ZolozSensorServices
+    - ZolozUtility
+  - Flutter (1.0.0)
+  - flutter_ali_face_verify (0.0.1):
+    - AntVerify (= 1.0.0.230307112238)
+    - Flutter
+  - MPRemoteLogging (1.3.1.230207193350)
+  - OCRDetectSDKForTech (1.0.0.220316184537):
+    - AliyunIdentityManager
+    - BioAuthEngine
+    - ZolozSensorServices
+  - ToygerService (1.3.1.220419170722):
+    - APPSecuritySDK
+    - ZolozSensorServices
+    - ZolozUtility
+  - ZolozIdentityManager (1.0.0.210205102931):
+    - AliyunIdentityManager
+    - BioAuthEngine
+    - ZolozUtility
+  - ZolozMobileRPC (1.0.0.220316184537)
+  - ZolozOpenPlatformBuild (1.3.1.230207140645):
+    - AliyunIdentityManager
+    - APBToygerFacade
+    - APPSecuritySDK
+    - BioAuthAPI
+    - BioAuthEngine
+    - MPRemoteLogging
+    - ToygerService
+    - ZolozMobileRPC
+    - ZolozSensorServices
+    - ZolozUtility
+  - ZolozSensorServices (1.3.1.221206174816)
+  - ZolozUtility (1.0.0.221014160516)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_ali_face_verify (from `.symlinks/plugins/flutter_ali_face_verify/ios`)
+
+SPEC REPOS:
+  https://code.aliyun.com/mpaas-public/podspecs.git:
+    - AlipayVerifySDK
+    - AliyunIdentityManager
+    - AntVerify
+    - APBToygerFacade
+    - APPSecuritySDK
+    - BioAuthAPI
+    - BioAuthEngine
+    - MPRemoteLogging
+    - OCRDetectSDKForTech
+    - ToygerService
+    - ZolozIdentityManager
+    - ZolozMobileRPC
+    - ZolozOpenPlatformBuild
+    - ZolozSensorServices
+    - ZolozUtility
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_ali_face_verify:
+    :path: ".symlinks/plugins/flutter_ali_face_verify/ios"
+
+SPEC CHECKSUMS:
+  AlipayVerifySDK: 53b9578d01c3f5a415317bc898e6392a8c11baa6
+  AliyunIdentityManager: 1cb5fe8d40e2ecc31c301c4d11c79c63bde58b0e
+  AntVerify: d19ee57d1772226fba4beb18fddbf66fd5b847a0
+  APBToygerFacade: dfdf99f355603ad71d20b5dc35bf09276a05ce2b
+  APPSecuritySDK: 65608e8aef50b9424de2c5f55bcaf312852f0567
+  BioAuthAPI: aa311096f8ba9097a6fa257494421aecd950c62c
+  BioAuthEngine: 06de03b730e67821c231dbeebe58c1564d4ef19e
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_ali_face_verify: a684f55927c5c24f28750aabb007f19c8589d9e8
+  MPRemoteLogging: 948a44fd92a4e716b9f95d6e6702cd962efa1eba
+  OCRDetectSDKForTech: ee22bda0c1a27fe45a87d5c726deb1629d4e6f19
+  ToygerService: 0d015f04197617cbc675861d76625236836d7b1d
+  ZolozIdentityManager: 5304fbae2b5f7a8ead916f1a04fcebc6dba9be3b
+  ZolozMobileRPC: 33c338b4cad9b0d552faf7d4d55682e1194c27ea
+  ZolozOpenPlatformBuild: e937dafbef37fedf86c284146717dac059a48cef
+  ZolozSensorServices: 700b44301c1cb8a7172cdd9587580031efb9dc0e
+  ZolozUtility: 88c30984b250dcb5557745fb86313b793f9b5d85
+
+PODFILE CHECKSUM: d8fdf2714a8e18137c9e2581c2ffc3b00b0e9aa6
+
+COCOAPODS: 1.11.3

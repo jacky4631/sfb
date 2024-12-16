@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shanyan_view_shanyan_navigationbar_root"
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+
+    <RelativeLayout
+        android:id="@+id/shanyan_view_navigationbar_back_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/shanyan_view_navigationbar_back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="8dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="返回"
+            android:src="@drawable/umcsdk_return_bg" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/shanyan_view_navigationbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="导航栏标题"
+        android:textColor="#080808"
+        android:textSize="16sp"
+        android:textStyle="" />
+</RelativeLayout>

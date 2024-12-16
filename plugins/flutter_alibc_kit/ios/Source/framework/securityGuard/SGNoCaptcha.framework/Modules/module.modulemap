@@ -1,0 +1,6 @@
+framework module SGNoCaptcha {
+  umbrella header "SGNoCaptcha.h"
+
+  export *
+  module * { export * }
+}

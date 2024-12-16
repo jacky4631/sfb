@@ -1,0 +1,6 @@
+framework module MtopSDK {
+  umbrella header "MtopSDK.h"
+
+  export *
+  module * { export * }
+}

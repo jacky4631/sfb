@@ -1,0 +1,34 @@
+{
+  "name": "shanyan",
+  "version": "2.3.4.5",
+  "summary": "闪验SDK Flutter plguin.",
+  "description": "A new Flutter plugin.",
+  "homepage": "https://shanyan.253.com",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "253": "app@253.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "public_header_files": "Classes/**/*.h",
+  "dependencies": {
+    "Flutter": [
+
+    ]
+  },
+  "static_framework": true,
+  "ios": {
+    "dependencies": {
+      "CL_ShanYanSDK": [
+        "~> 2.3.6.5"
+      ]
+    }
+  },
+  "platforms": {
+    "ios": "8.0"
+  }
+}

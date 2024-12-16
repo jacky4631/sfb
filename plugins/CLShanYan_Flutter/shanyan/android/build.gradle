@@ -1,0 +1,39 @@
+group 'com.shanyan'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.1.0"
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    namespace 'com.shanyan'
+    compileSdkVersion 31
+
+    defaultConfig {
+        minSdkVersion 16
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+dependencies {
+    api files('libs/shanyan_sdk_v2.3.6.4.jar')
+}

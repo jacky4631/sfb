@@ -10,11 +10,12 @@ dependencies:
   #  flutter_qq_ads: ^2.5.0
   #  weibo_kit: ^4.0.0
   #  tencent_kit: ^5.0.2
-  flutter_z_location: ^0.0.7
+
   qr_flutter: ^4.1.0
-  image_gallery_saver:
-    git:
-      url: https://gitee.com/jacky4631/image_gallery_saver.git
+#  image_gallery_saver:
+#    git:
+#      url: https://gitee.com/jacky4631/image_gallery_saver.git
+  image_gallery_saver_plus: ^3.0.5
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -53,12 +54,20 @@ dependencies:
   flutter_screenutil: ^5.9.0
   animated_text_kit: ^4.2.2
   tobias:
-    git:
-      url: https://gitee.com/jacky4631/tobias.git
+    path: ./plugins/tobias
+#    git:
+#      url: https://gitee.com/jacky4631/tobias.git
 #      url: https://github.com/jacky4631/tobias.git
   flutter_alibc:
-    git:
-      url: https://gitee.com/jacky4631/flutter_alibc_kit.git
+    path: ./plugins/flutter_alibc_kit
+#    git:
+#      url: https://gitee.com/jacky4631/flutter_alibc_kit.git
+
+
+#  flutter_z_location: ^0.0.9
+  flutter_z_location:
+    path: ./plugins/flutter_z_location
+
   decimal: ^2.3.0
   chewie: ^1.8.1
   shimmer: ^3.0.0
@@ -85,15 +94,16 @@ dependencies:
   pay_ios: ^1.0.7
   photo_manager: ^3.5.2
   flutter_ali_face_verify:
-#    path: ../flutter_ali_face_verify
-    git:
-      url: https://gitee.com/jacky4631/flutter_ali_face_verify.git
+    path: ./plugins/flutter_ali_face_verify
+#    git:
+#      url: https://gitee.com/jacky4631/flutter_ali_face_verify.git
   shanyan:
-    #    path: ../CLShanYan_Flutter/shanyan
-    git:
-      url: https://gitee.com/jacky4631/CLShanYan_Flutter.git
-      path: shanyan
-      ref: v2.3.4.5
+        path: ./plugins/CLShanYan_Flutter/shanyan
+#    git:
+#      url: https://gitee.com/jacky4631/CLShanYan_Flutter.git
+#      path: shanyan
+#      ref: v2.3.4.5
+
 dev_dependencies:
   mockito: ^5.4.0
   flutter_test:

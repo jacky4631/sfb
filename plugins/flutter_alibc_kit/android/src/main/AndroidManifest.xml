@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.wxwx.flutter_alibc">
+    <application>
+        <activity android:name=".web.WebViewActivity" android:exported="true">
+
+        </activity>
+    </application>
+</manifest>

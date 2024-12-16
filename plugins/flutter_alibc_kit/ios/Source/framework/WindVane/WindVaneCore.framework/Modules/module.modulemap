@@ -1,0 +1,6 @@
+framework module WindVaneCore {
+  umbrella header "WindVaneCore.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,1150 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		1EFDDC32A34D56D411E640A81DCD9E73 /* Flutter */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 94078A06C17E946ADC1F2C06726219E5 /* Build configuration list for PBXAggregateTarget "Flutter" */;
+			buildPhases = (
+			);
+			dependencies = (
+			);
+			name = Flutter;
+		};
+		6CEA38EC2E63D96E7179449F1279A773 /* CL_ShanYanSDK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C2394A41434D53134DA02CAFF8539AC7 /* Build configuration list for PBXAggregateTarget "CL_ShanYanSDK" */;
+			buildPhases = (
+			);
+			dependencies = (
+			);
+			name = CL_ShanYanSDK;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		0B34B3C13F4A78FAF3D5A505E6ABF0CC /* CLShanYanCustomViewHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E939B6958E097270301A0B42E94ABE8 /* CLShanYanCustomViewHelper.m */; };
+		5292C01B524FD6E633542A9261FD5D55 /* NSNumber+shanyanCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = C83D05ABE89FA9BED2A640B0EBBB6FB6 /* NSNumber+shanyanCategory.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		5C24D024EE95F6ABA005BD106C6F7297 /* UIView+CLShanYanWidget.h in Headers */ = {isa = PBXBuildFile; fileRef = 74FC6C74749047CB92FAD29120B03CC7 /* UIView+CLShanYanWidget.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		85861851BB9E6EA7AB6F7E3CDE016D74 /* NSNumber+shanyanCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 62078390019AF70B4EC0B4FD7934B18D /* NSNumber+shanyanCategory.m */; };
+		89228042FBB03F782E9AB887D2053265 /* Pods-Runner-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0769263DD910C3C79E304E0CD1CE0049 /* Pods-Runner-dummy.m */; };
+		96D91911739AD72F4984BE47B12A0C78 /* ShanyanPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD9F56F2E6945F699F3F45E15E04767 /* ShanyanPlugin.m */; };
+		A103A4E1A177116E1FF358C2ECA58170 /* PlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 35398ECE2792659DAEFB257C62E8C298 /* PlayerView.m */; };
+		B67DFCA9E7984DE39487C9BEA11C30B0 /* CLShanYanCustomViewHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 97355F99E91DFD4692E1BB87D4877178 /* CLShanYanCustomViewHelper.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		BE4A20282E0010F5A8A5741235492C15 /* UIView+CLShanYanWidget.m in Sources */ = {isa = PBXBuildFile; fileRef = A070A2822A8090493912851956EFB3A4 /* UIView+CLShanYanWidget.m */; };
+		C3A92BCE165F85E55FED1AEFA4968FA8 /* PlayerView.h in Headers */ = {isa = PBXBuildFile; fileRef = C7AA82C736C05CF4277756CC3892EFCE /* PlayerView.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		C40609609417ED991887B6E03ADBFCB8 /* ShanyanPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 36A451AEA6D657F477B315F50B7F850D /* ShanyanPlugin.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		FD78D16ECADE16889E9338155561FCCD /* shanyan-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2061CB7731F33E147E9D492540288CA3 /* shanyan-dummy.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3D0E1D091EA1F5D07647FD26B79331E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6CEA38EC2E63D96E7179449F1279A773;
+			remoteInfo = CL_ShanYanSDK;
+		};
+		4671D50B07E23AAB7EC5EEA1367C1FD8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 99EF29ED9D09678B8F8177B9A17F1FFB;
+			remoteInfo = shanyan;
+		};
+		88FB293FCEADB2B06A16C85AF00CEFFF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6CEA38EC2E63D96E7179449F1279A773;
+			remoteInfo = CL_ShanYanSDK;
+		};
+		B910800C70E385EFCD805AD4023105B5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1EFDDC32A34D56D411E640A81DCD9E73;
+			remoteInfo = Flutter;
+		};
+		BBCC922829CE99A05695588FC9DAF996 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1EFDDC32A34D56D411E640A81DCD9E73;
+			remoteInfo = Flutter;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0769263DD910C3C79E304E0CD1CE0049 /* Pods-Runner-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Runner-dummy.m"; sourceTree = "<group>"; };
+		0C8CC4F43125B1D6C496E28FAF06D64D /* shanyan */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = shanyan; path = libshanyan.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		14A038AEF8FDDC544AF31F4BC6E5C9FF /* shanyan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = shanyan.debug.xcconfig; sourceTree = "<group>"; };
+		1B8C8874AAE5186C511E2FD7E62AC976 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../../../../../../LICENSE; sourceTree = "<group>"; };
+		2061CB7731F33E147E9D492540288CA3 /* shanyan-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "shanyan-dummy.m"; sourceTree = "<group>"; };
+		27A20146BE5D95F865D502E104A634C7 /* CL_ShanYanSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CL_ShanYanSDK.release.xcconfig; sourceTree = "<group>"; };
+		29D02F98F621FBA870BB08572DBF7172 /* Pods-Runner-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Runner-acknowledgements.markdown"; sourceTree = "<group>"; };
+		2A27D07F96A771D5FB731A2B305F1715 /* shanyan.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = shanyan.podspec; path = ../../../../../../ios/shanyan.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		2BCD180FF04F5909632BFB5A872F4718 /* TYRZUISDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TYRZUISDK.framework; path = framework/TYRZUISDK.framework; sourceTree = "<group>"; };
+		3196F0DE592F53411003BCB0BEF6420B /* EAccountApiSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EAccountApiSDK.framework; path = framework/EAccountApiSDK.framework; sourceTree = "<group>"; };
+		35398ECE2792659DAEFB257C62E8C298 /* PlayerView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = PlayerView.m; path = ../../../../../../../../ios/Classes/Helpers/PlayerView.m; sourceTree = "<group>"; };
+		36A451AEA6D657F477B315F50B7F850D /* ShanyanPlugin.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ShanyanPlugin.h; path = ../../../../../../../ios/Classes/ShanyanPlugin.h; sourceTree = "<group>"; };
+		3D40527A090D33E04D34690525F7F739 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
+		42789BE656E82149DA814096928A1FBC /* Flutter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Flutter.debug.xcconfig; sourceTree = "<group>"; };
+		464A3EAA56ECF8AF2823C39E56FACFB1 /* OAuth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OAuth.framework; path = framework/OAuth.framework; sourceTree = "<group>"; };
+		492EE06409778E4E698C333D56834513 /* shanyan-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "shanyan-prefix.pch"; sourceTree = "<group>"; };
+		4E4229D66A2198C0804732BDDEDF1FD0 /* CL_ShanYanSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CL_ShanYanSDK.debug.xcconfig; sourceTree = "<group>"; };
+		4E939B6958E097270301A0B42E94ABE8 /* CLShanYanCustomViewHelper.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = CLShanYanCustomViewHelper.m; path = ../../../../../../../../ios/Classes/Helpers/CLShanYanCustomViewHelper.m; sourceTree = "<group>"; };
+		62078390019AF70B4EC0B4FD7934B18D /* NSNumber+shanyanCategory.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSNumber+shanyanCategory.m"; path = "../../../../../../../../ios/Classes/Helpers/NSNumber+shanyanCategory.m"; sourceTree = "<group>"; };
+		669E8F25E1897672BDB80B7EB784DA24 /* Pods-Runner */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "Pods-Runner"; path = "libPods-Runner.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		74FC6C74749047CB92FAD29120B03CC7 /* UIView+CLShanYanWidget.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIView+CLShanYanWidget.h"; path = "../../../../../../../../ios/Classes/Helpers/UIView+CLShanYanWidget.h"; sourceTree = "<group>"; };
+		9039460E8D3FAD357BF2E7D56AA0D6B2 /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		937668694F3AB78DDFD83E19269CF5E4 /* CL_ShanYanSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CL_ShanYanSDK.framework; path = framework/CL_ShanYanSDK.framework; sourceTree = "<group>"; };
+		97355F99E91DFD4692E1BB87D4877178 /* CLShanYanCustomViewHelper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = CLShanYanCustomViewHelper.h; path = ../../../../../../../../ios/Classes/Helpers/CLShanYanCustomViewHelper.h; sourceTree = "<group>"; };
+		9A6D3B1784C82F22825710930DD8BE77 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A070A2822A8090493912851956EFB3A4 /* UIView+CLShanYanWidget.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIView+CLShanYanWidget.m"; path = "../../../../../../../../ios/Classes/Helpers/UIView+CLShanYanWidget.m"; sourceTree = "<group>"; };
+		AE18C24EB33594E546FB8304B934F138 /* Flutter.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; path = Flutter.podspec; sourceTree = "<group>"; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		B7C9DDC395AB3F5CC372B0BAC48B5D00 /* Flutter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Flutter.release.xcconfig; sourceTree = "<group>"; };
+		C402C6A7EC1533CFA22021E04BA135B2 /* shanyan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = shanyan.release.xcconfig; sourceTree = "<group>"; };
+		C7AA82C736C05CF4277756CC3892EFCE /* PlayerView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = PlayerView.h; path = ../../../../../../../../ios/Classes/Helpers/PlayerView.h; sourceTree = "<group>"; };
+		C83D05ABE89FA9BED2A640B0EBBB6FB6 /* NSNumber+shanyanCategory.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSNumber+shanyanCategory.h"; path = "../../../../../../../../ios/Classes/Helpers/NSNumber+shanyanCategory.h"; sourceTree = "<group>"; };
+		D0E7E03D5DF32A265C2C2BA86429446D /* sdk_oauth.bundle */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "wrapper.plug-in"; name = sdk_oauth.bundle; path = framework/sdk_oauth.bundle; sourceTree = "<group>"; };
+		D5BC260794B87AB85799016712139C4D /* Pods-Runner-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Runner-acknowledgements.plist"; sourceTree = "<group>"; };
+		DAD9F56F2E6945F699F3F45E15E04767 /* ShanyanPlugin.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = ShanyanPlugin.m; path = ../../../../../../../ios/Classes/ShanyanPlugin.m; sourceTree = "<group>"; };
+		DE53F3C2B63B23A77DD09C3D235D7688 /* Pods-Runner-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Runner-resources.sh"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1711C9937B0766A9433A3D93072A91DF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8E6CC20CA2BF30690836A4A1D21B5E27 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		01DF4215CC3CE825F61B9C4D2CF33BCB /* Flutter */ = {
+			isa = PBXGroup;
+			children = (
+				A155C19CECF820F91AD1B56AB5AB8F49 /* Pod */,
+				3C2D3D0A3BFD8F3D95EB3CAA531DE98F /* Support Files */,
+			);
+			name = Flutter;
+			path = ../Flutter;
+			sourceTree = "<group>";
+		};
+		0765AA59C4761C06EFF589DE5BF18E40 /* .. */ = {
+			isa = PBXGroup;
+			children = (
+				E6E777DDE1162CB13FE535F30168B529 /* .. */,
+			);
+			name = ..;
+			path = ../../../../../../ios;
+			sourceTree = "<group>";
+		};
+		07C93DF43D36220A8BAC8BBFDC62A6EB /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				97355F99E91DFD4692E1BB87D4877178 /* CLShanYanCustomViewHelper.h */,
+				4E939B6958E097270301A0B42E94ABE8 /* CLShanYanCustomViewHelper.m */,
+				C83D05ABE89FA9BED2A640B0EBBB6FB6 /* NSNumber+shanyanCategory.h */,
+				62078390019AF70B4EC0B4FD7934B18D /* NSNumber+shanyanCategory.m */,
+				C7AA82C736C05CF4277756CC3892EFCE /* PlayerView.h */,
+				35398ECE2792659DAEFB257C62E8C298 /* PlayerView.m */,
+				74FC6C74749047CB92FAD29120B03CC7 /* UIView+CLShanYanWidget.h */,
+				A070A2822A8090493912851956EFB3A4 /* UIView+CLShanYanWidget.m */,
+			);
+			name = Helpers;
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		29F4C3FC4433D9AD91D659575F7604CB /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				4E4229D66A2198C0804732BDDEDF1FD0 /* CL_ShanYanSDK.debug.xcconfig */,
+				27A20146BE5D95F865D502E104A634C7 /* CL_ShanYanSDK.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/CL_ShanYanSDK";
+			sourceTree = "<group>";
+		};
+		3C2D3D0A3BFD8F3D95EB3CAA531DE98F /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				42789BE656E82149DA814096928A1FBC /* Flutter.debug.xcconfig */,
+				B7C9DDC395AB3F5CC372B0BAC48B5D00 /* Flutter.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Pods/Target Support Files/Flutter";
+			sourceTree = "<group>";
+		};
+		547770D1E5C7BA66540943A77B392910 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				36A451AEA6D657F477B315F50B7F850D /* ShanyanPlugin.h */,
+				DAD9F56F2E6945F699F3F45E15E04767 /* ShanyanPlugin.m */,
+				07C93DF43D36220A8BAC8BBFDC62A6EB /* Helpers */,
+			);
+			name = Classes;
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		550CED507C79DF5B4C699A052A22BEF0 /* Pods-Runner */ = {
+			isa = PBXGroup;
+			children = (
+				29D02F98F621FBA870BB08572DBF7172 /* Pods-Runner-acknowledgements.markdown */,
+				D5BC260794B87AB85799016712139C4D /* Pods-Runner-acknowledgements.plist */,
+				0769263DD910C3C79E304E0CD1CE0049 /* Pods-Runner-dummy.m */,
+				DE53F3C2B63B23A77DD09C3D235D7688 /* Pods-Runner-resources.sh */,
+				9A6D3B1784C82F22825710930DD8BE77 /* Pods-Runner.debug.xcconfig */,
+				9039460E8D3FAD357BF2E7D56AA0D6B2 /* Pods-Runner.profile.xcconfig */,
+				3D40527A090D33E04D34690525F7F739 /* Pods-Runner.release.xcconfig */,
+			);
+			name = "Pods-Runner";
+			path = "Target Support Files/Pods-Runner";
+			sourceTree = "<group>";
+		};
+		5E43C7EE5D41E9F3616788E515687F87 /* plugins */ = {
+			isa = PBXGroup;
+			children = (
+				EBE0CC71812B2FD89670EF309E328C68 /* shanyan */,
+			);
+			name = plugins;
+			path = plugins;
+			sourceTree = "<group>";
+		};
+		6F2A2EF8165275926B54C1764A239A70 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				550CED507C79DF5B4C699A052A22BEF0 /* Pods-Runner */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		7B6870E455E3700715004706DADCB610 /* Development Pods */ = {
+			isa = PBXGroup;
+			children = (
+				01DF4215CC3CE825F61B9C4D2CF33BCB /* Flutter */,
+				898A54DE09980D5E92C05EF9E76F53EC /* shanyan */,
+			);
+			name = "Development Pods";
+			sourceTree = "<group>";
+		};
+		7EB68E746C3D42F5E573E0790BBA81E4 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				E982E46DF4EB1790020A49B34D2C24CE /* .symlinks */,
+			);
+			name = ios;
+			path = ios;
+			sourceTree = "<group>";
+		};
+		898A54DE09980D5E92C05EF9E76F53EC /* shanyan */ = {
+			isa = PBXGroup;
+			children = (
+				0765AA59C4761C06EFF589DE5BF18E40 /* .. */,
+				FB742EF331A6CC80AF7E6977C87C859F /* Pod */,
+				98EA5C7B46C72AF0C887C86D802FC2B6 /* Support Files */,
+			);
+			name = shanyan;
+			path = ../.symlinks/plugins/shanyan/ios;
+			sourceTree = "<group>";
+		};
+		91B57DD6710EE60AE6D288B40236C3D9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				669E8F25E1897672BDB80B7EB784DA24 /* Pods-Runner */,
+				0C8CC4F43125B1D6C496E28FAF06D64D /* shanyan */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		924210DFD73D6D38222DF3BAC54922A4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				937668694F3AB78DDFD83E19269CF5E4 /* CL_ShanYanSDK.framework */,
+				3196F0DE592F53411003BCB0BEF6420B /* EAccountApiSDK.framework */,
+				464A3EAA56ECF8AF2823C39E56FACFB1 /* OAuth.framework */,
+				2BCD180FF04F5909632BFB5A872F4718 /* TYRZUISDK.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		98EA5C7B46C72AF0C887C86D802FC2B6 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				2061CB7731F33E147E9D492540288CA3 /* shanyan-dummy.m */,
+				492EE06409778E4E698C333D56834513 /* shanyan-prefix.pch */,
+				14A038AEF8FDDC544AF31F4BC6E5C9FF /* shanyan.debug.xcconfig */,
+				C402C6A7EC1533CFA22021E04BA135B2 /* shanyan.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../../../../Pods/Target Support Files/shanyan";
+			sourceTree = "<group>";
+		};
+		9A12683B52E770F33C7C29981630B694 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				D0E7E03D5DF32A265C2C2BA86429446D /* sdk_oauth.bundle */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		A155C19CECF820F91AD1B56AB5AB8F49 /* Pod */ = {
+			isa = PBXGroup;
+			children = (
+				AE18C24EB33594E546FB8304B934F138 /* Flutter.podspec */,
+			);
+			name = Pod;
+			sourceTree = "<group>";
+		};
+		A9DF127A84E0547319DD290CF932B2EE /* example */ = {
+			isa = PBXGroup;
+			children = (
+				7EB68E746C3D42F5E573E0790BBA81E4 /* ios */,
+			);
+			name = example;
+			path = example;
+			sourceTree = "<group>";
+		};
+		AD7920A6D9D610608F335B7EDA796D4A /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				547770D1E5C7BA66540943A77B392910 /* Classes */,
+			);
+			name = ios;
+			path = ios;
+			sourceTree = "<group>";
+		};
+		CF1408CF629C7361332E53B88F7BD30C = {
+			isa = PBXGroup;
+			children = (
+				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
+				7B6870E455E3700715004706DADCB610 /* Development Pods */,
+				D89477F20FB1DE18A04690586D7808C4 /* Frameworks */,
+				D36ED2C6D1EB701BC35A4B68B2590CC9 /* Pods */,
+				91B57DD6710EE60AE6D288B40236C3D9 /* Products */,
+				6F2A2EF8165275926B54C1764A239A70 /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		D36ED2C6D1EB701BC35A4B68B2590CC9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FEE6A2B11FBD04BBE943E634276A3385 /* CL_ShanYanSDK */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		D89477F20FB1DE18A04690586D7808C4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E6E777DDE1162CB13FE535F30168B529 /* .. */ = {
+			isa = PBXGroup;
+			children = (
+				A9DF127A84E0547319DD290CF932B2EE /* example */,
+			);
+			name = ..;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		E982E46DF4EB1790020A49B34D2C24CE /* .symlinks */ = {
+			isa = PBXGroup;
+			children = (
+				5E43C7EE5D41E9F3616788E515687F87 /* plugins */,
+			);
+			name = .symlinks;
+			path = .symlinks;
+			sourceTree = "<group>";
+		};
+		EBE0CC71812B2FD89670EF309E328C68 /* shanyan */ = {
+			isa = PBXGroup;
+			children = (
+				AD7920A6D9D610608F335B7EDA796D4A /* ios */,
+			);
+			name = shanyan;
+			path = shanyan;
+			sourceTree = "<group>";
+		};
+		FB742EF331A6CC80AF7E6977C87C859F /* Pod */ = {
+			isa = PBXGroup;
+			children = (
+				1B8C8874AAE5186C511E2FD7E62AC976 /* LICENSE */,
+				2A27D07F96A771D5FB731A2B305F1715 /* shanyan.podspec */,
+			);
+			name = Pod;
+			sourceTree = "<group>";
+		};
+		FEE6A2B11FBD04BBE943E634276A3385 /* CL_ShanYanSDK */ = {
+			isa = PBXGroup;
+			children = (
+				924210DFD73D6D38222DF3BAC54922A4 /* Frameworks */,
+				9A12683B52E770F33C7C29981630B694 /* Resources */,
+				29F4C3FC4433D9AD91D659575F7604CB /* Support Files */,
+			);
+			name = CL_ShanYanSDK;
+			path = CL_ShanYanSDK;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		9D1C027E8D0B201954F731690F4AC019 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B67DFCA9E7984DE39487C9BEA11C30B0 /* CLShanYanCustomViewHelper.h in Headers */,
+				5292C01B524FD6E633542A9261FD5D55 /* NSNumber+shanyanCategory.h in Headers */,
+				C3A92BCE165F85E55FED1AEFA4968FA8 /* PlayerView.h in Headers */,
+				C40609609417ED991887B6E03ADBFCB8 /* ShanyanPlugin.h in Headers */,
+				5C24D024EE95F6ABA005BD106C6F7297 /* UIView+CLShanYanWidget.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E7D439BD915867F9E5F48223662AF946 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8B74B458B450D74B75744B87BD747314 /* Pods-Runner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 055D121DC700D3BC5E9223E2EFDA8DEE /* Build configuration list for PBXNativeTarget "Pods-Runner" */;
+			buildPhases = (
+				E7D439BD915867F9E5F48223662AF946 /* Headers */,
+				4E7051621139FD88F6FA139B94698397 /* Sources */,
+				1711C9937B0766A9433A3D93072A91DF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				10B5BD7AF091F3E0A7467CBD64D97AAE /* PBXTargetDependency */,
+				319F93BB04192B7D64205D81F175B963 /* PBXTargetDependency */,
+				96163FFFCB9FA70DA994D48F1AC9FD44 /* PBXTargetDependency */,
+			);
+			name = "Pods-Runner";
+			productName = "Pods-Runner";
+			productReference = 669E8F25E1897672BDB80B7EB784DA24 /* Pods-Runner */;
+			productType = "com.apple.product-type.library.static";
+		};
+		99EF29ED9D09678B8F8177B9A17F1FFB /* shanyan */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 499DCD4EE99EB74A9C450CC4072B9D33 /* Build configuration list for PBXNativeTarget "shanyan" */;
+			buildPhases = (
+				9D1C027E8D0B201954F731690F4AC019 /* Headers */,
+				766EAF45D339671D6EC053DC28C52893 /* Sources */,
+				8E6CC20CA2BF30690836A4A1D21B5E27 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B99A644BFB8D6E556FE9CBBF1C51D46F /* PBXTargetDependency */,
+				349976E8BD2DB9B5879534B47A1EE615 /* PBXTargetDependency */,
+			);
+			name = shanyan;
+			productName = shanyan;
+			productReference = 0C8CC4F43125B1D6C496E28FAF06D64D /* shanyan */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFDFE7DC352907FC980B868725387E98 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1300;
+				LastUpgradeCheck = 1300;
+			};
+			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
+			productRefGroup = 91B57DD6710EE60AE6D288B40236C3D9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6CEA38EC2E63D96E7179449F1279A773 /* CL_ShanYanSDK */,
+				1EFDDC32A34D56D411E640A81DCD9E73 /* Flutter */,
+				8B74B458B450D74B75744B87BD747314 /* Pods-Runner */,
+				99EF29ED9D09678B8F8177B9A17F1FFB /* shanyan */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4E7051621139FD88F6FA139B94698397 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89228042FBB03F782E9AB887D2053265 /* Pods-Runner-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		766EAF45D339671D6EC053DC28C52893 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B34B3C13F4A78FAF3D5A505E6ABF0CC /* CLShanYanCustomViewHelper.m in Sources */,
+				85861851BB9E6EA7AB6F7E3CDE016D74 /* NSNumber+shanyanCategory.m in Sources */,
+				A103A4E1A177116E1FF358C2ECA58170 /* PlayerView.m in Sources */,
+				FD78D16ECADE16889E9338155561FCCD /* shanyan-dummy.m in Sources */,
+				96D91911739AD72F4984BE47B12A0C78 /* ShanyanPlugin.m in Sources */,
+				BE4A20282E0010F5A8A5741235492C15 /* UIView+CLShanYanWidget.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		10B5BD7AF091F3E0A7467CBD64D97AAE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CL_ShanYanSDK;
+			target = 6CEA38EC2E63D96E7179449F1279A773 /* CL_ShanYanSDK */;
+			targetProxy = 88FB293FCEADB2B06A16C85AF00CEFFF /* PBXContainerItemProxy */;
+		};
+		319F93BB04192B7D64205D81F175B963 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Flutter;
+			target = 1EFDDC32A34D56D411E640A81DCD9E73 /* Flutter */;
+			targetProxy = B910800C70E385EFCD805AD4023105B5 /* PBXContainerItemProxy */;
+		};
+		349976E8BD2DB9B5879534B47A1EE615 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Flutter;
+			target = 1EFDDC32A34D56D411E640A81DCD9E73 /* Flutter */;
+			targetProxy = BBCC922829CE99A05695588FC9DAF996 /* PBXContainerItemProxy */;
+		};
+		96163FFFCB9FA70DA994D48F1AC9FD44 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = shanyan;
+			target = 99EF29ED9D09678B8F8177B9A17F1FFB /* shanyan */;
+			targetProxy = 4671D50B07E23AAB7EC5EEA1367C1FD8 /* PBXContainerItemProxy */;
+		};
+		B99A644BFB8D6E556FE9CBBF1C51D46F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CL_ShanYanSDK;
+			target = 6CEA38EC2E63D96E7179449F1279A773 /* CL_ShanYanSDK */;
+			targetProxy = 3D0E1D091EA1F5D07647FD26B79331E0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0110E49084FFB183CAB162143E105F9E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 14A038AEF8FDDC544AF31F4BC6E5C9FF /* shanyan.debug.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "$(inherited) armv7";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64\"",
+					"$(inherited)",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator\"",
+					"$(inherited)",
+				);
+				GCC_PREFIX_HEADER = "Target Support Files/shanyan/shanyan-prefix.pch";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = shanyan;
+				PRODUCT_NAME = shanyan;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+			};
+			name = Debug;
+		};
+		123B0D65A35211FC43B8BEE770443D25 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B7C9DDC395AB3F5CC372B0BAC48B5D00 /* Flutter.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		42096E1BCB51A587856DD065D1C443DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4E4229D66A2198C0804732BDDEDF1FD0 /* CL_ShanYanSDK.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6476640F4F2CEFCE85FAEDB1520C73C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3D40527A090D33E04D34690525F7F739 /* Pods-Runner.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "$(inherited) armv7";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios-release/Flutter.xcframework/ios-arm64\"",
+					"$(inherited)",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios-release/Flutter.xcframework/ios-arm64_x86_64-simulator\"",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+			};
+			name = Release;
+		};
+		6A30BCC9D9AE69B1B63F6B51AE2A0CC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9A6D3B1784C82F22825710930DD8BE77 /* Pods-Runner.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "$(inherited) armv7";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64\"",
+					"$(inherited)",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator\"",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACH_O_TYPE = staticlib;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+			};
+			name = Debug;
+		};
+		700C6D66CA481EF1F35CDB87044FF5E3 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27A20146BE5D95F865D502E104A634C7 /* CL_ShanYanSDK.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		75CE1ADAFCE855DFB0C8BE8581F930A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 27A20146BE5D95F865D502E104A634C7 /* CL_ShanYanSDK.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8E45BF936288055FA4D2FE63951BF089 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9039460E8D3FAD357BF2E7D56AA0D6B2 /* Pods-Runner.profile.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "$(inherited) armv7";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios-release/Flutter.xcframework/ios-arm64\"",
+					"$(inherited)",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios-release/Flutter.xcframework/ios-arm64_x86_64-simulator\"",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+			};
+			name = Profile;
+		};
+		903A0004D3E6651EFD5D2E16214D101B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Release;
+		};
+		9498D2532E60DBDF41603C51B60E35E8 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B7C9DDC395AB3F5CC372B0BAC48B5D00 /* Flutter.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		A045C7A6D99F4F60840B1F19D32848E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 42789BE656E82149DA814096928A1FBC /* Flutter.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A351B8C49D0C8EB4F1FD1BB95B0CAA35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C402C6A7EC1533CFA22021E04BA135B2 /* shanyan.release.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "$(inherited) armv7";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios-release/Flutter.xcframework/ios-arm64\"",
+					"$(inherited)",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios-release/Flutter.xcframework/ios-arm64_x86_64-simulator\"",
+					"$(inherited)",
+				);
+				GCC_PREFIX_HEADER = "Target Support Files/shanyan/shanyan-prefix.pch";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = shanyan;
+				PRODUCT_NAME = shanyan;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+			};
+			name = Release;
+		};
+		B4EFE046ACF8F37157F6E322C7FCFC28 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		DCF364D2CA5F270CAD355FD2FAFE3B13 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_PROFILE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Profile;
+		};
+		E0251409557D437A85BC0E3B093FCC53 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C402C6A7EC1533CFA22021E04BA135B2 /* shanyan.release.xcconfig */;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphoneos*]" = "$(inherited) armv7";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios-release/Flutter.xcframework/ios-arm64\"",
+					"$(inherited)",
+				);
+				"FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"\"/Users/ydong/flutter/bin/cache/artifacts/engine/ios-release/Flutter.xcframework/ios-arm64_x86_64-simulator\"",
+					"$(inherited)",
+				);
+				GCC_PREFIX_HEADER = "Target Support Files/shanyan/shanyan-prefix.pch";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					Flutter,
+				);
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = shanyan;
+				PRODUCT_NAME = shanyan;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
+			};
+			name = Profile;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		055D121DC700D3BC5E9223E2EFDA8DEE /* Build configuration list for PBXNativeTarget "Pods-Runner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6A30BCC9D9AE69B1B63F6B51AE2A0CC5 /* Debug */,
+				8E45BF936288055FA4D2FE63951BF089 /* Profile */,
+				6476640F4F2CEFCE85FAEDB1520C73C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B4EFE046ACF8F37157F6E322C7FCFC28 /* Debug */,
+				DCF364D2CA5F270CAD355FD2FAFE3B13 /* Profile */,
+				903A0004D3E6651EFD5D2E16214D101B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		499DCD4EE99EB74A9C450CC4072B9D33 /* Build configuration list for PBXNativeTarget "shanyan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0110E49084FFB183CAB162143E105F9E /* Debug */,
+				E0251409557D437A85BC0E3B093FCC53 /* Profile */,
+				A351B8C49D0C8EB4F1FD1BB95B0CAA35 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		94078A06C17E946ADC1F2C06726219E5 /* Build configuration list for PBXAggregateTarget "Flutter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A045C7A6D99F4F60840B1F19D32848E6 /* Debug */,
+				9498D2532E60DBDF41603C51B60E35E8 /* Profile */,
+				123B0D65A35211FC43B8BEE770443D25 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C2394A41434D53134DA02CAFF8539AC7 /* Build configuration list for PBXAggregateTarget "CL_ShanYanSDK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				42096E1BCB51A587856DD065D1C443DF /* Debug */,
+				700C6D66CA481EF1F35CDB87044FF5E3 /* Profile */,
+				75CE1ADAFCE855DFB0C8BE8581F930A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+}

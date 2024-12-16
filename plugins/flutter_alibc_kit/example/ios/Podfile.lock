@@ -1,0 +1,64 @@
+PODS:
+  - AliAuthSDK (1.1.0.41-bc)
+  - AlibcTradeSDK (4.0.1.15)
+  - AliLinkPartnerSDK (4.0.0.24)
+  - BCUserTrack (5.2.0.18-appkeys):
+    - UTDID
+  - Flutter (1.0.0)
+  - flutter_alibc (0.0.1):
+    - AliAuthSDK (= 1.1.0.41-bc)
+    - AlibcTradeSDK (= 4.0.1.15)
+    - AliLinkPartnerSDK (= 4.0.0.24)
+    - BCUserTrack (= 5.2.0.18-appkeys)
+    - Flutter
+    - mtopSDK (= 3.0.0.5)
+    - securityGuard (= 5.4.191)
+    - UTDID (= 1.5.0.91)
+    - WindVane (= 8.5.0.46-bc11)
+  - mtopSDK (3.0.0.5)
+  - securityGuard (5.4.191)
+  - UTDID (1.5.0.91)
+  - WindVane (8.5.0.46-bc11):
+    - WindVane/Basic (= 8.5.0.46-bc11)
+    - WindVane/Core (= 8.5.0.46-bc11)
+    - WindVane/WindVane (= 8.5.0.46-bc11)
+  - WindVane/Basic (8.5.0.46-bc11)
+  - WindVane/Core (8.5.0.46-bc11)
+  - WindVane/WindVane (8.5.0.46-bc11)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_alibc (from `.symlinks/plugins/flutter_alibc/ios`)
+
+SPEC REPOS:
+  http://repo.baichuan-ios.taobao.com/baichuanSDK/AliBCSpecs.git:
+    - AliAuthSDK
+    - AlibcTradeSDK
+    - AliLinkPartnerSDK
+    - BCUserTrack
+    - mtopSDK
+    - securityGuard
+    - UTDID
+    - WindVane
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_alibc:
+    :path: ".symlinks/plugins/flutter_alibc/ios"
+
+SPEC CHECKSUMS:
+  AliAuthSDK: 7018e8f3c8be3382e60f69d3b517c7de34c351e0
+  AlibcTradeSDK: c7316224913498ea3d447386849cf0abf9e53fe6
+  AliLinkPartnerSDK: c5778cdfdcee7bfe342238d39a77766184d36a46
+  BCUserTrack: 49251c6fb7c65cbbc221a492bbd3f3e142f1fb0f
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_alibc: 41b70776ad73e2dc99294b43967320755253dd17
+  mtopSDK: 9458d64bb4143a4e3e057552526ed82536827879
+  securityGuard: 9c04c44a3b663f36e15064042abfc107fa07133c
+  UTDID: 7860884a89209c8f1306740ff22cf117d72b6d8a
+  WindVane: 56e096abae757397ccd3accb66a959f3ffcbf949
+
+PODFILE CHECKSUM: bd1c75573ad4ab2d9dd61c2da7cd06af40ad01e8
+
+COCOAPODS: 1.10.1

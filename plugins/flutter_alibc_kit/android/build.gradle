@@ -1,0 +1,110 @@
+group 'com.wxwx.flutter_alibc'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.7.20'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        repositories {
+            flatDir {
+                dirs 'libs', 'aars'
+            }
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace 'com.wxwx.flutter_alibc'
+    compileSdkVersion 31
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions { jvmTarget =1.8 }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    defaultConfig {
+        minSdkVersion 16
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.alibaba:fastjson:1.1.71.android'
+    //security
+    // implementation 'com.taobao.android:securityguardaar3:5.4.171@aar'
+    // implementation 'com.taobao.android:securitybodyaar3:5.4.99@aar'
+    // implementation 'com.taobao.android:avmpaar3:5.4.36@aar'
+    // implementation 'com.taobao.android:sgmiddletieraar3:5.4.9@aar'
+
+    //mtop
+    // implementation 'com.taobao.android:mtopsdk_allinone_open:3.1.2.5@jar'
+
+    //appLink
+    // implementation 'com.alibaba.sdk.android:alibc_link_partner:4.1.15@aar'
+
+    //core
+    // implementation 'com.alibaba.sdk.android:AlibcTradeCommon:4.0.0.16@aar'
+    // implementation 'com.alibaba.sdk.android:AlibcTradeBiz:4.0.0.16@aar'
+    // implementation 'com.alibaba.sdk.android:nb_trade:4.0.0.16@aar'
+
+    //login
+    // implementation 'com.ali.auth.sdk:alibabauth_core:2.0.0.11@aar'
+    // implementation 'com.ali.auth.sdk:alibabauth_ui:2.0.0.11@aar'
+    // implementation 'com.ali.auth.sdk:alibabauth_ext:2.0.0.11@aar'
+
+    //ut
+    // implementation 'com.taobao.android:utdid4all:1.5.2'
+    // implementation 'com.alibaba.mtl:app-monitor-sdk:2.6.4.5_for_bc'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation(name: 'alibabauth_core-2.0.0.12', ext: 'aar')
+    implementation(name: 'alibabauth_ext-2.0.0.12', ext: 'aar')
+    implementation(name: 'alibabauth_ui-2.0.0.12', ext: 'aar')
+    implementation(name: 'alibc_link_partner-4.1.30', ext: 'aar')
+    implementation(name: 'AlibcTradeBiz-4.1.0.7', ext: 'aar')
+    implementation(name: 'AlibcTradeCommon-4.1.0.7', ext: 'aar')
+    implementation(name: 'MiddleTierSDK-external-release-5.6.240604-preInstall', ext: 'aar')
+    implementation(name: 'miscaar3-5.5.9.1-preInstall', ext: 'aar')
+    implementation(name: 'nb_trade-4.1.0.7', ext: 'aar')
+    implementation(name: 'nocaptchaaar3-5.5.8.1-preInstall', ext: 'aar')
+    implementation(name: 'SecurityBodySDK-external-release-5.6.240604-preInstall', ext: 'aar')
+    implementation(name: 'SecurityGuardSDK-external-release-5.6.240604-preInstall', ext: 'aar')
+    implementation(name: 'ut-analytics-6.5.8.27-bc', ext: 'aar')
+
+//    implementation files('libs/alibabauth_core-2.0.0.12.aar')
+//    implementation files('libs/alibabauth_ext-2.0.0.12.aar')
+//    implementation files('libs/alibabauth_ui-2.0.0.12.aar')
+//    implementation files('libs/alibc_link_partner-4.1.28.aar')
+//    implementation files('libs/AlibcTradeBiz-4.1.0.2.aar')
+//    implementation files('libs/AlibcTradeCommon-4.1.0.2.aar')
+//    implementation files('libs/app-monitor-sdk-2.6.4.13_for_bc.aar')
+//    implementation files('libs/MiddleTierSDK-external-release-5.5.85-preInstall.aar')
+//    implementation files('libs/MiscSDK-external-release-5.5.9-preInstall.aar')
+//    implementation files('libs/nb_trade-4.1.0.2.aar')
+//    implementation files('libs/NoCaptchaSDK-external-release-5.5.8-preInstall.aar')
+//    implementation files('libs/SecurityBodySDK-external-release-5.5.98-preInstall.aar')
+//    implementation files('libs/SecurityGuardSDK-external-release-5.5.92-preInstall.aar')
+}

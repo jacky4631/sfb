@@ -1,0 +1,6 @@
+framework module SGIndieKit {
+  umbrella header "SGIndieKit.h"
+
+  export *
+  module * { export * }
+}

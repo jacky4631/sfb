@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#7f000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="130dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/umcsdk_shanyan_authbackground"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="个人信息保护指引"
+            android:textColor="#1A1A1A"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+
+        <!--android:scrollbars="none"-->
+        <!--android:fadeScrollbars="true"-->
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_weight="10000">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="24dp"
+                android:autoLink="web"
+                android:lineSpacingExtra="4dp"
+                android:text="为了改善注册及登录界面用户体验，集成第三方SDK一键登录服务：闪验SDK，用于帮助实现用户一键登录行为。为了实现网关取号技术，闪验SDK需要获取IP地址、网卡（MAC)地址、国际移动设备识别码（IMEI）、sim卡信息，并可能会收集到手机机型、系统类型、系统版本、网络环境、网关取号报错日志等用于改善SDK性能。
+\n\n关于闪验SDK采集终端用户数据的范围、用途及安全措施请参照创蓝闪验SDK运营方的隐私政策。详见：https://flash.253.com/document/details?lid=639&amp;cid=91&amp;pc=28&amp;pn=%25E9%2597%25AA%25E9%25AA%258CSDK\n
+\n如果您同意请点击下面的按钮以接受我们的服务。"
+                android:textColor="#4C4C4C" />
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/shanyan_view_privacy_ensure"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_weight="1"
+                android:background="#0099FF"
+                android:stateListAnimator="@null"
+                android:text="同意"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/shanyan_view_privace_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:stateListAnimator="@null"
+                android:text="不同意"
+                android:textColor="#666666"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

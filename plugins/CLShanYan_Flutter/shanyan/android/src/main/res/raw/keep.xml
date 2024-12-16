@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="R.anim.umcsdk*,
+    R.drawable.umcsdk*,
+    R.layout.layout_shanyan*,
+    R.id.shanyan_view*" />

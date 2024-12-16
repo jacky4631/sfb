@@ -1,0 +1,58 @@
+group 'club.openflutter.flutter_ali_face_verify'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.7.20'
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        maven {
+            url "https://mvn.cloud.alipay.com/nexus/content/repositories/open/"
+        }
+        mavenCentral()
+        repositories {
+            flatDir {
+                dirs 'libs', 'aars'
+            }
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    namespace 'club.openflutter.flutter_ali_face_verify'
+    compileSdkVersion 31
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions { jvmTarget =1.8 }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+}
+
+dependencies {
+    // 添加如下内容
+    implementation "com.mpaas.android:face-verify:3.4.8"
+}

@@ -1,0 +1,6 @@
+framework module SGMiddleTier {
+  umbrella header "SGMiddleTier.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module SGSecurityBody {
+  umbrella header "SGSecurityBody.h"
+
+  export *
+  module * { export * }
+}

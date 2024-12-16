@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shanyan_view_login_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/umcsdk_shanyan_authbackground"
+    android:gravity="center_horizontal">
+
+    <include
+        android:id="@+id/shanyan_view_navigationbar_include"
+        layout="@layout/layout_shanyan_navigationbar_item" />
+
+    <RelativeLayout
+        android:id="@+id/shanyan_view_login_boby"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/shanyan_view_navigationbar_include">
+
+        <TextView
+            android:id="@+id/shanyan_view_authority_finish"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:text="自定义按钮"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/shanyan_view_log_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:contentDescription="logo"
+            android:src="@drawable/umcsdk_mobile_logo" />
+
+        <TextView
+            android:id="@+id/shanyan_view_tv_per_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/shanyan_view_log_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:background="@null"
+            android:enabled="false"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="11"
+            android:text="152****5555"
+            android:textColor="#000"
+            android:textSize="18sp" />
+
+
+        <Button
+            android:id="@+id/shanyan_view_bt_one_key_login"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_below="@+id/shanyan_view_tv_per_code"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="47dp"
+            android:layout_marginTop="43dp"
+            android:layout_marginRight="47dp"
+            android:background="@drawable/umcsdk_login_btn_bg"
+            android:gravity="center"
+            android:stateListAnimator="@null"
+            android:text="本机号码一键登录"
+            android:textColor="#ffffff"
+            android:textSize="15sp" />
+
+        <!--建议自定义区-->
+        <include
+            android:id="@+id/shanyan_view_privacy_include"
+            layout="@layout/layout_shanyan_privacy_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/shanyan_view_identify_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:gravity="center_horizontal"
+            android:text="天翼账号提供认证服务"
+            android:textColor="#989ba4"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/shanyan_view_slogan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="2dp"
+            android:gravity="center_horizontal"
+            android:text="创蓝253提供技术支持"
+            android:textColor="#989ba4"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <include
+        android:id="@+id/shanyan_view_onkeylogin_loading"
+        layout="@layout/layout_shanyan_loading_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/shanyan_view_navigationbar_include"
+        android:visibility="gone" />
+</RelativeLayout>

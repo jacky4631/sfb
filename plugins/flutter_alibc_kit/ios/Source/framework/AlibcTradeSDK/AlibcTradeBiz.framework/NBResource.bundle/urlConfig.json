@@ -1,0 +1,16 @@
+{
+    "Release": {
+        "trade.tmallTradeItemUrlHost": "https://detail.m.tmall.com/item.htm",
+        "trade.taobaoMobileTradeItemUrlHost": "https://h5.m.taobao.com/awp/core/detail.htm",
+        "trade.myOrdersUrl": "https://h5.m.taobao.com/mlapp/olist.html",
+        "trade.shopUrlHost": "https://shop.m.taobao.com/shop/shop_index.htm",
+        "trade.cartUrl": "https://main.m.taobao.com/cart/index.html",
+        "trade.taobaoHomeUrl": "https://h5.m.taobao.com",
+        "trade.taobaoTradeItemMiniUrlHost": "https://h5.m.taobao.com/trade/detail.html",
+        "trade.taobaoTradeItemUrlHost": "https://h5.m.taobao.com/cm/snap/index.html"
+    },
+    "PreRelease": {
+    },
+    "Daily": {
+    }
+}

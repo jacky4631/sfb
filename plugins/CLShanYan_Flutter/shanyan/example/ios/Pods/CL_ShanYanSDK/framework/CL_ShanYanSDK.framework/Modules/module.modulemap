@@ -1,0 +1,6 @@
+framework module CL_ShanYanSDK {
+  umbrella header "CL_ShanYanSDK.h"
+
+  export *
+  module * { export * }
+}
