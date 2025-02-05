@@ -14,18 +14,16 @@
 ### 💟 UI界面
 
 #### 📱 移动端预览
-
-<img src="demoimages/111.gif" title="" alt="image" width="200">
-<img src="demoimages/111.png" title="" alt="image" width="200">
-
-<img src="demoimages/222.gif" title="" alt="image" width="200">
-<img src="demoimages/222.png" title="" alt="image" width="200">
-
-<img src="demoimages/333.gif" title="" alt="image" width="200">
-<img src="demoimages/333.png" title="" alt="image" width="200">
-
-<img src="demoimages/444.gif" title="" alt="image" width="200">
-<img src="demoimages/444.png" title="" alt="image" width="200">
+<div align=center>
+    <img src="demoimages/111.gif" title="" alt="image" width="200">
+    <img src="demoimages/111.png" title="" alt="image" width="200">
+    <img src="demoimages/444.gif" title="" alt="image" width="200">
+    <img src="demoimages/444.png" title="" alt="image" width="200">
+    <img src="demoimages/333.gif" title="" alt="image" width="200">
+    <img src="demoimages/333.png" title="" alt="image" width="200">
+    <img src="demoimages/222.gif" title="" alt="image" width="200">
+    <img src="demoimages/222.png" title="" alt="image" width="200">
+</div>
 
 <img src="demoimages/7.png" title="" alt="image">
 <img src="demoimages/8.png" title="" alt="image">
