@@ -10,7 +10,16 @@
 
 
 ---
+### 🐶 源码仓库
 
+* APP端【Flutter】：[github（查看）](https://github.com/jacky4631/sfb) [gitee（查看）](https://gitee.com/jacky4631/sfb)
+* 服务端【Java + SpringBoot)】：[github（查看）](https://github.com/jacky4631/sfb_server) [gitee（查看）](https://gitee.com/jacky4631/sfb_server)
+* 管理端【Vue2 + element-ui】：[github（查看）](https://github.com/jacky4631/sfb_server_admin) [gitee（查看）](https://gitee.com/jacky4631/sfb_server_admin)
+
+### 🎬 系统演示
+[演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
+
+---
 ### 💟 UI界面
 
 #### 📱 移动端预览
@@ -92,11 +101,6 @@
 ~~~
 ---
 
-### 🎬 系统演示
-[演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
-
----
-
 ### 🔧 Java项目框架 和 WEB PC 项目运行环境
 ~~~
 1. SpringBoot 3.2
@@ -117,7 +121,7 @@
 3.禁止将本项目的代码和资源进行任何形式的出售，产生的一切任何后果责任由侵权者自负。<br>
 
 ---
-### 🪪 版权信息
+### ©️︎ 版权信息
 本项目包含的第三方源码和二进制文件之版权信息另行标注。<br>
 版权所有Copyright © 2018-2025 by MAILVOR<br>
 All rights reserved。<br>
