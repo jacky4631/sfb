@@ -6,10 +6,38 @@
 
 ### 📖 简介：
 
-苏分宝开源淘宝客APP系统，基于Java（SpringBoot）+Vue+Flutter+Uniapp开发。支持App和小程序，代码二开很方便，能满足企业淘宝客APP等经营需求，自用、做二开项目都很合适。
+苏分宝开源淘宝客系统，基于Java（SpringBoot）+Vue+Flutter+Uniapp开发。支持App和小程序，代码二开很方便，能满足企业淘宝客等经营需求，自用、做二开项目都很合适。
 
 
 ---
+
+### 💟 UI界面
+
+#### 📱 移动端预览
+
+<img src="demoimages/111.gif" title="" alt="image" width="200">
+<img src="demoimages/111.png" title="" alt="image" width="200">
+
+<img src="demoimages/222.gif" title="" alt="image" width="200">
+<img src="demoimages/222.png" title="" alt="image" width="200">
+
+<img src="demoimages/333.gif" title="" alt="image" width="200">
+<img src="demoimages/333.png" title="" alt="image" width="200">
+
+<img src="demoimages/444.gif" title="" alt="image" width="200">
+<img src="demoimages/444.png" title="" alt="image" width="200">
+
+<img src="demoimages/7.png" title="" alt="image">
+<img src="demoimages/8.png" title="" alt="image">
+<img src="demoimages/1.png" title="" alt="image">
+<img src="demoimages/2.png" title="" alt="image">
+<img src="demoimages/3.png" title="" alt="image">
+<img src="demoimages/4.png" title="" alt="image">
+<img src="demoimages/5.png" title="" alt="image">
+<img src="demoimages/6.png" title="" alt="image">
+
+---
+
 
 ### ⭐️ 系统功能
 
@@ -70,34 +98,6 @@
 [演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
 
 ---
-
-### 💟 UI界面
-
-#### 📱 移动端预览
-
-<img src="demoimages/111.gif" title="" alt="image" width="200">
-<img src="demoimages/111.png" title="" alt="image" width="200">
-
-<img src="demoimages/222.gif" title="" alt="image" width="200">
-<img src="demoimages/222.png" title="" alt="image" width="200">
-
-<img src="demoimages/333.gif" title="" alt="image" width="200">
-<img src="demoimages/333.png" title="" alt="image" width="200">
-
-<img src="demoimages/444.gif" title="" alt="image" width="200">
-<img src="demoimages/444.png" title="" alt="image" width="200">
-
-<img src="demoimages/7.png" title="" alt="image">
-<img src="demoimages/8.png" title="" alt="image">
-<img src="demoimages/1.png" title="" alt="image">
-<img src="demoimages/2.png" title="" alt="image">
-<img src="demoimages/3.png" title="" alt="image">
-<img src="demoimages/4.png" title="" alt="image">
-<img src="demoimages/5.png" title="" alt="image">
-<img src="demoimages/6.png" title="" alt="image">
-
----
-
 
 ### 🔧 Java项目框架 和 WEB PC 项目运行环境
 ~~~
