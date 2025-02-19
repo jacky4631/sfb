@@ -64,7 +64,6 @@ class _FirstPageState extends State<FirstPage> {
   ScrollController _scrollController = ScrollController();
   var _showBackTop = false;
 
-
   var cancelable = null;
   @override
   void initState() {
@@ -84,7 +83,7 @@ class _FirstPageState extends State<FirstPage> {
     Global.init();
     await getBannerData();
     await getTilesData();
-    await getSearchData(isRef: true);
+    // await getSearchData(isRef: true);
     await getCardData();
     await getBrandList(isRef: true);
     await getListData(isRef: true);
@@ -99,10 +98,9 @@ class _FirstPageState extends State<FirstPage> {
     if (!agree) {
       return;
     }
-    if(!Global.isWeb()) {
-      bool init = await fluwx.registerApi(
-          appId: Global.wxAppId,
-          universalLink: Global.wxUniversalLink);
+    if (!Global.isWeb()) {
+      bool init =
+          await fluwx.registerApi(appId: Global.wxAppId, universalLink: Global.wxUniversalLink);
       //监听微信授权返回结果 微信回调
       cancelable = fluwx.addSubscriber((response) {
         if (response is WeChatAuthResponse) {
@@ -111,18 +109,19 @@ class _FirstPageState extends State<FirstPage> {
       });
       initFaceService();
       await LoginShanyan.getInstance().init();
-      if(!this.init) {
-        InitModel initModel = await FlutterAlibc.initAlibc(version:packageInfo.version,appName:APP_NAME);
+      if (!this.init) {
+        InitModel initModel =
+            await FlutterAlibc.initAlibc(version: packageInfo.version, appName: APP_NAME);
       }
     }
     init = true;
   }
 
   Future initShake() async {
-    if(Global.appInfo.huodong!= null) {
+    if (Global.appInfo.huodong != null) {
       huodongImg = Global.appInfo.huodong!.img;
     }
-    if(Global.isEmpty(huodongImg)){
+    if (Global.isEmpty(huodongImg)) {
       return;
     }
     timer = Timer.periodic(const Duration(seconds: 3), (t) {
@@ -138,16 +137,17 @@ class _FirstPageState extends State<FirstPage> {
       }
     });
   }
+
   @override
   void dispose() {
-    if(timer != null) {
+    if (timer != null) {
       timer!.cancel();
     }
-    if(subscription != null) {
+    if (subscription != null) {
       subscription?.cancel();
     }
     _scrollController.dispose();
-    if(cancelable != null) {
+    if (cancelable != null) {
       cancelable.cancel();
     }
     super.dispose();
@@ -235,13 +235,16 @@ class _FirstPageState extends State<FirstPage> {
     setState(() {});
     return listDm.flag;
   }
+
   ///大家都在领
   var searchDm = DataModel();
   Future<int> getSearchData({int page = 1, bool isRef = false}) async {
-    var res =
-        await http.get(Uri.parse(BService.getEveryBuyUrl())).catchError((v) {
+    var res = await http.get(Uri.parse(BService.getEveryBuyUrl())).catchError((v) {
       searchDm.toError('网络异常');
     });
+
+    print(res);
+
     if (res != null) {
       var json = jsonDecode(res.body);
       var list = json['data']['list'];
@@ -269,28 +272,27 @@ class _FirstPageState extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldWidget(
-      bgColor: Color(0xfffafafa),
-      body:Stack(children: [
-        ScaffoldWidget(
-            floatingActionButton:
-            _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
-                ? FloatingActionButton(
-              backgroundColor: Colours.app_main,
-              mini: true,
-              onPressed: () {
-                // scrollController 通过 animateTo 方法滚动到某个具体高度
-                // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
-                _scrollController.animateTo(0.0,
-                    duration: Duration(milliseconds: 1000),
-                    curve: Curves.decelerate);
-              },
-              child: Icon(
-                Icons.arrow_upward,
-                color: Colors.white,
-              ),
-            )
-                : null,
-            body: MyCustomScroll(
+        bgColor: Color(0xfffafafa),
+        body: Stack(
+          children: [
+            ScaffoldWidget(
+              floatingActionButton: _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
+                  ? FloatingActionButton(
+                      backgroundColor: Colours.app_main,
+                      mini: true,
+                      onPressed: () {
+                        // scrollController 通过 animateTo 方法滚动到某个具体高度
+                        // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
+                        _scrollController.animateTo(0.0,
+                            duration: Duration(milliseconds: 1000), curve: Curves.decelerate);
+                      },
+                      child: Icon(
+                        Icons.arrow_upward,
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
+              body: MyCustomScroll(
                 controller: _scrollController,
                 isGengduo: listDm.hasNext,
                 isShuaxin: true,
@@ -307,7 +309,7 @@ class _FirstPageState extends State<FirstPage> {
                 maskWidget: () => ValueListenableBuilder(
                   valueListenable: huodongNotify,
                   builder: (_, __, ___) {
-                    if(Global.isEmpty(huodongImg)){
+                    if (Global.isEmpty(huodongImg)) {
                       return SizedBox();
                     }
                     return createHuodongWidget();
@@ -321,14 +323,14 @@ class _FirstPageState extends State<FirstPage> {
                       'sd': PFun.sdLg(Colors.black12),
                       'br': 8,
                       'mg': PFun.lg(0, 6),
-                      'crr': [5,5,5,5]
+                      'crr': [5, 5, 5, 5]
                     },
                   );
                 },
               ),
-        )
-      ],)
-    );
+            )
+          ],
+        ));
   }
 
   Widget createHuodongWidget() {
@@ -337,79 +339,88 @@ class _FirstPageState extends State<FirstPage> {
     //     ),
     //     [null, MediaQuery.of(context).padding.bottom+100, null , 2]
     // )
-    return !showHuodong ? SizedBox() : PWidget.positioned(
-      ShakeAnimationWidget(
-        ///抖动控制器
-        shakeAnimationController: _shakeAnimationController,
-        ///微旋转的抖动
-        shakeAnimationType: ShakeAnimationType.RoateShake,
-        ///设置不开启抖动
-        isForward: false,
-        ///默认为 0 无限执行
-        shakeCount: 0,
-        ///抖动的幅度 取值范围为[0,1]
-        shakeRange: 0.2,
-        ///执行抖动动画的子Widget
-        child: PWidget.container(PWidget.wrapperImage(Global.appInfo.huodong!.img,[60,60],{'br':4}),
-            {'fun':() {
-              setState(() {
-                showHuodong = false;
-              });
-              Global.showHuodongDialog(Global.appInfo.huodong, delaySeconds: 0, fun: (){
-                setState(() {
-                  showHuodong = true;
-                });
-              });
-            }}),
-      ),
-        [null, MediaQuery.of(context).padding.bottom+80, null , huodongNotify.isShowHuodong ? -30: 2]
-    );
+    return !showHuodong
+        ? SizedBox()
+        : PWidget.positioned(
+            ShakeAnimationWidget(
+              ///抖动控制器
+              shakeAnimationController: _shakeAnimationController,
 
+              ///微旋转的抖动
+              shakeAnimationType: ShakeAnimationType.RoateShake,
+
+              ///设置不开启抖动
+              isForward: false,
+
+              ///默认为 0 无限执行
+              shakeCount: 0,
+
+              ///抖动的幅度 取值范围为[0,1]
+              shakeRange: 0.2,
+
+              ///执行抖动动画的子Widget
+              child: PWidget.container(
+                  PWidget.wrapperImage(Global.appInfo.huodong!.img, [60, 60], {'br': 4}), {
+                'fun': () {
+                  setState(() {
+                    showHuodong = false;
+                  });
+                  Global.showHuodongDialog(Global.appInfo.huodong, delaySeconds: 0, fun: () {
+                    setState(() {
+                      showHuodong = true;
+                    });
+                  });
+                }
+              }),
+            ),
+            [
+                null,
+                MediaQuery.of(context).padding.bottom + 80,
+                null,
+                huodongNotify.isShowHuodong ? -30 : 2
+              ]);
   }
 
   Widget createListItem(i, v) {
     String sales = BService.formatNum(v['monthSales']);
     int max = 1;
-    if(i%3==0) {
+    if (i % 3 == 0) {
       max = 2;
     }
     num actualPrice = v['actualPrice'];
     num fee = v['commissionRate'] * actualPrice / 100;
-    String shopType = v['shopType']==1?'天猫':'淘宝';
+    String shopType = v['shopType'] == 1 ? '天猫' : '淘宝';
     List labels = v['specialText'];
-    bool showLabel = labels!= null && labels.isNotEmpty;
+    bool showLabel = labels != null && labels.isNotEmpty;
     String label = '';
-    if(labels!= null && labels.isNotEmpty) {
+    if (labels != null && labels.isNotEmpty) {
       label = labels[0];
     }
     return PWidget.container(
       PWidget.column([
         PWidget.wrapperImage(getTbMainPic(v), {'ar': 1 / 1}),
         PWidget.container(
-          PWidget.column([
-            PWidget.row([
-              // PWidget.image('assets/images/mall/tm.png', [14, 14]),
-              // PWidget.boxw(4),
-              getTitleWidget(v['dtitle'], max: max)
-            ]),
-            // PWidget.text('${v['dtitle']}'),
-            PWidget.boxh(8),
-            PWidget.row([
-              getPriceWidget(v['actualPrice'], v['originalPrice']),
-              PWidget.spacer(),
-              getSalesWidget(sales)
-            ]),
-            if(showLabel)
+            PWidget.column([
+              PWidget.row([
+                // PWidget.image('assets/images/mall/tm.png', [14, 14]),
+                // PWidget.boxw(4),
+                getTitleWidget(v['dtitle'], max: max)
+              ]),
+              // PWidget.text('${v['dtitle']}'),
               PWidget.boxh(8),
-            if(showLabel)
-              getLabelWidget(label),
-            PWidget.boxh(8),
-            getMoneyWidget(context, fee, TB),
-            PWidget.boxh(8),
-            PWidget.text('$shopType | ${v['shopName']}', [Colors.black45, 12]),
-          ]),
-          {'pd':8}
-        ),
+              PWidget.row([
+                getPriceWidget(v['actualPrice'], v['originalPrice']),
+                PWidget.spacer(),
+                getSalesWidget(sales)
+              ]),
+              if (showLabel) PWidget.boxh(8),
+              if (showLabel) getLabelWidget(label),
+              PWidget.boxh(8),
+              getMoneyWidget(context, fee, TB),
+              PWidget.boxh(8),
+              PWidget.text('$shopType | ${v['shopName']}', [Colors.black45, 12]),
+            ]),
+            {'pd': 8}),
       ]),
       [null, null, Colors.white],
     );
@@ -421,41 +432,43 @@ class _FirstPageState extends State<FirstPage> {
     List brandList = brandListDm.list;
     return [
       (bannerDm.list != null && bannerDm.list.isNotEmpty)
-          ? BannerWidget(bannerDm, (v){
-          Global.kuParse(context, v);
-      }):
+          ? BannerWidget(bannerDm, (v) {
+              Global.kuParse(context, v);
+            })
+          :
           //没网络时显示默认图片
-      AspectRatio(
-          aspectRatio: (750+8) / (280 + 24),
-          child: PWidget.image('assets/images/mall/bannerholder.png',
-          {'br': 8, 'pd': [8,8,8,8]})),
+          AspectRatio(
+              aspectRatio: (750 + 8) / (280 + 24),
+              child: PWidget.image('assets/images/mall/bannerholder.png', {
+                'br': 8,
+                'pd': [8, 8, 8, 8]
+              })),
+
       ///菜单
       const MenuWidget(),
       //圆形轮播图
       (tilesDm.list != null && tilesDm.list.isNotEmpty)
-          ? TilesWidget(tilesDm):
-      AspectRatio(
-        aspectRatio: 710 / (170 + 30),
-        child: PWidget.image('assets/images/mall/tileholder.png', {'br': 8, 'pd': [16,8,8,8]})
-      ),
+          ? TilesWidget(tilesDm)
+          : AspectRatio(
+              aspectRatio: 710 / (170 + 30),
+              child: PWidget.image('assets/images/mall/tileholder.png', {
+                'br': 8,
+                'pd': [16, 8, 8, 8]
+              })),
 
       // ///大家都在领
       // (searchDm.list != null && searchDm.list.isNotEmpty)
       //     ? EveryoneWidget(searchDm):SizedBox(height: 250,),
       //
       ///卡片
-      if(!(cardGoodsList == null || cardGoodsList.isEmpty || cardHot == null || cardHot.isEmpty))
+      if (!(cardGoodsList == null || cardGoodsList.isEmpty || cardHot == null || cardHot.isEmpty))
         CardWidget(cardDm),
 
       //品牌特卖
-      if(brandList != null && brandList.isNotEmpty)
-        BrandWidget(brandListDm),
+      if (brandList != null && brandList.isNotEmpty) BrandWidget(brandListDm),
 
       if (listDm.list.isNotEmpty)
-        PWidget.text(
-            '店铺好货', [Colors.black.withOpacity(0.75), 16, true], {'ct': true}),
+        PWidget.text('店铺好货', [Colors.black.withOpacity(0.75), 16, true], {'ct': true}),
     ];
   }
-
-
 }

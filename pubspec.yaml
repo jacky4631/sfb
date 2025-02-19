@@ -104,6 +104,9 @@ dependencies:
 #      path: shanyan
 #      ref: v2.3.4.5
 
+
+  easy_refresh: ^3.4.0
+
 dev_dependencies:
   mockito: ^5.4.0
   flutter_test:

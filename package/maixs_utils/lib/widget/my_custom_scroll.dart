@@ -168,23 +168,25 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
     con.addListener(() {
       userScrollDirection = con.position.userScrollDirection;
 
-      if (widget.maskWidget == null || homeListViewHeadKey.currentContext ==null) return;
+      if (widget.maskWidget == null || homeListViewHeadKey.currentContext == null) return;
       var s = homeListViewHeadKey.currentContext?.findRenderObject()?.parentData.toString();
       double group;
       var firstMatch = RegExp('\\(.*?, (.*?)\\)').firstMatch(s!);
       if (widget.isShuaxin) {
         group = double.parse(firstMatch!.group(1)!);
       } else {
-        group = double.parse(s.split('=')[1].replaceAll('Offset', '').replaceAll('(', '').replaceAll(')', '').split(',').last);
+        group = double.parse(s
+            .split('=')[1]
+            .replaceAll('Offset', '')
+            .replaceAll('(', '')
+            .replaceAll(')', '')
+            .split(',')
+            .last);
       }
       if (group <= (widget.maskHeight ?? 0.0)) {
-
         widget.onScrollToList!(true, group);
-
       } else {
-
         widget.onScrollToList!(false, group);
-
       }
     });
   }
@@ -295,7 +297,6 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
             sliver: SliverWaterfallFlow(
               delegate: SliverChildBuilderDelegate(
                 (_, i) => tweenView(i),
-
                 childCount: widget.itemModel.list.length,
               ),
               gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
@@ -315,14 +316,15 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
               child: RefresherWidget(
                 isShuaxin: widget.isShuaxin ?? true,
                 isGengduo: widget.isGengduo ?? widget.itemModel.hasNext,
-                footer: widget.refFooter ?? buildCustomFooter(text: widget.itemModel?.msg),
-                header: widget.refHeader ?? buildClassicHeader(text: widget.itemModel?.msg),
+                footer: widget.refFooter ?? buildCustomFooter(text: widget.itemModel.msg),
+                header: widget.refHeader ?? buildClassicHeader(text: widget.itemModel.msg),
                 onLoading: () => widget.onLoading!(widget.itemModel.page),
                 onRefresh: widget.onRefresh,
                 child: CustomScrollView(
                   controller: con,
                   // physics: MyBouncingScrollPhysics(),
-                  physics: widget.physics ?? AlwaysScrollableScrollPhysics(parent: MyBouncingScrollPhysics()),
+                  physics: widget.physics ??
+                      AlwaysScrollableScrollPhysics(parent: MyBouncingScrollPhysics()),
                   cacheExtent: widget.cacheExtent,
                   shrinkWrap: widget.shrinkWrap,
                   slivers: <Widget>[
@@ -341,7 +343,8 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
                               isClose: widget.isCloseTouchBottomAnimation || widget.isGengduo,
                               isCloseTop: widget.isCloseTopTouchBottomAnimation,
                               value: widget.touchBottomAnimationValue,
-                              animaTime: !widget.isShuaxin ? 10 : widget.touchBottomAnimationAnimaTime,
+                              animaTime:
+                                  !widget.isShuaxin ? 10 : widget.touchBottomAnimationAnimaTime,
                               child: widget.headers[i],
                             );
                           },
@@ -350,7 +353,6 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
                       ),
                     ),
                     view,
-
                     if (!widget.itemModel.hasNext)
                       if (widget.itemModel.list.length > (widget.expandedCount ?? 10))
                         SliverList(
@@ -365,7 +367,8 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
                                 isClose: widget.isCloseTouchBottomAnimation || widget.isGengduo,
                                 isCloseTop: widget.isCloseTopTouchBottomAnimation,
                                 value: widget.touchBottomAnimationValue,
-                                animaTime: !widget.isShuaxin ? 10 : widget.touchBottomAnimationAnimaTime,
+                                animaTime:
+                                    !widget.isShuaxin ? 10 : widget.touchBottomAnimationAnimaTime,
                                 child: i != 0 ? widget.btmWidget ?? btmWidget : SizedBox(),
                               );
                             },
@@ -377,8 +380,10 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
               ),
             ),
             if (widget.maskWidget != null)
-              if (widget.onScrollToList == null) isShowMask ? widget.maskWidget!()
-                  : SizedBox() else widget.maskWidget!(),
+              if (widget.onScrollToList == null)
+                isShowMask ? widget.maskWidget!() : SizedBox()
+              else
+                widget.maskWidget!(),
           ],
         );
       else
@@ -388,7 +393,8 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
               child: CustomScrollView(
                 controller: con,
                 // physics: MyBouncingScrollPhysics(),
-                physics: widget.physics ?? AlwaysScrollableScrollPhysics(parent: MyBouncingScrollPhysics()),
+                physics: widget.physics ??
+                    AlwaysScrollableScrollPhysics(parent: MyBouncingScrollPhysics()),
                 cacheExtent: widget.cacheExtent,
                 shrinkWrap: widget.shrinkWrap,
                 slivers: <Widget>[
@@ -407,7 +413,8 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
                             isClose: widget.isCloseTouchBottomAnimation || widget.isGengduo,
                             isCloseTop: widget.isCloseTopTouchBottomAnimation,
                             value: widget.touchBottomAnimationValue,
-                            animaTime: !widget.isShuaxin ? 10 : widget.touchBottomAnimationAnimaTime,
+                            animaTime:
+                                !widget.isShuaxin ? 10 : widget.touchBottomAnimationAnimaTime,
                             child: widget.headers[i],
                           );
                         },
@@ -431,7 +438,8 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
                                     : Column(
                                         children: [
                                           tweenView(i),
-                                          if (i != widget.itemModel.list.length - 1) widget.divider!,
+                                          if (i != widget.itemModel.list.length - 1)
+                                            widget.divider!,
                                         ],
                                       ));
                           } else {
@@ -462,7 +470,8 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
                               isClose: widget.isCloseTouchBottomAnimation || widget.isGengduo,
                               isCloseTop: widget.isCloseTopTouchBottomAnimation,
                               value: widget.touchBottomAnimationValue,
-                              animaTime: !widget.isShuaxin ? 10 : widget.touchBottomAnimationAnimaTime,
+                              animaTime:
+                                  !widget.isShuaxin ? 10 : widget.touchBottomAnimationAnimaTime,
                               child: i != 0 ? widget.btmWidget ?? btmWidget : SizedBox(),
                             );
                           },
@@ -473,8 +482,10 @@ class _MyCustomScrollState extends State<MyCustomScroll> {
               ),
             ),
             if (widget.maskWidget != null)
-              if (widget.onScrollToList == null) isShowMask ? widget.maskWidget!()
-                  : SizedBox() else widget.maskWidget!(),
+              if (widget.onScrollToList == null)
+                isShowMask ? widget.maskWidget!() : SizedBox()
+              else
+                widget.maskWidget!(),
           ],
         );
     });

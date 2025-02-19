@@ -13,6 +13,7 @@ import 'package:sufenbao/util/bao_icons.dart';
 import '../page/top_page.dart';
 import '../widget/double_tap_back_exit_app.dart';
 import 'home_page.dart';
+import 'local_page.dart';
 
 ///首页
 class Index extends StatefulWidget {
@@ -22,8 +23,7 @@ class Index extends StatefulWidget {
   State<StatefulWidget> createState() => _IndexState();
 }
 
-class _IndexState extends State<Index>
-    with RestorationMixin {
+class _IndexState extends State<Index> with RestorationMixin {
   HomeProvider provider = HomeProvider();
   late PageController _pageController;
 
@@ -33,8 +33,9 @@ class _IndexState extends State<Index>
   void initState() {
     initData();
     super.initState();
-    _pageController = PageController(initialPage: widget.index??0,);
-
+    _pageController = PageController(
+      initialPage: widget.index ?? 0,
+    );
   }
 
   @override
@@ -46,12 +47,14 @@ class _IndexState extends State<Index>
   void initData() {
     _widgetOptions = [
       HomePage(),
-      // LocalPage(),
-      TopPage(data: {'showArrowBack': false},),
-      SearchPage(data:{'showArrowBack': false,'autoFocus':false}),
+      LocalPage(),
+      TopPage(
+        data: {'showArrowBack': false},
+      ),
       MySelfPage()
     ];
   }
+
   late List<Widget> _widgetOptions;
 
   @override
@@ -59,7 +62,7 @@ class _IndexState extends State<Index>
     return ChangeNotifierProvider<HomeProvider>(
         create: (_) => provider,
         child: DoubleTapBackExitApp(
-          child: Scaffold(
+            child: Scaffold(
           backgroundColor: Colors.white,
           body: PageView(
             physics: const NeverScrollableScrollPhysics(), // 禁止滑动
@@ -67,8 +70,7 @@ class _IndexState extends State<Index>
             onPageChanged: (int index) => provider.value = index,
             children: _widgetOptions,
           ),
-          bottomNavigationBar:
-              Consumer<HomeProvider>(builder: (_, provider, __) {
+          bottomNavigationBar: Consumer<HomeProvider>(builder: (_, provider, __) {
             return createBottomBar(provider);
           }),
         )));
@@ -99,7 +101,7 @@ class _IndexState extends State<Index>
             tabBackgroundColor: Colors.grey.shade100,
             color: Colors.black,
             tabs: getTabs(),
-            selectedIndex: widget.index ??provider.value,
+            selectedIndex: widget.index ?? provider.value,
             onTabChange: (index) {
               _pageController.jumpToPage(index);
             },
@@ -115,17 +117,13 @@ class _IndexState extends State<Index>
         icon: BaoIcons.home,
         text: '首页',
       ),
-      // GButton(
-      //   icon: BaoIcons.love,
-      //   text: '团购',
-      // ),
+      GButton(
+        icon: BaoIcons.love,
+        text: '团购',
+      ),
       GButton(
         icon: BaoIcons.love,
         text: '榜单',
-      ),
-      GButton(
-        icon: BaoIcons.search,
-        text: '搜索',
       ),
       GButton(
         icon: BaoIcons.user,
@@ -141,5 +139,4 @@ class _IndexState extends State<Index>
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     registerForRestoration(provider, 'BottomNavigationBarCurrentIndex');
   }
-
 }
