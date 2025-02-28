@@ -6,10 +6,45 @@
 
 ### 📖 简介：
 
-苏分宝开源淘宝客APP系统，基于Java（SpringBoot）+Vue+Flutter+Uniapp开发。支持App和小程序，代码二开很方便，能满足企业淘宝客APP等经营需求，自用、做二开项目都很合适。
+苏分宝开源淘宝客系统，基于Java（SpringBoot）+Vue+Flutter+Uniapp开发。支持App和小程序，代码二开很方便，能满足企业淘宝客等经营需求，自用、做二开项目都很合适。
 
 
 ---
+### 🐶 源码仓库
+
+* APP端【Flutter】：[github（查看）](https://github.com/jacky4631/sfb) [gitee（查看）](https://gitee.com/jacky4631/sfb)
+* 服务端【Java + SpringBoot)】：[github（查看）](https://github.com/jacky4631/sfb_server) [gitee（查看）](https://gitee.com/jacky4631/sfb_server)
+* 管理端【Vue2 + element-ui】：[github（查看）](https://github.com/jacky4631/sfb_server_admin) [gitee（查看）](https://gitee.com/jacky4631/sfb_server_admin)
+
+### 🎬 系统演示
+[演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
+
+---
+### 💟 UI界面
+
+#### 📱 移动端预览
+<div align=center>
+    <img src="demoimages/111.gif" title="" alt="image" width="200">
+    <img src="demoimages/111.png" title="" alt="image" width="200">
+    <img src="demoimages/444.gif" title="" alt="image" width="200">
+    <img src="demoimages/444.png" title="" alt="image" width="200">
+    <img src="demoimages/333.gif" title="" alt="image" width="200">
+    <img src="demoimages/333.png" title="" alt="image" width="200">
+    <img src="demoimages/222.gif" title="" alt="image" width="200">
+    <img src="demoimages/222.png" title="" alt="image" width="200">
+</div>
+
+<img src="demoimages/7.png" title="" alt="image">
+<img src="demoimages/8.png" title="" alt="image">
+<img src="demoimages/1.png" title="" alt="image">
+<img src="demoimages/2.png" title="" alt="image">
+<img src="demoimages/3.png" title="" alt="image">
+<img src="demoimages/4.png" title="" alt="image">
+<img src="demoimages/5.png" title="" alt="image">
+<img src="demoimages/6.png" title="" alt="image">
+
+---
+
 
 ### ⭐️ 系统功能
 
@@ -66,27 +101,6 @@
 ~~~
 ---
 
-### 🎬 系统演示
-[演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
-
----
-
-### 💟 UI界面
-
-#### 📱 移动端预览
-
-<img src="demoimages/7.png" title="" alt="image">
-<img src="demoimages/8.png" title="" alt="image">
-<img src="demoimages/1.png" title="" alt="image">
-<img src="demoimages/2.png" title="" alt="image">
-<img src="demoimages/3.png" title="" alt="image">
-<img src="demoimages/4.png" title="" alt="image">
-<img src="demoimages/5.png" title="" alt="image">
-<img src="demoimages/6.png" title="" alt="image">
-
----
-
-
 ### 🔧 Java项目框架 和 WEB PC 项目运行环境
 ~~~
 1. SpringBoot 3.2
@@ -107,7 +121,7 @@
 3.禁止将本项目的代码和资源进行任何形式的出售，产生的一切任何后果责任由侵权者自负。<br>
 
 ---
-### 🪪 版权信息
+### ©️︎ 版权信息
 本项目包含的第三方源码和二进制文件之版权信息另行标注。<br>
 版权所有Copyright © 2018-2025 by MAILVOR<br>
 All rights reserved。<br>
