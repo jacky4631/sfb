@@ -244,9 +244,11 @@ class _FirstPageState extends State<FirstPage> {
     });
     if (res != null) {
       var json = jsonDecode(res.body);
-      var list = json['data']['list'];
-      var totalNum = int.parse('${json['data']['totalNum']}');
-      searchDm.addList(list, isRef, totalNum);
+      if(json['success'] != null && json['success']) {
+        var list = json['data']['list'];
+        var totalNum = int.parse('${json['data']['totalNum']}');
+        searchDm.addList(list, isRef, totalNum);
+      }
     }
     setState(() {});
     return searchDm.flag;
