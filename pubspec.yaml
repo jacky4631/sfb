@@ -62,7 +62,7 @@ dependencies:
   decimal: ^2.3.0
   chewie: ^1.8.1
   shimmer: ^3.0.0
-  data_table_2: ^2.3.12
+  data_table_2: 2.3.12
   signature: ^5.3.2
   encrypt: ^5.0.3
   connectivity_plus: ^6.0.3
