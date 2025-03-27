@@ -637,13 +637,13 @@ packages:
     source: path
     version: "2.1.1"
   flutter_plugin_android_lifecycle:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "60fc7b78455b94e6de2333d2f95196d32cf5c22f4b0b0520a628804cb463503b"
+      sha256: "8cf40eebf5dec866a6d1956ad7b4f7016e6c0cc69847ab946833b7d43743809f"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.7"
+    version: "2.0.19"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -733,6 +733,54 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.2.0"
+  geolocator:
+    dependency: "direct main"
+    description:
+      name: geolocator
+      sha256: "694ec58afe97787b5b72b8a0ab78c1a9244811c3c10e72c4362ef3c0ceb005cd"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "11.0.0"
+  geolocator_android:
+    dependency: "direct main"
+    description:
+      name: geolocator_android
+      sha256: f15d1536cd01b1399578f1da1eb5d566e7a718db6a3648f2c24d2e2f859f0692
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.5.4"
+  geolocator_apple:
+    dependency: transitive
+    description:
+      name: geolocator_apple
+      sha256: dbdd8789d5aaf14cf69f74d4925ad1336b4433a6efdf2fce91e8955dc921bf22
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.3.13"
+  geolocator_platform_interface:
+    dependency: transitive
+    description:
+      name: geolocator_platform_interface
+      sha256: "30cb64f0b9adcc0fb36f628b4ebf4f731a2961a0ebd849f4b56200205056fe67"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.2.6"
+  geolocator_web:
+    dependency: transitive
+    description:
+      name: geolocator_web
+      sha256: "49d8f846ebeb5e2b6641fe477a7e97e5dd73f03cbfef3fd5c42177b7300fb0ed"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
+  geolocator_windows:
+    dependency: transitive
+    description:
+      name: geolocator_windows
+      sha256: "175435404d20278ffd220de83c2ca293b73db95eafbdc8131fe8609be1421eb6"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.5"
   glob:
     dependency: transitive
     description:
@@ -1619,6 +1667,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.10.0"
+  sprintf:
+    dependency: transitive
+    description:
+      name: sprintf
+      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "7.0.0"
   sqflite:
     dependency: transitive
     description:
@@ -1710,12 +1766,11 @@ packages:
   tobias:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: d30291835f89136069f5245a4e066905a8c17220
-      url: "https://gitee.com/jacky4631/tobias.git"
-    source: git
-    version: "2.4.1"
+      name: tobias
+      sha256: "99dabc7fffe587c15f6589725fe22b50c8237b143ac52148fc24bf4899b5b350"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.1.2"
   typed_data:
     dependency: transitive
     description:
@@ -1816,10 +1871,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: "648e103079f7c64a36dc7d39369cabb358d377078a051d6ae2ad3aa539519313"
+      sha256: "8c951c9cb6504b2aa6b3666e6de504032d9baec24bf4cbabd3eea9edd73d4d77"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.7"
+    version: "4.3.2"
   vector_graphics:
     dependency: transitive
     description:
