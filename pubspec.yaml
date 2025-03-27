@@ -62,6 +62,7 @@ dependencies:
 #    path: ../flutter_alibc_kit
     git:
       url: https://gitee.com/jacky4631/flutter_alibc_kit.git
+      ref: master
   decimal: ^2.3.0
   chewie: ^1.8.1
   shimmer: ^3.0.0

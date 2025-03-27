@@ -523,8 +523,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: b20f75f3066debbd137d8dc718163d4f1d9b245f
+      ref: master
+      resolved-ref: d7ce4bca4c729692a0d89ebff15e6b75eb564440
       url: "https://gitee.com/jacky4631/flutter_alibc_kit.git"
     source: git
     version: "1.0.0-nullsafety"
