@@ -1,6 +1,6 @@
 name: sufenbao
 description: sufenbao
-version: 3.1.8+101
+version: 3.2.0+102
 
 environment:
   sdk: ">=3.0.0"
@@ -12,7 +12,9 @@ dependencies:
   #  tencent_kit: ^5.0.2
   flutter_z_location: ^0.0.7
   qr_flutter: ^4.1.0
+  #  image_gallery_saver: '^2.0.3'
   image_gallery_saver:
+    #    path: ../image_gallery_saver
     git:
       url: https://gitee.com/jacky4631/image_gallery_saver.git
   flutter:
@@ -52,11 +54,12 @@ dependencies:
   #屏幕适配
   flutter_screenutil: ^5.9.0
   animated_text_kit: ^4.2.2
-  tobias:
-    git:
-      url: https://gitee.com/jacky4631/tobias.git
-#      url: https://github.com/jacky4631/tobias.git
+  tobias: ^5.1.1
+#  tobias:
+#    git:
+#      url: https://gitee.com/jacky4631/tobias.git
   flutter_alibc:
+#    path: ../flutter_alibc_kit
     git:
       url: https://gitee.com/jacky4631/flutter_alibc_kit.git
   decimal: ^2.3.0
@@ -78,14 +81,14 @@ dependencies:
   #  flutter_swiper: ^1.1.6
   fluwx: ^4.5.6
   flutter_inappwebview: ^6.1.4
-  image_cropper: ^8.0.2
+  image_cropper: 8.0.2
   package_info_plus: ^8.0.2
   jpush_flutter: ^3.0.8
   sign_in_with_apple: ^6.1.3
   pay_ios: ^1.0.7
   photo_manager: ^3.5.2
   flutter_ali_face_verify:
-#    path: ../flutter_ali_face_verify
+    #    path: ../flutter_ali_face_verify
     git:
       url: https://gitee.com/jacky4631/flutter_ali_face_verify.git
   shanyan:
@@ -94,6 +97,9 @@ dependencies:
       url: https://gitee.com/jacky4631/CLShanYan_Flutter.git
       path: shanyan
       ref: v2.3.4.5
+  flutter_plugin_android_lifecycle: 2.0.19
+  geolocator_android: 4.5.4
+  geolocator: 11.0.0
 dev_dependencies:
   mockito: ^5.4.0
   flutter_test:
@@ -116,7 +122,6 @@ flutter:
     - assets/images/lv/
     - assets/images/menu/
     - assets/images/help/
-    - assets/images/energy/
     - assets/key/
   fonts:
     - family: BaoIcons
