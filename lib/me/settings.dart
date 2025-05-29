@@ -4,6 +4,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
@@ -91,7 +92,7 @@ class _Settings extends State<Settings> {
                   title: Text('推送设置'),
                   trailing: createArrowIcon(),
                   onPressed: (context){
-                    JPush jpush = new JPush();
+                    final JPushFlutterInterface jpush = JPush.newJPush();
                     jpush.openSettingsForNotification();
                   },
                 ),

@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:maixs_utils/util/utils.dart';
 import 'package:maixs_utils/widget/views.dart';
@@ -465,7 +466,7 @@ class Global {
   }
 
   static Future initJPush() async {
-    JPush jpush = new JPush();
+    final JPushFlutterInterface jpush = JPush.newJPush();
     try {
       jpush.addEventHandler(
           onReceiveNotification: (Map<String, dynamic> message) async {

@@ -1002,10 +1002,10 @@ packages:
     dependency: "direct main"
     description:
       name: jpush_flutter
-      sha256: "9398d3f52a783e385258a28d73d78f2769e795ed55d015e2180a7ab4735da842"
+      sha256: "309ffd60169cb7ea78810026eac30a3a6b98a41f66cdef31cb63d6930486b48e"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.0.8"
+    version: "3.2.7"
   js:
     dependency: transitive
     description:

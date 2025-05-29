@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/util/utils.dart';
 import 'package:maixs_utils/widget/my_custom_scroll.dart';
@@ -133,7 +134,7 @@ class _MySelfPageState extends State<MySelfPage>
       //todo 刷新 积分 提现 粉丝
     });
 
-    JPush jpush = new JPush();
+    final JPushFlutterInterface jpush = JPush.newJPush();
     jpush.setAlias('uid${userinfo.uid.toString()}').then((map) {
       print("设置别名成功$map");
     });

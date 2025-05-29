@@ -4,6 +4,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
@@ -112,7 +113,7 @@ class _AccountCancelState extends State<AccountCancel> {
     Map data = await BService.userDelete();
     if(data['success']) {
       ToastUtils.showToast('注销成功');
-      JPush jpush = new JPush();
+      final JPushFlutterInterface jpush = JPush.newJPush();
       await jpush.deleteAlias();
       Global.clearUser();
       Navigator.pushAndRemoveUntil(
