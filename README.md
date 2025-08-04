@@ -98,7 +98,7 @@
 4.运行环境 linux, 需要Java环境和对应的数据库 redis
 5.运行条件 Java 17 Mysql5.7
 6.移动端开源版环境 AndroidStudio Flutter3.24.4 Dart3.5.4
-7.移动端商业版环境 AndroidStudio Flutter3.32.7 Dart3.8.1
+7.移动端商业版环境 AndroidStudio Flutter3.32.5 Dart3.8.1
 ~~~
 ---
 
@@ -109,7 +109,7 @@
 3. npm 10
 4. node 18
 5. vue 3.x
-6. Flutter3.32.7
+6. Flutter3.32.5
 7. Dart3.5.4
 ~~~
 
