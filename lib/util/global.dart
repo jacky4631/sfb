@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:maixs_utils/util/utils.dart';
 import 'package:maixs_utils/widget/views.dart';
@@ -63,8 +64,8 @@ const bool showShareBuy = true;
 //是否已阅读协议
 bool Seen = false;
 
-const int BASE_SCALE=70;
-const int TB_SCALE=90;
+const int BASE_SCALE = 70;
+const int TB_SCALE = 90;
 //APP显示店长比例300% 就设置4
 const double TIMES = 1;
 
@@ -73,10 +74,11 @@ const PREFS_GOODS_CODE = 'goodsCode';
 
 const int EXPIRED_LEVEL = 99;
 Fluwx fluwx = new Fluwx();
+
 // 所有Widget继承的抽象类
 class Global {
   //ios产品id
-  static List<String> iosProductIds = ['00005','10005','20005','30005','40005','00003'];
+  static List<String> iosProductIds = ['00005', '10005', '20005', '30005', '40005', '00003'];
 
   static const baseUrl = 'https://$baseDomain';
   static const privacyUrl = '$baseUrl/protocol/privacy.html';
@@ -108,11 +110,12 @@ class Global {
   static CommissionInfo? commissionInfo;
   static AppInfo appInfo = AppInfo();
   static Future initPrefs() async {
-    if(_prefs == null) {
+    if (_prefs == null) {
       _prefs = await SharedPreferences.getInstance();
     }
   }
-    //初始化全局信息，会在APP启动时执行
+
+  //初始化全局信息，会在APP启动时执行
   static Future init() async {
     String token = await getToken();
     if (token.isNotEmpty) {
@@ -126,18 +129,18 @@ class Global {
   static getDynamicCommission(num commission) {
     double minTimes = 0.1;
     double maxTimes = 10.0;
-    if(Global.commissionInfo != null) {
+    if (Global.commissionInfo != null) {
       minTimes = Global.commissionInfo!.hbMinTimes;
       maxTimes = Global.commissionInfo!.hbMaxTimes;
     }
-    String min = (commission* minTimes).toStringAsFixed(2);
-    double maxD = commission* maxTimes;
+    String min = (commission * minTimes).toStringAsFixed(2);
+    double maxD = commission * maxTimes;
     //0.0-0.5元， 直接给到1元-1.5元之间
     // if(maxD <= 0.5) {
     //   maxD = 1.5;
     // }
     String max = maxD.toStringAsFixed(2);
-    return {'min':min, 'max':max};
+    return {'min': min, 'max': max};
   }
 
   static showProtocolPage(url, title) {
@@ -163,13 +166,13 @@ class Global {
 
   static Future<String?> getTodayString() async {
     await initPrefs();
-    DateTime dateTime= DateTime.now();
+    DateTime dateTime = DateTime.now();
     return _prefs?.getString('${dateTime.year}${dateTime.month}${dateTime.day}');
   }
 
   static Future setTodayString() async {
     await initPrefs();
-    DateTime dateTime= DateTime.now();
+    DateTime dateTime = DateTime.now();
     return _prefs?.setString('${dateTime.year}${dateTime.month}${dateTime.day}', '1');
   }
 
@@ -203,7 +206,7 @@ class Global {
 
   static Future<String> getToken() async {
     await initPrefs();
-    return _prefs?.getString("token")??'';
+    return _prefs?.getString("token") ?? '';
   }
 
   static showName(Userinfo userinfo) {
@@ -245,9 +248,7 @@ class Global {
   }
 
   static String getTmLogo(shopType) {
-    return shopType.toString() == '1'
-        ? 'assets/images/mall/tm.png'
-        : 'assets/images/mall/tb.png';
+    return shopType.toString() == '1' ? 'assets/images/mall/tm.png' : 'assets/images/mall/tb.png';
   }
 
   static String listToString(List<String> list) {
@@ -255,16 +256,16 @@ class Global {
       return '';
     }
     String result = '';
-    list.forEach((string) =>
-        {result == '' ? result = string : result = '$result,$string'});
+    list.forEach((string) => {result == '' ? result = string : result = '$result,$string'});
     return result.toString();
   }
+
   static Widget showLoading2() {
     return WillPopScope(
         child: Material(
           //创建透明层
-            type: MaterialType.transparency, //透明类型
-            child: Center(
+          type: MaterialType.transparency, //透明类型
+          child: Center(
             //保证控件居中效果
             child: CupertinoActivityIndicator(
               radius: 18,
@@ -278,21 +279,23 @@ class Global {
 
   //在web下执行Platform.isIOS会报错
   static isIOS() {
-    if(isWeb()) {
+    if (isWeb()) {
       return false;
     }
     return Platform.isIOS;
   }
+
   static Future<bool> isHuawei() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    if(androidInfo != null && androidInfo.manufacturer != null) {
+    if (androidInfo != null && androidInfo.manufacturer != null) {
       return androidInfo.manufacturer.toLowerCase() == 'huawei';
     }
     return false;
   }
+
   static isAndroid() {
-    if(isWeb()) {
+    if (isWeb()) {
       return false;
     }
     return Platform.isAndroid;
@@ -305,13 +308,14 @@ class Global {
     //唤起微信小程序
     Global.launchEleWechat(path);
   }
+
   static Future kuParse(BuildContext context, v) async {
     ///点击事件
-    if(v['title'] == '淘宝看视频领红包') {
+    if (v['title'] == '淘宝看视频领红包') {
       Navigator.pushNamed(context, '/taoRedPage', arguments: v);
-    } else if(v['title'] == '加盟') {
-      onTapLogin(context, '/tabVip', args: {'index':0});
-    } else if(v['title'] == '捡漏清单') {
+    } else if (v['title'] == '加盟') {
+      onTapLogin(context, '/tabVip', args: {'index': 0});
+    } else if (v['title'] == '捡漏清单') {
       Navigator.pushNamed(context, '/pickLeakPage', arguments: v);
     } else if (v['link_type'] == 4) {
       Navigator.pushNamed(context, '/kuCustomPage', arguments: v);
@@ -323,13 +327,12 @@ class Global {
         //1=淘宝 2=京东 5=唯品会
         String url = '';
         if (terrace == 1) {
-          var data =
-              await BService.taoActivityParse(activityDetail['activity_id']);
+          var data = await BService.taoActivityParse(activityDetail['activity_id']);
           if (data != null) {
             url = data['click_url'];
           }
           Loading.hide(context);
-          if(url == '') {
+          if (url == '') {
             ToastUtils.showToast('请稍后再试');
             return;
           }
@@ -351,7 +354,7 @@ class Global {
     } else if (v['title'] == '抖音盛夏洗护') {
       Loading.show(context);
       BService.dyBannerWord().then((value) {
-        LaunchApp.launchDy(context, value['deep_link'],value['deep_link']);
+        LaunchApp.launchDy(context, value['deep_link'], value['deep_link']);
       });
       Loading.hide(context);
     } else if (v['link_type'] == 3) {
@@ -405,8 +408,7 @@ class Global {
           break;
       }
       String url = '$BROWSER_BASE_URL${Global.appInfo.kuCid}&tmp=$tag&code=${Global.appInfo.kuCid}&sp=#/sp';
-      Navigator.pushNamed(context, '/webview',
-          arguments: {'url': url, 'title': v['title']});
+      Navigator.pushNamed(context, '/webview', arguments: {'url': url, 'title': v['title']});
     }
   }
 
@@ -421,11 +423,13 @@ class Global {
   static launchMeituanWechat(context, {url}) {
     // Global.showLoading(context, text: '正在打开美团外卖小程序');
     Loading.show(context, text: '正在打开美团外卖小程序');
-    fluwx.open(target: MiniProgram(
-            username: 'gh_870576f3c6f9',
-            path: Global.isEmpty(url) ?
-                '/index/pages/h5/h5?f_userId=1&f_token=1&s_cps=1&weburl=https%3A%2F%2Fclick.meituan.com%2Ft%3Ft%3D1%26c%3D2%26p%3DyrY3Yr5z53F_'
-                : url))
+    fluwx
+        .open(
+            target: MiniProgram(
+                username: 'gh_870576f3c6f9',
+                path: Global.isEmpty(url)
+                    ? '/index/pages/h5/h5?f_userId=1&f_token=1&s_cps=1&weburl=https%3A%2F%2Fclick.meituan.com%2Ft%3Ft%3D1%26c%3D2%26p%3DyrY3Yr5z53F_'
+                    : url))
         .then((value) => Loading.hide(context));
   }
 
@@ -442,9 +446,11 @@ class Global {
   static bool isPhone(String phone) {
     return regExp.hasMatch(phone);
   }
+
   static bool isPhonePrefix(String phone) {
     return phoneExpPrefix.hasMatch(phone);
   }
+
   static RegExp orderRegExp = RegExp(r'^[0-9-]+$');
   static bool isOrder(String order) {
     //美团订单有空格 需要清除
@@ -460,48 +466,46 @@ class Global {
     } else if (alpha > 1) {
       alpha = 1;
     }
-    return Color.fromRGBO((hex & 0xFF0000) >> 16, (hex & 0x00FF00) >> 8,
-        (hex & 0x0000FF) >> 0, alpha);
+    return Color.fromRGBO((hex & 0xFF0000) >> 16, (hex & 0x00FF00) >> 8, (hex & 0x0000FF) >> 0, alpha);
   }
 
   static Future initJPush() async {
-    JPush jpush = new JPush();
+    final JPushFlutterInterface jpush = JPush.newJPush();
     try {
       jpush.addEventHandler(
-          onReceiveNotification: (Map<String, dynamic> message) async {
-      }, onOpenNotification: (Map<String, dynamic> message) async {
-            String msg = message['alert']??'';
-            if(msg.isEmpty && message['aps'] != null && message['aps']['alert'] != null){
-              if(message['aps']['alert'] is String) {
+          onReceiveNotification: (Map<String, dynamic> message) async {},
+          onOpenNotification: (Map<String, dynamic> message) async {
+            String msg = message['alert'] ?? '';
+            if (msg.isEmpty && message['aps'] != null && message['aps']['alert'] != null) {
+              if (message['aps']['alert'] is String) {
                 msg = message['aps']['alert'];
               } else {
                 msg = message['aps']['alert']['body'];
               }
-            };
-            if(msg == null) {
+            }
+            ;
+            if (msg == null) {
               Navigator.pushNamed(context, '/orderList');
-            } else if(msg.contains('拆开红包') || msg.contains('拆开') || msg.contains('用户拆开')){
+            } else if (msg.contains('拆开红包') || msg.contains('拆开') || msg.contains('用户拆开')) {
               Navigator.pushNamed(context, '/moneyList');
-            } else if(msg.contains('成为你的银星用户')){
+            } else if (msg.contains('成为你的银星用户')) {
               //todo 传入page
               Navigator.pushNamed(context, '/fans');
-            } else if(msg.contains('成为你的金星用户')){
+            } else if (msg.contains('成为你的金星用户')) {
               //todo 传入page
               Navigator.pushNamed(context, '/fans');
-            } else if(msg.contains('新的热度订单')){
-              Navigator.pushNamed(context, '/orderList',arguments: {'page': 3});
-            }else {
+            } else if (msg.contains('新的热度订单')) {
+              Navigator.pushNamed(context, '/orderList', arguments: {'page': 3});
+            } else {
               Navigator.pushNamed(context, '/orderList');
             }
-
-      }, onReceiveMessage: (Map<String, dynamic> message) async {
-      }, onReceiveNotificationAuthorization:
-              (Map<String, dynamic> message) async {
-      }, onNotifyMessageUnShow: (Map<String, dynamic> message) async {
-      });
+          },
+          onReceiveMessage: (Map<String, dynamic> message) async {},
+          onReceiveNotificationAuthorization: (Map<String, dynamic> message) async {},
+          onNotifyMessageUnShow: (Map<String, dynamic> message) async {});
     } on PlatformException {}
 
-    if(!Platform.isAndroid) {
+    if (!Platform.isAndroid) {
       jpush.setAuth(enable: true);
     }
     // jpush.setAuth(enable: true);
@@ -512,15 +516,13 @@ class Global {
       debug: false,
     );
     //如果用户已经正常登录 设置别名为用户id
-    if(Global.userinfo != null && Global.userinfo?.uid != 0) {
+    if (Global.userinfo != null && Global.userinfo?.uid != 0) {
       jpush.setAlias('uid${Global.userinfo!.uid.toString()}').then((map) {
         print("设置别名成功");
       });
     }
 
-
-    jpush.applyPushAuthority(
-        new NotificationSettingsIOS(sound: true, alert: true, badge: true));
+    jpush.applyPushAuthority(new NotificationSettingsIOS(sound: true, alert: true, badge: true));
     // jpush.isNotificationEnabled().then((bool value) {
     //     var msg = "通知授权是否打开: $value";
     //     if(!value) {
@@ -555,103 +557,97 @@ class Global {
     return AwesomeDialog(
       context: context,
       dialogType: DialogType.noHeader,
-      body: SimpleTextDialog(title, content, okText: okText, cancelText: cancelText,),
+      body: SimpleTextDialog(
+        title,
+        content,
+        okText: okText,
+        cancelText: cancelText,
+      ),
       // btnCancelOnPress: () {},
       // btnOkOnPress: () {},
     )..show().then((value) {
-      if (value != null && value) {
-        okPressed();
-      }
-    });
+        if (value != null && value) {
+          okPressed();
+        }
+      });
   }
 
   static showPhotoDialog(pressed) {
-    return Global.showDialog2(title: '温馨提示',
-        content: '您没有开启相册权限，开启后可用于设置头像、身份识别、保存海报', okText: '去开启', cancelText: '我再想想',
+    return Global.showDialog2(
+        title: '温馨提示',
+        content: '您没有开启相册权限，开启后可用于设置头像、身份识别、保存海报',
+        okText: '去开启',
+        cancelText: '我再想想',
         okPressed: pressed);
   }
+
   static showCameraDialog(pressed) {
-    return Global.showDialog2(title: '温馨提示',
-        content: '您没有开启相机权限，开启后可用于设置头像、身份识别、人脸识别', okText: '去开启', cancelText: '我再想想',
+    return Global.showDialog2(
+        title: '温馨提示',
+        content: '您没有开启相机权限，开启后可用于设置头像、身份识别、人脸识别',
+        okText: '去开启',
+        cancelText: '我再想想',
         okPressed: pressed);
   }
-  static Future showHuodongDialog(ActivityInfo data, {delaySeconds= 2, fun}) async {
-    if(dialogShowing) {
+
+  static Future showHuodongDialog(ActivityInfo data, {delaySeconds = 2, fun}) async {
+    if (dialogShowing) {
       return;
     }
     dialogShowing = true;
     Future.delayed(Duration(seconds: delaySeconds), () {
       showGeneralDialog(
           context: context,
-          barrierDismissible:false,
+          barrierDismissible: false,
           barrierLabel: '',
           transitionDuration: Duration(milliseconds: 200),
-          pageBuilder: (BuildContext context, Animation<double> animation,Animation<double> secondaryAnimation) {
-            return Scaffold(backgroundColor: Colors.transparent, body:HuodongDialog(data, (){
-              dialogShowing = false;
-              Global.setTodayString();
-              if(fun != null) {
-                fun();
-              }
-            }));
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return Scaffold(
+                backgroundColor: Colors.transparent,
+                body: HuodongDialog(data, () {
+                  dialogShowing = false;
+                  Global.setTodayString();
+                  if (fun != null) {
+                    fun();
+                  }
+                }));
           });
     });
   }
 
-
   static Future showContentParseDialog(data) async {
-    if(dialogShowing) {
+    if (dialogShowing) {
       return;
     }
     dialogShowing = true;
     Future.delayed(Duration(seconds: 1), () {
       AwesomeDialog(
-        dismissOnTouchOutside: false,
-        context: context,
-        dialogType: DialogType.noHeader,
-        showCloseIcon: true,
-        body: ContentParseDialog(data['code'], data['data']),
-          onDismissCallback: (DismissType type){
+          dismissOnTouchOutside: false,
+          context: context,
+          dialogType: DialogType.noHeader,
+          showCloseIcon: true,
+          body: ContentParseDialog(data['code'], data['data']),
+          onDismissCallback: (DismissType type) {
             dialogShowing = false;
           }
-        // btnCancelOnPress: () {},
-        // btnOkOnPress: () {},
-      )..show();
+          // btnCancelOnPress: () {},
+          // btnOkOnPress: () {},
+          )
+        ..show();
     });
   }
 
   static Future initCommissionInfo() async {
-
     Map<String, dynamic> json = await BService.commissionInfo();
     if (json.isEmpty) {
       return;
     }
     CommissionInfo commissionInfo = CommissionInfo.fromJson(json);
     Global.commissionInfo = commissionInfo;
-
   }
 
   static Future showChannelAuthDialog(callback) async {
-      if(dialogShowing) {
-        return;
-      }
-      dialogShowing = true;
-      AwesomeDialog(
-          context: context,
-          dialogType: DialogType.noHeader,
-          showCloseIcon: true,
-          body: ChannelAuthDialog({'callback':callback}),
-          onDismissCallback: (DismissType type){
-            dialogShowing = false;
-          }
-        // btnCancelOnPress: () {},
-        // btnOkOnPress: () {},
-      )..show();
-  }
-
-
-  static Future showPddAuthDialog(callback) async {
-    if(dialogShowing) {
+    if (dialogShowing) {
       return;
     }
     dialogShowing = true;
@@ -659,16 +655,35 @@ class Global {
         context: context,
         dialogType: DialogType.noHeader,
         showCloseIcon: true,
-        body: PddAuthDialog({'callback':callback}),
-        onDismissCallback: (DismissType type){
+        body: ChannelAuthDialog({'callback': callback}),
+        onDismissCallback: (DismissType type) {
           dialogShowing = false;
         }
-    )..show();
+        // btnCancelOnPress: () {},
+        // btnOkOnPress: () {},
+        )
+      ..show();
+  }
+
+  static Future showPddAuthDialog(callback) async {
+    if (dialogShowing) {
+      return;
+    }
+    dialogShowing = true;
+    AwesomeDialog(
+        context: context,
+        dialogType: DialogType.noHeader,
+        showCloseIcon: true,
+        body: PddAuthDialog({'callback': callback}),
+        onDismissCallback: (DismissType type) {
+          dialogShowing = false;
+        })
+      ..show();
   }
 
   static String getHideName(String nickname) {
-    if(nickname.isNotEmpty && Global.isPhone(nickname)) {
-      nickname = nickname.replaceAll(nickname.substring(3,7), '****');
+    if (nickname.isNotEmpty && Global.isPhone(nickname)) {
+      nickname = nickname.replaceAll(nickname.substring(3, 7), '****');
     }
     return nickname;
   }
@@ -677,14 +692,15 @@ class Global {
     await initPrefs();
     await _prefs?.setString(key, value);
   }
+
   static Future<String> getPrefsString(key) async {
     await initPrefs();
     return _prefs?.getString(key) ?? '';
   }
 
-
-  static Future<String>  encodeString(String content) async {
-    final publicPem = await rootBundle.loadString('assets/key/public.pem'); //key/public.pem为我上方放的公钥位置 这里不可使用encrypt文档中的parseKeyFromFile方法，会显示找不到文件
+  static Future<String> encodeString(String content) async {
+    final publicPem = await rootBundle
+        .loadString('assets/key/public.pem'); //key/public.pem为我上方放的公钥位置 这里不可使用encrypt文档中的parseKeyFromFile方法，会显示找不到文件
     dynamic publicKey = RSAKeyParser().parse(publicPem);
 
     final encrypter = Encrypter(RSA(publicKey: publicKey));
@@ -693,21 +709,21 @@ class Global {
   }
 
   static Future update(PackageInfo packageInfo) async {
-    if(Global.isWeb()) {
+    if (Global.isWeb()) {
       return;
     }
     String version = packageInfo.version;
     Map res = await BService.updateConfig();
-    if(res == null || res.isEmpty) {
+    if (res == null || res.isEmpty) {
       return;
     }
-    int enable = res['enable']??'0';
-    if(enable == 0) {
+    int enable = res['enable'] ?? '0';
+    if (enable == 0) {
       return;
     }
     String url;
     String latestVersion;
-    if(Global.isIOS()) {
+    if (Global.isIOS()) {
       url = res['iosUrl'];
       latestVersion = res['iosVersion'];
     } else {
@@ -717,20 +733,20 @@ class Global {
     //1.0.15 需要判断第一个数字大于提示升级，第二个数字大于时提示升级 第三个数字大于时提示升级
     List<String> curs = version.split('.');
     List<String> las = latestVersion.split('.');
-    if(curs.length != las.length) {
+    if (curs.length != las.length) {
       return;
     }
-    if(num.parse(las[0])>num.parse(curs[0])
-        || (num.parse(las[0])==num.parse(curs[0]) && num.parse(las[1])>num.parse(curs[1]))
-        || (curs.length > 2 && num.parse(las[0])==num.parse(curs[0]) &&
-            num.parse(las[1])==num.parse(curs[1]) &&
-            num.parse(las[2])>num.parse(curs[2]))) {
+    if (num.parse(las[0]) > num.parse(curs[0]) ||
+        (num.parse(las[0]) == num.parse(curs[0]) && num.parse(las[1]) > num.parse(curs[1])) ||
+        (curs.length > 2 &&
+            num.parse(las[0]) == num.parse(curs[0]) &&
+            num.parse(las[1]) == num.parse(curs[1]) &&
+            num.parse(las[2]) > num.parse(curs[2]))) {
       int forceUpdate = res['forceUpdate'];
-      showSignDialog(context, title:'新版本上线啦', desc: '立即更新', okTxt: '去更新',
-          forceUpdate: forceUpdate==1, (){
-            LaunchApp.launchInBrowser(url);
-            // launchUrl(Uri.parse(url));
-          });
+      showSignDialog(context, title: '新版本上线啦', desc: '立即更新', okTxt: '去更新', forceUpdate: forceUpdate == 1, () {
+        LaunchApp.launchInBrowser(url);
+        // launchUrl(Uri.parse(url));
+      });
     }
   }
 

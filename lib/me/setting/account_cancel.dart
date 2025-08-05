@@ -4,6 +4,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
@@ -19,7 +20,10 @@ import '../../index/Index.dart';
 //账户注销
 class AccountCancel extends StatefulWidget {
   final Map data;
-  const AccountCancel(this.data, {Key? key,}) : super(key: key);
+  const AccountCancel(
+    this.data, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   _AccountCancelState createState() => _AccountCancelState();
@@ -43,33 +47,41 @@ class _AccountCancelState extends State<AccountCancel> {
       ScaffoldWidget(
           brightness: Brightness.dark,
           bgColor: Colors.white,
-          appBar: buildTitle(context,
-              title: '账户注销',
-              widgetColor: Colors.black,
-              leftIcon: Icon(Icons.arrow_back)),
+          appBar: buildTitle(context, title: '账户注销', widgetColor: Colors.black, leftIcon: Icon(Icons.arrow_back)),
           body: PWidget.container(
               PWidget.column([
-                Center(child:Icon(Icons.remove_circle_outline, size: 50,color: Colors.red,)),
+                Center(
+                    child: Icon(
+                  Icons.remove_circle_outline,
+                  size: 50,
+                  color: Colors.red,
+                )),
                 PWidget.boxh(10),
-                PWidget.text('您正在注销$APP_NAME账户', [Colors.black, 20, true],{'ct':true}),
+                PWidget.text('您正在注销$APP_NAME账户', [Colors.black, 20, true], {'ct': true}),
                 PWidget.boxh(20),
                 PWidget.text(
                   '一旦账户注销：',
                   [Colors.red, 18, true],
                 ),
                 PWidget.boxh(15),
-                PWidget.text('\t1.您的账户信息将永久删除且无法恢复', [Colors.red, 14],
-                    {'max': 2}),
+                PWidget.text('\t1.您的账户信息将永久删除且无法恢复', [Colors.red, 14], {'max': 2}),
                 PWidget.boxh(5),
-                PWidget.text('\t2.您账户所关联的订单将无法查询与找回', [Colors.black, 14],
-                    {'max': 2}),
+                PWidget.text('\t2.您账户所关联的订单将无法查询与找回', [Colors.black, 14], {'max': 2}),
                 PWidget.boxh(5),
-                PWidget.text('\t3.您账户未结清的收入将被清空，',
-                    [Colors.black, 14], {'max': 2,'fun':(){
-                      onTapLogin(context, '/cashIndex',);
-                    }},[
-                      PWidget.textIs('请注销前去提现', [Colors.red, 14],  {'td': TextDecoration.underline}),
-                    ]),
+                PWidget.text('\t3.您账户未结清的收入将被清空，', [
+                  Colors.black,
+                  14
+                ], {
+                  'max': 2,
+                  'fun': () {
+                    onTapLogin(
+                      context,
+                      '/cashIndex',
+                    );
+                  }
+                }, [
+                  PWidget.textIs('请注销前去提现', [Colors.red, 14], {'td': TextDecoration.underline}),
+                ]),
                 PWidget.boxh(5),
                 PWidget.text('\t5.您授权的微信账户将会自动解绑', [Colors.black, 14], {'max': 2}),
                 PWidget.boxh(5),
@@ -96,9 +108,12 @@ class _AccountCancelState extends State<AccountCancel> {
             textColor: Colors.white,
             text: '确认注销',
             onPressed: () {
-              Global.showDialog2(title: '温馨提示', content: '您的账户信息将永久删除且无法恢复', okPressed: (){
-                accountCancel();
-              });
+              Global.showDialog2(
+                  title: '温馨提示',
+                  content: '您的账户信息将永久删除且无法恢复',
+                  okPressed: () {
+                    accountCancel();
+                  });
             },
           )
         ],
@@ -107,21 +122,17 @@ class _AccountCancelState extends State<AccountCancel> {
     );
   }
 
-  Future accountCancel() async{
-
+  Future accountCancel() async {
     Map data = await BService.userDelete();
-    if(data['success']) {
+    if (data['success']) {
       ToastUtils.showToast('注销成功');
-      JPush jpush = new JPush();
+      final JPushFlutterInterface jpush = JPush.newJPush();
       await jpush.deleteAlias();
       Global.clearUser();
       Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => Index()),
-              (Route router) => router == null);
+          context, MaterialPageRoute(builder: (_) => Index()), (Route router) => router == null);
     } else {
       ToastUtils.showToast('注销失败，请注销前去提现');
     }
-
   }
 }

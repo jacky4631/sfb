@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/util/utils.dart';
 import 'package:maixs_utils/widget/my_custom_scroll.dart';
@@ -54,8 +55,7 @@ class MySelfPage extends StatefulWidget {
   _MySelfPageState createState() => _MySelfPageState();
 }
 
-class _MySelfPageState extends State<MySelfPage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late Map<String, dynamic> json;
   String avatar = '';
   String nickName = '';
@@ -133,7 +133,7 @@ class _MySelfPageState extends State<MySelfPage>
       //todo 刷新 积分 提现 粉丝
     });
 
-    JPush jpush = new JPush();
+    final JPushFlutterInterface jpush = JPush.newJPush();
     jpush.setAlias('uid${userinfo.uid.toString()}').then((map) {
       print("设置别名成功$map");
     });
@@ -295,8 +295,7 @@ class _MySelfPageState extends State<MySelfPage>
                     alignment: Alignment.topCenter,
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      gradient:
-                          LinearGradient(colors: <Color>[Color(0xFFFDECC3), Color(0xFFF7CD7C)]),
+                      gradient: LinearGradient(colors: <Color>[Color(0xFFFDECC3), Color(0xFFF7CD7C)]),
                       borderRadius: BorderRadius.all(Radius.circular(14.0)),
                     ),
                     child: InkWell(
@@ -331,9 +330,7 @@ class _MySelfPageState extends State<MySelfPage>
                 content: '购物拆红包',
                 contentWidget: hasUnlockOrder
                     ? shimmerWidget(
-                        Text('有红包可拆',
-                            textAlign: TextAlign.end,
-                            style: TextStyle(color: Colors.red, fontSize: 14)),
+                        Text('有红包可拆', textAlign: TextAlign.end, style: TextStyle(color: Colors.red, fontSize: 14)),
                         color: Colors.red)
                     : null,
                 leading: Icon(BaoIcons.order, size: 20, color: Colors.black),
@@ -366,9 +363,7 @@ class _MySelfPageState extends State<MySelfPage>
                 title: '分享App',
                 content: '邀请好友领现金',
                 contentWidget: shimmerWidget(
-                    Text('邀请好友领现金',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(color: Colors.red, fontSize: 14)),
+                    Text('邀请好友领现金', textAlign: TextAlign.end, style: TextStyle(color: Colors.red, fontSize: 14)),
                     color: Colors.red),
                 onTap: () {
                   personalNotifier.value = false;
@@ -432,9 +427,7 @@ class _MySelfPageState extends State<MySelfPage>
     if (Global.isWeb()) {
       launchUrl(Uri.parse(Global.qiyeWechatServiceWebUrl));
     } else {
-      fluwx.open(
-          target: CustomerServiceChat(
-              url: Global.qiyeWechatServiceUrl, corpId: Global.qiyeWechatServiceCropId));
+      fluwx.open(target: CustomerServiceChat(url: Global.qiyeWechatServiceUrl, corpId: Global.qiyeWechatServiceCropId));
     }
   }
 
@@ -477,10 +470,7 @@ class _MySelfPageState extends State<MySelfPage>
     double headSize = 64;
     List<Widget> levelWidgets = [];
     if (vipinfo['level'] != null && vipinfo['level'] > 1) {
-      if (vipinfo['levelJd'] > 1 ||
-          vipinfo['levelPdd'] > 1 ||
-          vipinfo['levelDy'] > 1 ||
-          vipinfo['levelVip'] > 1) {
+      if (vipinfo['levelJd'] > 1 || vipinfo['levelPdd'] > 1 || vipinfo['levelDy'] > 1 || vipinfo['levelVip'] > 1) {
         if (vipinfo['level'] > 4) {
           levelWidgets.add(getLevelWidget(vipinfo['level'], 'tb'));
           levelWidgets.add(PWidget.boxw(1));
@@ -572,8 +562,7 @@ class _MySelfPageState extends State<MySelfPage>
                   false
                 ], {
                   'td': TextDecoration.underline,
-                  'fun': () =>
-                      {FlutterClipboard.copy('$code').then((value) => ToastUtils.showToast('复制成功'))}
+                  'fun': () => {FlutterClipboard.copy('$code').then((value) => ToastUtils.showToast('复制成功'))}
                 }),
                 PWidget.boxw(10),
                 PWidget.text('绑定', [
@@ -606,8 +595,8 @@ class _MySelfPageState extends State<MySelfPage>
                     ? SizedBox()
                     : PWidget.container(
                         PWidget.row([
-                          rainbowText("热度:${(userEnergy['totalEnergy'] as num).toStringAsFixed(1)}",
-                              fontSize: 10.0, onTap: () {
+                          rainbowText("热度:${(userEnergy['totalEnergy'] as num).toStringAsFixed(1)}", fontSize: 10.0,
+                              onTap: () {
                             _createEnergyPop();
                           }),
                           PWidget.icon(Icons.arrow_drop_down, [Colors.white, 12])
@@ -676,8 +665,7 @@ class _MySelfPageState extends State<MySelfPage>
               }),
               PWidget.boxw(8),
               PWidget.column([
-                PWidget.text(
-                    v['itemtitle'], [Colors.black.withOpacity(0.75), 15, true], {'max': 2}),
+                PWidget.text(v['itemtitle'], [Colors.black.withOpacity(0.75), 15, true], {'max': 2}),
                 PWidget.boxh(8),
                 PWidget.container(
                     PWidget.text('${v['activity_gameplay']}', [
@@ -688,8 +676,7 @@ class _MySelfPageState extends State<MySelfPage>
                     }),
                     [null, null, Colors.grey[100]]),
                 PWidget.spacer(),
-                PWidget.text('${Decimal.parse(v['itemendprice']).toString()}元',
-                    [Colours.app_main, 15, true]),
+                PWidget.text('${Decimal.parse(v['itemendprice']).toString()}元', [Colours.app_main, 15, true]),
                 PWidget.boxh(8),
               ], {
                 'exp': 1,
@@ -716,8 +703,7 @@ class _MySelfPageState extends State<MySelfPage>
   void _createEnergyPop() {
     showMenu(
         // color: Colors.grey[350],
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.grey)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.grey)),
         context: context,
         position: RelativeRect.fromSize(Rect.fromLTRB(150, 130, 0, 0), Size(48, 0)),
         elevation: 10,
@@ -729,8 +715,7 @@ class _MySelfPageState extends State<MySelfPage>
                 PWidget.image('assets/images/mall/tb.png', [16, 16], {'crr': 8}),
                 PWidget.textNormal('热度：', [Colors.black, 12, true]),
                 PWidget.boxw(2),
-                PWidget.text(
-                    '${userEnergy['tbEnergy'] + userEnergy['tbTuiEnergy']}', [Colors.black, 11]),
+                PWidget.text('${userEnergy['tbEnergy'] + userEnergy['tbTuiEnergy']}', [Colors.black, 11]),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -742,8 +727,7 @@ class _MySelfPageState extends State<MySelfPage>
                 PWidget.image('assets/images/mall/jd.png', [16, 16], {'crr': 8}),
                 PWidget.textNormal('热度：', [Colors.black, 12, true]),
                 PWidget.boxw(2),
-                PWidget.text(
-                    '${userEnergy['jdEnergy'] + userEnergy['jdTuiEnergy']}', [Colors.black, 11]),
+                PWidget.text('${userEnergy['jdEnergy'] + userEnergy['jdTuiEnergy']}', [Colors.black, 11]),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -755,8 +739,7 @@ class _MySelfPageState extends State<MySelfPage>
                 PWidget.image('assets/images/mall/pdd.png', [16, 16], {'crr': 8}),
                 PWidget.textNormal('热度：', [Colors.black, 12, true]),
                 PWidget.boxw(2),
-                PWidget.text(
-                    '${userEnergy['pddEnergy'] + userEnergy['pddTuiEnergy']}', [Colors.black, 11]),
+                PWidget.text('${userEnergy['pddEnergy'] + userEnergy['pddTuiEnergy']}', [Colors.black, 11]),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -768,8 +751,7 @@ class _MySelfPageState extends State<MySelfPage>
                 PWidget.image('assets/images/mall/dy.png', [16, 16], {'crr': 8}),
                 PWidget.textNormal('热度：', [Colors.black, 12, true]),
                 PWidget.boxw(2),
-                PWidget.text(
-                    '${userEnergy['dyEnergy'] + userEnergy['dyTuiEnergy']}', [Colors.black, 11]),
+                PWidget.text('${userEnergy['dyEnergy'] + userEnergy['dyTuiEnergy']}', [Colors.black, 11]),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -781,8 +763,7 @@ class _MySelfPageState extends State<MySelfPage>
                 PWidget.image('assets/images/mall/vip.png', [16, 16], {'crr': 8}),
                 PWidget.textNormal('热度：', [Colors.black, 12, true]),
                 PWidget.boxw(2),
-                PWidget.text(
-                    '${userEnergy['vipEnergy'] + userEnergy['vipTuiEnergy']}', [Colors.black, 11]),
+                PWidget.text('${userEnergy['vipEnergy'] + userEnergy['vipTuiEnergy']}', [Colors.black, 11]),
               ])),
           PopupMenuDivider(
             height: 5,

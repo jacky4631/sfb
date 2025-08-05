@@ -4,6 +4,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
+import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
@@ -14,10 +15,14 @@ import '../util/colors.dart';
 import '../generated/l10n.dart';
 import '../index/Index.dart';
 import '../widget/custom_button.dart';
+
 //个人设置页面
 class Settings extends StatefulWidget {
   final Map data;
-  const Settings(this.data, {Key? key,}) : super(key: key);
+  const Settings(
+    this.data, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   _Settings createState() => _Settings();
@@ -28,130 +33,131 @@ class _Settings extends State<Settings> {
   void initState() {
     initData();
     super.initState();
-
   }
 
   ///初始化函数
-  Future initData() async {
-  }
+  Future initData() async {}
   @override
   Widget build(BuildContext context) {
     return ScaffoldWidget(
       bgColor: Colors.white,
       brightness: Brightness.dark,
       appBar: buildTitle(context, title: '设置', widgetColor: Colors.black, leftIcon: Icon(Icons.arrow_back_ios)),
-      body: Stack(children: [
-        SettingsList(
-          lightTheme: SettingsThemeData(settingsListBackground: Colors.white),
-          contentPadding: EdgeInsets.all(0),
-          sections: [
-            SettingsSection(
-              margin: EdgeInsetsDirectional.only(top: 5),
-              tiles: <SettingsTile>[
-                if(Global.login)
+      body: Stack(
+        children: [
+          SettingsList(
+            lightTheme: SettingsThemeData(settingsListBackground: Colors.white),
+            contentPadding: EdgeInsets.all(0),
+            sections: [
+              SettingsSection(
+                margin: EdgeInsetsDirectional.only(top: 5),
+                tiles: <SettingsTile>[
+                  if (Global.login)
+                    SettingsTile.navigation(
+                      title: Text('完善个人信息'),
+                      trailing: createArrowIcon(),
+                      onPressed: (context) {
+                        Navigator.pushNamed(context, "/personal", arguments: widget.data);
+                      },
+                    ),
+                  if (Global.login)
+                    SettingsTile.navigation(
+                      title: Text('账户与安全'),
+                      trailing: createArrowIcon(),
+                      onPressed: (context) {
+                        Navigator.pushNamed(context, "/authPage", arguments: widget.data);
+                      },
+                    ),
+                  if (Global.login)
+                    SettingsTile.navigation(
+                      title: Text('地址管理'),
+                      trailing: createArrowIcon(),
+                      onPressed: (context) {
+                        Navigator.pushNamed(context, "/addressList");
+                      },
+                    ),
                   SettingsTile.navigation(
-                  title: Text('完善个人信息'),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    Navigator.pushNamed(context, "/personal", arguments: widget.data);
-                  },
-                ),
-                if(Global.login)
-                SettingsTile.navigation(
-                  title: Text('账户与安全'),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    Navigator.pushNamed(context, "/authPage", arguments: widget.data);
-                  },
-                ),
-                if(Global.login)
-                SettingsTile.navigation(
-                  title: Text('地址管理'),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    Navigator.pushNamed(context, "/addressList");
-                  },
-                ),
-                SettingsTile.navigation(
-                  title: Text('隐私政策'),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    Global.showProtocolPage(Global.privacyUrl,'$APP_NAME隐私政策');
-                  },
-                ),
-                if(Global.login)
-                SettingsTile.navigation(
-                  title: Text('吐槽我们'),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    Navigator.pushNamed(context, '/feedback');
-                  },
-                ),
-                SettingsTile.navigation(
-                  title: Text('推送设置'),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    JPush jpush = new JPush();
-                    jpush.openSettingsForNotification();
-                  },
-                ),
-                SettingsTile.navigation(
-                  title: Text(S.of(context).aboutUs),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    Navigator.pushNamed(context, '/aboutUs');
-                  },
-                ),
-                SettingsTile.navigation(
-                  title: Text('个人信息收集清单'),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    Global.showProtocolPage(Global.collectUrl,'个人信息收集清单');
-                  },
-                ),
-                SettingsTile.navigation(
-                  title: Text('个人信息共享清单'),
-                  trailing: createArrowIcon(),
-                  onPressed: (context){
-                    Global.showProtocolPage(Global.shareUrl,'个人信息共享清单');
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        if(Global.login)
-          btmBarView(context)
-      ],),
+                    title: Text('隐私政策'),
+                    trailing: createArrowIcon(),
+                    onPressed: (context) {
+                      Global.showProtocolPage(Global.privacyUrl, '$APP_NAME隐私政策');
+                    },
+                  ),
+                  if (Global.login)
+                    SettingsTile.navigation(
+                      title: Text('吐槽我们'),
+                      trailing: createArrowIcon(),
+                      onPressed: (context) {
+                        Navigator.pushNamed(context, '/feedback');
+                      },
+                    ),
+                  SettingsTile.navigation(
+                    title: Text('推送设置'),
+                    trailing: createArrowIcon(),
+                    onPressed: (context) {
+                      final JPushFlutterInterface jpush = JPush.newJPush();
+                      jpush.openSettingsForNotification();
+                    },
+                  ),
+                  SettingsTile.navigation(
+                    title: Text(S.of(context).aboutUs),
+                    trailing: createArrowIcon(),
+                    onPressed: (context) {
+                      Navigator.pushNamed(context, '/aboutUs');
+                    },
+                  ),
+                  SettingsTile.navigation(
+                    title: Text('个人信息收集清单'),
+                    trailing: createArrowIcon(),
+                    onPressed: (context) {
+                      Global.showProtocolPage(Global.collectUrl, '个人信息收集清单');
+                    },
+                  ),
+                  SettingsTile.navigation(
+                    title: Text('个人信息共享清单'),
+                    trailing: createArrowIcon(),
+                    onPressed: (context) {
+                      Global.showProtocolPage(Global.shareUrl, '个人信息共享清单');
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          if (Global.login) btmBarView(context)
+        ],
+      ),
     );
   }
+
   ///底部操作栏
   Widget btmBarView(BuildContext context) {
     return PWidget.positioned(
       SafeArea(
           child: Column(
-            children: [
-              CustomButton(
-                bgColor: Colours.app_main,
-                showIcon: false,
-                textColor: Colors.white,
-                text: '退出登录',
-                onPressed: () {
-                  Global.clearUser();
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => Index()),
-                          (Route router) => router == null);
-                },
-              )
-            ],
-          )),
+        children: [
+          CustomButton(
+            bgColor: Colours.app_main,
+            showIcon: false,
+            textColor: Colors.white,
+            text: '退出登录',
+            onPressed: () {
+              Global.clearUser();
+              Navigator.pushAndRemoveUntil(
+                  context, MaterialPageRoute(builder: (_) => Index()), (Route router) => router == null);
+            },
+          )
+        ],
+      )),
       [null, 10, 20, 20],
     );
   }
 
   createArrowIcon() {
-    return Icon(Icons.arrow_forward_ios, color: Colors.grey,size: 16,);
+    return Icon(
+      Icons.arrow_forward_ios,
+      color: Colors.grey,
+      size: 16,
+    );
   }
 }
-
