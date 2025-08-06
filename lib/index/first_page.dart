@@ -99,8 +99,7 @@ class _FirstPageState extends State<FirstPage> {
       return;
     }
     if (!Global.isWeb()) {
-      bool init =
-          await fluwx.registerApi(appId: Global.wxAppId, universalLink: Global.wxUniversalLink);
+      bool init = await fluwx.registerApi(appId: Global.wxAppId, universalLink: Global.wxUniversalLink);
       //监听微信授权返回结果 微信回调
       cancelable = fluwx.addSubscriber((response) {
         if (response is WeChatAuthResponse) {
@@ -110,8 +109,7 @@ class _FirstPageState extends State<FirstPage> {
       initFaceService();
       await LoginShanyan.getInstance().init();
       if (!this.init) {
-        InitModel initModel =
-            await FlutterAlibc.initAlibc(version: packageInfo.version, appName: APP_NAME);
+        InitModel initModel = await FlutterAlibc.initAlibc(version: packageInfo.version, appName: APP_NAME);
       }
     }
     init = true;
@@ -247,9 +245,11 @@ class _FirstPageState extends State<FirstPage> {
 
     if (res != null) {
       var json = jsonDecode(res.body);
-      var list = json['data']['list'];
-      var totalNum = int.parse('${json['data']['totalNum']}');
-      searchDm.addList(list, isRef, totalNum);
+      if (json['success'] != null && json['success']) {
+        var list = json['data']['list'];
+        var totalNum = int.parse('${json['data']['totalNum']}');
+        searchDm.addList(list, isRef, totalNum);
+      }
     }
     setState(() {});
     return searchDm.flag;
@@ -359,8 +359,7 @@ class _FirstPageState extends State<FirstPage> {
               shakeRange: 0.2,
 
               ///执行抖动动画的子Widget
-              child: PWidget.container(
-                  PWidget.wrapperImage(Global.appInfo.huodong!.img, [60, 60], {'br': 4}), {
+              child: PWidget.container(PWidget.wrapperImage(Global.appInfo.huodong!.img, [60, 60], {'br': 4}), {
                 'fun': () {
                   setState(() {
                     showHuodong = false;
@@ -373,12 +372,7 @@ class _FirstPageState extends State<FirstPage> {
                 }
               }),
             ),
-            [
-                null,
-                MediaQuery.of(context).padding.bottom + 80,
-                null,
-                huodongNotify.isShowHuodong ? -30 : 2
-              ]);
+            [null, MediaQuery.of(context).padding.bottom + 80, null, huodongNotify.isShowHuodong ? -30 : 2]);
   }
 
   Widget createListItem(i, v) {
@@ -408,11 +402,8 @@ class _FirstPageState extends State<FirstPage> {
               ]),
               // PWidget.text('${v['dtitle']}'),
               PWidget.boxh(8),
-              PWidget.row([
-                getPriceWidget(v['actualPrice'], v['originalPrice']),
-                PWidget.spacer(),
-                getSalesWidget(sales)
-              ]),
+              PWidget.row(
+                  [getPriceWidget(v['actualPrice'], v['originalPrice']), PWidget.spacer(), getSalesWidget(sales)]),
               if (showLabel) PWidget.boxh(8),
               if (showLabel) getLabelWidget(label),
               PWidget.boxh(8),
@@ -461,14 +452,12 @@ class _FirstPageState extends State<FirstPage> {
       //     ? EveryoneWidget(searchDm):SizedBox(height: 250,),
       //
       ///卡片
-      if (!(cardGoodsList == null || cardGoodsList.isEmpty || cardHot == null || cardHot.isEmpty))
-        CardWidget(cardDm),
+      if (!(cardGoodsList == null || cardGoodsList.isEmpty || cardHot == null || cardHot.isEmpty)) CardWidget(cardDm),
 
       //品牌特卖
       if (brandList != null && brandList.isNotEmpty) BrandWidget(brandListDm),
 
-      if (listDm.list.isNotEmpty)
-        PWidget.text('店铺好货', [Colors.black.withOpacity(0.75), 16, true], {'ct': true}),
+      if (listDm.list.isNotEmpty) PWidget.text('店铺好货', [Colors.black.withOpacity(0.75), 16, true], {'ct': true}),
     ];
   }
 }
