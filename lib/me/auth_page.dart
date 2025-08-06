@@ -245,7 +245,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
     String authString = await BService.alipayCode();
 
     //唤起支付宝获取code
-    Map value2 = await aliPayAuth(authString);
+
+    Tobias tobias = new Tobias();
+    Map value2 = await tobias.auth(authString);
     //解析结果
     String result = value2['result'];
     List strs = result.split('&');

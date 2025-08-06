@@ -444,7 +444,10 @@ class _CashierPageState extends IOSPaymentState {
     }
     //支付宝支付
     else if (_withdrawalType == 1) {
-      var result = await isAliPayInstalled();
+
+      Tobias tobias = new Tobias();
+
+      var result = await tobias.isAliPayInstalled;
       if (Global.isIOS()) {
         result = true;
       }
@@ -474,7 +477,7 @@ class _CashierPageState extends IOSPaymentState {
           showConfirm = true;
         } else {
           //原生支付宝
-          var payRes = await aliPay(paySign);
+          var payRes = await tobias.pay(paySign);
           //支付宝支付
           if (payRes['resultStatus'] == 9000 ||
               payRes['resultStatus'] == '9000') {

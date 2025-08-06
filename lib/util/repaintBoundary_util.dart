@@ -10,7 +10,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sufenbao/util/toast_utils.dart';
@@ -24,8 +24,7 @@ class RepaintBoundaryUtils {
   //生成截图
   //截屏图片生成图片流ByteData
   Future<String> captureImage() async {
-    RenderRepaintBoundary? boundary =
-        boundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary?;
+    RenderRepaintBoundary? boundary = boundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary?;
     double dpr = ui.window.devicePixelRatio; // 获取当前设备的像素比
     var image = await boundary!.toImage(pixelRatio: dpr);
     // 将image转化成byte
@@ -41,8 +40,7 @@ class RepaintBoundaryUtils {
     bool isDirExist = await Directory(applicationDir.path).exists();
     if (!isDirExist) Directory(applicationDir.path).create();
     // 直接保存，返回的就是保存后的文件
-    File saveFile = await File(applicationDir.path + "${DateTime.now().toIso8601String()}.jpg")
-        .writeAsBytes(pngBytes);
+    File saveFile = await File(applicationDir.path + "${DateTime.now().toIso8601String()}.jpg").writeAsBytes(pngBytes);
     filePath = saveFile.path;
     return filePath;
   }
@@ -82,8 +80,7 @@ class RepaintBoundaryUtils {
 
 //保存到相册
   Future savePhoto() async {
-    RenderRepaintBoundary? boundary =
-        boundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary?;
+    RenderRepaintBoundary? boundary = boundaryKey.currentContext!.findRenderObject() as RenderRepaintBoundary?;
 
     double dpr = ui.window.devicePixelRatio; // 获取当前设备的像素比
     var image = await boundary!.toImage(pixelRatio: dpr);
@@ -97,8 +94,7 @@ class RepaintBoundaryUtils {
         var status = await Permission.photos.status;
         if (status.isGranted) {
           Uint8List images = byteData!.buffer.asUint8List();
-          final result =
-              await ImageGallerySaverPlus.saveImage(images, quality: 60, name: "dianliubao");
+          final result = await ImageGallerySaver.saveImage(images, quality: 60, name: "dianliubao");
           ToastUtils.showToastBOTTOM("保存成功");
         }
         if (status.isDenied) {
@@ -116,7 +112,7 @@ class RepaintBoundaryUtils {
         if (status.isGranted) {
           print("Android已授权");
           Uint8List images = byteData!.buffer.asUint8List();
-          final result = await ImageGallerySaverPlus.saveImage(images, quality: 60);
+          final result = await ImageGallerySaver.saveImage(images, quality: 60);
           if (result != null) {
             ToastUtils.showToastBOTTOM("保存成功");
           } else {

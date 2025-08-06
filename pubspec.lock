@@ -417,14 +417,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.0"
-  easy_refresh:
-    dependency: "direct main"
-    description:
-      name: easy_refresh
-      sha256: "486e30abfcaae66c0f2c2798a10de2298eb9dc5e0bb7e1dba9328308968cae0c"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.4.0"
   encrypt:
     dependency: "direct main"
     description:
@@ -529,17 +521,21 @@ packages:
   flutter_ali_face_verify:
     dependency: "direct main"
     description:
-      path: "plugins/flutter_ali_face_verify"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "20b341272bfa5263bc75fb0c7f78539f05f472c9"
+      url: "https://gitee.com/jacky4631/flutter_ali_face_verify.git"
+    source: git
     version: "2.0.1"
   flutter_alibc:
     dependency: "direct main"
     description:
-      path: "plugins/flutter_alibc_kit"
-      relative: true
-    source: path
-    version: "1.0.0-nullsafety"
+      path: "."
+      ref: master
+      resolved-ref: fc0a9fa061c9787332f2c0f2f4a2b446cd61bda4
+      url: "https://gitee.com/jacky4631/flutter_alibc_kit.git"
+    source: git
+    version: "1.0.1"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -649,13 +645,13 @@ packages:
     source: path
     version: "2.1.1"
   flutter_plugin_android_lifecycle:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: f948e346c12f8d5480d2825e03de228d0eb8c3a737e4cdaa122267b89c022b5e
+      sha256: "8cf40eebf5dec866a6d1956ad7b4f7016e6c0cc69847ab946833b7d43743809f"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.28"
+    version: "2.0.19"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -716,9 +712,10 @@ packages:
   flutter_z_location:
     dependency: "direct main"
     description:
-      path: "plugins/flutter_z_location"
-      relative: true
-    source: path
+      name: flutter_z_location
+      sha256: "1b7a296c79c16efe13d1d987378e9583a77ed40775ec92ee55eb0aab39f64cd0"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "0.0.9"
   fluttertoast:
     dependency: "direct main"
@@ -744,6 +741,54 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.0.0"
+  geolocator:
+    dependency: "direct main"
+    description:
+      name: geolocator
+      sha256: "694ec58afe97787b5b72b8a0ab78c1a9244811c3c10e72c4362ef3c0ceb005cd"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "11.0.0"
+  geolocator_android:
+    dependency: "direct main"
+    description:
+      name: geolocator_android
+      sha256: f15d1536cd01b1399578f1da1eb5d566e7a718db6a3648f2c24d2e2f859f0692
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.5.4"
+  geolocator_apple:
+    dependency: transitive
+    description:
+      name: geolocator_apple
+      sha256: dbdd8789d5aaf14cf69f74d4925ad1336b4433a6efdf2fce91e8955dc921bf22
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.3.13"
+  geolocator_platform_interface:
+    dependency: transitive
+    description:
+      name: geolocator_platform_interface
+      sha256: "30cb64f0b9adcc0fb36f628b4ebf4f731a2961a0ebd849f4b56200205056fe67"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.2.6"
+  geolocator_web:
+    dependency: transitive
+    description:
+      name: geolocator_web
+      sha256: "49d8f846ebeb5e2b6641fe477a7e97e5dd73f03cbfef3fd5c42177b7300fb0ed"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
+  geolocator_windows:
+    dependency: transitive
+    description:
+      name: geolocator_windows
+      sha256: "175435404d20278ffd220de83c2ca293b73db95eafbdc8131fe8609be1421eb6"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.5"
   glob:
     dependency: transitive
     description:
@@ -820,10 +865,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_cropper
-      sha256: "266760ed426d7121f0ada02c672bfe5c1b5c714e908328716aee756f045709dc"
+      sha256: fe37d9a129411486e0d93089b61bd326d05b89e78ad4981de54b560725bf5bd5
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "8.1.0"
+    version: "8.0.2"
   image_cropper_for_web:
     dependency: transitive
     description:
@@ -840,14 +885,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "7.1.0"
-  image_gallery_saver_plus:
+  image_gallery_saver:
     dependency: "direct main"
     description:
-      name: image_gallery_saver_plus
-      sha256: "05a5dfd60b0ecd9f990f578f4ff55fe2b6df57a03bb34e3d0963639584d76153"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.0.5"
+      path: "."
+      ref: HEAD
+      resolved-ref: bcf866a716c3eb7873866cda300e38627fe12165
+      url: "https://gitee.com/jacky4631/image_gallery_saver.git"
+    source: git
+    version: "3.0.3"
   image_picker:
     dependency: "direct main"
     description:
@@ -1466,9 +1512,11 @@ packages:
   shanyan:
     dependency: "direct main"
     description:
-      path: "plugins/CLShanYan_Flutter/shanyan"
-      relative: true
-    source: path
+      path: shanyan
+      ref: "v2.3.4.5"
+      resolved-ref: "0ae9dced21c94be981a364fa0e7e0399ef8284fd"
+      url: "https://gitee.com/jacky4631/CLShanYan_Flutter.git"
+    source: git
     version: "2.3.4"
   shared_preferences:
     dependency: "direct main"
@@ -1742,10 +1790,11 @@ packages:
   tobias:
     dependency: "direct main"
     description:
-      path: "plugins/tobias"
-      relative: true
-    source: path
-    version: "2.4.1"
+      name: tobias
+      sha256: "73208e6c575e85e8a66fec95505cd700cbb7e6dd58a05f08d64aa4d2c37cb103"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.2.0"
   typed_data:
     dependency: transitive
     description:
