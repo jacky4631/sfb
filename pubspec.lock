@@ -365,10 +365,10 @@ packages:
     dependency: "direct main"
     description:
       name: data_table_2
-      sha256: b8dd157e4efe5f2beef092c9952a254b2192cf76a26ad1c6aa8b06c8b9d665da
+      sha256: "321a5110db7a12ed97c67b173b448f15ee92ae2c360b319790ab011c3d857840"
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.6.0"
+    version: "2.3.12"
   dbus:
     dependency: transitive
     description:
