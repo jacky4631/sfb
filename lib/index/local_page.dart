@@ -81,8 +81,8 @@ class _LocalPageState extends State<LocalPage> {
         latitude = res.latitude;
         longitude = res.longitude;
         var lifeCitysList = await BService.getLifeCity(longitude, latitude);
-        cityName = lifeCitysList['city'];
-        cityVal = lifeCitysList['val'];
+        cityName = lifeCitysList['city'] ?? '';
+        cityVal = lifeCitysList['val'] ?? 0;
         //商品列表
         await getLifeGoodsList(isRef: true);
         setState(() {});
@@ -98,10 +98,7 @@ class _LocalPageState extends State<LocalPage> {
 
   Future<int> getLifeGoodsList({int page = 1, bool isRef = false}) async {
     var lifeGoodsList = await BService.getLifeGoodsList(page,
-            categoryId: categoryVal,
-            cityCode: cityVal,
-            longitude: longitude,
-            latitude: latitude)
+            categoryId: categoryVal, cityCode: cityVal, longitude: longitude, latitude: latitude)
         .catchError((v) {
       listDm.toError('网络异常');
     });
@@ -135,8 +132,7 @@ class _LocalPageState extends State<LocalPage> {
     if (res != null) {
       //移除网络链接link_type=3 保留小样种草 移除抖音
       res.removeWhere((element) {
-        return (element['link_type'] == 3 && element['id'] != 380) ||
-            element['id'] == 530;
+        return (element['link_type'] == 3 && element['id'] != 380) || element['id'] == 530;
       });
       // res.insertAll(0, pddBannerData);
       bannerDm.addList(res, true, 0);
@@ -180,8 +176,7 @@ class _LocalPageState extends State<LocalPage> {
                       // scrollController 通过 animateTo 方法滚动到某个具体高度
                       // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
                       _scrollController.animateTo(0.0,
-                          duration: Duration(milliseconds: 1000),
-                          curve: Curves.decelerate);
+                          duration: Duration(milliseconds: 1000), curve: Curves.decelerate);
                     },
                     child: Icon(
                       Icons.arrow_upward,
@@ -212,8 +207,7 @@ class _LocalPageState extends State<LocalPage> {
                         Loading.show(context);
                         var res = await BService.getLifeGoodsWord(v['id']);
                         Loading.hide(context);
-                        LaunchApp.launchDy(
-                            context, res['dy_deeplink'], res['dy_zlink']);
+                        LaunchApp.launchDy(context, res['dy_deeplink'], res['dy_zlink']);
                       });
                     },
                     'sd': PFun.sdLg(Colors.black12),
@@ -240,12 +234,8 @@ class _LocalPageState extends State<LocalPage> {
     List list = [];
     list = v['item_tag'];
     if (list.isNotEmpty) {
-      content0 = v['item_tag'].isNotEmpty
-          ? v['item_tag'][0]
-          : '';
-      content1 = v['item_tag'][1].isNotEmpty
-          ? v['item_tag'][1]
-          : '';
+      content0 = v['item_tag'].isNotEmpty ? v['item_tag'][0] : '';
+      content1 = v['item_tag'][1].isNotEmpty ? v['item_tag'][1] : '';
     }
     return PWidget.container(
       PWidget.column([
@@ -254,11 +244,7 @@ class _LocalPageState extends State<LocalPage> {
             PWidget.column([
               PWidget.row([getTitleWidget(v['item_title'], max: max)]),
               PWidget.boxh(8),
-              PWidget.row([
-                getPriceWidget(v['price'], v['origin_price']),
-                PWidget.spacer(),
-                getSalesWidget(sales)
-              ]),
+              PWidget.row([getPriceWidget(v['price'], v['origin_price']), PWidget.spacer(), getSalesWidget(sales)]),
               PWidget.boxh(4),
               getMoneyWidget(context, fee, DY),
               PWidget.boxh(4),
@@ -285,9 +271,7 @@ class _LocalPageState extends State<LocalPage> {
                 'pd': [8, 8, 8, 8]
               })),
       PWidget.boxh(6),
-      if (listDm.list.isNotEmpty)
-        PWidget.text('~ 本地精选 ~', [Colors.black.withOpacity(0.75), 16, true],
-            {'ct': true}),
+      if (listDm.list.isNotEmpty) PWidget.text('~ 本地精选 ~', [Colors.black.withOpacity(0.75), 16, true], {'ct': true}),
       PWidget.boxh(8),
     ];
   }
@@ -298,8 +282,7 @@ class _LocalPageState extends State<LocalPage> {
         PWidget.row(
           [
             TextButton(
-              style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent)),
+              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
               child: PWidget.row([
                 PWidget.text(cityName, [Colors.grey, 14]),
                 // PWidget.icon(Icons.arrow_drop_down, [Colors.grey, 20]),
@@ -391,8 +374,7 @@ class _LocalPageState extends State<LocalPage> {
   }
 
   _switchAddress() {
-    PickerHelper.openCityPicker(context, this.cityList['data']['list'],
-        onConfirm: (selectInfo, selectLocation) {
+    PickerHelper.openCityPicker(context, this.cityList['data']['list'], onConfirm: (selectInfo, selectLocation) {
       // var addr = selectInfo[1];
       // if (addr != selectInfo[1]) {
       //   addr = addr + selectInfo[1];
@@ -411,10 +393,7 @@ class _LocalPageState extends State<LocalPage> {
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
         decoration: BoxDecoration(
             color: _index == i ? Colours.app_main : Colors.white,
-            border: Border(
-                left: BorderSide(
-                    width: 5,
-                    color: _index == i ? Colours.app_main : Colors.white))),
+            border: Border(left: BorderSide(width: 5, color: _index == i ? Colours.app_main : Colors.white))),
         child: Text(
           _datas[i]['title'],
           style: TextStyle(
