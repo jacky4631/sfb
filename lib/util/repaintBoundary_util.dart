@@ -9,8 +9,8 @@ import 'dart:ui';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:image_gallery_saver_plus2/image_gallery_saver_plus.dart';
 
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sufenbao/util/toast_utils.dart';
@@ -94,7 +94,7 @@ class RepaintBoundaryUtils {
         var status = await Permission.photos.status;
         if (status.isGranted) {
           Uint8List images = byteData!.buffer.asUint8List();
-          final result = await ImageGallerySaver.saveImage(images, quality: 60, name: "dianliubao");
+          final result = await ImageGallerySaverPlus.saveImage(images, quality: 60, name: "dianliubao");
           ToastUtils.showToastBOTTOM("保存成功");
         }
         if (status.isDenied) {
@@ -112,7 +112,7 @@ class RepaintBoundaryUtils {
         if (status.isGranted) {
           print("Android已授权");
           Uint8List images = byteData!.buffer.asUint8List();
-          final result = await ImageGallerySaver.saveImage(images, quality: 60);
+          final result = await ImageGallerySaverPlus.saveImage(images, quality: 60);
           if (result != null) {
             ToastUtils.showToastBOTTOM("保存成功");
           } else {

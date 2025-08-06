@@ -521,11 +521,9 @@ packages:
   flutter_ali_face_verify:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "20b341272bfa5263bc75fb0c7f78539f05f472c9"
-      url: "https://gitee.com/jacky4631/flutter_ali_face_verify.git"
-    source: git
+      path: "plugins/flutter_ali_face_verify"
+      relative: true
+    source: path
     version: "2.0.1"
   flutter_alibc:
     dependency: "direct main"
@@ -648,10 +646,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "8cf40eebf5dec866a6d1956ad7b4f7016e6c0cc69847ab946833b7d43743809f"
+      sha256: f948e346c12f8d5480d2825e03de228d0eb8c3a737e4cdaa122267b89c022b5e
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.19"
+    version: "2.0.28"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -712,10 +710,9 @@ packages:
   flutter_z_location:
     dependency: "direct main"
     description:
-      name: flutter_z_location
-      sha256: "1b7a296c79c16efe13d1d987378e9583a77ed40775ec92ee55eb0aab39f64cd0"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "plugins/flutter_z_location"
+      relative: true
+    source: path
     version: "0.0.9"
   fluttertoast:
     dependency: "direct main"
@@ -885,15 +882,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "7.1.0"
-  image_gallery_saver:
+  image_gallery_saver_plus2:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: bcf866a716c3eb7873866cda300e38627fe12165
-      url: "https://gitee.com/jacky4631/image_gallery_saver.git"
-    source: git
-    version: "3.0.3"
+      name: image_gallery_saver_plus2
+      sha256: ba8e3da104b76978fd864265f8915c3ad061f43e33932accacfaec8f4981f9a9
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.0.3"
   image_picker:
     dependency: "direct main"
     description:
@@ -1010,10 +1006,10 @@ packages:
     dependency: "direct main"
     description:
       name: jpush_flutter
-      sha256: be39fce1f20aa3f6d5d7aca74fd661f487f53430a497aa003d8e3e50439c3df4
+      sha256: ee664e6dabbe55d30b275dbeb9daafc7fd0fe2bb52410b58805644bc8a789883
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.3.3"
+    version: "3.3.4"
   js:
     dependency: transitive
     description:
@@ -1512,11 +1508,9 @@ packages:
   shanyan:
     dependency: "direct main"
     description:
-      path: shanyan
-      ref: "v2.3.4.5"
-      resolved-ref: "0ae9dced21c94be981a364fa0e7e0399ef8284fd"
-      url: "https://gitee.com/jacky4631/CLShanYan_Flutter.git"
-    source: git
+      path: "plugins/CLShanYan_Flutter/shanyan"
+      relative: true
+    source: path
     version: "2.3.4"
   shared_preferences:
     dependency: "direct main"

@@ -10,13 +10,10 @@ dependencies:
   #  flutter_qq_ads: ^2.5.0
   #  weibo_kit: ^4.0.0
   #  tencent_kit: ^5.0.2
-  flutter_z_location: ^0.0.7
+  flutter_z_location:
+    path: ./plugins/flutter_z_location
   qr_flutter: ^4.1.0
-  #  image_gallery_saver: '^2.0.3'
-  image_gallery_saver:
-    #    path: ../image_gallery_saver
-    git:
-      url: https://gitee.com/jacky4631/image_gallery_saver.git
+  image_gallery_saver_plus2: ^4.0.3
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -89,16 +86,16 @@ dependencies:
   pay_ios: ^1.0.7
   photo_manager: ^3.5.2
   flutter_ali_face_verify:
-    #    path: ../flutter_ali_face_verify
-    git:
-      url: https://gitee.com/jacky4631/flutter_ali_face_verify.git
+        path: ./plugins/flutter_ali_face_verify
+#    git:
+#      url: https://gitee.com/jacky4631/flutter_ali_face_verify.git
   shanyan:
-    #    path: ../CLShanYan_Flutter/shanyan
-    git:
-      url: https://gitee.com/jacky4631/CLShanYan_Flutter.git
-      path: shanyan
-      ref: v2.3.4.5
-  flutter_plugin_android_lifecycle: 2.0.19
+        path: ./plugins/CLShanYan_Flutter/shanyan
+#    git:
+#      url: https://gitee.com/jacky4631/CLShanYan_Flutter.git
+#      path: shanyan
+#      ref: v2.3.4.5
+  flutter_plugin_android_lifecycle: ^2.0.28
   geolocator_android: 4.5.4
   geolocator: 11.0.0
 dev_dependencies:
