@@ -98,12 +98,24 @@ dependencies:
   flutter_plugin_android_lifecycle: ^2.0.28
   geolocator_android: 4.5.4
   geolocator: 11.0.0
+
+
+  dart_date: ^1.5.3
+  dart_json_mapper: ^2.2.16
+  gap: ^3.0.1
+  #电池优化，防止通知被杀死
+  disable_battery_optimizations_latest: ^1.0.0
+  auto_route: ^9.2.2
+
+
 dev_dependencies:
   mockito: ^5.4.0
   flutter_test:
     sdk: flutter
   build_runner: ^2.3.2
   flutter_launcher_icons: ^0.13.1
+  auto_route_generator: ^9.0.0
+
 flutter_icons:
   android: "launcher_icon"
   ios: true
