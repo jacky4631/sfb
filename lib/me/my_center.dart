@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:auto_route/annotations.dart';
 import 'package:disable_battery_optimizations_latest/disable_battery_optimizations_latest.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -10,6 +11,7 @@ import 'package:sufenbao/widget/hyper/hyper_icon.dart';
 import 'package:sufenbao/widget/hyper/hyper_list_tile.dart';
 import 'package:sufenbao/widget/hyper/hyper_trailing.dart';
 
+@RoutePage()
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
 

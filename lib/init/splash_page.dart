@@ -9,6 +9,7 @@ import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 
 import '../dialog/privacyDialog.dart';
+import '../index/Index.dart';
 import '../util/global.dart';
 import 'countdown.dart';
 
@@ -19,7 +20,7 @@ class SplashPage extends StatefulWidget {
   _SplashPageState createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage>{
+class _SplashPageState extends State<SplashPage> {
   bool agree = false;
   @override
   void initState() {
@@ -36,23 +37,21 @@ class _SplashPageState extends State<SplashPage>{
   void _initAsync() async {
     // App启动时读取Sp数据，需要异步等待Sp初始化完成。
     agree = await Global.getAgree();
-    if(!agree) {
-      showPrivacyDialog(func: (){
+    if (!agree) {
+      showPrivacyDialog(func: () {
         setState(() {
           agree = true;
           Navigator.of(context).pushReplacementNamed('/index');
         });
       });
-    }else{
-      setState(() {
-
-      });
+    } else {
+      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if(!agree) {
+    if (!agree) {
       return ScaffoldWidget(
         body: Container(
           child: Stack(
@@ -73,7 +72,6 @@ class _SplashPageState extends State<SplashPage>{
               child: CountdownInit(),
             ),
             createContent(),
-
           ],
         ),
       ),
@@ -82,9 +80,18 @@ class _SplashPageState extends State<SplashPage>{
 
   Widget createContent() {
     return PWidget.container(
-        PWidget.image('assets/images/splash.png', [1080, 1920, null, BoxFit.contain], ),
-      [null, null, Colors.white],{'pd':[16,16,16,16]}
-    );
+        PWidget.image(
+          'assets/images/splash.png',
+          [1080, 1920, null, BoxFit.contain],
+        ),
+        [
+          null,
+          null,
+          Colors.white
+        ],
+        {
+          'pd': [16, 16, 16, 16]
+        });
   }
 
   Future showPrivacyDialog({func}) async {

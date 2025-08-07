@@ -42,9 +42,7 @@ class MySelfPage extends ConsumerStatefulWidget {
 }
 
 class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  String codeX = '******';
   bool showCode = false;
-  bool loading = true;
   bool showKefu = false;
   String levelName = '';
   var image = '';
@@ -81,9 +79,6 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
 
   ///初始化函数
   Future<int> initData() async {
-    setState(() {
-      loading = true;
-    });
     try {
       if (Global.isWeb()) {
         showKefu = true;
@@ -96,7 +91,6 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     Global.initCommissionInfo();
 
     hasUnlockOrder = await BService.hasUnlockOrder();
-    setState(() {});
     await initUserFee();
     await initVipInfo();
     await Global.init();
@@ -472,14 +466,12 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     return PWidget.container(
       PWidget.row(
         [
-          loading
-              ? Global.showLoading2()
-              : PWidget.container(createHeadImgWidget(headSize, 28.0), {
-                  'fun': () {
-                    personalNotifier.value = false;
-                    onTapLogin(context, '/personal');
-                  },
-                }),
+          PWidget.container(createHeadImgWidget(headSize, 28.0), {
+            'fun': () {
+              personalNotifier.value = false;
+              onTapLogin(context, '/personal');
+            },
+          }),
           PWidget.boxw(20),
           PWidget.column(
             [
@@ -511,7 +503,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
               ]),
               PWidget.boxh(10),
               PWidget.row([
-                Text('邀请口令：${showCode ? userinfo.code : codeX}', style: TextStyles.textBlack),
+                Text('邀请口令：${showCode ? userinfo.code : '******'}', style: TextStyles.textBlack),
                 PWidget.boxw(5),
                 PWidget.icon(Icons.remove_red_eye_outlined, [
                   Colors.black,
@@ -591,7 +583,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
 
   Widget createHeadImgWidget(headSize, radius) {
     final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
-
+    print(userinfo.avatar);
     return ClipRRect(
         borderRadius: BorderRadius.circular(radius), //设置圆角
         child: userinfo.avatar.isNotEmpty

@@ -10,13 +10,14 @@ import 'package:sufenbao/login/login_shanyan.dart';
 import 'package:sufenbao/util/global.dart';
 
 import '../me/listener/PersonalNotifier.dart';
+import '../router/router.dart';
 
 Future afterLogin(res, context, {close = 2, redirectUrl = '/index'}) async {
   if (res['success']) {
     var data = res['data'];
     String redirect = data['redirect'];
     //1代表需要跳转邀请码页面 0=不需要
-    if(redirect == '1') {
+    if (redirect == '1') {
       Navigator.pushNamed(context, '/loginCode', arguments: data);
     } else {
       loginThenRoutingMe(context, data, close: close, redirectUrl: redirectUrl);
@@ -26,28 +27,27 @@ Future afterLogin(res, context, {close = 2, redirectUrl = '/index'}) async {
   }
 }
 
-loginThenRoutingMe(context, data, {close =2, redirectUrl = '/index'}) {
+loginThenRoutingMe(context, data, {close = 2, redirectUrl = '/index'}) {
   Global.saveUser(data['token'], data['expires_time']);
   Global.initJPush();
   personalNotifier.value = true;
   //close 1=返回上一层 2=返回到index
-  if(close == 1) {
+  if (close == 1) {
     Navigator.pop(context);
-  }else if(close == 2) {
+  } else if (close == 2) {
     Navigator.of(context).popUntil((route) {
       return route.settings.name!.startsWith(redirectUrl);
     });
   }
 }
 
-
 onTapLogin(context, url, {args}) {
   if (!Global.login) {
     //闪验初始化成功，打开授权页， 初始化失败打开原登录页
-    if(args == null) {
+    if (args == null) {
       args = {};
     }
-    if(LoginShanyan.initSuc) {
+    if (LoginShanyan.initSuc) {
       LoginShanyan.getInstance().openLoginAuthPlatformState();
       return;
     } else {
@@ -60,22 +60,22 @@ onTapLogin(context, url, {args}) {
 
 onTapDialogLogin(BuildContext context, {fun, args}) async {
   if (!Global.login) {
-    if(args == null) {
+    if (args == null) {
       args = {};
     }
-    if(LoginShanyan.initSuc) {
+    if (LoginShanyan.initSuc) {
       LoginShanyan.getInstance().openLoginAuthPlatformState();
       return;
     } else {
-
       Navigator.pushNamed(context, '/login', arguments: args);
     }
   } else {
-    if(fun != null) {
+    if (fun != null) {
       fun();
     }
   }
 }
+
 /// 判断是否为微信浏览器
 bool isWeChatBrowser() {
   final ua = '';
@@ -83,4 +83,3 @@ bool isWeChatBrowser() {
   ToastUtils.showToast('ua$ua');
   return ua.indexOf('micromessenger') != -1 && Global.isWeb();
 }
-
