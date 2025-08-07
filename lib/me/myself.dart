@@ -9,9 +9,8 @@ import 'package:clipboard/clipboard.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluwx/fluwx.dart';
-import 'package:jpush_flutter/jpush_flutter.dart';
-import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:maixs_utils/util/utils.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
@@ -19,11 +18,13 @@ import 'package:maixs_utils/widget/views.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sufenbao/me/fans/fans_search_notifier.dart';
 import 'package:sufenbao/me/model/userinfo.dart';
+import 'package:sufenbao/me/provider.dart';
 import 'package:sufenbao/me/select_text_item.dart';
 import 'package:sufenbao/me/styles.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/bao_icons.dart';
 import 'package:sufenbao/util/toast_utils.dart';
+import 'package:sufenbao/widget/ext.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../util/colors.dart';
@@ -35,31 +36,14 @@ import '../widget/CustomWidgetPage.dart';
 import 'listener/PersonalNotifier.dart';
 import 'me_widget.dart';
 
-class TitleBarNotify extends ValueNotifier {
-  TitleBarNotify() : super(null);
-  var isShowTtitleBar = false;
-  void changeIsShowTabbar(v) {
-    isShowTtitleBar = v;
-    notifyListeners();
-  }
-}
-
-TitleBarNotify titleBarNotify = TitleBarNotify();
-
-class MySelfPage extends StatefulWidget {
+class MySelfPage extends ConsumerStatefulWidget {
   @override
   _MySelfPageState createState() => _MySelfPageState();
 }
 
-class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  late Map<String, dynamic> json;
-  String avatar = '';
-  String nickName = '';
-  String code = '';
+class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   String codeX = '******';
   bool showCode = false;
-  num nowMoney = 0;
-  num unlockMoney = 0;
   bool loading = true;
   bool showKefu = false;
   String levelName = '';
@@ -109,30 +93,8 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
     } catch (e) {
       flog(e);
     }
-    json = await BService.userinfo(baseInfo: true);
-    setState(() {
-      loading = false;
-    });
-    if (json == null || json.isEmpty) {
-      return getTime();
-    }
     Global.initCommissionInfo();
-    Userinfo userinfo = Userinfo.fromJson(json);
-    Global.userinfo = userinfo;
 
-    setState(() {
-      avatar = userinfo.avatar;
-      nickName = userinfo.showName();
-      code = userinfo.code;
-      nowMoney = userinfo.nowMoney;
-      unlockMoney = userinfo.unlockMoney;
-      //todo 刷新 积分 提现 粉丝
-    });
-
-    final JPushFlutterInterface jpush = JPush.newJPush();
-    jpush.setAlias('uid${userinfo.uid.toString()}').then((map) {
-      print("设置别名成功$map");
-    });
     hasUnlockOrder = await BService.hasUnlockOrder();
     setState(() {});
     await initUserFee();
@@ -176,6 +138,7 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
   }
 
   List<Widget> createMeWidget() {
+    final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
     bool feeEmpty = userFee == null || userFee!.isEmpty;
     List<Widget> widgets = <Widget>[
       _createUserTop(),
@@ -210,6 +173,7 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
               'br': PFun.lg(10, 10, 10, 10), //圆角
               'mg': PFun.lg(0, 6, 8, 8) //margin
             }),
+
       PWidget.container(
           PWidget.column([
             PWidget.row([
@@ -217,7 +181,7 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
               !Global.login
                   ? PWidget.text('****', [Colors.white, 20, true])
                   : PWidget.text(
-                      (nowMoney + unlockMoney).toStringAsFixed(2),
+                      (userinfo.nowMoney + userinfo.unlockMoney).toStringAsFixed(2),
                       [Colors.white, 20, true],
                       {},
                       [
@@ -370,7 +334,7 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
                   content: '积分当钱花',
                   onTap: () {
                     personalNotifier.value = false;
-                    onTapLogin(context, '/pointsMall', args: {'integral': json['integral']});
+                    onTapLogin(context, '/pointsMall', args: {'integral': userinfo.integral});
                   },
                   leading: Icon(BaoIcons.shop, size: 20, color: Colors.black)),
             ]),
@@ -433,8 +397,10 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
   }
 
   Widget buildTabBar() {
+    final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
+
     return buildTitle(context,
-        title: Global.login ? nickName : '我的',
+        title: Global.login ? userinfo.showName() : '我的',
         widgetColor: Colors.black,
         color: Colors.white,
         isNoShowLeft: true,
@@ -500,6 +466,9 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
         ];
       }
     }
+
+    final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
+
     return PWidget.container(
       PWidget.row(
         [
@@ -515,7 +484,7 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
           PWidget.column(
             [
               PWidget.row([
-                PWidget.textNormal(nickName, [
+                PWidget.textNormal(userinfo.showName(), [
                   Colors.black,
                   Dimens.font_sp20
                 ], {
@@ -542,7 +511,7 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
               ]),
               PWidget.boxh(10),
               PWidget.row([
-                Text('邀请口令：${showCode ? code : codeX}', style: TextStyles.textBlack),
+                Text('邀请口令：${showCode ? userinfo.code : codeX}', style: TextStyles.textBlack),
                 PWidget.boxw(5),
                 PWidget.icon(Icons.remove_red_eye_outlined, [
                   Colors.black,
@@ -564,7 +533,7 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
                   false
                 ], {
                   'td': TextDecoration.underline,
-                  'fun': () => {FlutterClipboard.copy('$code').then((value) => ToastUtils.showToast('复制成功'))}
+                  'fun': () => {FlutterClipboard.copy('${userinfo.code}').then((value) => ToastUtils.showToast('复制成功'))}
                 }),
                 PWidget.boxw(10),
                 PWidget.text('绑定', [
@@ -621,11 +590,13 @@ class _MySelfPageState extends State<MySelfPage> with TickerProviderStateMixin, 
   }
 
   Widget createHeadImgWidget(headSize, radius) {
+    final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
+
     return ClipRRect(
         borderRadius: BorderRadius.circular(radius), //设置圆角
-        child: avatar != null
+        child: userinfo.avatar.isNotEmpty
             ? CachedNetworkImage(
-                imageUrl: avatar ?? '',
+                imageUrl: userinfo.avatar,
                 height: headSize,
                 width: headSize,
               )

@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maixs_utils/util/utils.dart';
 import 'package:sufenbao/bindCard/addCard.dart';
@@ -100,6 +101,27 @@ import 'page/sell_page.dart';
 import 'page/top_page.dart';
 import 'pdd/pdd_detail_page.dart';
 
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // initWebview();
+  // 强制竖屏
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown
+  // ]);
+  setPathUrlStrategy();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  runApp(ProviderScope(child: SfbApp()));
+}
+
+// Future initWebview() async {
+//   if (Global.isAndroid()) {
+//     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+//   }
+// }
+
 class SfbApp extends StatelessWidget {
   // 路由路径匹配
   Route<dynamic>? _getRoute(RouteSettings settings) {
@@ -189,7 +211,6 @@ class SfbApp extends StatelessWidget {
       '/shopContractPage': (BuildContext context) => ShopContractPage(arg),
       '/signaturePage': (BuildContext context) => ShopSignaturePage(),
       '/cashierPage': (BuildContext context) => CashierPage(arg),
-
       '/addCard': (BuildContext context) => AddCard(arg),
       '/verifyaddCard': (BuildContext context) => VerifyAddCard(arg),
       '/sharePage': (BuildContext context) => SharePage(arg),
@@ -197,7 +218,6 @@ class SfbApp extends StatelessWidget {
       '/energyList': (BuildContext context) => EnergyList(arg),
       '/messageCenter': (BuildContext context) => MessageCenter(),
       '/sellPage': (BuildContext context) => SellPage(arg),
-
       '/supportBankList': (BuildContext context) => SupportBankList(),
       '/blankPage': (BuildContext context) => BlankPage(arg),
       '/taoRedPage': (BuildContext context) => TaoRedPage(arg),
@@ -228,8 +248,7 @@ class SfbApp extends StatelessWidget {
           localizationsDelegates: [
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations
-                .delegate, //一定要配置,否则iphone手机长按编辑框有白屏卡着的bug出现
+            GlobalCupertinoLocalizations.delegate, //一定要配置,否则iphone手机长按编辑框有白屏卡着的bug出现
             S.delegate
           ],
           supportedLocales: S.delegate.supportedLocales,
@@ -252,25 +271,3 @@ class SfbApp extends StatelessWidget {
     ;
   }
 }
-
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // initWebview();
-  // 强制竖屏
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown
-  // ]);
-  setPathUrlStrategy();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  runApp(SfbApp());
-}
-
-// Future initWebview() async {
-//   if (Global.isAndroid()) {
-//     await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
-//   }
-// }

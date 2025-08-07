@@ -19,6 +19,7 @@ class Userinfo {
   String code = '';
   int spreadCount = 0;
   String aliProfile = '';
+  double integral = 0;
   num spreadUid = 0;
   double nowMoney = 0;
   double unlockMoney = 0;
@@ -33,40 +34,41 @@ class Userinfo {
 
   Userinfo.fromJson(Map<String, dynamic> json)
       : uid = json['uid'],
-        phone = json['phone']??'',
+        phone = json['phone'] ?? '',
         nickname = json['nickname'],
         realName = json['realName'],
         avatar = json['avatar'],
-        level = json['level']??3,
-        levelJd = json['levelJd']??3,
-        levelPdd = json['levelPdd']??3,
-        levelDy = json['levelDy']??3,
-        levelVip = json['levelVip']??3,
-        totalCash = json['totalCash']??0,
+        level = json['level'] ?? 3,
+        levelJd = json['levelJd'] ?? 3,
+        levelPdd = json['levelPdd'] ?? 3,
+        levelDy = json['levelDy'] ?? 3,
+        levelVip = json['levelVip'] ?? 3,
+        totalCash = json['totalCash'] ?? 0,
         code = json['code'],
-        aliProfile = json['aliProfile']??'',
+        integral = json['integral'],
+        aliProfile = json['aliProfile'] ?? '',
         spreadCount = json['spreadCount'],
         spreadUid = json['spreadUid'],
         nowMoney = json['nowMoney'],
         unlockMoney = json['unlockMoney'];
 
   Map<String, dynamic> toJson() => {
-    'uid': uid,
-    'phone': phone,
-    'nickname': nickname,
-    'realName': realName,
-    'avatar': avatar,
-    'level': level,
-    'levelJd': levelJd,
-    'levelPdd': levelPdd,
-    'levelDy': levelDy,
-    'levelVip': levelVip,
-    'totalCash': totalCash,
-    'code': code,
-    'aliProfile': aliProfile,
-    'spreadCount': spreadCount,
-    'spreadUid': spreadUid,
-    'nowMoney': nowMoney,
-    'unlockMoney': unlockMoney
-  };
+        'uid': uid,
+        'phone': phone,
+        'nickname': nickname,
+        'realName': realName,
+        'avatar': avatar,
+        'level': level,
+        'levelJd': levelJd,
+        'levelPdd': levelPdd,
+        'levelDy': levelDy,
+        'levelVip': levelVip,
+        'totalCash': totalCash,
+        'code': code,
+        'aliProfile': aliProfile,
+        'spreadCount': spreadCount,
+        'spreadUid': spreadUid,
+        'nowMoney': nowMoney,
+        'unlockMoney': unlockMoney
+      };
 }

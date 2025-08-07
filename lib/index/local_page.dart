@@ -103,6 +103,7 @@ class _LocalPageState extends State<LocalPage> {
       listDm.toError('网络异常');
     });
     if (lifeGoodsList.isNotEmpty) {
+      print(lifeGoodsList);
       pageIndex = lifeGoodsList['min_id'];
       var list = lifeGoodsList['data'];
       listDm.addList(list, isRef, 99);
