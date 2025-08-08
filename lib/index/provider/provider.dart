@@ -98,3 +98,25 @@ Future<DataModel> getGoodsList(Ref ref) async {
   }
   return listDm;
 }
+
+///大家都在领
+
+@riverpod
+Future<DataModel> getEveryBuyUrl(Ref ref) async {
+  var searchDm = DataModel();
+  var res = await http.get(Uri.parse(BService.getEveryBuyUrl())).catchError((v) {
+    searchDm.toError('网络异常');
+  });
+
+  print("===========${res.body}");
+
+  if (res.body.isNotEmpty) {
+    var json = jsonDecode(res.body);
+    if (json['success'] != null && json['success']) {
+      var list = json['data']['list'];
+      var totalNum = int.parse('${json['data']['totalNum']}');
+      searchDm.addList(list, true, totalNum);
+    }
+  }
+  return searchDm;
+}

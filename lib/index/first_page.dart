@@ -3,7 +3,6 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_alibc/alibc_model.dart';
@@ -11,12 +10,10 @@ import 'package:flutter_alibc/flutter_alibc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluwx/fluwx.dart';
-import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:shake_animation_widget/shake_animation_widget.dart';
 import 'package:sufenbao/index/provider/provider.dart';
 import 'package:sufenbao/index/widget/banner_widget.dart';
 import 'package:sufenbao/index/widget/tiles_widget.dart';
@@ -44,11 +41,6 @@ class FirstPage extends ConsumerStatefulWidget {
 }
 
 class _FirstPageState extends ConsumerState<FirstPage> {
-  String huodongImg = '';
-  ShakeAnimationController _shakeAnimationController = new ShakeAnimationController();
-  Timer? timer;
-  bool showHuodong = true;
-  StreamSubscription? subscription;
   bool init = false;
   bool agree = false;
   ScrollController _scrollController = ScrollController();
@@ -59,7 +51,6 @@ class _FirstPageState extends ConsumerState<FirstPage> {
   void initState() {
     super.initState();
     initData();
-    // checkNet();
     _scrollController.addListener(() {
       setState(() => _showBackTop = _scrollController.position.pixels >= 800);
     });
@@ -70,9 +61,7 @@ class _FirstPageState extends ConsumerState<FirstPage> {
     agree = await Global.getAgree();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     Global.init();
-    // await getSearchData(isRef: true);
     showHuodongDialog();
-    initShake();
     await Global.update(packageInfo);
     initThird(packageInfo);
     return 0;
@@ -99,35 +88,8 @@ class _FirstPageState extends ConsumerState<FirstPage> {
     init = true;
   }
 
-  Future initShake() async {
-    if (Global.appInfo.huodong != null) {
-      huodongImg = Global.appInfo.huodong!.img;
-    }
-    if (Global.isEmpty(huodongImg)) {
-      return;
-    }
-    timer = Timer.periodic(const Duration(seconds: 3), (t) {
-      ///判断抖动动画是否正在执行
-      if (_shakeAnimationController.animationRunging) {
-        ///停止抖动动画
-        _shakeAnimationController.stop();
-      } else {
-        ///开启抖动动画
-        ///参数shakeCount 用来配置抖动次数
-        ///通过 controller start 方法默认为 1
-        _shakeAnimationController.start(shakeCount: 1);
-      }
-    });
-  }
-
   @override
   void dispose() {
-    if (timer != null) {
-      timer!.cancel();
-    }
-    if (subscription != null) {
-      subscription?.cancel();
-    }
     _scrollController.dispose();
     if (cancelable != null) {
       cancelable.cancel();
@@ -142,27 +104,6 @@ class _FirstPageState extends ConsumerState<FirstPage> {
       //如果今天没有显示过，
       Global.showHuodongDialog(huodong);
     }
-  }
-
-  ///大家都在领
-  var searchDm = DataModel();
-  Future<int> getSearchData({int page = 1, bool isRef = false}) async {
-    var res = await http.get(Uri.parse(BService.getEveryBuyUrl())).catchError((v) {
-      searchDm.toError('网络异常');
-    });
-
-    print(res);
-
-    if (res != null) {
-      var json = jsonDecode(res.body);
-      if (json['success'] != null && json['success']) {
-        var list = json['data']['list'];
-        var totalNum = int.parse('${json['data']['totalNum']}');
-        searchDm.addList(list, isRef, totalNum);
-      }
-    }
-    setState(() {});
-    return searchDm.flag;
   }
 
   @override
@@ -282,6 +223,9 @@ class _FirstPageState extends ConsumerState<FirstPage> {
     final listDm = ref
         .watch(getGoodsListProvider)
         .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+    // final searchDm = ref
+    //     .watch(getEveryBuyUrlProvider)
+    //     .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
 
     return [
       if (bannerDm.value.isNotEmpty)
@@ -295,10 +239,9 @@ class _FirstPageState extends ConsumerState<FirstPage> {
 
       if (tilesDm.list.isNotEmpty) TilesWidget(tilesDm),
 
-      // ///大家都在领
-      // (searchDm.list != null && searchDm.list.isNotEmpty)
-      //     ? EveryoneWidget(searchDm):SizedBox(height: 250,),
-      //
+      ///大家都在领
+      // if (searchDm.list.isNotEmpty) EveryoneWidget(searchDm),
+
       ///卡片
       if (cardDm.value.isNotEmpty) CardWidget(cardDm),
 

@@ -92,5 +92,24 @@ final getGoodsListProvider = AutoDisposeFutureProvider<DataModel>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GetGoodsListRef = AutoDisposeFutureProviderRef<DataModel>;
+String _$getEveryBuyUrlHash() => r'5df650da865377504c49b7bcd50a1b49c5869a13';
+
+///大家都在领
+///
+/// Copied from [getEveryBuyUrl].
+@ProviderFor(getEveryBuyUrl)
+final getEveryBuyUrlProvider = AutoDisposeFutureProvider<DataModel>.internal(
+  getEveryBuyUrl,
+  name: r'getEveryBuyUrlProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$getEveryBuyUrlHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GetEveryBuyUrlRef = AutoDisposeFutureProviderRef<DataModel>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
