@@ -57,7 +57,7 @@ class _IndexState extends State<Index> {
             type: BottomNavigationBarType.fixed,
             items: [
               BottomNavigationBarItem(icon: Icon(HugeIcons.strokeRoundedHome06), label: '首页'),
-              BottomNavigationBarItem(icon: Icon(HugeIcons.strokeRoundedBitcoinBag), label: '榜单'),
+              // BottomNavigationBarItem(icon: Icon(HugeIcons.strokeRoundedBitcoinBag), label: '榜单'),
               BottomNavigationBarItem(icon: Icon(HugeIcons.strokeRoundedGoogleHome), label: '我的')
             ],
           )),
@@ -71,9 +71,7 @@ class _IndexState extends State<Index> {
         },
         children: [
           HomePage(),
-          TopPage(
-            data: {'showArrowBack': false},
-          ),
+          // TopPage(data: {'showArrowBack': false}),
           MySelfPage()
         ],
       ),
