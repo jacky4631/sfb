@@ -10,6 +10,7 @@ dependencies:
   #  flutter_qq_ads: ^2.5.0
   #  weibo_kit: ^4.0.0
   #  tencent_kit: ^5.0.2
+  hugeicons: ^0.0.11
   flutter_z_location:
     path: ./plugins/flutter_z_location
   qr_flutter: ^4.1.0
@@ -28,7 +29,6 @@ dependencies:
   settings_ui: ^2.0.2
   pinput: ^4.0.0
   awesome_dialog: ^3.2.0
-  google_nav_bar: ^5.0.6
   clipboard: ^0.1.3
   flutter_native_splash: ^2.2.12
   flutter_picker:

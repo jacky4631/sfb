@@ -26,8 +26,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   FocusNode _searchFocus = FocusNode();
   bool agree = false;
   @override
@@ -42,16 +41,14 @@ class _HomePageState extends State<HomePage>
   ///初始化函数
   Future initData() async {
     agree = await Global.getAgree();
-    setState(() {
-
-    });
+    setState(() {});
     Global.initCommissionInfo();
     parseContent();
     searchRankingList();
     await getTabData();
     _initUser();
-
   }
+
   ///搜索排名列表
   var searchRankingListDm = DataModel();
   Future<int> searchRankingList() async {
@@ -62,8 +59,8 @@ class _HomePageState extends State<HomePage>
     setState(() {});
     return searchRankingListDm.flag;
   }
-  Future _initUser() async {
 
+  Future _initUser() async {
     Map<String, dynamic> json = await BService.userinfo(baseInfo: true);
     if (json.isEmpty) {
       return;
@@ -71,8 +68,8 @@ class _HomePageState extends State<HomePage>
     Userinfo userinfo = Userinfo.fromJson(json);
     Global.userinfo = userinfo;
     await Global.initJPush();
-
   }
+
   ///tab数据
   var tabDm = DataModel();
 
@@ -85,8 +82,7 @@ class _HomePageState extends State<HomePage>
         return e1['cid'] > e2['cid'] ? 1 : 0;
       });
       tabDm.addList(res, true, 0);
-      tabDm.list.insert(
-          0, {"cid": 0, "cname": "精选", "cpic": "", "subcategories": []});
+      tabDm.list.insert(0, {"cid": 0, "cname": "精选", "cpic": "", "subcategories": []});
     }
     setState(() {});
     return tabDm.flag;
@@ -95,11 +91,47 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    // showPrivacyDialog(func: (){
-    //   Future.delayed(Duration(microseconds: 400)).then((value) => initData());
-    //
-    // });
-    return _page();
+
+    return ScaffoldWidget(
+        body: Stack(children: [
+      ScaffoldWidget(
+        // appBar: buildTitle(context, title: APP_NAME),
+        // bottomSheet: BottomNav(0),
+        brightness: Brightness.dark,
+        appBar: titleBarView(),
+        bgColor: Colors.transparent,
+        body: PWidget.container(
+          tabDm.list.length == 1
+              ? FirstPage()
+              : AnimatedSwitchBuilder(
+                  value: tabDm,
+                  errorOnTap: () => this.getTabData(),
+                  // initialState: buildLoad(color: Colors.grey),
+                  initialState: PWidget.container(null, [double.infinity]),
+                  listBuilder: (list, _, __) {
+                    var tabList = list.map<String>((m) => (m! as Map)['cname']).toList();
+                    return TabWidget(
+                      tabList: tabList,
+                      color: Colors.black,
+                      indicatorColor: Colors.red,
+                      fontSize: 14,
+                      indicatorWeight: 2,
+                      tabPage: List.generate(tabList.length, (i) {
+                        return i == 0 ? FirstPage() : OtherPage(list[i] as Map);
+                      }),
+                    );
+                  },
+                ),
+          [null, null, Color(0xffF6F6F6)],
+          {
+            'crr': PFun.lg(16, 16),
+            // 'exp': true
+          },
+          //   )
+          // ],
+        ),
+      )
+    ]));
   }
 
   @override
@@ -107,70 +139,6 @@ class _HomePageState extends State<HomePage>
     super.dispose();
     //3. 页面销毁时，移出监听者
     WidgetsBinding.instance.removeObserver(this);
-  }
-
-  _page() {
-    return ScaffoldWidget(
-        body: Stack(children: [
-      // PWidget.container(null, [double.infinity, double.infinity],
-      //     {'gd': PFun.tbGd(Colours.app_main, Colors.white)}),
-      ScaffoldWidget(
-        // appBar: buildTitle(context, title: APP_NAME),
-        // bottomSheet: BottomNav(0),
-        brightness: Brightness.dark,
-        appBar: titleBarView(),
-        bgColor: Colors.transparent,
-        body:
-        // PWidget.column(
-        //     [
-        //       PWidget.container(
-        //         PWidget.row(
-        //             [
-        //               PWidget.text('三步查券', [Colors.white, 14, true]),
-        //               PWidget.text('1进入淘宝', [Colors.white, 14, true]),
-        //               PWidget.text('2复制链接', [Colors.white, 14, true]),
-        //               PWidget.text('3打开$APP_NAME', [Colors.white, 14, true]),
-        //             ],
-        //         ),
-        //         [null, null, Colors.grey[400]],
-        //         {'crr': PFun.lg(16, 16,16, 16), 'pd': PFun.lg(8, 8,16, 16),'mg':PFun.lg(4, 4,8, 8)},
-        //       ),
-              PWidget.container(
-                tabDm.list.length == 1
-                    ? FirstPage()
-                    : AnimatedSwitchBuilder(
-                        value: tabDm,
-                        errorOnTap: () => this.getTabData(),
-                        // initialState: buildLoad(color: Colors.grey),
-                        initialState:
-                            PWidget.container(null, [double.infinity]),
-                        listBuilder: (list, _, __) {
-                          var tabList = list
-                              .map<String>((m) => (m! as Map)['cname'])
-                              .toList();
-                          return TabWidget(
-                            tabList: tabList,
-                            color: Colors.black,
-                            indicatorColor: Colors.red,
-                            fontSize: 14,
-                            indicatorWeight: 2,
-                            tabPage: List.generate(tabList.length, (i) {
-                              return i == 0
-                                  ? FirstPage()
-                                  : OtherPage(list[i] as Map);
-                            }),
-                          );
-                        },
-                      ),
-                [null, null, Color(0xffF6F6F6)],
-                {'crr': PFun.lg(16, 16),
-                  // 'exp': true
-                },
-            //   )
-            // ],
-          ),
-      )
-    ]));
   }
 
   navigatorToSearchPage() {
@@ -190,19 +158,19 @@ class _HomePageState extends State<HomePage>
       if (!Global.isEmpty(content.trim()) && !Global.isOrder(content.trim())) {
         var length = content.length;
         //长度大于800 中止查券
-        if(length > 1000) {
+        if (length > 1000) {
           return;
         }
 
         //判断是否复制了邀请码，如果复制了，保存到prefs
-        if(content.startsWith('%') && content.endsWith('%')) {
-          List splitContent = content.substring(1, content.length-1).split('\$\%\$');
+        if (content.startsWith('%') && content.endsWith('%')) {
+          List splitContent = content.substring(1, content.length - 1).split('\$\%\$');
           int size = splitContent.length;
 
           Global.savePrefs(PREFS_INVITE_CODE, splitContent[0]);
-          if(size == 1) {
+          if (size == 1) {
             return;
-          } else if(size > 1) {
+          } else if (size > 1) {
             //保存产品口令
             Global.savePrefs(PREFS_GOODS_CODE, splitContent[1]);
             content = splitContent[1];
@@ -217,7 +185,6 @@ class _HomePageState extends State<HomePage>
         await Global.showContentParseDialog(data);
 
         Clipboard.setData(ClipboardData(text: ''));
-
       }
     }
   }
@@ -274,27 +241,28 @@ class _HomePageState extends State<HomePage>
       PWidget.row([
         PWidget.boxw(8),
         //fluter textfield会导致剪切板的隐私问题
-        if(agree)
-        SearchBarWidget(
-          '',
-          searchRankingListDm,
-          readOnly: true,
-          onChanged: (v) {},
-          onSubmit: (v, t) {
-            navigatorToSearchPage();
-          },
-          onClear: () {},
-          onTap: (f) {
-            navigatorToSearchPage();
-          },
-        ),
+        if (agree)
+          SearchBarWidget(
+            '',
+            searchRankingListDm,
+            readOnly: true,
+            onChanged: (v) {},
+            onSubmit: (v, t) {
+              navigatorToSearchPage();
+            },
+            onClear: () {},
+            onTap: (f) {
+              navigatorToSearchPage();
+            },
+          ),
         PWidget.boxw(8),
-        PWidget.icon(Icons.mail_outline,
-            [Colors.black], {
-              'fun': () {
-                Navigator.pushNamed(context, '/messageCenter');
-              }
-            }),
+        PWidget.icon(Icons.mail_outline, [
+          Colors.black
+        ], {
+          'fun': () {
+            Navigator.pushNamed(context, '/messageCenter');
+          }
+        }),
         PWidget.boxw(8),
       ]),
       [null, 56 + pmPadd.top],
