@@ -7,7 +7,6 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:sufenbao/index/provider/home_provider.dart';
 import 'package:sufenbao/me/myself.dart';
-import 'package:sufenbao/search/search_page.dart';
 import 'package:sufenbao/util/bao_icons.dart';
 
 import '../page/top_page.dart';

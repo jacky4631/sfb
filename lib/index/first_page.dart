@@ -8,15 +8,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_alibc/alibc_model.dart';
 import 'package:flutter_alibc/flutter_alibc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:shake_animation_widget/shake_animation_widget.dart';
+import 'package:sufenbao/index/provider/provider.dart';
 import 'package:sufenbao/index/widget/banner_widget.dart';
 import 'package:sufenbao/index/widget/tiles_widget.dart';
 import 'package:sufenbao/me/model/activity_info.dart';
@@ -36,24 +37,13 @@ import 'widget/brand_widget.dart';
 import 'widget/card_widget.dart';
 import 'widget/menu_widget.dart';
 
-class HuodongNotify extends ValueNotifier {
-  HuodongNotify() : super(null);
-  var isShowHuodong = false;
-  void changeIsShowTabbar(v) {
-    isShowHuodong = v;
-    notifyListeners();
-  }
-}
-
-HuodongNotify huodongNotify = HuodongNotify();
-
 ///首页
-class FirstPage extends StatefulWidget {
+class FirstPage extends ConsumerStatefulWidget {
   @override
   _FirstPageState createState() => _FirstPageState();
 }
 
-class _FirstPageState extends State<FirstPage> {
+class _FirstPageState extends ConsumerState<FirstPage> {
   String huodongImg = '';
   ShakeAnimationController _shakeAnimationController = new ShakeAnimationController();
   Timer? timer;
@@ -77,16 +67,10 @@ class _FirstPageState extends State<FirstPage> {
 
   ///初始化函数
   Future<int> initData() async {
-    huodongNotify.changeIsShowTabbar(false);
     agree = await Global.getAgree();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     Global.init();
-    await getBannerData();
-    await getTilesData();
     // await getSearchData(isRef: true);
-    await getCardData();
-    await getBrandList(isRef: true);
-    await getListData(isRef: true);
     showHuodongDialog();
     initShake();
     await Global.update(packageInfo);
@@ -160,80 +144,6 @@ class _FirstPageState extends State<FirstPage> {
     }
   }
 
-  ///顶部banner
-  var bannerDm = DataModel(value: [[], []]);
-  Future<int> getBannerData() async {
-    var res = await BService.banners().catchError((v) {
-      bannerDm.toError('网络异常');
-    });
-    if (res != null) {
-      //移除网络链接link_type=3 保留小样种草 移除抖音
-      res.removeWhere((element) {
-        return (element['link_type'] == 3 && element['id'] != 380) || element['id'] == 530;
-      });
-      // const List tbHbData = [
-      //   {'title':'淘宝看视频领红包', 'key':'pddbanner1',
-      //     'img': 'https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/tbhbbanner.jpg'}
-      // ];
-      // res.insertAll(0, tbHbData);
-      bannerDm.addList(res, true, 0);
-    }
-    setState(() {});
-    return bannerDm.flag;
-  }
-
-  ///顶部banner
-  var tilesDm = DataModel(value: [{}]);
-  Future<int> getTilesData() async {
-    var res = await BService.tiles().catchError((v) {
-      tilesDm.toError('网络异常');
-    });
-    if (res != null) {
-      res.removeWhere((element) {
-        return element['link_type'] == 3;
-      });
-      tilesDm.addList(res, true, 0);
-    }
-    setState(() {});
-    return tilesDm.flag;
-  }
-
-  ///卡片数据
-  var cardDm = DataModel<Map>(object: {});
-  Future<int> getCardData() async {
-    ///热销榜url
-    List res1 = await BService.homeCardHot().catchError((v) {
-      cardDm.toError('网络异常');
-    });
-    if (res1 != null) {
-      cardDm.value = res1;
-      cardDm.setTime();
-    }
-
-    ///限时秒杀url
-    var res2 = await BService.homeCardDDQ().catchError((v) {
-      cardDm.toError('网络异常');
-    });
-    if (res2 != null) cardDm.addObject(res2);
-    setState(() {});
-    return cardDm.flag;
-  }
-
-  ///列表数据
-  var listDm = DataModel();
-  Future<int> getListData({int page = 1, bool isRef = false}) async {
-    var res = await BService.getGoodsList(page).catchError((v) {
-      listDm.toError('网络异常');
-    });
-    if (res != null) {
-      var list = res['list'];
-      var totalNum = res['totalNum'];
-      listDm.addList(list, isRef, totalNum);
-    }
-    setState(() {});
-    return listDm.flag;
-  }
-
   ///大家都在领
   var searchDm = DataModel();
   Future<int> getSearchData({int page = 1, bool isRef = false}) async {
@@ -255,124 +165,62 @@ class _FirstPageState extends State<FirstPage> {
     return searchDm.flag;
   }
 
-  ///品牌特卖
-  var brandListDm = DataModel();
-  Future<int> getBrandList({int page = 1, bool isRef = false}) async {
-    var res = await http.get(Uri.parse(BService.getBrandUrl())).catchError((v) {
-      brandListDm.toError('网络异常');
-    });
-    if (res != null) {
-      var json = jsonDecode(res.body);
-      brandListDm.addList(json, true, 10);
-    }
-    setState(() {});
-    return brandListDm.flag;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final listDm = ref
+        .watch(getGoodsListProvider)
+        .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+
     return ScaffoldWidget(
         bgColor: Color(0xfffafafa),
         body: Stack(
           children: [
             ScaffoldWidget(
-              floatingActionButton: _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
-                  ? FloatingActionButton(
-                      backgroundColor: Colours.app_main,
-                      mini: true,
-                      onPressed: () {
-                        // scrollController 通过 animateTo 方法滚动到某个具体高度
-                        // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
-                        _scrollController.animateTo(0.0,
-                            duration: Duration(milliseconds: 1000), curve: Curves.decelerate);
-                      },
-                      child: Icon(
-                        Icons.arrow_upward,
-                        color: Colors.white,
-                      ),
-                    )
-                  : null,
-              body: MyCustomScroll(
-                controller: _scrollController,
-                isGengduo: listDm.hasNext,
-                isShuaxin: true,
-                onRefresh: () => this.initData(),
-                onLoading: (p) => this.getListData(page: p),
-                refHeader: buildClassicHeader(color: Colors.grey),
-                refFooter: buildCustomFooter(color: Colors.grey),
-                headers: headers,
-                itemPadding: EdgeInsets.all(8),
-                crossAxisCount: 2,
-                crossAxisSpacing: 6,
-                itemModel: listDm,
-                onScrollToList: (b, v) => huodongNotify.changeIsShowTabbar(b),
-                maskWidget: () => ValueListenableBuilder(
-                  valueListenable: huodongNotify,
-                  builder: (_, __, ___) {
-                    if (Global.isEmpty(huodongImg)) {
-                      return SizedBox();
-                    }
-                    return createHuodongWidget();
-                  },
-                ),
-                itemModelBuilder: (i, v) {
-                  return PWidget.container(
-                    Global.openFadeContainer(createListItem(i, v), ProductDetails(v)),
-                    [null, null, Colors.white],
-                    {
-                      'sd': PFun.sdLg(Colors.black12),
-                      'br': 8,
-                      'mg': PFun.lg(0, 6),
-                      'crr': [5, 5, 5, 5]
-                    },
-                  );
-                },
-              ),
-            )
+                floatingActionButton: _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
+                    ? FloatingActionButton(
+                        backgroundColor: Colours.app_main,
+                        mini: true,
+                        onPressed: () {
+                          // scrollController 通过 animateTo 方法滚动到某个具体高度
+                          // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
+                          _scrollController.animateTo(0.0,
+                              duration: Duration(milliseconds: 1000), curve: Curves.decelerate);
+                        },
+                        child: Icon(
+                          Icons.arrow_upward,
+                          color: Colors.white,
+                        ),
+                      )
+                    : null,
+                body: CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    SliverList.list(children: headers),
+                    SliverPadding(
+                        padding: EdgeInsets.all(8),
+                        sliver: SliverMasonryGrid.count(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                          childCount: listDm.list.length,
+                          itemBuilder: (context, index) {
+                            final v = listDm.list[index];
+                            return PWidget.container(
+                              Global.openFadeContainer(createListItem(index, v), ProductDetails(v)),
+                              [null, null, Colors.white],
+                              {
+                                'sd': PFun.sdLg(Colors.black12),
+                                'br': 8,
+                                'mg': PFun.lg(0, 6),
+                                'crr': [5, 5, 5, 5]
+                              },
+                            );
+                          },
+                        ))
+                  ],
+                ))
           ],
         ));
-  }
-
-  Widget createHuodongWidget() {
-    // PWidget.positioned(
-    //     PWidget.container(PWidget.wrapperImage(Global.homeUrl['huodong']['img'],[60,60],),
-    //     ),
-    //     [null, MediaQuery.of(context).padding.bottom+100, null , 2]
-    // )
-    return !showHuodong
-        ? SizedBox()
-        : PWidget.positioned(
-            ShakeAnimationWidget(
-              ///抖动控制器
-              shakeAnimationController: _shakeAnimationController,
-
-              ///微旋转的抖动
-              shakeAnimationType: ShakeAnimationType.RoateShake,
-
-              ///设置不开启抖动
-              isForward: false,
-
-              ///默认为 0 无限执行
-              shakeCount: 0,
-
-              ///抖动的幅度 取值范围为[0,1]
-              shakeRange: 0.2,
-
-              ///执行抖动动画的子Widget
-              child: PWidget.container(PWidget.wrapperImage(Global.appInfo.huodong!.img, [60, 60], {'br': 4}), {
-                'fun': () {
-                  setState(() {
-                    showHuodong = false;
-                  });
-                  Global.showHuodongDialog(Global.appInfo.huodong, delaySeconds: 0, fun: () {
-                    setState(() {
-                      showHuodong = true;
-                    });
-                  });
-                }
-              }),
-            ),
-            [null, MediaQuery.of(context).padding.bottom + 80, null, huodongNotify.isShowHuodong ? -30 : 2]);
   }
 
   Widget createListItem(i, v) {
@@ -418,44 +266,44 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   List<Widget> get headers {
-    List? cardGoodsList = cardDm.object?['goodsList'];
-    List cardHot = cardDm.value;
-    List brandList = brandListDm.list;
+    final cardDm = ref
+        .watch(homeCardHotProvider)
+        .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+
+    final brandListDm = ref
+        .watch(getBrandListProvider)
+        .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+
+    ///顶部banner
+    final bannerDm =
+        ref.watch(bannersProvider).when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+    final tilesDm =
+        ref.watch(tilesProvider).when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+    final listDm = ref
+        .watch(getGoodsListProvider)
+        .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+
     return [
-      (bannerDm.list != null && bannerDm.list.isNotEmpty)
-          ? BannerWidget(bannerDm, (v) {
-              Global.kuParse(context, v);
-            })
-          :
-          //没网络时显示默认图片
-          AspectRatio(
-              aspectRatio: (750 + 8) / (280 + 24),
-              child: PWidget.image('assets/images/mall/bannerholder.png', {
-                'br': 8,
-                'pd': [8, 8, 8, 8]
-              })),
+      if (bannerDm.value.isNotEmpty)
+        BannerWidget(bannerDm, (v) {
+          Global.kuParse(context, v);
+        }),
 
       ///菜单
       const MenuWidget(),
       //圆形轮播图
-      (tilesDm.list != null && tilesDm.list.isNotEmpty)
-          ? TilesWidget(tilesDm)
-          : AspectRatio(
-              aspectRatio: 710 / (170 + 30),
-              child: PWidget.image('assets/images/mall/tileholder.png', {
-                'br': 8,
-                'pd': [16, 8, 8, 8]
-              })),
+
+      if (tilesDm.list.isNotEmpty) TilesWidget(tilesDm),
 
       // ///大家都在领
       // (searchDm.list != null && searchDm.list.isNotEmpty)
       //     ? EveryoneWidget(searchDm):SizedBox(height: 250,),
       //
       ///卡片
-      if (!(cardGoodsList == null || cardGoodsList.isEmpty || cardHot == null || cardHot.isEmpty)) CardWidget(cardDm),
+      if (cardDm.value.isNotEmpty) CardWidget(cardDm),
 
       //品牌特卖
-      if (brandList != null && brandList.isNotEmpty) BrandWidget(brandListDm),
+      if (brandListDm.list.isNotEmpty) BrandWidget(brandListDm),
 
       if (listDm.list.isNotEmpty) PWidget.text('店铺好货', [Colors.black.withOpacity(0.75), 16, true], {'ct': true}),
     ];
