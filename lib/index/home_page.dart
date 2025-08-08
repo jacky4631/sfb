@@ -5,30 +5,35 @@
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
+
 import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
+import 'package:sufenbao/index/provider/provider.dart';
+import 'package:sufenbao/index/widget/main_appbar.dart';
 import 'package:sufenbao/service.dart';
-import 'package:sufenbao/widget/tab_widget.dart';
 
 import '../me/model/userinfo.dart';
 import '../search/search_bar_widget.dart';
 import '../util/global.dart';
 import '../util/paixs_fun.dart';
+import '../widget/tab_bar_indicator.dart';
 import 'first_page.dart';
 import 'other_page.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+class _HomePageState extends ConsumerState<HomePage>
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, TickerProviderStateMixin {
   FocusNode _searchFocus = FocusNode();
   bool agree = false;
+  late TabController tabCon;
+
   @override
   void initState() {
     initData();
@@ -44,20 +49,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin,
     setState(() {});
     Global.initCommissionInfo();
     parseContent();
-    searchRankingList();
-    await getTabData();
     _initUser();
-  }
-
-  ///搜索排名列表
-  var searchRankingListDm = DataModel();
-  Future<int> searchRankingList() async {
-    var res = await BService.hotWords().catchError((v) {
-      searchRankingListDm.toError('网络异常');
-    });
-    if (res != null) searchRankingListDm.addList(res, true, 0);
-    setState(() {});
-    return searchRankingListDm.flag;
   }
 
   Future _initUser() async {
@@ -70,68 +62,56 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin,
     await Global.initJPush();
   }
 
-  ///tab数据
-  var tabDm = DataModel();
-
-  Future<int> getTabData() async {
-    var res = await BService.goodsCategory().catchError((v) {
-      tabDm.toError('网络异常');
-    });
-    if (res != null) {
-      res.sort((e1, e2) {
-        return e1['cid'] > e2['cid'] ? 1 : 0;
-      });
-      tabDm.addList(res, true, 0);
-      tabDm.list.insert(0, {"cid": 0, "cname": "精选", "cpic": "", "subcategories": []});
-    }
-    setState(() {});
-    return tabDm.flag;
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final searchRankingListDm = ref
+        .watch(hotWordsProvider)
+        .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
 
-    return ScaffoldWidget(
-        body: Stack(children: [
-      ScaffoldWidget(
-        // appBar: buildTitle(context, title: APP_NAME),
-        // bottomSheet: BottomNav(0),
-        brightness: Brightness.dark,
-        appBar: titleBarView(),
-        bgColor: Colors.transparent,
-        body: PWidget.container(
-          tabDm.list.length == 1
-              ? FirstPage()
-              : AnimatedSwitchBuilder(
-                  value: tabDm,
-                  errorOnTap: () => this.getTabData(),
-                  // initialState: buildLoad(color: Colors.grey),
-                  initialState: PWidget.container(null, [double.infinity]),
-                  listBuilder: (list, _, __) {
-                    var tabList = list.map<String>((m) => (m! as Map)['cname']).toList();
-                    return TabWidget(
-                      tabList: tabList,
-                      color: Colors.black,
-                      indicatorColor: Colors.red,
-                      fontSize: 14,
-                      indicatorWeight: 2,
-                      tabPage: List.generate(tabList.length, (i) {
-                        return i == 0 ? FirstPage() : OtherPage(list[i] as Map);
-                      }),
-                    );
-                  },
-                ),
-          [null, null, Color(0xffF6F6F6)],
-          {
-            'crr': PFun.lg(16, 16),
-            // 'exp': true
-          },
-          //   )
-          // ],
-        ),
-      )
-    ]));
+    final tabDm = ref
+        .watch(goodsCategoryProvider)
+        .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+
+    var tabList = tabDm.list.map<String>((m) => (m! as Map)['cname']).toList();
+    tabCon = TabController(
+      vsync: this,
+      length: tabList.length,
+    );
+
+    return Scaffold(
+        appBar: mainAppBar(context),
+        body: tabDm.list.length == 1
+            ? FirstPage()
+            : Column(
+                children: [
+                  TabBar(
+                    controller: tabCon,
+                    tabAlignment: TabAlignment.start,
+                    isScrollable: true, // 是否可以滑动
+                    tabs: tabList.map((m) {
+                      return Tab(text: m);
+                    }).toList(),
+                    dividerColor: Colors.transparent, //去除白色线
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                    labelColor: Colors.black,
+                    indicator: const TabBarIndicator(borderSide: BorderSide(width: 5, color: Colors.redAccent)),
+                    overlayColor: WidgetStateProperty.resolveWith((states) {
+                      if (states.contains(WidgetState.pressed)) {
+                        return Colors.transparent;
+                      }
+                      return null;
+                    }),
+                  ),
+                  Expanded(
+                      child: TabBarView(
+                    controller: tabCon,
+                    children: List.generate(tabList.length, (i) {
+                      return i == 0 ? FirstPage() : OtherPage(tabDm.list[i] as Map);
+                    }),
+                  ))
+                ],
+              ));
   }
 
   @override
@@ -236,7 +216,7 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin,
   // }
 
   ///标题栏视图
-  Widget titleBarView() {
+  Widget titleBarView(DataModel searchRankingListDm) {
     return PWidget.container(
       PWidget.row([
         PWidget.boxw(8),

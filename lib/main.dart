@@ -67,6 +67,7 @@ import 'package:sufenbao/shop/shop_auth_page.dart';
 import 'package:sufenbao/shop/shop_contract_page.dart';
 import 'package:sufenbao/shop/shop_signature_page.dart';
 import 'package:sufenbao/tao/tb_index_page.dart';
+import 'package:sufenbao/themes/app_theme.dart';
 import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/vip/vip_detail_page.dart';
 import 'package:sufenbao/vip/vip_index_page.dart';
@@ -239,6 +240,8 @@ class SfbApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String multipleThemesMode = 'default'; // 主题
+
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
@@ -255,12 +258,15 @@ class SfbApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: APP_NAME,
           themeMode: ThemeMode.light,
-          theme: ThemeData(
-            useMaterial3: false,
-            primarySwatch: Colors.red,
-            textTheme: Theme.of(context).textTheme,
-            platform: TargetPlatform.iOS,
-          ),
+          theme: AppTheme(multipleThemesMode).multipleThemesLightMode(),
+          darkTheme: AppTheme(multipleThemesMode).multipleThemesDarkMode(),
+          // themeMode: ThemeMode.light,
+          // theme: ThemeData(
+          //   useMaterial3: false,
+          //   primarySwatch: Colors.red,
+          //   textTheme: Theme.of(context).textTheme,
+          //   platform: TargetPlatform.iOS,
+          // ),
           home: child,
           onGenerateRoute: _getRoute,
           navigatorKey: navigatorKey,

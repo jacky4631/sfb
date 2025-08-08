@@ -120,3 +120,32 @@ Future<DataModel> getEveryBuyUrl(Ref ref) async {
   }
   return searchDm;
 }
+
+///搜索排名列表
+@riverpod
+Future<DataModel> hotWords(Ref ref) async {
+  var searchRankingListDm = DataModel();
+  var res = await BService.hotWords().catchError((v) {
+    searchRankingListDm.toError('网络异常');
+  });
+  if (res != null) searchRankingListDm.addList(res, true, 0);
+  return searchRankingListDm;
+}
+
+///tab数据
+
+@riverpod
+Future<DataModel> goodsCategory(Ref ref) async {
+  var tabDm = DataModel();
+  var res = await BService.goodsCategory().catchError((v) {
+    tabDm.toError('网络异常');
+  });
+  if (res.isNotEmpty) {
+    res.sort((e1, e2) {
+      return e1['cid'] > e2['cid'] ? 1 : 0;
+    });
+    tabDm.addList(res, true, 0);
+    tabDm.list.insert(0, {"cid": 0, "cname": "精选", "cpic": "", "subcategories": []});
+  }
+  return tabDm;
+}
