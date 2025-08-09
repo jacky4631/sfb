@@ -21,8 +21,8 @@ class AppInfo {
   AppInfo();
 
   AppInfo.fromJson(Map<String, dynamic> json)
-      : kuCid = json['kuCid'],
-        share = json['share']??'',
+      : kuCid = json['kuCid'] ?? '',
+        share = json['share'] ?? '',
         shareContent = json['shareContent'],
         shareGoods = json['shareGoods'],
         alired = json['alired'],
@@ -31,21 +31,21 @@ class AppInfo {
         skipCode = json['skipCode'],
         yeePaySuccUrl = json['yeePaySuccUrl'],
         yeePayFailUrl = json['yeePayFailUrl'],
-        spreadLevel = json['spreadLevel']??3,
+        spreadLevel = json['spreadLevel'] ?? 3,
         huodong = ActivityInfo.fromJson(json['huodong']);
 
   Map<String, dynamic> toJson() => {
-    'kuCid': kuCid,
-    'share': share,
-    'shareContent': shareContent,
-    'shareGoods': shareGoods,
-    'alired': alired,
-    'taored': taored,
-    'contractPreviewUrl': contractPreviewUrl,
-    'skipCode': skipCode,
-    'yeePaySuccUrl': yeePaySuccUrl,
-    'yeePayFailUrl': yeePayFailUrl,
-    'spreadLevel': spreadLevel,
-    'huodong': huodong
-  };
+        'kuCid': kuCid,
+        'share': share,
+        'shareContent': shareContent,
+        'shareGoods': shareGoods,
+        'alired': alired,
+        'taored': taored,
+        'contractPreviewUrl': contractPreviewUrl,
+        'skipCode': skipCode,
+        'yeePaySuccUrl': yeePaySuccUrl,
+        'yeePayFailUrl': yeePayFailUrl,
+        'spreadLevel': spreadLevel,
+        'huodong': huodong
+      };
 }

@@ -30,6 +30,8 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, TickerProviderStateMixin {
+  @override
+  bool get wantKeepAlive => true;
   FocusNode _searchFocus = FocusNode();
   bool agree = false;
   late TabController tabCon;
@@ -74,10 +76,7 @@ class _HomePageState extends ConsumerState<HomePage>
         .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
 
     var tabList = tabDm.list.map<String>((m) => (m! as Map)['cname']).toList();
-    tabCon = TabController(
-      vsync: this,
-      length: tabList.length,
-    );
+    tabCon = TabController(vsync: this, length: tabList.length);
 
     return Scaffold(
         appBar: mainAppBar(context),
@@ -125,9 +124,6 @@ class _HomePageState extends ConsumerState<HomePage>
     _searchFocus.unfocus();
     Navigator.pushNamed(context, '/search', arguments: {'showArrowBack': true});
   }
-
-  @override
-  bool get wantKeepAlive => true;
 
   //剪切板识别
   Future parseContent() async {

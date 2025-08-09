@@ -5,6 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/widget/anima_switch_widget.dart';
 import 'package:maixs_utils/widget/my_custom_scroll.dart';
@@ -12,6 +13,7 @@ import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/search/model/search_param.dart';
+import 'package:sufenbao/search/provider.dart';
 import 'package:sufenbao/search/search_bar_widget.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/global.dart';
@@ -29,14 +31,14 @@ var tabList = [
 ];
 
 ///搜索结果页
-class SearchResultPage extends StatefulWidget {
+class SearchResultPage extends ConsumerStatefulWidget {
   final Map data;
   const SearchResultPage(this.data, {Key? key}) : super(key: key);
   @override
   _SearchResultPageState createState() => _SearchResultPageState();
 }
 
-class _SearchResultPageState extends State<SearchResultPage> {
+class _SearchResultPageState extends ConsumerState<SearchResultPage> {
   int tabIndex = 0;
   SearchParam searchParam = SearchParam();
 
@@ -54,13 +56,12 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   ///初始化函数
   Future initData() async {
-    keyword = widget.data['keyword']??widget.data['itemName']
-        ??widget.data['item_title']??widget.data['originContent'];
+    keyword =
+        widget.data['keyword'] ?? widget.data['itemName'] ?? widget.data['item_title'] ?? widget.data['originContent'];
 
     await saveHistory();
     await this.superSearch();
     tabDm.addList(tabList, false, 0);
-
   }
 
   Future saveHistory() async {
@@ -70,12 +71,17 @@ class _SearchResultPageState extends State<SearchResultPage> {
   ///超级搜索
   var superSearchDm = DataModel();
   Future<int> superSearch({int page = 1, bool isRef = false}) async {
+    print("===============$tabIndex");
+
     if (tabIndex == 0) {
-      var res = await BService.goodsSearch(page, keyword,
-              sort: searchParam.getTaoSortKey(sort))
-          .catchError((v) {
+      // final sss = ref.watch(goodsSearchProvider(keyword: keyword, sort: searchParam.getTaoSortKey(sort)));
+
+      var res = await BService.goodsSearch(page, keyword, sort: searchParam.getTaoSortKey(sort)).catchError((v) {
         superSearchDm.toError('网络异常');
       });
+
+      print("===============$res");
+
       if (res != null) {
         superSearchDm.addList(res, isRef, 1000);
       }
@@ -97,17 +103,15 @@ class _SearchResultPageState extends State<SearchResultPage> {
   var listId = '';
   Future<int> pddSearch({int page = 1, bool isRef = false}) async {
     var sortKey = searchParam.getPddSortKey(sort);
-    var res = await BService.pddSearch(page,
-            keyword: keyword, sortType: sortKey, listId: listId)
-        .catchError((v) {
+    var res = await BService.pddSearch(page, keyword: keyword, sortType: sortKey, listId: listId).catchError((v) {
       superSearchDm.toError('网络异常');
     });
     if (res != null) {
       num totalCount = res['totalCount'];
-      if(totalCount > 0) {
+      if (totalCount > 0) {
         listId = res['listId'];
         //破接口返回数据不一致 做特殊处理
-        if(res['goodsList'][0]['goodsName'] == null) {
+        if (res['goodsList'][0]['goodsName'] == null) {
           totalCount = 0;
           res['goodsList'] = [];
         }
@@ -126,10 +130,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
     if (sort == 2) {
       page = page + 1;
     }
-    var res = await BService.jdList(page,
-            keyword: keyword,
-            sortName: sortKey['sortName'],
-            sort: sortKey['sort'])
+    var res = await BService.jdList(page, keyword: keyword, sortName: sortKey['sortName'], sort: sortKey['sort'])
         .catchError((v) {
       superSearchDm.toError('网络异常');
     });
@@ -141,15 +142,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
     });
     return superSearchDm.flag;
   }
+
   Future<int> dySearch({int page = 1, bool isRef = false}) async {
     var sortKey = searchParam.getDySortKey(sort);
     var sortType = 1;
     if (sort == 4) {
       sortType = 0;
     }
-    var res = await BService.dySearch(page,
-            keyword: keyword, searchType: sortKey, sortType: sortType)
-        .catchError((v) {
+    var res = await BService.dySearch(page, keyword: keyword, searchType: sortKey, sortType: sortType).catchError((v) {
       superSearchDm.toError('网络异常');
     });
     if (res != null) {
@@ -167,9 +167,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
     if (sort == 2 || sort == 4) {
       order = 0;
     }
-    var res = await BService.vipSearch(page,
-            keyword: keyword, fieldName: sortKey, order: order)
-        .catchError((v) {
+    var res = await BService.vipSearch(page, keyword: keyword, fieldName: sortKey, order: order).catchError((v) {
       superSearchDm.toError('网络异常');
     });
     if (res != null && (res['returnCode'] == null || res['returnCode'] != '1009')) {
@@ -228,10 +226,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   Widget titleBarView() {
     return PWidget.container(
       PWidget.row([
-        PWidget.container(
-            PWidget.icon(
-                Icons.arrow_back_ios_rounded, [Colors.black.withOpacity(0.75)]),
-            [40, 40],
+        PWidget.container(PWidget.icon(Icons.arrow_back_ios_rounded, [Colors.black.withOpacity(0.75)]), [40, 40],
             {'fun': () => Navigator.pop(context)}),
         SearchBarWidget(
           keyword,
@@ -262,101 +257,95 @@ class _SearchResultPageState extends State<SearchResultPage> {
       return Global.showLoading2();
     }
     return MyCustomScroll(
-      isShuaxin: true,
-      onRefresh: () => this.superSearch(isRef: true),
-      onLoading: (p) => this.superSearch(page: p),
-      refHeader: buildClassicHeader(color: Colors.grey),
-      refFooter: buildCustomFooter(color: Colors.grey),
-      isGengduo: superSearchDm.hasNext,
-      crossAxisCount: 1,
-      itemModel: superSearchDm,
-      itemPadding: EdgeInsets.all(8),
-      // divider: Divider(color: Colors.transparent, height: 8),
-      itemModelBuilder: (i, v) {
-        return PWidget.container(
+        isShuaxin: true,
+        onRefresh: () => this.superSearch(isRef: true),
+        onLoading: (p) => this.superSearch(page: p),
+        refHeader: buildClassicHeader(color: Colors.grey),
+        refFooter: buildCustomFooter(color: Colors.grey),
+        isGengduo: superSearchDm.hasNext,
+        crossAxisCount: 1,
+        itemModel: superSearchDm,
+        itemPadding: EdgeInsets.all(8),
+        // divider: Divider(color: Colors.transparent, height: 8),
+        itemModelBuilder: (i, v) {
+          return PWidget.container(
             Global.openFadeContainer(createItem(v, i), searchParam.jump2Detail(context, tabIndex, v)),
-          [null, null, Colors.white],
-          {
-            'sd': PFun.sdLg(Colors.black12),
-            'br': 8,
-            'mg': PFun.lg(0, 6),
-            'crr': [5,5,5,5]
-          },
-        );
-      }
-    );
+            [null, null, Colors.white],
+            {
+              'sd': PFun.sdLg(Colors.black12),
+              'br': 8,
+              'mg': PFun.lg(0, 6),
+              'crr': [5, 5, 5, 5]
+            },
+          );
+        });
   }
 
   Widget createItem(v, i) {
-      Map data = v as Map;
-      String img = '';
-      String sale = '0';
-      num fee = 0;
-      String title = '';
-      String endPrice = '0';
-      String startPrice = '0';
-      String shopName = '';
-      String jdOwner = '';
-      String platform = TB;
-      if (tabIndex == 0) {
-        title = data['title'];
-        img = data['white_image'] == ''
-            ? data['pict_url']
-            : data['white_image'];
-        img = '${img}_310x310';
-        sale = BService.formatNum(data['volume']);
-        startPrice = data['zk_final_price'];
-        double actualPrice = double.parse(startPrice) -
-            (Global.isEmpty(data['coupon_amount']) ? 0 : double.parse(data['coupon_amount']));
-        fee = data['commission_rate'] * actualPrice / 100;
-        endPrice = actualPrice.toStringAsFixed(2);
-        shopName = data['shop_title'];
-        platform = TB;
-      } else if (tabIndex == 1) {
-        title = data['goodsName'];
-        img = data['goodsImageUrl'];
-        sale = data['salesTip'];
-        fee = data['promotionRate'] * data['minGroupPrice'] / 100;
-        endPrice = data['minGroupPrice'].toString();
-        startPrice = data['minNormalPrice'].toString();
-        shopName = data['mallName'];
-        platform = PDD;
-      } else if (tabIndex == 2) {
-        title = data['skuName'];
-        img = data['whiteImage'] == ''
-            ? data['imageUrlList'][0]
-            : data['whiteImage'];
-        sale = data['inOrderCount30Days'].toString();
-        fee = data['couponCommission'];
-        endPrice = data['lowestCouponPrice'].toString();
-        startPrice = data['lowestPrice'].toString();
-        shopName = data['shopName'];
-        jdOwner = data['owner'];
-        platform = JD;
-      } else if (tabIndex == 3) {
-        title = data['title'];
-        img = data['cover'];
+    Map data = v as Map;
+    String img = '';
+    String sale = '0';
+    num fee = 0;
+    String title = '';
+    String endPrice = '0';
+    String startPrice = '0';
+    String shopName = '';
+    String jdOwner = '';
+    String platform = TB;
+    if (tabIndex == 0) {
+      title = data['title'];
+      img = data['white_image'] == '' ? data['pict_url'] : data['white_image'];
+      img = '${img}_310x310';
+      sale = BService.formatNum(data['volume']);
+      startPrice = data['zk_final_price'];
+      double actualPrice =
+          double.parse(startPrice) - (Global.isEmpty(data['coupon_amount']) ? 0 : double.parse(data['coupon_amount']));
+      fee = data['commission_rate'] * actualPrice / 100;
+      endPrice = actualPrice.toStringAsFixed(2);
+      shopName = data['shop_title'];
+      platform = TB;
+    } else if (tabIndex == 1) {
+      title = data['goodsName'];
+      img = data['goodsImageUrl'];
+      sale = data['salesTip'];
+      fee = data['promotionRate'] * data['minGroupPrice'] / 100;
+      endPrice = data['minGroupPrice'].toString();
+      startPrice = data['minNormalPrice'].toString();
+      shopName = data['mallName'];
+      platform = PDD;
+    } else if (tabIndex == 2) {
+      title = data['skuName'];
+      img = data['whiteImage'] == '' ? data['imageUrlList'][0] : data['whiteImage'];
+      sale = data['inOrderCount30Days'].toString();
+      fee = data['couponCommission'];
+      endPrice = data['lowestCouponPrice'].toString();
+      startPrice = data['lowestPrice'].toString();
+      shopName = data['shopName'];
+      jdOwner = data['owner'];
+      platform = JD;
+    } else if (tabIndex == 3) {
+      title = data['title'];
+      img = data['cover'];
+      sale = BService.formatNum(data['sales']);
+      fee = data['cosFee'];
+      endPrice = data['price'].toString();
+      startPrice = data['price'].toString();
+      shopName = data['shopName'];
+      platform = DY;
+    } else if (tabIndex == 4) {
+      title = data['goodsName'];
+      img = data['white_image'] == null ? data['goodsMainPicture'] : data['white_image'];
+      if (!Global.isEmpty(data['sales'])) {
         sale = BService.formatNum(data['sales']);
-        fee = data['cosFee'];
-        endPrice = data['price'].toString();
-        startPrice = data['price'].toString();
-        shopName = data['shopName'];
-        platform = DY;
-      }else if (tabIndex == 4) {
-        title = data['goodsName'];
-        img = data['white_image'] == null
-            ? data['goodsMainPicture']
-            : data['white_image'];
-        if(!Global.isEmpty(data['sales'])) {
-          sale = BService.formatNum(data['sales']);
-        }
-        fee = double.parse(data['commission']);
-        endPrice = data['vipPrice'].toString();
-        startPrice = data['marketPrice'].toString();
-        shopName = data['storeInfo']['storeName'];
-        platform = VIP;
       }
-      return PWidget.container(PWidget.row(
+      fee = double.parse(data['commission']);
+      endPrice = data['vipPrice'].toString();
+      startPrice = data['marketPrice'].toString();
+      shopName = data['storeInfo']['storeName'];
+      platform = VIP;
+    }
+    return PWidget.container(
+        PWidget.row(
           [
             PWidget.wrapperImage(img, [124, 124], {'br': 8}),
             PWidget.boxw(8),
@@ -370,27 +359,25 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 '1'
               ]),
               PWidget.boxh(8),
-              PWidget.row([
-                getPriceWidget(endPrice, startPrice),
-              ],),
+              PWidget.row(
+                [
+                  getPriceWidget(endPrice, startPrice),
+                ],
+              ),
               PWidget.boxh(8),
               getMoneyWidget(context, fee, platform),
               PWidget.spacer(),
               PWidget.row([
                 jdOwner == 'g'
                     ? PWidget.container(
-                  PWidget.text('自营', [Colors.white, 9]),
-                  [null, null, Colors.red],
-                  {
-                    'bd': PFun.bdAllLg(Colors.red, 0.5),
-                    'pd': PFun.lg(1, 1, 4, 4),
-                    'br': PFun.lg(4, 4, 4, 4)
-                  },
-                )
+                        PWidget.text('自营', [Colors.white, 9]),
+                        [null, null, Colors.red],
+                        {'bd': PFun.bdAllLg(Colors.red, 0.5), 'pd': PFun.lg(1, 1, 4, 4), 'br': PFun.lg(4, 4, 4, 4)},
+                      )
                     : SizedBox(),
                 jdOwner == 'g' ? PWidget.boxw(4) : SizedBox(),
                 PWidget.text(shopName, [Colors.black54, 12], {'exp': true}),
-                tabIndex ==4 ? SizedBox() : PWidget.text('已售$sale', [Colors.black54, 12]),
+                tabIndex == 4 ? SizedBox() : PWidget.text('已售$sale', [Colors.black54, 12]),
               ])
             ], {
               'exp': 1,
@@ -399,11 +386,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
           '001',
           {'fill': true},
         ),
-
-      [null, null, Colors.white],
-          {'pd':8}
-      );
-
+        [null, null, Colors.white],
+        {'pd': 8});
   }
 }
 
@@ -427,11 +411,9 @@ class _SousuoTabWidgetState extends State<SousuoTabWidget> {
         var mg = PFun.lg(0, 0, 0, tabList.length - 1 == i ? 0 : 8);
         return PWidget.container(
           PWidget.row([
-            PWidget.container(
-                PWidget.image(tabList[i]['img'], [14, 14]), {'crr': 14}),
+            PWidget.container(PWidget.image(tabList[i]['img'], [14, 14]), {'crr': 14}),
             PWidget.boxw(4),
-            PWidget.text(tabList[i]['name'],
-                [isDy ? Colors.red : Colors.black, 12, true]),
+            PWidget.text(tabList[i]['name'], [isDy ? Colors.red : Colors.black, 12, true]),
           ]),
           [null, null, Colors.red.withOpacity(isDy ? 0.1 : 0)],
           {
@@ -484,21 +466,17 @@ class _SearchSortWidgetState extends State<SearchSortWidget> {
       if (name == '价格')
         PWidget.row([
           PWidget.text('价格', [
-            i == sortIndex
-                ? Colors.red.withOpacity(0.75)
-                : Colors.black.withOpacity(i == sortIndex ? 0.75 : 0.25),
+            i == sortIndex ? Colors.red.withOpacity(0.75) : Colors.black.withOpacity(i == sortIndex ? 0.75 : 0.25),
             12,
             true
           ]),
           PWidget.container(
             Stack(clipBehavior: Clip.none, children: [
               PWidget.positioned(
-                  PWidget.icon(Icons.arrow_drop_up_rounded,
-                      [Colors.red.withOpacity(sort == 4 ? 0.75 : 0.25), 16]),
+                  PWidget.icon(Icons.arrow_drop_up_rounded, [Colors.red.withOpacity(sort == 4 ? 0.75 : 0.25), 16]),
                   [0]),
               PWidget.positioned(
-                  PWidget.icon(Icons.arrow_drop_down_rounded,
-                      [Colors.red.withOpacity(sort == 5 ? 0.75 : 0.25), 16]),
+                  PWidget.icon(Icons.arrow_drop_down_rounded, [Colors.red.withOpacity(sort == 5 ? 0.75 : 0.25), 16]),
                   [7]),
             ]),
             [16, 24],
@@ -506,9 +484,7 @@ class _SearchSortWidgetState extends State<SearchSortWidget> {
         ], '220')
       else
         PWidget.text(name ?? '文本', [
-          i == sortIndex
-              ? Colors.red.withOpacity(0.75)
-              : Colors.black.withOpacity(i == sortIndex ? 0.75 : 0.25),
+          i == sortIndex ? Colors.red.withOpacity(0.75) : Colors.black.withOpacity(i == sortIndex ? 0.75 : 0.25),
           12,
           true
         ]),

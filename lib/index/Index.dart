@@ -6,20 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:sufenbao/me/myself.dart';
 
-import '../page/top_page.dart';
 import '../widget/double_tap_back_exit_app.dart';
 import 'home_page.dart';
 
 ///首页
 class Index extends StatefulWidget {
-  const Index({Key? key, this.index}) : super(key: key);
-  final int? index;
+  const Index({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _IndexState();
 }
 
 class _IndexState extends State<Index> {
-  late PageController _pageController;
+  late PageController _pageController = PageController();
   int activeIndex = 0;
 
   bool agree = false;
@@ -27,9 +25,6 @@ class _IndexState extends State<Index> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(
-      initialPage: widget.index ?? 0,
-    );
   }
 
   @override
@@ -37,8 +32,6 @@ class _IndexState extends State<Index> {
     super.dispose();
     _pageController.dispose();
   }
-
-  late List<Widget> _widgetOptions;
 
   @override
   Widget build(BuildContext context) {

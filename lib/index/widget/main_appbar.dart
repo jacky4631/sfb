@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:maixs_utils/model/data_model.dart';
+
+import '../provider/provider.dart';
 
 double defaultActionBarHeight = 56;
 double defaultStatusBarHeight = 35;
@@ -28,11 +32,24 @@ AppBar mainAppBar(
         child: const AppBarTitle()),
     actions: [
       // IconButton(onPressed: () {}, icon: const Icon(HugeIcons.strokeRoundedVynil02)),
-      IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/messageCenter');
-          },
-          icon: const Icon(HugeIcons.strokeRoundedMail01)),
+
+      Consumer(builder: (
+        context,
+        ref,
+        child,
+      ) {
+        return IconButton(
+            onPressed: () {
+              ref.refresh(bannersProvider.future).then((onValue) {
+                print(onValue.list);
+              }).catchError((e) {
+                print(e);
+              });
+
+              // Navigator.pushNamed(context, '/messageCenter');
+            },
+            icon: const Icon(HugeIcons.strokeRoundedMail01));
+      })
     ],
   );
 }

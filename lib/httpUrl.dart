@@ -35,7 +35,6 @@ abstract class API {
   static const pddAuth = '/pdd/auth';
   static const pddGoodsWord = '/pdd/goods/word';
 
-
   static const goodsWordJD = '/jd/goods/word';
   static const goodsDetailJD = '/jd/goods/detail';
   static const goodsListJD = '/jd/goods/list';
@@ -82,7 +81,6 @@ abstract class API {
   static const dyGoodsDetail = '/dy/goods/detail';
   static const dyWord = '/dy/word';
   static const dyGoodsSearch = '/dy/goods/search';
-
 
   static const orderSubmit = '/order/submit';
   static const homeUrl = '/tao/home/url';
@@ -133,13 +131,11 @@ abstract class API {
   static const nineTop = '/cms/nine/top';
   static const nineCate = '/cms/nine/cate';
 
-
   static const mePointsMall = '/products';
   static const mePointsMallDetail = '/product/detail';
   static const meCategory = '/category';
   static const meIntegralConfirm = '/integral/confirm';
   static const createOrder = '/order/create';
-
 
   static const parseContent = '/tao/parse/content';
   static const parseContent2 = '/tao/parse/content2';
@@ -209,7 +205,6 @@ abstract class API {
   static const getLifeGoodsWord = '/ku/dy/life/goods/word';
 
   static const getWechatId = '/wechat/id';
-
 
   static const userFeedbackAdd = '/user/feedback/add';
 }

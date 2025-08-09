@@ -132,7 +132,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   }
 
   List<Widget> createMeWidget() {
-    final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
+    final userinfo =
+        ref.watch(userinfoProvider).when(data: (data) => data, error: (o, s) => Userinfo(), loading: () => Userinfo());
     bool feeEmpty = userFee == null || userFee!.isEmpty;
     List<Widget> widgets = <Widget>[
       _createUserTop(),

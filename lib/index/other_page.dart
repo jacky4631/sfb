@@ -16,6 +16,7 @@ import '../util/colors.dart';
 import '../util/global.dart';
 import '../util/paixs_fun.dart';
 import '../page/product_details.dart';
+import '../widget/tab_bar_indicator.dart';
 
 ///其它分类页面
 class OtherPage extends StatefulWidget {
@@ -26,7 +27,7 @@ class OtherPage extends StatefulWidget {
   _OtherPageState createState() => _OtherPageState();
 }
 
-class _OtherPageState extends State<OtherPage>{
+class _OtherPageState extends State<OtherPage> {
   int sortValue = 0;
 
   @override
@@ -72,19 +73,17 @@ class _OtherPageState extends State<OtherPage>{
         itemPadding: EdgeInsets.only(left: 8, right: 8),
         itemModelBuilder: (i, v) {
           return PWidget.container(
-          Global.openFadeContainer(createItem(i, v), ProductDetails(v)),
+            Global.openFadeContainer(createItem(i, v), ProductDetails(v)),
             [null, null, Colors.white],
-            {
-              'crr': 8,'mg': PFun.lg(0,8)
-            },
+            {'crr': 8, 'mg': PFun.lg(0, 8)},
           );
-
         },
       ),
     );
   }
+
   Widget createItem(i, v) {
-    num fee = v['actualPrice']*v['commissionRate']/100;
+    num fee = v['actualPrice'] * v['commissionRate'] / 100;
 
     String sale = BService.formatNum(v['monthSales']);
     return PWidget.container(
@@ -93,9 +92,7 @@ class _OtherPageState extends State<OtherPage>{
         PWidget.boxw(8),
         PWidget.container(
           PWidget.column([
-            PWidget.row([
-              getTitleWidget(v['title'], max: 2,size: 15)
-            ]),
+            PWidget.row([getTitleWidget(v['title'], max: 2, size: 15)]),
             PWidget.boxh(8),
             getMoneyWidget(context, fee, TB),
             PWidget.spacer(),
@@ -105,7 +102,6 @@ class _OtherPageState extends State<OtherPage>{
                 PWidget.textIs('¥', [Colours.app_main, 12, true]),
                 PWidget.textIs('${v['actualPrice']}', [Colours.app_main, 20, true]),
               ]),
-
               PWidget.spacer(),
               PWidget.row([
                 PWidget.container(
@@ -132,7 +128,10 @@ class _OtherPageState extends State<OtherPage>{
         'fill': true
       }),
       [null, null, Colors.white],
-      {'pd': 8, 'bd': PFun.bdLg(Colors.black12, 0, 0.5),},
+      {
+        'pd': 8,
+        'bd': PFun.bdLg(Colors.black12, 0, 0.5),
+      },
     );
   }
 
@@ -150,15 +149,20 @@ class _OtherPageState extends State<OtherPage>{
                 var scpic = subcategorie['scpic'];
                 var subcname = subcategorie['subcname'];
                 return PWidget.container(
-                  PWidget.ccolumn([
-                    PWidget.wrapperImage('$scpic', [56, 56], {'br': 56}),
-                    PWidget.spacer(),
-                    PWidget.text('$subcname'),
-                    PWidget.spacer(),
-                  ]),
-                  [wh, wh],
-                  {'fun':() => Navigator.pushNamed(context, '/searchResult', arguments: {'keyword':subcategorie['subcname']}) }
-                );
+                    PWidget.ccolumn([
+                      PWidget.wrapperImage('$scpic', [56, 56], {'br': 56}),
+                      PWidget.spacer(),
+                      PWidget.text('$subcname'),
+                      PWidget.spacer(),
+                    ]),
+                    [
+                      wh,
+                      wh
+                    ],
+                    {
+                      'fun': () => Navigator.pushNamed(context, '/searchResult',
+                          arguments: {'keyword': subcategorie['subcname']})
+                    });
               }),
             ),
             PWidget.boxh(16),
@@ -201,15 +205,19 @@ class _SortWidgetState extends State<SortWidget> {
           PWidget.text('价格', [Colors.black.withOpacity(i == sortIndex ? 0.75 : 0.25), 14, true]),
           PWidget.container(
             Stack(clipBehavior: Clip.none, children: [
-              PWidget.positioned(PWidget.icon(Icons.arrow_drop_up_rounded, [Colors.black.withOpacity(sort == 6 ? 0.75 : 0.25), 16]), [2]),
-              PWidget.positioned(PWidget.icon(Icons.arrow_drop_down_rounded, [Colors.black.withOpacity(sort == 5 ? 0.75 : 0.25), 16]), [8]),
+              PWidget.positioned(
+                  PWidget.icon(Icons.arrow_drop_up_rounded, [Colors.black.withOpacity(sort == 6 ? 0.75 : 0.25), 16]),
+                  [2]),
+              PWidget.positioned(
+                  PWidget.icon(Icons.arrow_drop_down_rounded, [Colors.black.withOpacity(sort == 5 ? 0.75 : 0.25), 16]),
+                  [8]),
             ]),
             [16, 24],
           ),
         ], '220')
       else
         PWidget.text(name ?? '文本', [Colors.black.withOpacity(i == sortIndex ? 0.75 : 0.25), 14, true]),
-      PWidget.container(null, [40, 2, Colors.red.withOpacity(i == sortIndex ? 1 : 0)], {'br': 8, 'mg': 4}),
+      PWidget.container(null, [20, 5, Colors.red.withOpacity(i == sortIndex ? 1 : 0)], {'br': 8, 'mg': 4}),
     ], {
       'exp': 1,
       'fun': () {

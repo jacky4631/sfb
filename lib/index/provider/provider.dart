@@ -17,6 +17,7 @@ Future<DataModel> banners(Ref ref) async {
   var res = await BService.banners().catchError((v) {
     print('网络异常');
   });
+
   if (res.isNotEmpty) {
     //移除网络链接link_type=3 保留小样种草 移除抖音
     res.removeWhere((element) {

@@ -2,6 +2,10 @@
  *  Copyright (C) 2018-2024
  *  All rights reserved, Designed By www.mailvor.com
  */
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -83,6 +87,7 @@ import 'dy/dy_index_page.dart';
 import 'energy/energy_list.dart';
 import 'energy/energy_page.dart';
 import 'generated/l10n.dart';
+import 'httpUrl.dart';
 import 'init/splash_page.dart';
 import 'me/cash/cash_page.dart';
 import 'me/cash/cash_result_page.dart';
@@ -114,7 +119,45 @@ void main() {
   setPathUrlStrategy();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  // updateSystemOverlayStyle(context);
+
+  suClient.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
+
   runApp(ProviderScope(child: SfbApp()));
+}
+
+Future<void> updateSystemOverlayStyle(BuildContext context) async {
+  final brightness = Theme.of(context).brightness;
+  await updateSystemOverlayStyleWithBrightness(brightness);
+}
+
+Future<void> updateSystemOverlayStyleWithBrightness(Brightness brightness) async {
+  if (Platform.isAndroid) {
+    final darkMode = brightness == Brightness.dark;
+
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+
+    final androidSdkInt = androidInfo.version.sdkInt;
+    final edgeToEdge = androidSdkInt >= 29;
+
+    await SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+    ); // ignore: unawaited_futures
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: brightness == Brightness.light ? Brightness.dark : Brightness.light,
+      systemNavigationBarColor: edgeToEdge ? Colors.transparent : (darkMode ? Colors.black : Colors.white),
+      systemNavigationBarContrastEnforced: false,
+      systemNavigationBarIconBrightness: darkMode ? Brightness.light : Brightness.dark,
+    ));
+  } else {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarBrightness: brightness, // iOS
+      statusBarColor: Colors.transparent, // Not relevant to this issue
+    ));
+  }
 }
 
 // Future initWebview() async {
