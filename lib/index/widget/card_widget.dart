@@ -1,10 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 
+import '../../models/data_model.dart';
 import '../../util/colors.dart';
 import '../../util/paixs_fun.dart';
 
@@ -21,90 +20,84 @@ class CardWidget extends StatefulWidget {
 class _CardWidgetState extends State<CardWidget> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitchBuilder(
-      value: widget.cardDm,
-      errorOnTap: () => widget.fun!(),
-      noDataView: PWidget.boxh(0),
-      errorView: PWidget.boxh(0),
-      initialState: PWidget.container(null, [double.infinity]),
-      isAnimatedSize: false,
-      defaultBuilder: () {
-        var list = widget.cardDm.value;
-        return PWidget.container(
-          PWidget.row([
-            PWidget.container(
-              Stack(children: [
-                PWidget.column([
-                  PWidget.text('实时榜单', [Colors.black.withOpacity(0.75), 16, true]),
-                  PWidget.boxh(8),
+    var list = widget.cardDm.value;
+    return PWidget.container(
+      PWidget.row([
+        PWidget.container(
+          Stack(children: [
+            PWidget.column([
+              PWidget.text('实时榜单', [Colors.black.withOpacity(0.75), 16, true]),
+              PWidget.boxh(8),
+              PWidget.row(
+                List.generate(list.length + 1, (i) {
+                  if (i == 1) return PWidget.boxw(8);
+                  if (i > 0) i = i - 1;
+                  var mainPic = list[i]['mainPic'];
+                  var actualPrice = list[i]['actualPrice'];
+                  var twoHoursSalesStr = '';
+                  var twoHoursSales = list[i]['twoHoursSales'] as int;
+                  twoHoursSalesStr = '$twoHoursSales';
+                  if (twoHoursSales >= 10000)
+                    twoHoursSalesStr = '${'$twoHoursSales'.substring(0, '$twoHoursSales'.length - 3)}万';
+                  return itemView('${i + 1}', '${mainPic}_310x310', '2小时抢$twoHoursSalesStr', '¥$actualPrice');
+                }),
+              ),
+            ]),
+            PWidget.positioned(
+              PWidget.container(
+                PWidget.text('实时好货', [Colors.black45, 12]),
+                {'pd': PFun.lg(0, 0, 8, 8), 'br': 8},
+              ),
+              [4, null, null, 0],
+            ),
+          ]),
+          [null, null, Colors.white],
+          {'exp': true, 'br': 8, 'pd': 8, 'fun': () => Navigator.pushNamed(context, '/top')},
+        ),
+        PWidget.boxw(8),
+        Builder(builder: (context) {
+          List goodsList = [];
+          List roundsList = [];
+          if (widget.cardDm.object.isNotEmpty) {
+            goodsList = widget.cardDm.object['goodsList'] as List;
+            if (goodsList.length > 2) {
+              goodsList = goodsList.sublist(0, 2);
+            }
+            roundsList = widget.cardDm.object['roundsList'] as List;
+          }
+          return PWidget.container(
+            Stack(children: [
+              PWidget.column([
+                PWidget.text('限时秒杀', [Colors.black.withOpacity(0.75), 16, true]),
+                PWidget.boxh(8),
+                if (goodsList.isNotEmpty)
                   PWidget.row(
-                    List.generate(list.length + 1, (i) {
+                    List.generate(goodsList.length + 1, (i) {
                       if (i == 1) return PWidget.boxw(8);
                       if (i > 0) i = i - 1;
-                      var mainPic = list[i]['mainPic'];
-                      var actualPrice = list[i]['actualPrice'];
-                      var twoHoursSalesStr = '';
-                      var twoHoursSales = list[i]['twoHoursSales'] as int;
-                      twoHoursSalesStr = '$twoHoursSales';
-                      if (twoHoursSales >= 10000) twoHoursSalesStr = '${'$twoHoursSales'.substring(0, '$twoHoursSales'.length - 3)}万';
-                      return itemView('${i + 1}', '${mainPic}_310x310', '2小时抢$twoHoursSalesStr', '¥$actualPrice');
+                      var mainPic = goodsList[i]['mainPic'];
+                      var specialText = (goodsList[i]['specialText'] ?? []) as List;
+                      var actualPrice = goodsList[i]['actualPrice'];
+                      return itemView('${i + 1}', '${mainPic}_310x310', '${specialText.join('')}', '¥$actualPrice',
+                          rexiao: false);
                     }),
                   ),
-                ]),
-                PWidget.positioned(
-                  PWidget.container(
-                    PWidget.text('实时好货', [Colors.black45, 12]),
-                    {'pd': PFun.lg(0, 0, 8, 8), 'br': 8},
-                  ),
-                  [4, null, null, 0],
-                ),
               ]),
-              [null, null, Colors.white],
-              {'exp': true, 'br': 8, 'pd': 8, 'fun': () => Navigator.pushNamed(context, '/top')},
-            ),
-            PWidget.boxw(8),
-            Builder(builder: (context) {
-              List goodsList = [];
-              List roundsList = [];
-              if (widget.cardDm.object.isNotEmpty) {
-                goodsList = widget.cardDm.object['goodsList'] as List;
-                if(goodsList.length > 2) {
-                  goodsList = goodsList.sublist(0, 2);
-                }
-                roundsList = widget.cardDm.object['roundsList'] as List;
-              }
-              return PWidget.container(
-                Stack(children: [
-                  PWidget.column([
-                    PWidget.text('限时秒杀', [Colors.black.withOpacity(0.75), 16, true]),
-                    PWidget.boxh(8),
-                    if (goodsList.isNotEmpty)
-                      PWidget.row(
-                        List.generate(goodsList.length + 1, (i) {
-                          if (i == 1) return PWidget.boxw(8);
-                          if (i > 0) i = i - 1;
-                          var mainPic = goodsList[i]['mainPic'];
-                          var specialText = (goodsList[i]['specialText'] ?? []) as List;
-                          var actualPrice = goodsList[i]['actualPrice'];
-                          return itemView('${i + 1}', '${mainPic}_310x310', '${specialText.join('')}', '¥$actualPrice', rexiao: false);
-                        }),
-                      ),
-                  ]),
-                  PWidget.positioned(
-                    Builder(builder: (context) {
-                      var first = roundsList.where((w) => w['status'] == 2).first;
-                      return CardCountDownWidget(DateTime.parse(first['ddqTime']), fun: () {});
-                    }),
-                    [4, null, null, 0],
-                  ),
-                ]),
-                [null, null, Colors.white],
-                {'exp': true, 'br': 8, 'pd': 8, 'fun': () => Navigator.pushNamed(context, '/ddq')},
-              );
-            }),
-          ]),
-          {'pd': [0,16,8,8]},
-        );
+              PWidget.positioned(
+                Builder(builder: (context) {
+                  var first = roundsList.where((w) => w['status'] == 2).first;
+                  return CardCountDownWidget(DateTime.parse(first['ddqTime']), fun: () {});
+                }),
+                [4, null, null, 0],
+              ),
+            ]),
+            [null, null, Colors.white],
+            {'exp': true, 'br': 8, 'pd': 8, 'fun': () => Navigator.pushNamed(context, '/ddq')},
+          );
+        }),
+      ]),
+      {
+        'pd': [0, 16, 8, 8]
       },
     );
   }

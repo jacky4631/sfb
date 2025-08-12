@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -222,9 +223,7 @@ class SfbApp extends StatelessWidget {
       '/brandSalePage': (BuildContext context) => BrandSalePage(
             data: arg,
           ),
-      '/searchResult': (BuildContext context) => SearchResultPage(
-            arg,
-          ),
+      '/searchResult': (BuildContext context) => SearchResultPage(),
       '/inspectGoodsPage': (BuildContext context) => InspectGoodsPage(arg),
       '/vipPage': (BuildContext context) => VipIndexPage(arg),
       '/helpPage': (BuildContext context) => HelpPage2(),
@@ -284,6 +283,9 @@ class SfbApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String multipleThemesMode = 'default'; // 主题
+    // 全局设置
+    EasyRefresh.defaultHeaderBuilder = () => const MaterialHeader();
+    EasyRefresh.defaultFooterBuilder = () => const MaterialFooter();
 
     return ScreenUtilInit(
       designSize: const Size(375, 812),

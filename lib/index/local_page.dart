@@ -5,18 +5,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_z_location/flutter_z_location.dart';
-import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/widget/my_custom_scroll.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sufenbao/index/provider/provider.dart';
 import 'package:sufenbao/index/widget/banner_widget.dart';
-import 'package:sufenbao/search/search_bar_widget.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/paixs_fun.dart';
 
+import '../models/data_model.dart';
 import '../util/colors.dart';
 import '../util/custom.dart';
 import '../util/global.dart';
@@ -67,7 +68,6 @@ class _LocalPageState extends State<LocalPage> {
 
   Future<int> initData() async {
     await searchRankingList();
-    await getBannerData();
     // 分类类别
     await getLifeCategory();
     // 城市列表
@@ -123,25 +123,6 @@ class _LocalPageState extends State<LocalPage> {
     });
   }
 
-  ///顶部banner
-  var bannerDm = DataModel(value: [[], []]);
-
-  Future<int> getBannerData() async {
-    var res = await BService.banners().catchError((v) {
-      bannerDm.toError('网络异常');
-    });
-    if (res != null) {
-      //移除网络链接link_type=3 保留小样种草 移除抖音
-      res.removeWhere((element) {
-        return (element['link_type'] == 3 && element['id'] != 380) || element['id'] == 530;
-      });
-      // res.insertAll(0, pddBannerData);
-      bannerDm.addList(res, true, 0);
-    }
-    setState(() {});
-    return bannerDm.flag;
-  }
-
   var searchRankingListDm = DataModel();
 
   Future<int> searchRankingList() async {
@@ -185,40 +166,48 @@ class _LocalPageState extends State<LocalPage> {
                     ),
                   )
                 : null,
-            body: MyCustomScroll(
-              controller: _scrollController,
-              isGengduo: pageIndex != 0 ? true : false,
-              isShuaxin: true,
-              onRefresh: () => this.getLifeGoodsList(isRef: true),
-              onLoading: (p) => this.getLifeGoodsList(page: pageIndex),
-              refHeader: buildClassicHeader(color: Colors.grey),
-              refFooter: buildCustomFooter(color: Colors.grey),
-              itemPadding: EdgeInsets.all(8),
-              crossAxisCount: 2,
-              crossAxisSpacing: 6,
-              itemModel: listDm,
-              headers: headers,
-              itemModelBuilder: (i, v) {
-                return PWidget.container(
-                  createListItem(i, v),
-                  [null, null, Colors.white],
-                  {
-                    'fun': () {
-                      onTapDialogLogin(context, fun: () async {
-                        Loading.show(context);
-                        var res = await BService.getLifeGoodsWord(v['id']);
-                        Loading.hide(context);
-                        LaunchApp.launchDy(context, res['dy_deeplink'], res['dy_zlink']);
-                      });
+            body: ListView.builder(
+                itemCount: listDm.list.length,
+                itemBuilder: (context, index) {
+                  final v = listDm.list[index];
+                  return PWidget.container(
+                    createListItem(index, v),
+                    [null, null, Colors.white],
+                    {
+                      'fun': () {
+                        onTapDialogLogin(context, fun: () async {
+                          Loading.show(context);
+                          var res = await BService.getLifeGoodsWord(v['id']);
+                          Loading.hide(context);
+                          LaunchApp.launchDy(context, res['dy_deeplink'], res['dy_zlink']);
+                        });
+                      },
+                      'sd': PFun.sdLg(Colors.black12),
+                      'br': 8,
+                      'mg': PFun.lg(0, 6),
+                      'crr': [5, 5, 5, 5]
                     },
-                    'sd': PFun.sdLg(Colors.black12),
-                    'br': 8,
-                    'mg': PFun.lg(0, 6),
-                    'crr': [5, 5, 5, 5]
-                  },
-                );
-              },
-            )),
+                  );
+                })
+
+            // MyCustomScroll(
+            //   controller: _scrollController,
+            //   isGengduo: pageIndex != 0 ? true : false,
+            //   isShuaxin: true,
+            //   onRefresh: () => this.getLifeGoodsList(isRef: true),
+            //   onLoading: (p) => this.getLifeGoodsList(page: pageIndex),
+            //   refHeader: buildClassicHeader(color: Colors.grey),
+            //   refFooter: buildCustomFooter(color: Colors.grey),
+            //   itemPadding: EdgeInsets.all(8),
+            //   crossAxisCount: 2,
+            //   crossAxisSpacing: 6,
+            //   itemModel: null,
+            //   headers: headers,
+            //   itemModelBuilder: (i, v) {
+            //
+            //   },
+            // )
+            ),
       ],
     ));
   }
@@ -259,18 +248,18 @@ class _LocalPageState extends State<LocalPage> {
 
   List<Widget> get headers {
     return [
-      (bannerDm.list != null && bannerDm.list.isNotEmpty)
-          ? BannerWidget(bannerDm, (v) {
-              Global.kuParse(context, v);
-            })
-          :
-          //没网络时显示默认图片
-          AspectRatio(
-              aspectRatio: (750 + 8) / (280 + 24),
-              child: PWidget.image('assets/images/mall/bannerholder.png', {
-                'br': 8,
-                'pd': [8, 8, 8, 8]
-              })),
+      Consumer(builder: (
+        context,
+        ref,
+        child,
+      ) {
+        final bannerDm = ref
+            .watch(bannersProvider)
+            .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
+        return BannerWidget(bannerDm, (v) {
+          Global.kuParse(context, v);
+        });
+      }),
       PWidget.boxh(6),
       if (listDm.list.isNotEmpty) PWidget.text('~ 本地精选 ~', [Colors.black.withOpacity(0.75), 16, true], {'ct': true}),
       PWidget.boxh(8),
@@ -294,19 +283,19 @@ class _LocalPageState extends State<LocalPage> {
             ),
           ],
         ),
-        SearchBarWidget(
-          '',
-          searchRankingListDm,
-          readOnly: true,
-          onChanged: (v) {},
-          onSubmit: (v, t) {
-            navigatorToSearchPage();
-          },
-          onClear: () {},
-          onTap: (f) {
-            navigatorToSearchPage();
-          },
-        ),
+        // SearchBarWidget(
+        //   '',
+        //   searchRankingListDm,
+        //   readOnly: true,
+        //   onChanged: (v) {},
+        //   onSubmit: (v, t) {
+        //     navigatorToSearchPage();
+        //   },
+        //   onClear: () {},
+        //   onTap: (f) {
+        //     navigatorToSearchPage();
+        //   },
+        // ),
         PWidget.boxw(8),
         PWidget.container(PWidget.icon(Icons.menu, [
           Colors.grey,

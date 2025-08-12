@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:sufenbao/index/provider/provider.dart';
@@ -24,6 +23,7 @@ import 'package:sufenbao/widget/CustomWidgetPage.dart';
 
 import '../login/login_shanyan.dart';
 import '../me/listener/WxPayNotifier.dart';
+import '../models/data_model.dart';
 import '../page/product_details.dart';
 import '../shop/ali_face.dart';
 import '../util/colors.dart';
@@ -243,7 +243,7 @@ class _FirstPageState extends ConsumerState<FirstPage> {
       // if (searchDm.list.isNotEmpty) EveryoneWidget(searchDm),
 
       ///卡片
-      if (cardDm.value.isNotEmpty) CardWidget(cardDm),
+      if (cardDm.list.isNotEmpty) CardWidget(cardDm),
 
       //品牌特卖
       if (brandListDm.list.isNotEmpty) BrandWidget(brandListDm),

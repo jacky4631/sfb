@@ -117,7 +117,8 @@ class _AnimatedSwitchBuilderState<T> extends State<AnimatedSwitchBuilder<T>> wit
           } else if (widget.listBuilder != null) {
             view = widget.listBuilder!(widget.value.list, widget.value.page, widget.value.hasNext);
           } else {
-            view = widget.builder!(widget.value.value, widget.value.object as T, widget.value.list, widget.value.page, widget.value.hasNext);
+            view = widget.builder!(widget.value.value, widget.value.object as T, widget.value.list, widget.value.page,
+                widget.value.hasNext);
           }
         } else {
           view = widget.isRef
@@ -160,7 +161,8 @@ class _AnimatedSwitchBuilderState<T> extends State<AnimatedSwitchBuilder<T>> wit
           } else if (widget.listBuilder != null) {
             view = widget.listBuilder!(widget.value.list, widget.value.page, widget.value.hasNext);
           } else {
-            view = widget.builder!(widget.value.value, widget.value.object!, widget.value.list, widget.value.page, widget.value.hasNext);
+            view = widget.builder!(
+                widget.value.value, widget.value.object!, widget.value.list, widget.value.page, widget.value.hasNext);
           }
         } else {
           view = widget.isRef
@@ -198,7 +200,8 @@ class _AnimatedSwitchBuilderState<T> extends State<AnimatedSwitchBuilder<T>> wit
         } else if (widget.listBuilder != null) {
           view = widget.listBuilder!(widget.value.list, widget.value.page, widget.value.hasNext);
         } else {
-          view = widget.builder!(widget.value.value, widget.value.object!, widget.value.list, widget.value.page, widget.value.hasNext);
+          view = widget.builder!(
+              widget.value.value, widget.value.object!, widget.value.list, widget.value.page, widget.value.hasNext);
         }
         break;
     }

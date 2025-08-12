@@ -6,19 +6,15 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/util/utils.dart';
 
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/index/provider/provider.dart';
 import 'package:sufenbao/index/widget/main_appbar.dart';
 import 'package:sufenbao/service.dart';
 
 import '../me/model/userinfo.dart';
-import '../search/search_bar_widget.dart';
+import '../models/data_model.dart';
 import '../util/global.dart';
-import '../util/paixs_fun.dart';
 import '../widget/tab_bar_indicator.dart';
 import 'first_page.dart';
 import 'other_page.dart';
@@ -67,9 +63,6 @@ class _HomePageState extends ConsumerState<HomePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final searchRankingListDm = ref
-        .watch(hotWordsProvider)
-        .when(data: (data) => data, error: (o, s) => DataModel(), loading: () => DataModel());
 
     final tabDm = ref
         .watch(goodsCategoryProvider)
@@ -210,39 +203,4 @@ class _HomePageState extends ConsumerState<HomePage>
   //     });
   //   }
   // }
-
-  ///标题栏视图
-  Widget titleBarView(DataModel searchRankingListDm) {
-    return PWidget.container(
-      PWidget.row([
-        PWidget.boxw(8),
-        //fluter textfield会导致剪切板的隐私问题
-        if (agree)
-          SearchBarWidget(
-            '',
-            searchRankingListDm,
-            readOnly: true,
-            onChanged: (v) {},
-            onSubmit: (v, t) {
-              navigatorToSearchPage();
-            },
-            onClear: () {},
-            onTap: (f) {
-              navigatorToSearchPage();
-            },
-          ),
-        PWidget.boxw(8),
-        PWidget.icon(Icons.mail_outline, [
-          Colors.black
-        ], {
-          'fun': () {
-            Navigator.pushNamed(context, '/messageCenter');
-          }
-        }),
-        PWidget.boxw(8),
-      ]),
-      [null, 56 + pmPadd.top],
-      {'pd': PFun.lg(pmPadd.top + 8, 8)},
-    );
-  }
 }

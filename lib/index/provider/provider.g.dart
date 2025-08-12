@@ -38,7 +38,7 @@ final tilesProvider = AutoDisposeFutureProvider<DataModel>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef TilesRef = AutoDisposeFutureProviderRef<DataModel>;
-String _$homeCardHotHash() => r'5205fc3d412e65ee54608b673e4777da669e8275';
+String _$homeCardHotHash() => r'7893654d5d15aab205efefef360ce297c1441c93';
 
 ///卡片数据
 ///

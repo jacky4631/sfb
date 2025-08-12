@@ -69,8 +69,6 @@ abstract class BService {
       },
     );
 
-    print("===============$res");
-
     return res.data['data'];
   }
 

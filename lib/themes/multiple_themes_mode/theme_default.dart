@@ -22,7 +22,6 @@ class AppThemeDefault implements AppMultipleTheme {
             statusBarIconBrightness: Brightness.light,
           )),
       tabBarTheme: TabBarThemeData(
-        
         overlayColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.pressed)) {
             return Colors.transparent;

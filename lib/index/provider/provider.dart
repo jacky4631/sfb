@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:maixs_utils/model/data_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../models/data_model.dart';
 import '../../service.dart';
 
 part 'provider.g.dart';
@@ -52,7 +52,7 @@ Future<DataModel> tiles(Ref ref) async {
 ///卡片数据
 @riverpod
 Future<DataModel> homeCardHot(Ref ref) async {
-  var cardDm = DataModel<Map>(object: {});
+  var cardDm = DataModel();
 
   ///热销榜url
   List res1 = await BService.homeCardHot().catchError((v) {

@@ -318,6 +318,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.19.1"
+  color:
+    dependency: transitive
+    description:
+      name: color
+      sha256: ddcdf1b3badd7008233f5acffaf20ca9f5dc2cd0172b75f68f24526a5f5725cb
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.0"
   common_utils:
     dependency: "direct main"
     description:
@@ -350,6 +358,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.1.2"
+  copy_with_extension:
+    dependency: "direct main"
+    description:
+      name: copy_with_extension
+      sha256: "0447e5ea09845b275fbeaa7605bc85e74da759788678760b2a6c4e06ca622410"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "6.0.1"
+  copy_with_extension_gen:
+    dependency: "direct dev"
+    description:
+      name: copy_with_extension_gen
+      sha256: "0be2694d3d50df16d91c04e7444181bfb2a0ad8a3b169d58de0c38a69864e4bd"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "6.0.0"
   cross_file:
     dependency: transitive
     description:
@@ -422,6 +446,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.3.8"
+  dartx:
+    dependency: transitive
+    description:
+      name: dartx
+      sha256: "8b25435617027257d43e6508b5fe061012880ddfdaa75a71d607c3de2a13d244"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.0"
   data_table_2:
     dependency: "direct main"
     description:
@@ -486,6 +518,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.0"
+  easy_refresh:
+    dependency: "direct main"
+    description:
+      name: easy_refresh
+      sha256: "486e30abfcaae66c0f2c2798a10de2298eb9dc5e0bb7e1dba9328308968cae0c"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.4.0"
   encrypt:
     dependency: "direct main"
     description:
@@ -518,6 +558,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.0"
+  extended_tabs:
+    dependency: "direct main"
+    description:
+      name: extended_tabs
+      sha256: c54d250f39af65033116672ca471fd0950d637dc9dd119c3d24c093295024430
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -619,6 +667,13 @@ packages:
       url: "https://gitee.com/jacky4631/flutter_alibc_kit.git"
     source: git
     version: "1.0.1"
+  flutter_base:
+    dependency: "direct main"
+    description:
+      path: "../plugins/flutter_base"
+      relative: true
+    source: path
+    version: "0.0.1"
   flutter_cache_manager:
     dependency: transitive
     description:
@@ -627,6 +682,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.4.1"
+  flutter_gen_core:
+    dependency: transitive
+    description:
+      name: flutter_gen_core
+      sha256: "3eaa2d3d8be58267ac4cd5e215ac965dd23cae0410dc073de2e82e227be32bfc"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.10.0"
+  flutter_gen_runner:
+    dependency: "direct dev"
+    description:
+      name: flutter_gen_runner
+      sha256: e74b4ead01df3e8f02e73a26ca856759dbbe8cb3fd60941ba9f4005cd0cd19c9
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.10.0"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -919,6 +990,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.3.2"
+  hashcodes:
+    dependency: transitive
+    description:
+      name: hashcodes
+      sha256: "80f9410a5b3c8e110c4b7604546034749259f5d6dcca63e0d3c17c9258f1a651"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
   html:
     dependency: transitive
     description:
@@ -1071,6 +1150,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.1+1"
+  image_size_getter:
+    dependency: transitive
+    description:
+      name: image_size_getter
+      sha256: "7c26937e0ae341ca558b7556591fd0cc456fcc454583b7cb665d2f03e93e590f"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.4.1"
   in_app_purchase:
     dependency: "direct main"
     description:
@@ -1136,7 +1223,7 @@ packages:
     source: hosted
     version: "0.7.2"
   json_annotation:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: json_annotation
       sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
@@ -1144,7 +1231,7 @@ packages:
     source: hosted
     version: "4.9.0"
   json_serializable:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: json_serializable
       sha256: c2fcb3920cf2b6ae6845954186420fca40bc0a8abcc84903b7801f17d7050d7c
@@ -1183,6 +1270,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.1"
+  logger:
+    dependency: transitive
+    description:
+      name: logger
+      sha256: "55d6c23a6c15db14920e037fe7e0dc32e7cdaf3b64b4b25df2d541b5b6b81c0c"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.6.1"
   logging:
     dependency: transitive
     description:
@@ -1922,6 +2017,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.4.1"
+  sync_scroll_library:
+    dependency: transitive
+    description:
+      name: sync_scroll_library
+      sha256: "2e266be24bb7b34686a4b9c592f8a1cd29778060fadd9f5df8535f2410caf196"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.0"
   synchronized:
     dependency: transitive
     description:
@@ -1946,6 +2049,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.4"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      sha256: "370572cf5d1e58adcb3e354c47515da3f7469dac3a95b447117e728e7be6f461"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.5"
   timeago:
     dependency: transitive
     description:
