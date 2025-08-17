@@ -133,7 +133,6 @@ class GoodsSearch extends _$GoodsSearch {
   int pageSize = 20;
 
   var listId = '';
-  var pageId = '1';
 
   final EasyRefreshController controller = EasyRefreshController(controlFinishRefresh: true, controlFinishLoad: true);
 
@@ -179,14 +178,13 @@ class GoodsSearch extends _$GoodsSearch {
       final params = {
         'keyWords': param.text,
         'sort': searchParam.getTaoSortKey(param.sort),
-        'pageId': pageId,
+        'pageId': page,
         'pageSize': pageSize,
       };
 
       var res = await HttpClient().get('/goods/get-dtk-search-goods', params: params);
 
       final data = ValueUtil.toMap(res['data']);
-      pageId = ValueUtil.toStr(data['pageId']);
       final list = ValueUtil.toList(data['list']);
       // var res = await BService.goodsSearch(page, param.text, sort: searchParam.getTaoSortKey(searchParam.sort))
       //     .catchError((v) {});

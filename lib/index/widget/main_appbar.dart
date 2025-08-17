@@ -40,13 +40,7 @@ AppBar mainAppBar(
       ) {
         return IconButton(
             onPressed: () {
-              ref.refresh(bannersProvider.future).then((onValue) {
-                print(onValue.list);
-              }).catchError((e) {
-                print(e);
-              });
-
-              // Navigator.pushNamed(context, '/messageCenter');
+              Navigator.pushNamed(context, '/messageCenter');
             },
             icon: const Icon(HugeIcons.strokeRoundedMail01));
       })

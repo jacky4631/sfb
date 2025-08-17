@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <!-- Show a splash screen on the activity. Automatically removed when
              Flutter draws its first frame -->
         <item name="android:windowBackground">@drawable/launch_background</item>
@@ -17,16 +17,13 @@
          running.
 
          This Theme is only used starting with V2 of Flutter's Android embedding. -->
-    <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">@android:color/white</item>
     </style>
-    <style name="MyTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
-        <!--没有标题-->
-        <item name="android:windowNoTitle">true</item>
-        <!--背景透明-->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <!--dialog的整个屏幕的背景是否有遮障层-->
-        <item name="android:backgroundDimEnabled">true</item>
+
+    <style name="MyTheme.Fullscreen.LightStatusBar" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
+
 </resources>

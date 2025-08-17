@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.mailvor.sufenbao">
+    package="com.cmxc.sqxq">
     <queries>
         <package android:name="com.taobao.taobao" />
         <package android:name="com.jingdong.app.mall" />
@@ -113,21 +113,21 @@
             android:value="2" />
 
         <!--一键登录SDK授权页activity-->
-        <activity
-            android:name="com.chuanglan.shanyan_sdk.view.ShanYanOneKeyActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
-            android:theme="@style/MyTheme" />
-        <!--一键登录SDK协议页页activity-->
-        <activity
-            android:name="com.chuanglan.shanyan_sdk.view.CTCCPrivacyProtocolActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:screenOrientation="unspecified"
-            android:theme="@style/MyTheme" />
+<!--        <activity-->
+<!--            android:name="com.chuanglan.shanyan_sdk.view.ShanYanOneKeyActivity"-->
+<!--            android:configChanges="keyboardHidden|orientation|screenSize"-->
+<!--            android:exported="false"-->
+<!--            android:launchMode="singleTop"-->
+<!--            android:screenOrientation="unspecified"-->
+<!--            android:theme="@style/MyTheme" />-->
+<!--        &lt;!&ndash;一键登录SDK协议页页activity&ndash;&gt;-->
+<!--        <activity-->
+<!--            android:name="com.chuanglan.shanyan_sdk.view.CTCCPrivacyProtocolActivity"-->
+<!--            android:configChanges="keyboardHidden|orientation|screenSize"-->
+<!--            android:exported="false"-->
+<!--            android:launchMode="singleTop"-->
+<!--            android:screenOrientation="unspecified"-->
+<!--            android:theme="@style/MyTheme" />-->
 
         <activity
             android:name="com.alibaba.alibclinkpartner.smartlink.ALPEntranceActivity"
@@ -144,6 +144,9 @@
                     android:scheme="tbopen" />
             </intent-filter>
         </activity>
+
+
+
         <receiver android:name="com.alibaba.baichuan.trade.biz.login.LoginBroadcastReceiver"
             android:exported="true">
             <intent-filter>
@@ -153,5 +156,60 @@
                 <action android:name="NOTIFY_LOGOUT" />
             </intent-filter>
         </receiver>
+
+
+
+        <!-- 重点关注！！！！！！！-->
+        <!-- 全屏时使用主题 android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
+        <!-- 弹窗时使用主题 android:theme="@style/authsdk_activity_dialog" -->
+        <!-- 如果不需要使用窗口模式，不要使用authsdk_activity_dialog主题，会出现异常动画-->
+        <!-- 如果需要使用authsdk_activity_dialog主题，则screenOrientation一定不能指定明确的方向，
+        比如portrait、sensorPortrait，在8.0的系统上不允许窗口模式指定orientation，会发生crash，需要指定为behind，
+        然后在授权页的前一个页面指定具体的orientation-->
+
+        <!--协议页面webview-->
+        <activity
+            android:name="com.mobile.auth.gatewayauth.activity.AuthWebVeiwActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            tools:replace="android:theme"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"/>
+
+
+
+
+        <!--联通电信授权页-->
+        <activity
+            android:name="com.mobile.auth.gatewayauth.LoginAuthActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            tools:replace="android:configChanges"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind"
+            android:theme="@style/authsdk_activity_dialog"/>
+
+        <!--移动授权页-->
+        <activity
+            android:name="com.cmic.sso.sdk.activity.LoginAuthActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            tools:replace="android:configChanges"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="behind"
+            android:theme="@style/authsdk_activity_dialog" />
+
+        <!--适配华为（huawei）刘海屏-->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true"/>
+        <!--适配小米（xiaomi）刘海屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
+
+
+
     </application>
 </manifest>

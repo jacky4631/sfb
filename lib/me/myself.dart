@@ -27,6 +27,7 @@ import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/widget/ext.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../ali_auth/ali_auth.dart';
 import '../util/colors.dart';
 import '../util/dimens.dart';
 import '../util/global.dart';
@@ -614,6 +615,9 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           'mg': [16, 16, 0, 16],
           'fun': () {
             personalNotifier.value = false;
+            // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+            //   return const AliAuthPage();
+            // }));
             onTapLogin(context, '/personal');
           },
         });

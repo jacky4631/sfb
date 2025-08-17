@@ -6,14 +6,15 @@ plugins {
 
 
 android {
-    compileSdkVersion flutter.targetSdkVersion
+    compileSdkVersion 36
     useLibrary 'org.apache.http.legacy'
-    flutter.ndkVersion
+//    flutter.ndkVersion
+    ndkVersion "29.0.13846066"
     defaultConfig {
-        applicationId "com.mailvor.sufenbao"
+        applicationId "com.cmxc.sqxq"
 
         minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled true
@@ -33,16 +34,16 @@ android {
     signingConfigs {
         //todo 这里的证书自己创建，为了保证百川图片在测试环境可用，打开下面debug注释，开发和打包使用同样的证书
         debug {
-            keyAlias "mailvor.com"
-            keyPassword "123456"
-            storeFile file('../keystore/xxx.jks')
-            storePassword "123456"
+            keyAlias "release"
+            keyPassword "sqxq520"
+            storeFile file('../keystore/keystore.jks')
+            storePassword "sqxq520"
         }
         release {
-            keyAlias "mailvor.com"
-            keyPassword "123456"
-            storeFile file('../keystore/xxx.jks')
-            storePassword "123456"
+            keyAlias "release"
+            keyPassword "sqxq520"
+            storeFile file('../keystore/keystore.jks')
+            storePassword "sqxq520"
         }
     }
     buildTypes {
@@ -58,7 +59,7 @@ android {
     lint {
         disable 'InvalidPackage'
     }
-    namespace 'com.mailvor.sufenbao'
+    namespace 'com.cmxc.sqxq'
     packagingOptions {//加上这些代码  More than one file was found with OS independent path 'lib/x86/libc++_shared.so'
         pickFirst 'lib/armeabi-v7a/libc++_shared.so'
         pickFirst 'lib/armeabi-v8a/libc++_shared.so'

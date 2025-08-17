@@ -47,6 +47,7 @@ onTapLogin(context, url, {args}) {
     if (args == null) {
       args = {};
     }
+
     if (LoginShanyan.initSuc) {
       LoginShanyan.getInstance().openLoginAuthPlatformState();
       return;
