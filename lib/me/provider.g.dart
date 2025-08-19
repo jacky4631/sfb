@@ -55,6 +55,22 @@ final userFeeProvider = AutoDisposeFutureProvider<Map>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef UserFeeRef = AutoDisposeFutureProviderRef<Map>;
+String _$vipinfoHash() => r'0eeedcf6f0ff951fce01502015be68159350046e';
+
+/// See also [vipinfo].
+@ProviderFor(vipinfo)
+final vipinfoProvider = AutoDisposeFutureProvider<Map>.internal(
+  vipinfo,
+  name: r'vipinfoProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$vipinfoHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef VipinfoRef = AutoDisposeFutureProviderRef<Map>;
 String _$userHash() => r'05c1100c27eb975833c7b2046474c714eb4edefe';
 
 /// See also [User].

@@ -45,3 +45,9 @@ Future<Map> userFee(Ref ref) async {
   final hasUnlockOrder = await BService.userFee();
   return hasUnlockOrder;
 }
+
+@riverpod
+Future<Map> vipinfo(Ref ref) async {
+  final vipinfo = await BService.vipinfo();
+  return vipinfo;
+}

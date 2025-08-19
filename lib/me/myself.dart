@@ -8,6 +8,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_base/utils/util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:maixs_utils/util/utils.dart';
@@ -19,7 +20,6 @@ import 'package:sufenbao/me/fans/fans_search_notifier.dart';
 import 'package:sufenbao/me/provider.dart';
 import 'package:sufenbao/me/select_text_item.dart';
 import 'package:sufenbao/me/styles.dart';
-import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/bao_icons.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/widget/load_image.dart';
@@ -42,10 +42,9 @@ class MySelfPage extends ConsumerStatefulWidget {
 class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   bool showCode = false;
   bool showKefu = false;
-  String levelName = '';
-  var image = '';
   bool isShuaxin = true;
-  Map vipinfo = {};
+  // String levelName = '';
+  // Map vipinfo = {};
   static bool Notice = false;
 
   @override
@@ -83,7 +82,6 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     }
     Global.initCommissionInfo();
 
-    await initVipInfo();
     await Global.init();
     if (Global.isAndroid()) {
       await initNotice();
@@ -91,34 +89,27 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     return getTime();
   }
 
-  Future initVipInfo() async {
-    vipinfo = await BService.vipinfo();
-    num level = vipinfo['level'];
-
-    if (level > 1) {
-      image = getVipBgImage(level);
-      levelName = vipinfo['levelName'];
-    }
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ScaffoldWidget(
-        bgColor: Color(0xffF4F5F6), brightness: Brightness.dark, body: ListView(children: createMeWidget()));
+    return Scaffold(body: ListView(children: createMeWidget()));
   }
 
   List<Widget> createMeWidget() {
     final userinfo = ref.watch(userProvider);
-
     final userFee = ref.watch(userFeeProvider).when(data: (data) => data, error: (o, s) => Map(), loading: () => Map());
 
     List<Widget> widgets = <Widget>[
-      _createUserTop(),
+      Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, left: 16, right: 16, bottom: 8),
+          child: Row(children: [
+            Global.login ? _createUserInfo() : _createUnLogin(),
+            Spacer(),
+            _createSettingIcon(),
+          ])),
       if (Notice)
         PWidget.container(
-            PWidget.row([
+            Row(children: [
               Text("关闭通知会收不到现金到账提醒", style: TextStyle(color: Colors.grey, fontSize: 14)),
               Expanded(child: Text("")),
               TextButton(
@@ -150,36 +141,43 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
 
       PWidget.container(
           PWidget.column([
-            PWidget.row([
-              PWidget.textNormal('余额 ', [Colours.dark_text_color]),
+            Row(children: [
+              SizedBox(width: 10),
+              Text(
+                '余额 ',
+                style: TextStyle(color: Colors.white),
+              ),
               !Global.login
-                  ? PWidget.text('****', [Colors.white, 20, true])
-                  : PWidget.text(
-                      (userinfo.nowMoney + userinfo.unlockMoney).toStringAsFixed(2),
-                      [Colors.white, 20, true],
-                      {},
-                      [
-                        PWidget.textIsNormal('元', [Colors.white, 14]),
+                  ? Text('****', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text((userinfo.nowMoney + userinfo.unlockMoney).toStringAsFixed(2),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+                        Text('元', style: TextStyle(color: Colors.white, fontSize: 14)),
                       ],
                     ),
-              PWidget.spacer(),
-              PWidget.container(
-                PWidget.textNormal('立即提现', [Colors.white]),
-                [null, null, Colours.app_main],
-                {
-                  'bd': PFun.bdAllLg(Colors.white),
-                  'pd': PFun.lg(8, 8, 16, 16),
-                  'mg': PFun.lg(8, 8, 8, 8),
-                  'br': PFun.lg(16, 16, 16, 16),
-                  'fun': () {
-                    personalNotifier.value = false;
-                    onTapLogin(context, '/cashIndex');
-                  }
+              Spacer(),
+              GestureDetector(
+                onTap: () {
+                  personalNotifier.value = false;
+                  onTapLogin(context, '/cashIndex');
                 },
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                  decoration: BoxDecoration(
+                    color: Colours.app_main,
+                    border: Border.all(color: Colors.white),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    '立即提现',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               )
-            ], {
-              'pd': [0, 0, 10, 10]
-            }),
+            ]),
             PWidget.boxh(10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
               Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
@@ -362,20 +360,6 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     }
   }
 
-  _createUserTop() {
-    return PWidget.container(
-        PWidget.row([
-          PWidget.container(Global.login ? _createUserInfo() : _createUnLogin()),
-          Spacer(),
-          _createSettingIcon(),
-        ], '221'),
-        {
-          'br': 8,
-          'pd': [MediaQuery.of(context).padding.top + 15, 8, 8, 8],
-          'mg': PFun.lg(0, 8, 8, 8),
-        });
-  }
-
   Widget buildTabBar() {
     final userinfo = ref.watch(userProvider);
 
@@ -417,6 +401,18 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   _createUserInfo() {
     double headSize = 64;
     List<Widget> levelWidgets = [];
+    final vipinfo = ref.watch(vipinfoProvider).when(data: (data) => data, error: (o, s) => Map(), loading: () => Map());
+
+    num level = ValueUtil.toNum(vipinfo['level']);
+
+    var levelName = '';
+    var levelImage = '';
+
+    if (level > 1) {
+      levelImage = getVipBgImage(level);
+      levelName = vipinfo['levelName'];
+    }
+
     if (vipinfo['level'] != null && vipinfo['level'] > 1) {
       if (vipinfo['levelJd'] > 1 || vipinfo['levelPdd'] > 1 || vipinfo['levelDy'] > 1 || vipinfo['levelVip'] > 1) {
         if (vipinfo['level'] > 4) {
@@ -441,7 +437,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
         }
       } else {
         levelWidgets = [
-          PWidget.image(image, [16, 16]),
+          PWidget.image(levelImage, [16, 16]),
           PWidget.text('$levelName', [Colours.vip_white, 14])
         ];
       }
