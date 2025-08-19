@@ -11,9 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_base/utils/util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluwx/fluwx.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sufenbao/me/fans/fans_search_notifier.dart';
@@ -29,7 +26,6 @@ import '../util/colors.dart';
 import '../util/dimens.dart';
 import '../util/global.dart';
 import '../util/login_util.dart';
-import '../util/paixs_fun.dart';
 import '../widget/CustomWidgetPage.dart';
 import 'listener/PersonalNotifier.dart';
 import 'me_widget.dart';
@@ -43,8 +39,6 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   bool showCode = false;
   bool showKefu = false;
   bool isShuaxin = true;
-  // String levelName = '';
-  // Map vipinfo = {};
   static bool Notice = false;
 
   @override
@@ -108,109 +102,112 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
             _createSettingIcon(),
           ])),
       if (Notice)
-        PWidget.container(
-            Row(children: [
-              Text("关闭通知会收不到现金到账提醒", style: TextStyle(color: Colors.grey, fontSize: 14)),
-              Expanded(child: Text("")),
-              TextButton(
-                  onPressed: () {
-                    openAppSettings();
-                    Notice = false;
-                    setState(() {});
-                  },
-                  child: Text("立即开启", style: TextStyle(color: Colors.red, fontSize: 14))),
-              IconButton(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onPressed: () {
-                    Notice = false;
-                    setState(() {});
-                  },
-                  icon: PWidget.icon(Icons.close, [Colors.grey, 20])),
-            ]),
-            [
-              null,
-              40,
-              Colors.white
-            ], //宽度，高度，背景色
-            {
-              'pd': PFun.lg(0, 0, 20, 0), //padding
-              'br': PFun.lg(10, 10, 10, 10), //圆角
-              'mg': PFun.lg(0, 6, 8, 8) //margin
-            }),
-
-      PWidget.container(
-          PWidget.column([
-            Row(children: [
-              SizedBox(width: 10),
-              Text(
-                '余额 ',
-                style: TextStyle(color: Colors.white),
-              ),
-              !Global.login
-                  ? Text('****', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
-                  : Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text((userinfo.nowMoney + userinfo.unlockMoney).toStringAsFixed(2),
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
-                        Text('元', style: TextStyle(color: Colors.white, fontSize: 14)),
-                      ],
-                    ),
-              Spacer(),
-              GestureDetector(
-                onTap: () {
-                  personalNotifier.value = false;
-                  onTapLogin(context, '/cashIndex');
+        Container(
+          height: 40,
+          color: Colors.white,
+          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+          margin: EdgeInsets.fromLTRB(8, 0, 8, 6),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Row(children: [
+            Text("关闭通知会收不到现金到账提醒", style: TextStyle(color: Colors.grey, fontSize: 14)),
+            Expanded(child: Text("")),
+            TextButton(
+                onPressed: () {
+                  openAppSettings();
+                  Notice = false;
+                  setState(() {});
                 },
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
-                  padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  decoration: BoxDecoration(
-                    color: Colours.app_main,
-                    border: Border.all(color: Colors.white),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Text(
-                    '立即提现',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              )
-            ]),
-            PWidget.boxh(10),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-              Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                createTodayFee(context, userFee),
-                PWidget.boxh(5),
-                Text("今日预估", style: TextStyles.textWhite14)
-              ]),
-              Container(color: Color(0x50FFFFFF), width: 1, height: 23),
-              Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                createMonthFee(context, userFee),
-                PWidget.boxh(5),
-                Text("本月预估", style: TextStyles.textWhite14)
-              ])
-            ])
+                child: Text("立即开启", style: TextStyle(color: Colors.red, fontSize: 14))),
+            IconButton(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onPressed: () {
+                  Notice = false;
+                  setState(() {});
+                },
+                icon: Icon(Icons.close, color: Colors.grey, size: 20)),
           ]),
-          [
-            null,
-            145,
-            Colours.app_main
-          ],
-          {
-            'pd': PFun.lg(16, 8, 8, 8),
-            'bd': PFun.bdAllLg(Colors.white),
-            'br': PFun.lg(16, 16, 16, 16),
-            'mg': PFun.lg(0, 0, 8, 8),
-            'fun': () {
-              personalNotifier.value = false;
-              onTapLogin(context, '/feeTabPage', args: {'clickable': true});
-            }
-          }),
+        ),
+
+      GestureDetector(
+        onTap: () {
+          personalNotifier.value = false;
+          onTapLogin(context, '/feeTabPage', args: {'clickable': true});
+        },
+        child: Container(
+          height: 145,
+          child: Column(
+            children: [
+              Row(children: [
+                SizedBox(width: 10),
+                Text(
+                  '余额 ',
+                  style: TextStyle(color: Colors.white),
+                ),
+                !Global.login
+                    ? Text('****', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text((userinfo.nowMoney + userinfo.unlockMoney).toStringAsFixed(2),
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
+                          Text('元', style: TextStyle(color: Colors.white, fontSize: 14)),
+                        ],
+                      ),
+                Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    personalNotifier.value = false;
+                    onTapLogin(context, '/cashIndex');
+                  },
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                    padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    decoration: BoxDecoration(
+                      color: Colours.app_main,
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      '立即提现',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                )
+              ]),
+              SizedBox(height: 10),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
+                Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+                  createTodayFee(context, userFee),
+                  SizedBox(height: 5),
+                  Text("今日预估", style: TextStyles.textWhite14)
+                ]),
+                Container(color: Color(0x50FFFFFF), width: 1, height: 23),
+                Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+                  createMonthFee(context, userFee),
+                  SizedBox(height: 5),
+                  Text("本月预估", style: TextStyles.textWhite14)
+                ])
+              ])
+            ],
+          ),
+          padding: EdgeInsets.fromLTRB(16, 8, 8, 8),
+          decoration: BoxDecoration(
+            color: Colours.app_main,
+            border: Border.all(color: Colors.white),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          margin: EdgeInsets.fromLTRB(8, 8, 8, 8),
+        ),
+      ),
       // if(!Global.isIOS())
-      PWidget.container(
-          Stack(children: <Widget>[
+      Container(
+          height: 68,
+          padding: EdgeInsets.fromLTRB(4, 0, 0, 0),
+          child: Stack(children: <Widget>[
             Positioned(
                 child: Container(
                     height: 100,
@@ -224,11 +221,11 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                     child: InkWell(
                         child: Row(children: <Widget>[
                           Image.asset("assets/images/me/vip.png", width: 18, height: 18),
-                          PWidget.boxw(5),
+                          SizedBox(width: 5),
                           Text("五大平台加盟", style: TextStyle(color: Color(0xFF85682F), fontSize: 14)),
                           Spacer(),
                           Text("星选会员", style: TextStyle(color: Color(0xFF85682F), fontSize: 14)),
-                          PWidget.boxw(5),
+                          SizedBox(width: 5),
                           Icon(Icons.keyboard_arrow_right, size: 16, color: Color(0xFF85682F))
                         ]),
                         onTap: () {
@@ -238,16 +235,13 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                 top: 0,
                 left: 8,
                 right: 8)
-          ]),
-          [
-            null,
-            68,
-          ],
-          {
-            'pd': [4, 0, 0, 0],
-          }),
-      PWidget.container(
-          Column(children: <Widget>[
+          ])),
+      Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.fromLTRB(0, 1, 8, 8),
+          child: Column(children: <Widget>[
             SelectTextItem(
                 title: '订单明细',
                 content: '购物拆红包',
@@ -274,13 +268,13 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                   personalNotifier.value = false;
                   onTapLogin(context, '/orderRetrieval');
                 }),
-          ]),
-          {
-            'br': 8,
-            'pd': [0, 1, 8, 8],
-          }),
-      PWidget.container(
-          Column(children: <Widget>[
+          ])),
+      Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.fromLTRB(0, 1, 8, 8),
+          child: Column(children: <Widget>[
             SelectTextItem(
                 title: '我的用户',
                 onTap: () {
@@ -299,14 +293,14 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                   onTapLogin(context, '/sharePage');
                 },
                 leading: Icon(BaoIcons.share, size: 20, color: Colors.black)),
-          ]),
-          {
-            'br': 8,
-            'pd': [0, 1, 8, 8],
-          }),
+          ])),
       if (!hidePonitsMall)
-        PWidget.container(
-            Column(children: <Widget>[
+        Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: EdgeInsets.fromLTRB(0, 1, 8, 8),
+            child: Column(children: <Widget>[
               SelectTextItem(
                   title: '积分商城',
                   content: '积分当钱花',
@@ -315,13 +309,13 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                     onTapLogin(context, '/pointsMall', args: {'integral': userinfo.integral});
                   },
                   leading: Icon(BaoIcons.shop, size: 20, color: Colors.black)),
-            ]),
-            {
-              'br': 8,
-              'pd': [0, 1, 8, 8],
-            }),
-      PWidget.container(
-          Column(children: <Widget>[
+            ])),
+      Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: EdgeInsets.fromLTRB(0, 1, 8, 8),
+          child: Column(children: <Widget>[
             SelectTextItem(
                 title: '我的收藏',
                 onTap: () {
@@ -343,11 +337,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                     onTap: () {
                       openCustomer();
                     }),
-          ]),
-          {
-            'br': 16,
-            'pd': [0, 0, 8, 8],
-          }),
+          ])),
     ];
     return widgets;
   }
@@ -370,32 +360,36 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
         isNoShowLeft: true,
         leftIcon: null,
         rightWidget: Global.login
-            ? PWidget.container(_createSettingIcon(), {
-                'pd': [0, 0, 0, 20]
-              })
+            ? Container(
+                padding: EdgeInsets.only(right: 20),
+                child: _createSettingIcon(),
+              )
             : SizedBox(),
         notSplit: true);
   }
 
   Widget _createSettingIcon() {
-    return PWidget.container(PWidget.row([
-      // PWidget.icon(BaoIcons.kefu, [
-      //   Colors.black54
-      // ], {
-      //   'fun': () {
-      //     openCustomer();
-      //   }
-      // }),
-      // PWidget.boxw(8),
-      PWidget.icon(CupertinoIcons.gear_alt, [
-        Colors.black54
-      ], {
-        'fun': () {
-          personalNotifier.value = false;
-          Navigator.pushNamed(context, '/settings');
-        }
-      })
-    ]));
+    return GestureDetector(
+      child: Row(
+        children: [
+          // 已注释掉的代码转换为:
+          // GestureDetector(
+          //   onTap: () {
+          //     openCustomer();
+          //   },
+          //   child: Icon(BaoIcons.kefu, color: Colors.black54),
+          // ),
+          // SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              personalNotifier.value = false;
+              Navigator.pushNamed(context, '/settings');
+            },
+            child: Icon(CupertinoIcons.gear_alt, color: Colors.black54),
+          )
+        ],
+      ),
+    );
   }
 
   _createUserInfo() {
@@ -417,28 +411,28 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
       if (vipinfo['levelJd'] > 1 || vipinfo['levelPdd'] > 1 || vipinfo['levelDy'] > 1 || vipinfo['levelVip'] > 1) {
         if (vipinfo['level'] > 4) {
           levelWidgets.add(getLevelWidget(vipinfo['level'], 'tb'));
-          levelWidgets.add(PWidget.boxw(1));
+          levelWidgets.add(SizedBox(width: 1));
         }
         if (vipinfo['levelJd'] > 4) {
           levelWidgets.add(getLevelWidget(vipinfo['levelJd'], 'jd'));
-          levelWidgets.add(PWidget.boxw(1));
+          levelWidgets.add(SizedBox(width: 1));
         }
         if (vipinfo['levelPdd'] > 4) {
           levelWidgets.add(getLevelWidget(vipinfo['levelPdd'], 'pdd'));
-          levelWidgets.add(PWidget.boxw(1));
+          levelWidgets.add(SizedBox(width: 1));
         }
         if (vipinfo['levelDy'] > 4) {
           levelWidgets.add(getLevelWidget(vipinfo['levelDy'], 'dy'));
-          levelWidgets.add(PWidget.boxw(1));
+          levelWidgets.add(SizedBox(width: 1));
         }
         if (vipinfo['levelVip'] > 4) {
           levelWidgets.add(getLevelWidget(vipinfo['levelVip'], 'vip'));
-          levelWidgets.add(PWidget.boxw(1));
+          levelWidgets.add(SizedBox(width: 1));
         }
       } else {
         levelWidgets = [
-          PWidget.image(levelImage, [16, 16]),
-          PWidget.text('$levelName', [Colours.vip_white, 14])
+          Image.asset(levelImage, width: 16, height: 16),
+          Text('$levelName', style: TextStyle(color: Colours.vip_white, fontSize: 14))
         ];
       }
     }
@@ -446,122 +440,137 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     final userinfo = ref.watch(userProvider);
     final energy = ref.watch(getEnergyProvider);
 
-    return PWidget.container(
-      PWidget.row(
-        [
-          PWidget.container(createHeadImgWidget(headSize, 28.0), {
-            'fun': () {
+    return Container(
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
               personalNotifier.value = false;
               onTapLogin(context, '/personal');
             },
-          }),
-          PWidget.boxw(20),
-          PWidget.column(
-            [
-              PWidget.row([
-                PWidget.textNormal(userinfo.showName(), [
-                  Colors.black,
-                  Dimens.font_sp20
-                ], {
-                  'fun': () {
-                    personalNotifier.value = false;
-                    onTapLogin(context, '/personal');
-                  },
-                }),
-                PWidget.boxw(5),
-                Global.isEmpty(levelName)
-                    ? SizedBox()
-                    : PWidget.container(
-                        PWidget.row(levelWidgets),
-                        [null, null, Colors.white],
-                        {
-                          'pd': PFun.lg(1, 1, 4, 4),
-                          'br': 8,
-                          'fun': () {
-                            personalNotifier.value = false;
-                            onTapLogin(context, '/tabVip', args: {'index': 0});
-                          },
-                        },
+            child: Container(
+              child: createHeadImgWidget(headSize, 28.0),
+            ),
+          ),
+          SizedBox(width: 20),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        personalNotifier.value = false;
+                        onTapLogin(context, '/personal');
+                      },
+                      child: Text(
+                        userinfo.showName(),
+                        style: TextStyle(color: Colors.black, fontSize: Dimens.font_sp20),
                       ),
+                    ),
+                    SizedBox(width: 5),
+                    Global.isEmpty(levelName)
+                        ? SizedBox()
+                        : GestureDetector(
+                            onTap: () {
+                              personalNotifier.value = false;
+                              onTapLogin(context, '/tabVip', args: {'index': 0});
+                            },
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(1, 1, 4, 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(children: levelWidgets),
+                            ),
+                          ),
+                  ],
+                ),
               ]),
-              PWidget.boxh(10),
-              PWidget.row([
+              Row(children: [
                 Text('邀请口令：${showCode ? userinfo.code : '******'}', style: TextStyles.textBlack),
-                PWidget.boxw(5),
-                PWidget.icon(Icons.remove_red_eye_outlined, [
-                  Colors.black,
-                  18
-                ], {
-                  'fun': () {
+                SizedBox(width: 5),
+                GestureDetector(
+                  onTap: () {
                     if (showCode) {
                       showCode = false;
                     } else {
                       showCode = true;
                     }
                     setState(() {});
-                  }
-                }),
-                PWidget.boxw(10),
-                PWidget.text('复制', [
-                  Colors.black,
-                  Dimens.font_sp12,
-                  false
-                ], {
-                  'td': TextDecoration.underline,
-                  'fun': () => {FlutterClipboard.copy('${userinfo.code}').then((value) => ToastUtils.showToast('复制成功'))}
-                }),
-                PWidget.boxw(10),
-                PWidget.text('绑定', [
-                  Colors.black,
-                  Dimens.font_sp12,
-                  false
-                ], {
-                  'td': TextDecoration.underline,
-                  'fun': () {
+                  },
+                  child: Icon(Icons.remove_red_eye_outlined, color: Colors.black, size: 18),
+                ),
+                SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () =>
+                      {FlutterClipboard.copy('${userinfo.code}').then((value) => ToastUtils.showToast('复制成功'))},
+                  child: Text(
+                    '复制',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: Dimens.font_sp12,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () {
                     personalNotifier.value = false;
                     Navigator.pushNamed(context, "/personal");
-                  }
-                }),
+                  },
+                  child: Text(
+                    '绑定',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: Dimens.font_sp12,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
               ]),
-              PWidget.boxh(10),
-              PWidget.row([
-                PWidget.text('申请专属口令', [
-                  Colors.black,
-                  Dimens.font_sp12,
-                  false
-                ], {
-                  'td': TextDecoration.underline,
-                  'fun': () {
+              SizedBox(height: 10),
+              Row(children: [
+                GestureDetector(
+                  onTap: () {
                     personalNotifier.value = false;
                     Navigator.pushNamed(context, "/koulingPage");
-                  }
-                }),
-                PWidget.boxw(17),
+                  },
+                  child: Text(
+                    '申请专属口令',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: Dimens.font_sp12,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 17),
                 energy.when(
                     data: (userEnergy) {
-                      return PWidget.container(
-                        PWidget.row([
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colours.app_main,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.all(2),
+                        child: Row(children: [
                           rainbowText("热度:${(userEnergy['totalEnergy'] as num).toStringAsFixed(1)}", fontSize: 10.0,
                               onTap: () {
                             _createEnergyPop(userEnergy);
                           }),
-                          PWidget.icon(Icons.arrow_drop_down, [Colors.white, 12])
+                          Icon(Icons.arrow_drop_down, color: Colors.white, size: 12)
                         ]),
-                        [null, null, Colours.app_main],
-                        {
-                          'pd': PFun.lg(2, 2, 2, 2),
-                          'br': PFun.lg(8, 8, 8, 8),
-                          'fun': () {
-                            _createEnergyPop(userEnergy);
-                          }
-                        },
                       );
                     },
                     error: (_, __) => SizedBox(),
                     loading: () => SizedBox())
               ]),
             ],
-          ),
+          )
         ],
       ),
     );
@@ -585,62 +594,97 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   }
 
   _createUnLogin() {
-    return PWidget.container(
-        PWidget.row([
-          PWidget.container(
-            PWidget.icon(Icons.person, [Colors.black12]),
-            [56, 56, Colors.white],
-            {'br': 56},
+    return GestureDetector(
+      onTap: () {
+        personalNotifier.value = false;
+        // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+        //   return const AliAuthPage();
+        // }));
+        onTapLogin(context, '/personal');
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(16, 16, 0, 16),
+        child: Row(children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(56),
+            ),
+            child: Icon(Icons.person, color: Colors.black12),
           ),
-          PWidget.boxw(8),
-          PWidget.textNormal('点击登录', [Colors.black54, Dimens.font_sp16], {'ct': true}),
+          SizedBox(width: 8),
+          Text(
+            '点击登录',
+            style: TextStyle(
+              color: Colors.black54,
+              fontSize: Dimens.font_sp16,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ]),
-        {
-          'mg': [16, 16, 0, 16],
-          'fun': () {
-            personalNotifier.value = false;
-            // Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-            //   return const AliAuthPage();
-            // }));
-            onTapLogin(context, '/personal');
-          },
-        });
+      ),
+    );
   }
 
   Widget createItem(i, v) {
-    return PWidget.container(
-        PWidget.row(
-            [
-              PWidget.wrapperImage(v['itempic'], [
-                124,
-                124
-              ], {
-                'br': 8,
-              }),
-              PWidget.boxw(8),
-              PWidget.column([
-                PWidget.text(v['itemtitle'], [Colors.black.withOpacity(0.75), 15, true], {'max': 2}),
-                PWidget.boxh(8),
-                PWidget.container(
-                    PWidget.text('${v['activity_gameplay']}', [
-                      Colors.black45,
-                      12
-                    ], {
-                      'pd': 4,
-                    }),
-                    [null, null, Colors.grey[100]]),
-                PWidget.spacer(),
-                PWidget.text('${Decimal.parse(v['itemendprice']).toString()}元', [Colours.app_main, 15, true]),
-                PWidget.boxh(8),
-              ], {
-                'exp': 1,
-              }),
+    return Container(
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              v['itempic'],
+              width: 124,
+              height: 124,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(width: 8),
+          Column(
+            children: [
+              Text(
+                v['itemtitle'],
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.75),
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 8),
+              Container(
+                padding: EdgeInsets.all(4),
+                child: Text(
+                  '${v['activity_gameplay']}',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 12,
+                  ),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                ),
+              ),
+              Spacer(),
+              Text(
+                '${Decimal.parse(v['itemendprice']).toString()}元',
+                style: TextStyle(
+                  color: Colours.app_main,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8),
             ],
-            '001',
-            {'fill': true}),
-        {
-          'pd': 8,
-        });
+            crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+        ],
+      ),
+      padding: EdgeInsets.all(8),
+    );
   }
 
   Future initNotice() async {
@@ -654,6 +698,15 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     setState(() {});
   }
 
+  // 修复flog和getTime方法未定义的问题
+  void flog(dynamic e) {
+    print("Error: $e");
+  }
+
+  int getTime() {
+    return DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  }
+
   void _createEnergyPop(Map<dynamic, dynamic> userEnergy) {
     showMenu(
         // color: Colors.grey[350],
@@ -665,11 +718,15 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           PopupMenuItem<String>(
               height: 28,
               value: 'Item01',
-              child: PWidget.row([
-                PWidget.image('assets/images/mall/tb.png', [16, 16], {'crr': 8}),
-                PWidget.textNormal('热度：', [Colors.black, 12, true]),
-                PWidget.boxw(2),
-                PWidget.text('${userEnergy['tbEnergy'] + userEnergy['tbTuiEnergy']}', [Colors.black, 11]),
+              child: Row(children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset('assets/images/mall/tb.png', width: 16, height: 16),
+                ),
+                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                SizedBox(width: 2),
+                Text('${userEnergy['tbEnergy'] + userEnergy['tbTuiEnergy']}',
+                    style: TextStyle(color: Colors.black, fontSize: 11)),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -677,11 +734,15 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           PopupMenuItem<String>(
               height: 28,
               value: 'Item02',
-              child: PWidget.row([
-                PWidget.image('assets/images/mall/jd.png', [16, 16], {'crr': 8}),
-                PWidget.textNormal('热度：', [Colors.black, 12, true]),
-                PWidget.boxw(2),
-                PWidget.text('${userEnergy['jdEnergy'] + userEnergy['jdTuiEnergy']}', [Colors.black, 11]),
+              child: Row(children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset('assets/images/mall/jd.png', width: 16, height: 16),
+                ),
+                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                SizedBox(width: 2),
+                Text('${userEnergy['jdEnergy'] + userEnergy['jdTuiEnergy']}',
+                    style: TextStyle(color: Colors.black, fontSize: 11)),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -689,11 +750,15 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           PopupMenuItem<String>(
               height: 28,
               value: 'Item03',
-              child: PWidget.row([
-                PWidget.image('assets/images/mall/pdd.png', [16, 16], {'crr': 8}),
-                PWidget.textNormal('热度：', [Colors.black, 12, true]),
-                PWidget.boxw(2),
-                PWidget.text('${userEnergy['pddEnergy'] + userEnergy['pddTuiEnergy']}', [Colors.black, 11]),
+              child: Row(children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset('assets/images/mall/pdd.png', width: 16, height: 16),
+                ),
+                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                SizedBox(width: 2),
+                Text('${userEnergy['pddEnergy'] + userEnergy['pddTuiEnergy']}',
+                    style: TextStyle(color: Colors.black, fontSize: 11)),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -701,11 +766,15 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           PopupMenuItem<String>(
               height: 28,
               value: 'Item04',
-              child: PWidget.row([
-                PWidget.image('assets/images/mall/dy.png', [16, 16], {'crr': 8}),
-                PWidget.textNormal('热度：', [Colors.black, 12, true]),
-                PWidget.boxw(2),
-                PWidget.text('${userEnergy['dyEnergy'] + userEnergy['dyTuiEnergy']}', [Colors.black, 11]),
+              child: Row(children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset('assets/images/mall/dy.png', width: 16, height: 16),
+                ),
+                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                SizedBox(width: 2),
+                Text('${userEnergy['dyEnergy'] + userEnergy['dyTuiEnergy']}',
+                    style: TextStyle(color: Colors.black, fontSize: 11)),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -713,11 +782,15 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           PopupMenuItem<String>(
               height: 28,
               value: 'Item05',
-              child: PWidget.row([
-                PWidget.image('assets/images/mall/vip.png', [16, 16], {'crr': 8}),
-                PWidget.textNormal('热度：', [Colors.black, 12, true]),
-                PWidget.boxw(2),
-                PWidget.text('${userEnergy['vipEnergy'] + userEnergy['vipTuiEnergy']}', [Colors.black, 11]),
+              child: Row(children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset('assets/images/mall/vip.png', width: 16, height: 16),
+                ),
+                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                SizedBox(width: 2),
+                Text('${userEnergy['vipEnergy'] + userEnergy['vipTuiEnergy']}',
+                    style: TextStyle(color: Colors.black, fontSize: 11)),
               ])),
           PopupMenuDivider(
             height: 5,
@@ -725,15 +798,12 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           PopupMenuItem<String>(
               height: 35,
               value: 'Item06',
-              child: PWidget.row([
-                PWidget.textNormal('查看详情>', [
-                  Colors.blue
-                ], {
-                  'fun': () {
-                    Navigator.pushNamed(context, '/energyPage');
-                  }
-                })
-              ], '221'))
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/energyPage');
+                },
+                child: Row(children: [Text('查看详情>', style: TextStyle(color: Colors.blue))]),
+              ))
         ]).then((value) {
       if (null == value) {
         return;
