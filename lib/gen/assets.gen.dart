@@ -12,6 +12,18 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/arrow-left.png
+  AssetGenImage get arrowLeft =>
+      const AssetGenImage('assets/images/arrow-left.png');
+
+  /// File path: assets/images/btn_checked.png
+  AssetGenImage get btnChecked =>
+      const AssetGenImage('assets/images/btn_checked.png');
+
+  /// File path: assets/images/btn_unchecked.png
+  AssetGenImage get btnUnchecked =>
+      const AssetGenImage('assets/images/btn_unchecked.png');
+
   /// Directory path: assets/images/cash
   $AssetsImagesCashGen get cash => const $AssetsImagesCashGen();
 
@@ -43,6 +55,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/mt.gif
   AssetGenImage get mt => const AssetGenImage('assets/images/mt.gif');
 
+  /// File path: assets/images/none.png
+  AssetGenImage get none => const AssetGenImage('assets/images/none.png');
+
   /// Directory path: assets/images/share
   $AssetsImagesShareGen get share => const $AssetsImagesShareGen();
 
@@ -50,7 +65,17 @@ class $AssetsImagesGen {
   AssetGenImage get splash => const AssetGenImage('assets/images/splash.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [ele, logo, logo1024, mt, splash];
+  List<AssetGenImage> get values => [
+        arrowLeft,
+        btnChecked,
+        btnUnchecked,
+        ele,
+        logo,
+        logo1024,
+        mt,
+        none,
+        splash
+      ];
 }
 
 class $AssetsKeyGen {

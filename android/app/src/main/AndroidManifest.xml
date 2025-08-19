@@ -113,21 +113,22 @@
             android:value="2" />
 
         <!--一键登录SDK授权页activity-->
-<!--        <activity-->
-<!--            android:name="com.chuanglan.shanyan_sdk.view.ShanYanOneKeyActivity"-->
-<!--            android:configChanges="keyboardHidden|orientation|screenSize"-->
-<!--            android:exported="false"-->
-<!--            android:launchMode="singleTop"-->
-<!--            android:screenOrientation="unspecified"-->
-<!--            android:theme="@style/MyTheme" />-->
-<!--        &lt;!&ndash;一键登录SDK协议页页activity&ndash;&gt;-->
-<!--        <activity-->
-<!--            android:name="com.chuanglan.shanyan_sdk.view.CTCCPrivacyProtocolActivity"-->
-<!--            android:configChanges="keyboardHidden|orientation|screenSize"-->
-<!--            android:exported="false"-->
-<!--            android:launchMode="singleTop"-->
-<!--            android:screenOrientation="unspecified"-->
-<!--            android:theme="@style/MyTheme" />-->
+        <activity
+            android:name="com.chuanglan.shanyan_sdk.view.ShanYanOneKeyActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/MyTheme" />
+        <!--一键登录SDK协议页页activity-->
+        <activity
+            android:name="com.chuanglan.shanyan_sdk.view.CTCCPrivacyProtocolActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/MyTheme" />
+        <!--一键登录SDK授权页activity-->
 
         <activity
             android:name="com.alibaba.alibclinkpartner.smartlink.ALPEntranceActivity"

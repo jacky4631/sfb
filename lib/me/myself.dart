@@ -4,7 +4,6 @@
  */
 import 'dart:async';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,17 +16,15 @@ import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sufenbao/me/fans/fans_search_notifier.dart';
-import 'package:sufenbao/me/model/userinfo.dart';
 import 'package:sufenbao/me/provider.dart';
 import 'package:sufenbao/me/select_text_item.dart';
 import 'package:sufenbao/me/styles.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/bao_icons.dart';
 import 'package:sufenbao/util/toast_utils.dart';
-import 'package:sufenbao/widget/ext.dart';
+import 'package:sufenbao/widget/load_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../ali_auth/ali_auth.dart';
 import '../util/colors.dart';
 import '../util/dimens.dart';
 import '../util/global.dart';
@@ -48,13 +45,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   String levelName = '';
   var image = '';
   bool isShuaxin = true;
-  bool hasUnlockOrder = false;
-  Map? userFee = null;
   Map vipinfo = {};
   static bool Notice = false;
-
-  Map userEnergy = {};
-  bool loadingEnergy = true;
 
   @override
   void initState() {
@@ -91,27 +83,12 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     }
     Global.initCommissionInfo();
 
-    hasUnlockOrder = await BService.hasUnlockOrder();
-    await initUserFee();
     await initVipInfo();
     await Global.init();
     if (Global.isAndroid()) {
       await initNotice();
     }
-    await getEnergy();
     return getTime();
-  }
-
-  Future getEnergy() async {
-    userEnergy = await BService.getEnergy();
-    setState(() {
-      loadingEnergy = false;
-    });
-  }
-
-  Future initUserFee() async {
-    userFee = await BService.userFee();
-    setState(() {});
   }
 
   Future initVipInfo() async {
@@ -133,9 +110,10 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   }
 
   List<Widget> createMeWidget() {
-    final userinfo =
-        ref.watch(userinfoProvider).when(data: (data) => data, error: (o, s) => Userinfo(), loading: () => Userinfo());
-    bool feeEmpty = userFee == null || userFee!.isEmpty;
+    final userinfo = ref.watch(userProvider);
+
+    final userFee = ref.watch(userFeeProvider).when(data: (data) => data, error: (o, s) => Map(), loading: () => Map());
+
     List<Widget> widgets = <Widget>[
       _createUserTop(),
       if (Notice)
@@ -205,13 +183,13 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
             PWidget.boxh(10),
             Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
               Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                createTodayFee(context, feeEmpty, userFee),
+                createTodayFee(context, userFee),
                 PWidget.boxh(5),
                 Text("今日预估", style: TextStyles.textWhite14)
               ]),
               Container(color: Color(0x50FFFFFF), width: 1, height: 23),
               Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                createMonthFee(context, feeEmpty, userFee),
+                createMonthFee(context, userFee),
                 PWidget.boxh(5),
                 Text("本月预估", style: TextStyles.textWhite14)
               ])
@@ -275,11 +253,17 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
             SelectTextItem(
                 title: '订单明细',
                 content: '购物拆红包',
-                contentWidget: hasUnlockOrder
-                    ? shimmerWidget(
-                        Text('有红包可拆', textAlign: TextAlign.end, style: TextStyle(color: Colors.red, fontSize: 14)),
-                        color: Colors.red)
-                    : null,
+                contentWidget: ref.watch(hasUnlockOrderProvider).when(
+                    data: (data) {
+                      return data
+                          ? shimmerWidget(
+                              Text('有红包可拆',
+                                  textAlign: TextAlign.end, style: TextStyle(color: Colors.red, fontSize: 14)),
+                              color: Colors.red)
+                          : null;
+                    },
+                    error: (_, __) => null,
+                    loading: () => null),
                 leading: Icon(BaoIcons.order, size: 20, color: Colors.black),
                 onTap: () {
                   personalNotifier.value = false;
@@ -393,7 +377,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   }
 
   Widget buildTabBar() {
-    final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
+    final userinfo = ref.watch(userProvider);
 
     return buildTitle(context,
         title: Global.login ? userinfo.showName() : '我的',
@@ -463,7 +447,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
       }
     }
 
-    final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
+    final userinfo = ref.watch(userProvider);
+    final energy = ref.watch(getEnergyProvider);
 
     return PWidget.container(
       PWidget.row(
@@ -556,13 +541,13 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                   }
                 }),
                 PWidget.boxw(17),
-                loadingEnergy
-                    ? SizedBox()
-                    : PWidget.container(
+                energy.when(
+                    data: (userEnergy) {
+                      return PWidget.container(
                         PWidget.row([
                           rainbowText("热度:${(userEnergy['totalEnergy'] as num).toStringAsFixed(1)}", fontSize: 10.0,
                               onTap: () {
-                            _createEnergyPop();
+                            _createEnergyPop(userEnergy);
                           }),
                           PWidget.icon(Icons.arrow_drop_down, [Colors.white, 12])
                         ]),
@@ -571,10 +556,13 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                           'pd': PFun.lg(2, 2, 2, 2),
                           'br': PFun.lg(8, 8, 8, 8),
                           'fun': () {
-                            _createEnergyPop();
+                            _createEnergyPop(userEnergy);
                           }
                         },
-                      ),
+                      );
+                    },
+                    error: (_, __) => SizedBox(),
+                    loading: () => SizedBox())
               ]),
             ],
           ),
@@ -584,13 +572,13 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   }
 
   Widget createHeadImgWidget(headSize, radius) {
-    final userinfo = ref.watch(userinfoProvider).value ?? Userinfo();
+    final userinfo = ref.watch(userProvider);
     print(userinfo.avatar);
     return ClipRRect(
         borderRadius: BorderRadius.circular(radius), //设置圆角
         child: userinfo.avatar.isNotEmpty
-            ? CachedNetworkImage(
-                imageUrl: userinfo.avatar,
+            ? LoadImage(
+                userinfo.avatar,
                 height: headSize,
                 width: headSize,
               )
@@ -670,7 +658,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     setState(() {});
   }
 
-  void _createEnergyPop() {
+  void _createEnergyPop(Map<dynamic, dynamic> userEnergy) {
     showMenu(
         // color: Colors.grey[350],
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.grey)),

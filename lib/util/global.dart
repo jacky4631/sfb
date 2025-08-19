@@ -44,7 +44,7 @@ import 'login_util.dart';
 const String APP_NAME = '苏分宝';
 const String COMPANY_NAME = '';
 //todo 闪验appid
-const String SY_ANDROID_APP_ID = '';
+const String SY_ANDROID_APP_ID = 'l6q044RF';
 const String SY_IOS_APP_ID = '';
 
 //todo 隐私协议地址 例如www.xxx.com

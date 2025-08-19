@@ -21,9 +21,13 @@
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
-    <style name="MyTheme.Fullscreen.LightStatusBar" parent="@android:style/Theme.NoTitleBar.Fullscreen">
-        <item name="android:statusBarColor">@android:color/white</item>
-        <item name="android:windowLightStatusBar">true</item>
+    <style name="MyTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
+        <!--没有标题-->
+        <item name="android:windowNoTitle">true</item>
+        <!--背景透明-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <!--dialog的整个屏幕的背景是否有遮障层-->
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
-
 </resources>

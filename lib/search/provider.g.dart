@@ -125,7 +125,7 @@ final sortProvider = AutoDisposeNotifierProvider<Sort, int>.internal(
 );
 
 typedef _$Sort = AutoDisposeNotifier<int>;
-String _$goodsSearchHash() => r'1100aabb4fde6de42287b2e8559ef474db7f8efa';
+String _$goodsSearchHash() => r'c3e761d4a126d8693be2216af085a236b32a9e31';
 
 /// Copied from Dart SDK
 class _SystemHash {

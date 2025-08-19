@@ -5,12 +5,12 @@
  */
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_base/utils/logger_util.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/login/login_shanyan.dart';
 import 'package:sufenbao/util/global.dart';
 
 import '../me/listener/PersonalNotifier.dart';
-import '../router/router.dart';
 
 Future afterLogin(res, context, {close = 2, redirectUrl = '/index'}) async {
   if (res['success']) {
@@ -41,12 +41,14 @@ loginThenRoutingMe(context, data, {close = 2, redirectUrl = '/index'}) {
   }
 }
 
-onTapLogin(context, url, {args}) {
+onTapLogin(context, url, {args}) async {
   if (!Global.login) {
     //闪验初始化成功，打开授权页， 初始化失败打开原登录页
     if (args == null) {
       args = {};
     }
+
+    Log.e(LoginShanyan.initSuc);
 
     if (LoginShanyan.initSuc) {
       LoginShanyan.getInstance().openLoginAuthPlatformState();

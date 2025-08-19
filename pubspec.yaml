@@ -2,6 +2,39 @@ name: sufenbao
 description: sufenbao
 version: 3.2.0+102
 
+
+  # adb -s 4D85VS7P7DB65DJV tcpip 55556 监听
+  # adb connect 192.168.8.217:55556 连接
+
+
+
+  #==================Android================
+  # 运行调试 flutter run --release  --verbose
+  # 打包调试 flutter build apk --release -v
+
+  # flutter build apk --dart-define=channel=x
+  # flutter build apk --split-per-abi --dart-define=channel=x
+  # flutter build appbundle --dart-define=channel=google
+  # flutter pub run build_runner build --delete-conflicting-outputs
+
+  #==================iOS================
+
+  # flutter build ios --dart-define=channel=r
+  # flutter build ios --release --dart-define=channel=r --verbose
+
+
+  # pod install --verbose --no-repo-update
+  # pod update --verbose --no-repo-update
+
+  #=================Shorebird===================
+  # shorebird release android --artifact apk --dart-define=channel=x
+  # shorebird release ios --dart-define=channel=r --no-codesign
+  # shorebird release android --dart-define=channel=r
+
+  # shorebird patch android
+# shorebird patch ios
+#====================================
+
 environment:
   sdk: ">=3.0.0"
   flutter: ">=3.0.0 <4.0.0"
