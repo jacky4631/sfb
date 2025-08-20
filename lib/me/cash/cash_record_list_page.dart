@@ -3,11 +3,6 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/mylistview.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 import '../../service.dart';
@@ -34,60 +29,129 @@ class _CashRecordListPageState extends State<CashRecordListPage> {
   }
 
   ///列表数据
-  var listDm = DataModel();
+  List<Map> listData = [];
+  bool isLoading = true;
+  bool hasError = false;
+  bool hasMore = true;
+  int totalElements = 0;
+  
   Future<int> getListData({int page = 1, bool isRef = false}) async {
-    var res = await BService.extractList(page-1);
-    if (res != null) listDm.addList(res['content'], isRef, res['totalElements']);
+    if (isRef) {
+      setState(() {
+        isLoading = true;
+        hasError = false;
+      });
+    }
+    
+    try {
+      var res = await BService.extractList(page-1);
+      if (res != null && res['content'] != null) {
+        if (isRef) {
+          listData = List<Map>.from(res['content']);
+        } else {
+          listData.addAll(List<Map>.from(res['content']));
+        }
+        totalElements = res['totalElements'];
+        hasMore = listData.length < totalElements;
+        isLoading = false;
+        hasError = false;
+      } else {
+        hasError = true;
+        isLoading = false;
+      }
+    } catch (e) {
+      hasError = true;
+      isLoading = false;
+    }
+    
     setState(() {});
-    return listDm.flag;
+    return hasError ? -1 : (hasMore ? 1 : 0);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      appBar: buildTitle(context,
-          title: '提现记录',
-          widgetColor: Colors.black,
-          leftIcon: Icon(Icons.arrow_back_ios)),
-      body: AnimatedSwitchBuilder(
-        value: listDm,
-        initialState: buildLoad(color: Colors.white),
-        errorOnTap: () => this.getListData(isRef: true),
-        listBuilder: (list, p, h) {
-          return MyListView(
-            isShuaxin: true,
-            isGengduo: h,
-            header: buildClassicHeader(color: Colors.grey),
-            footer: buildCustomFooter(color: Colors.grey),
-            onRefresh: () => this.getListData(isRef: true),
-            onLoading: () => this.getListData(page: p),
-            itemCount: list.length,
-            listViewType: ListViewType.Separated,
-            item: (i) {
-              Map record = list[i] as Map;
-              String createTime = record['createTime'];
-              return Semantics(
-                /// 将item默认合并的语义拆开，自行组合， 另一种方式见 account_record_list_page.dart
-                explicitChildNodes: true,
-                child: StickyHeader(
-                  header: Container(
-                    alignment: Alignment.centerLeft,
-                    width: double.infinity,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Color(0xFF242526)
-                        : Color(0xFFFAFAFA),
-                    padding: const EdgeInsets.only(left: 16.0),
-                    height: 34.0,
-                    child: Text(createTime.split(' ').first),
-                  ),
-                  content: _buildItem(i, record),
-                ),
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: Text('提现记录', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: _buildBody()
+    );
+  }
+
+  Widget _buildBody() {
+    if (isLoading && listData.isEmpty) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    
+    if (hasError && listData.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text('加载失败，请重试', style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => getListData(isRef: true),
+              child: Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    return RefreshIndicator(
+      onRefresh: () => getListData(isRef: true),
+      child: ListView.builder(
+        itemCount: listData.length + (hasMore ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index == listData.length) {
+            // 加载更多指示器
+            if (hasMore) {
+              // 自动加载更多
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                getListData(page: (listData.length ~/ 10) + 1);
+              });
+              return Container(
+                padding: EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(),
               );
-            },
+            }
+            return SizedBox.shrink();
+          }
+          
+          Map record = listData[index];
+          String createTime = record['createTime'];
+          return Semantics(
+            /// 将item默认合并的语义拆开，自行组合， 另一种方式见 account_record_list_page.dart
+            explicitChildNodes: true,
+            child: StickyHeader(
+              header: Container(
+                alignment: Alignment.centerLeft,
+                width: double.infinity,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Color(0xFF242526)
+                    : Color(0xFFFAFAFA),
+                padding: const EdgeInsets.only(left: 16.0),
+                height: 34.0,
+                child: Text(createTime.split(' ').first),
+              ),
+              content: _buildItem(index, record),
+            ),
           );
         },
-      )
+      ),
     );
   }
 

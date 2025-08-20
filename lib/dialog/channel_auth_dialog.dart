@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_alibc/alibc_model.dart';
 import 'package:flutter_alibc/flutter_alibc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/colors.dart';
 import 'package:sufenbao/util/toast_utils.dart';
@@ -25,35 +23,72 @@ class ChannelAuthDialog extends Dialog {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 20),
-      child: PWidget.column([
-        PWidget.row([
-          PWidget.image('assets/images/logo.png', [38, 38], {'crr': 19}),
-          PWidget.boxw(8),
-          SvgPicture.asset(
-              'assets/svg/arrow.svg',
-              width: 38,
-              height: 38,
-              color: Colours.app_main
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(19),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 38,
+                  height: 38,
+                ),
+              ),
+              SizedBox(width: 8),
+              SvgPicture.asset(
+                   'assets/svg/arrow.svg',
+                   width: 38,
+                   height: 38,
+                   colorFilter: ColorFilter.mode(Colours.app_main, BlendMode.srcIn)
+               ),
+              SizedBox(width: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(19),
+                child: Image.asset(
+                  'assets/images/mall/tb.png',
+                  width: 38,
+                  height: 38,
+                ),
+              ),
+            ],
           ),
-          PWidget.boxw(8),
-          PWidget.image('assets/images/mall/tb.png', [38, 38], {'crr': 19}),
-        ], '221'),
-        PWidget.boxh(8),
-        PWidget.text('必须淘宝授权才可自动绑定订单',[Colors.black.withOpacity(0.75), 15, true]),
-        PWidget.boxh(8),
-        PWidget.text('请点击下方按钮进行淘宝授权',[Colors.black.withOpacity(0.75), 13],{'max':2}),
-        PWidget.boxh(8),
-        _createButton()
-      ], '221'),
+          SizedBox(height: 8),
+          Text(
+            '必须淘宝授权才可自动绑定订单',
+            style: TextStyle(
+              color: Colors.black.withValues(alpha: 0.75),
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            '请点击下方按钮进行淘宝授权',
+            style: TextStyle(
+              color: Colors.black.withValues(alpha: 0.75),
+              fontSize: 13,
+            ),
+            maxLines: 2,
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 8),
+          _createButton()
+        ],
+      ),
     );
   }
 
   _createButton() {
+    return Builder(
+      builder: (BuildContext context) {
     return TextButton(
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
+            backgroundColor: WidgetStateProperty.all(
                 Color(0xFFFB040F)),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(25)),
             ))),
         onPressed: () async {
@@ -105,6 +140,8 @@ class ChannelAuthDialog extends Dialog {
                   ]
           ),
         ));
+      },
+    );
   }
 
 }

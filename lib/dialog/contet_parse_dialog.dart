@@ -7,11 +7,9 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
 
 import '../util/colors.dart';
 import '../util/global.dart';
-import '../util/paixs_fun.dart';
 import '../widget/CustomWidgetPage.dart';
 
 class ContentParseDialog extends Dialog {
@@ -28,25 +26,25 @@ class ContentParseDialog extends Dialog {
         padding: EdgeInsets.only(top: 10, left: 5, right: 5, bottom: 5),
         child: Column(
           children: [
-            PWidget.boxh(20),
+            SizedBox(height: 20),
             Center(
               child: Text(
                 itemName.isEmpty ? data['originContent']??'' : itemName,
                 style: TextStyle(),
               ),
             ),
-            PWidget.boxh(20),
+            SizedBox(height: 20),
             Center(
               child: Text(
                 '该商品不存在优惠券，点击全网搜索',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            PWidget.boxh(20),
+            SizedBox(height: 20),
             Column(
               children: [
                 _createSearchButton(context, true),
-                PWidget.boxh(8),
+                SizedBox(height: 8),
               ],
             )
           ],
@@ -64,22 +62,27 @@ class ContentParseDialog extends Dialog {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
-          PWidget.boxh(8),
+          SizedBox(height: 8),
           _createContent(context),
-          PWidget.boxh(8),
+          SizedBox(height: 8),
           Column(
             children: [
-              PWidget.row([_createSearchButton(context, false),PWidget.boxw(8),_createButton(context, true)],
-              '221'
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _createSearchButton(context, false),
+                  SizedBox(width: 8),
+                  _createButton(context, true)
+                ],
               ),
-              PWidget.boxh(8),
+              SizedBox(height: 8),
             ],
           )
         ],
       ),
     );
   }
-  _createContent(BuildContext context) {
+  Widget _createContent(BuildContext context) {
     String platType = data['platType'];
     String iconPath = getIconPath(platType);
     num itemPrice = num.parse(data['item_price']);
@@ -92,51 +95,106 @@ class ContentParseDialog extends Dialog {
     } else {
       amount = num.parse(data['rates']) * itemEndPrice/100;
     }
-    return PWidget.container(
-      PWidget.row(
-        [
+    return Container(
+      padding: EdgeInsets.all(3),
+      color: Colors.white,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Stack(children: [
-            PWidget.wrapperImage(data['item_pic'], [100, 100], {'br': 8}),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                data['item_pic'] ?? '',
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.grey[300],
+                    child: Icon(Icons.image_not_supported),
+                  );
+                },
+              ),
+            ),
             Stack(children: [
-              PWidget.image(iconPath, [14, 14]),
-
+              Image.asset(
+                iconPath,
+                width: 14,
+                height: 14,
+              ),
             ]),
           ]),
-          PWidget.boxw(8),
-          PWidget.column([
-            PWidget.row([
-              PWidget.text(data['item_title'], [Colors.black.withOpacity(0.75), 14], {'max':2, 'exp': true}),
-            ]),
-            PWidget.boxh(8),
-            if(couponPrice > 0)
-              PWidget.row([
-                PWidget.container(
-                  PWidget.text('补贴', [Colors.white, 12]),
-                  [null, null, Colors.red],
-                  {'bd': PFun.bdAllLg(Colors.red, 0.5), 'pd': PFun.lg(1, 1, 4, 4), 'br': PFun.lg(4, 0, 4, 0)},
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data['item_title'] ?? '',
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 14,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                PWidget.container(
-                  PWidget.text('', [Colors.red, 12],{},[
-                    PWidget.textIs(' ${couponPrice.toStringAsFixed(2)}元', [Colors.red, 12]),
-                  ]),
-                  {'bd': PFun.bdAllLg(Colors.red, 0.5), 'pd': PFun.lg(1, 1, 4, 4), 'br': PFun.lg(0, 4, 0, 4)},
+                SizedBox(height: 8),
+                if(couponPrice > 0)
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          border: Border.all(color: Colors.red, width: 0.5),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(4),
+                            bottomLeft: Radius.circular(4),
+                          ),
+                        ),
+                        child: Text(
+                          '补贴',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.red, width: 0.5),
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(4),
+                            bottomRight: Radius.circular(4),
+                          ),
+                        ),
+                        child: Text(
+                          ' ${couponPrice.toStringAsFixed(2)}元',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                SizedBox(height: 2),
+                Row(
+                  children: [
+                    getMoneyWidget(context, amount, platType),
+                  ],
                 ),
-              ]),
-            PWidget.boxh(2),
-            PWidget.row([
-              getMoneyWidget(context, amount, platType),
-            ]),
-            PWidget.spacer(),
-            getPriceWidget(itemEndPrice, itemPrice, endTextColor: Colors.red,endPrefix: ' 到手约 ')
-          ], {
-            'exp': 1,
-          }),
+                Spacer(),
+                getPriceWidget(itemEndPrice, itemPrice, endTextColor: Colors.red,endPrefix: ' 到手约 ')
+              ],
+            ),
+          ),
         ],
-        '001',
-        {'fill': true},
       ),
-      [null, null, Colors.white],
-      {'pd': 3, },
     );
   }
 
@@ -144,8 +202,8 @@ class ContentParseDialog extends Dialog {
   _createButton(BuildContext context, bool agree) {
     return TextButton (
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(agree ? Colours.app_main : Colors.white),
-            shape: MaterialStateProperty.all(
+            backgroundColor: WidgetStateProperty.all(agree ? Colours.app_main : Colors.white),
+            shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(25)),
                 )
@@ -204,8 +262,8 @@ class ContentParseDialog extends Dialog {
   _createSearchButton(BuildContext context, bool dark) {
     return TextButton (
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(dark ? Colours.app_main : Colors.white),
-            shape: MaterialStateProperty.all(
+            backgroundColor: WidgetStateProperty.all(dark ? Colours.app_main : Colors.white),
+            shape: WidgetStateProperty.all(
                 RoundedRectangleBorder(
                   side: BorderSide(color: dark ? Colors.white : Colours.app_main),
                   borderRadius: BorderRadius.all(Radius.circular(25)),

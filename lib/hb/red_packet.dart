@@ -4,7 +4,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
+
 import 'package:sufenbao/hb/red_packet_controller.dart';
 import 'package:sufenbao/hb/red_packet_painter.dart';
 import 'package:sufenbao/util/custom.dart';
@@ -16,7 +16,7 @@ OverlayEntry? entry;
 void showRedPacket(BuildContext context, num commission, String platform, Function? onOpen){
   entry = OverlayEntry(builder: (context) => RedPacket(onFinish: _removeRedPacket, onOpen: onOpen,
     commission: commission, platform: platform,));
-  Overlay.of(context)?.insert(entry!);
+  Overlay.of(context).insert(entry!);
 }
 
 void _removeRedPacket(){
@@ -27,13 +27,13 @@ void _removeRedPacket(){
 
 class RedPacket extends StatefulWidget {
 
-  Function? onFinish;
-  Function? onOpen;
-  num? commission;
-  String? max;
-  String? platform;
-  RedPacket({Key? key,this.onFinish, this.onOpen,
-  this.commission, this.platform}) : super(key: key);
+  final Function? onFinish;
+  final Function? onOpen;
+  final num? commission;
+  final String? max;
+  final String? platform;
+  const RedPacket({Key? key,this.onFinish, this.onOpen,
+  this.commission, this.platform, this.max}) : super(key: key);
 
 
 
@@ -96,11 +96,29 @@ class _RedPacketState extends State<RedPacket> with TickerProviderStateMixin{
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            PWidget.text('$APP_NAME发出的红包', [Color(0xFFF8E7CB), 16.sp]),
+            Text(
+              '$APP_NAME发出的红包',
+              style: TextStyle(
+                color: Color(0xFFF8E7CB),
+                fontSize: 16.sp,
+              ),
+            ),
             SizedBox(height: 15.w,),
-            PWidget.text('恭喜发财', [Color(0xFFF8E7CB), 18.sp]),
+            Text(
+              '恭喜发财',
+              style: TextStyle(
+                color: Color(0xFFF8E7CB),
+                fontSize: 18.sp,
+              ),
+            ),
             SizedBox(height: 15.w,),
-            PWidget.text('可拆$min元-$max元红包', [Color(0xFFF8E7CB), 14.sp]),
+            Text(
+              '可拆$min元-$max元红包',
+              style: TextStyle(
+                color: Color(0xFFF8E7CB),
+                fontSize: 14.sp,
+              ),
+            ),
           ],
         ),
       ),

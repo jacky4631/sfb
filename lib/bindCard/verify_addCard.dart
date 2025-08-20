@@ -2,15 +2,9 @@
  *  Copyright (C) 2018-2024
  *  All rights reserved, Designed By www.mailvor.com
  */
-import 'dart:ui';
-
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:pinput/pinput.dart';
 
 import '../util/global.dart';
@@ -35,70 +29,105 @@ class _VerifyAddCardState extends State<VerifyAddCard> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      bgColor: Colors.white,
-      appBar: buildTitle(context,
-          title: "银行卡信息",
-          widgetColor: Colors.black,
-          leftIcon: Icon(Icons.arrow_back_ios)),
-      body: PWidget.container(
-          PWidget.column([
-            PWidget.row([
-              PWidget.text(
-                  '卡号           ', [Colors.black.withOpacity(0.75), 16]),
-              buildTextField2(
-                  inputFormatters: [
-                    TextInputFormatter.withFunction(
-                        (oldValue, newValue) => _addSeparator(newValue.text)),
-                  ],
-                  hint: '',
-                  con: _bankNoController,
-                  showSearch: false,
-                  height: 40,
-                  bgColor: Colors.white,
-                  keyboardType: TextInputType.number,
-                  border: new UnderlineInputBorder(
-                    // 焦点集中的时候颜色
-                    borderSide: BorderSide(
-                      color: Color(0x19000000),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("银行卡信息"),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text(
+                  '卡号           ',
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 16,
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _bankNoController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      TextInputFormatter.withFunction(
+                          (oldValue, newValue) => _addSeparator(newValue.text)),
+                    ],
+                    decoration: InputDecoration(
+                      hintText: '',
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0x19000000),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
                     ),
-                  ))
-            ]),
-            PWidget.boxh(5),
-            PWidget.row([
-              PWidget.text('卡类型        ', [Colors.black.withOpacity(0.75), 16]),
-              buildTextField2(
-                  hint: '',
-                  con: _cardNameController,
-                  showSearch: false,
-                  height: 40,
-                  bgColor: Colors.white,
-                  border: new UnderlineInputBorder(
-                    // 焦点集中的时候颜色
-                    borderSide: BorderSide(
-                      color: Color(0x19000000),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Text(
+                  '卡类型        ',
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 16,
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _cardNameController,
+                    decoration: InputDecoration(
+                      hintText: '',
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0x19000000),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
                     ),
-                  ))
-            ]),
-            PWidget.boxh(5),
-            PWidget.row([
-              PWidget.text('手机号码    ', [Colors.black.withOpacity(0.75), 16]),
-              buildTextField2(
-                  con: _mobileController,
-                  hint: '',
-                  height: 40,
-                  showSearch: false,
-                  bgColor: Colors.white,
-                  keyboardType: TextInputType.number,
-                  border: new UnderlineInputBorder(
-                    // 焦点集中的时候颜色
-                    borderSide: BorderSide(
-                      color: Color(0x19000000),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                Text(
+                  '手机号码    ',
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 16,
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _mobileController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: '',
+                      border: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0x19000000),
+                        ),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
                     ),
-                  ))
-            ]),
-            PWidget.boxh(40),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 40),
             RawMaterialButton(
               constraints: BoxConstraints(minHeight: 44),
               fillColor: Colors.redAccent,
@@ -123,10 +152,9 @@ class _VerifyAddCardState extends State<VerifyAddCard> {
                 ],
               ),
             ),
-          ]),
-          {
-            'pd': [20, 20, 20, 20]
-          }),
+          ],
+        ),
+      ),
     );
   }
 
@@ -224,8 +252,8 @@ class _VerifyAddCardState extends State<VerifyAddCard> {
 }
 
 class ContentDialog extends Dialog {
-  String No = '';
-  String mobilePhone = '';
+  final String No;
+  final String mobilePhone;
 
   ContentDialog(this.No, this.mobilePhone);
 

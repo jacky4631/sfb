@@ -6,8 +6,6 @@
  * 弹窗
  */
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:maixs_utils/util/utils.dart';
 
 import '../util/colors.dart';
 
@@ -41,9 +39,9 @@ class SimpleTextDialog extends Dialog {
           Center(
               child: Row(
             children: [
-              Expanded(child: _createButton(false)),
+              Expanded(child: _createButton(context, false)),
               SizedBox(height: 5),
-              Expanded(child: _createButton(true)),
+              Expanded(child: _createButton(context, true)),
             ],
           ))
         ],
@@ -51,7 +49,7 @@ class SimpleTextDialog extends Dialog {
     );
   }
 
-  _createButton(bool agree) {
+  _createButton(BuildContext context, bool agree) {
     return TextButton(
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(

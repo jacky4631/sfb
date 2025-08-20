@@ -3,13 +3,39 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+import 'package:flutter_base/flutter_base.dart';
 
 import '../service.dart';
 import '../widget/CustomWidgetPage.dart';
+
+// 替代 DataModel 的简单数据模型类
+class DataModel {
+  List<dynamic> list = [];
+  bool hasNext = false;
+  int flag = 0;
+  String? error;
+  dynamic value;
+
+  DataModel({this.value});
+
+  void addList(List<dynamic>? newList, bool isRefresh, int total) {
+    if (newList != null) {
+      if (isRefresh) {
+        list = newList;
+      } else {
+        list.addAll(newList);
+      }
+      hasNext = list.length < total;
+      flag = 1;
+      error = null;
+    }
+  }
+
+  void toError(String errorMsg) {
+    error = errorMsg;
+    flag = -1;
+  }
+}
 
 ///其它分类页面
 class DyIndexOtherPage extends StatefulWidget {
@@ -20,8 +46,7 @@ class DyIndexOtherPage extends StatefulWidget {
   _DyIndexOtherPageState createState() => _DyIndexOtherPageState();
 }
 
-class _DyIndexOtherPageState extends State<DyIndexOtherPage>{
-
+class _DyIndexOtherPageState extends State<DyIndexOtherPage> {
   @override
   void initState() {
     initData();
@@ -32,13 +57,15 @@ class _DyIndexOtherPageState extends State<DyIndexOtherPage>{
   Future initData() async {
     await getListData(isRef: true);
   }
+
   var listDm = DataModel();
   Future<int> getListData({int? sort, int page = 1, bool isRef = false}) async {
     var res = await BService.dyList(widget.data['id'], page).catchError((v) {
       listDm.toError('网络异常');
+      return null;
     });
     if (res != null) {
-      listDm.addList(res['products'], isRef, res['total']);
+      listDm.addList(res['products'], isRef, ValueUtil.toInt(res['total']));
     }
     setState(() {});
     return listDm.flag;
@@ -46,22 +73,55 @@ class _DyIndexOtherPageState extends State<DyIndexOtherPage>{
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      bgColor: Color(0xffF4F5F6),
-      body: MyCustomScroll(
-        isGengduo: listDm.hasNext,
-        isShuaxin: true,
-        onRefresh: () => this.getListData(isRef: true),
-        onLoading: (p) => this.getListData(page: p),
-        refHeader: buildClassicHeader(color: Colors.grey),
-        refFooter: buildCustomFooter(color: Colors.grey),
-        crossAxisCount: 2,
-        crossAxisSpacing: 8,
-        itemPadding: EdgeInsets.all(8),
-        itemModel: listDm,
-        itemModelBuilder: (i, v) {
-          return createDyFadeContainer(context, i, v);
+    return Scaffold(
+      backgroundColor: Color(0xffF4F5F6),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await getListData(isRef: true);
         },
+        child: CustomScrollView(
+          slivers: [
+            // Grid items
+            SliverPadding(
+              padding: EdgeInsets.all(8),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    if (index < listDm.list.length) {
+                      return createDyFadeContainer(context, index, listDm.list[index]);
+                    }
+                    return null;
+                  },
+                  childCount: listDm.list.length,
+                ),
+              ),
+            ),
+            // Load more indicator
+            if (listDm.hasNext)
+              SliverToBoxAdapter(
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        int nextPage = (listDm.list.length ~/ 20) + 1;
+                        getListData(page: nextPage);
+                      },
+                      child: Text(
+                        '加载更多',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

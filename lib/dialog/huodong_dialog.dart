@@ -7,11 +7,9 @@
  * @discripe: 活动弹窗
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:sufenbao/util/launchApp.dart';
 
 import '../me/model/activity_info.dart';
-import '../util/paixs_fun.dart';
 
 class HuodongDialog extends Dialog {
   final ActivityInfo data;
@@ -24,35 +22,65 @@ class HuodongDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      PWidget.container(
-        PWidget.wrapperImage(data.img, [
-          350,
-          350
-        ], {
-          'br': 16,
-          'fun': () {
-            Navigator.pop(context);
-            click(context);
-            this.closeCallback();
-          }
-        }),
-        {
-          'ali': PFun.lg(0, 0),
-        },
-      ),
-      PWidget.positioned(
-        PWidget.container(
-          PWidget.icon(Icons.close, [Colors.white]),
-          [48, 48, Colors.black26],
-          {'br': 56, 'fun': () {
-            Navigator.pop(context);
-            this.closeCallback();
-          }},
+    return Stack(
+      children: [
+        // 主要活动图片容器
+        Container(
+          alignment: Alignment.center,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+              click(context);
+              closeCallback();
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(
+                data.img,
+                width: 350,
+                height: 350,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 350,
+                    height: 350,
+                    color: Colors.grey[300],
+                    child: Icon(
+                      Icons.image_not_supported,
+                      size: 50,
+                      color: Colors.grey[600],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
         ),
-        [null, 150, 100, 100],
-      ),
-    ]);
+        // 关闭按钮
+        Positioned(
+          top: 150,
+          right: 100,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+              closeCallback();
+            },
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(56),
+              ),
+              child: Icon(
+                Icons.close,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Future click(BuildContext context) async {
@@ -62,6 +90,6 @@ class HuodongDialog extends Dialog {
     await LaunchApp.launch(context, url, package,
         webUrl: data.webUrl,
         title: data.title,
-        color: Color(int.parse('0xFF' + data.color??'FFFFFF')));
+        color: Color(int.parse('0xFF' + (data.color.isEmpty ? 'FFFFFF' : data.color))));
   }
 }

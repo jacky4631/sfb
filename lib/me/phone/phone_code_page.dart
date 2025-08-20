@@ -3,8 +3,7 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+// Removed maixs_utils imports - replaced with standard Flutter components
 import 'package:pinput/pinput.dart';
 import 'package:sufenbao/service.dart';
 
@@ -34,11 +33,16 @@ class _LoginThirdState extends State<PhoneCodePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      bgColor: Colors.white,
-      appBar: buildTitle(context,
-          widgetColor: Colors.white, leftIcon: Icon(Icons.arrow_back)),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        elevation: 0,
+      ),
       body: Container(
           padding: EdgeInsets.only(left: 30, right: 30),
           child: Column(

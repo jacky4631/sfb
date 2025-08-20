@@ -3,9 +3,6 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
@@ -25,8 +22,8 @@ class _ChewieVideoPageState extends State<ChewieVideoPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    videoPlayerController = VideoPlayerController.network(
-        'https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/video/${widget.data['url']}');
+    videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse('https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/video/${widget.data['url']}'));
     chewieController = ChewieController(
       videoPlayerController: videoPlayerController,
       aspectRatio: 9 / 18,
@@ -46,20 +43,31 @@ class _ChewieVideoPageState extends State<ChewieVideoPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      appBar: buildTitle(context,
-            title: widget.data['title'],
-            widgetColor: Colors.black,
-            leftIcon: Icon(
-              Icons.arrow_back_ios,
-            ))
-      ,
-      body: PWidget.container(Center(
-        child: Chewie(
-          controller: chewieController,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(widget.data['title']),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      {'pd': [0,MediaQuery.of(context).padding.bottom+8, 0, 0]}),
+      body: Container(
+        padding: EdgeInsets.only(
+          top: 0,
+          right: MediaQuery.of(context).padding.bottom + 8,
+          bottom: 0,
+          left: 0,
+        ),
+        child: Center(
+          child: Chewie(
+            controller: chewieController,
+          ),
+        ),
+      ),
     );
   }
 }

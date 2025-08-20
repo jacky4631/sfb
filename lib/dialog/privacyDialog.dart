@@ -10,15 +10,11 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:maixs_utils/util/utils.dart';
 
 import '../util/global.dart';
 
-String _data =
-    "亲爱的用户，感谢您对[$APP_NAME]的信任！我们依据最新的监管政策更新了《$APP_NAME隐私政策》和《用户服务协议及权益保障告知书》，点击“同意”即代表您已阅读并同意上述内容！";
-
 class PrivacyDialog extends Dialog {
-  Function? func;
+  final Function? func;
   PrivacyDialog({this.func, Key? key}) : super(key: key);
 
   @override
@@ -69,9 +65,9 @@ class PrivacyDialog extends Dialog {
           Padding(padding: EdgeInsets.only(top: 10)),
           Column(
             children: [
-              _createButton(true),
+              _createButton(context, true),
               SizedBox(height: 5),
-              _createButton(false),
+              _createButton(context, false),
             ],
           )
         ],
@@ -79,7 +75,7 @@ class PrivacyDialog extends Dialog {
     );
   }
 
-  _createButton(bool agree) {
+  _createButton(BuildContext context, bool agree) {
     return TextButton(
         style: TextButton.styleFrom(
             shape: RoundedRectangleBorder(

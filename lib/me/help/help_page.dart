@@ -2,14 +2,8 @@
  *  Copyright (C) 2018-2024
  *  All rights reserved, Designed By www.mailvor.com
  */
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
-
 import '../../util/colors.dart';
-import '../../util/paixs_fun.dart';
 
 class HelpPage2 extends StatefulWidget {
   @override
@@ -21,77 +15,76 @@ class _HelpPage2State extends State<HelpPage2> {
   int radius = 8;
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      bgColor: Colors.white,
-      appBar: buildTitle(context,
-          title: '新手帮助',
-          widgetColor: Colors.black,
-          leftIcon: Icon(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          '新手帮助',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
-          )),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: Container(
         child: ListView(
           children: [
-            createCard(
-              'hot',
+            createCard('hot',
                 icon: Icon(
                   Icons.hotel_class,
                   color: Colors.white,
                   size: size,
                 ),
                 title: '热门问题'),
-            createCard(
-              'gongneng',
+            createCard('gongneng',
                 icon: Icon(
                   Icons.functions,
                   color: Colors.white,
                   size: size,
                 ),
                 title: '产品功能'),
-            createCard(
-                'invite',
+            createCard('invite',
                 icon: Icon(
                   Icons.calculate_outlined,
                   color: Colors.white,
                   size: size,
                 ),
                 title: '邀请好友'),
-            createCard(
-              'order',
+            createCard('order',
                 icon: Icon(
                   Icons.collections,
                   color: Colors.white,
                   size: size,
                 ),
                 title: '关于订单'),
-            createCard(
-                'income',
+            createCard('income',
                 icon: Icon(
                   Icons.collections_bookmark,
                   color: Colors.white,
                   size: size,
                 ),
                 title: '关于收益'),
-            createCard(
-                'tixian',
+            createCard('tixian',
                 icon: Icon(
                   Icons.outbox,
                   color: Colors.white,
                   size: size,
                 ),
                 title: '关于提现'),
-            createCard(
-              'youhui',
+            createCard('youhui',
                 icon: Icon(
                   Icons.countertops,
                   color: Colors.white,
                   size: size,
                 ),
                 title: '关于优惠'),
-            createCard(
-                'jifen',
+            createCard('jifen',
                 icon: Icon(
                   Icons.calculate_outlined,
                   color: Colors.white,
@@ -111,38 +104,46 @@ class _HelpPage2State extends State<HelpPage2> {
     );
   }
 
-  Widget createCard(key, {
+  Widget createCard(
+    key, {
     title,
     icon,
   }) {
-    return PWidget.container(
-        Center(
-          child: ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 25),
-            leading: icon,
-            trailing: Text(
-              title!,
-              style: TextStyle(
-                fontSize: 21,
-                color: Colors.white,
+    return Container(
+      margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+      decoration: BoxDecoration(
+        color: Colours.app_main,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0XFF585858).withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: Offset(5, 5),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            Navigator.pushNamed(context, '/helpContentPage', arguments: {'key': key, 'title': title});
+          },
+          child: Center(
+            child: ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 25),
+              leading: icon,
+              trailing: Text(
+                title!,
+                style: TextStyle(
+                  fontSize: 21,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
         ),
-        [
-          null,
-          null,
-          Colours.app_main
-        ],
-        {
-          'fun': () {
-            Navigator.pushNamed(context, '/helpContentPage', arguments: {'key': key,'title': title});
-          },
-          'anima': [1000],
-          'mg': PFun.lg(20, 20, 50, 50),
-          'br': 20,
-          'sd': [Color(0XFF585858).withOpacity(.3), 8, 5, 5]
-          // curve: Curves.elasticInOut,
-        });
+      ),
+    );
   }
 }

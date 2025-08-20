@@ -4,12 +4,10 @@
  */
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 import 'package:pinput/pinput.dart';
 import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/util/toast_utils.dart';
@@ -19,7 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../service.dart';
 import '../../../util/colors.dart';
 import '../../pay/ios_payment_state.dart';
-import '../../util/paixs_fun.dart';
+
 import '../../widget/CustomWidgetPage.dart';
 import '../../widget/custom_button.dart';
 import '../../widget/load_image.dart';
@@ -184,17 +182,20 @@ class _CashierPageState extends IOSPaymentState {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return ScaffoldWidget(
-        brightness: Brightness.dark,
-        bgColor: Color(0xfffafafa),
-        appBar: buildTitle(context,
-            title: '收银台',
-            widgetColor: Colours.vip_black,
-            color: Colours.vip_white,
-            leftIcon: Icon(
+    return Scaffold(
+        backgroundColor: Color(0xfffafafa),
+        appBar: AppBar(
+          title: Text('收银台'),
+          backgroundColor: Colours.vip_white,
+          foregroundColor: Colours.vip_black,
+          leading: IconButton(
+            icon: Icon(
               Icons.arrow_back_ios,
               color: Colours.vip_black,
-            )),
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
         body: loading ? Global.showLoading2() : createContent(size));
   }
 
@@ -212,32 +213,56 @@ class _CashierPageState extends IOSPaymentState {
     }
     bool isIos = Global.isIOS();
     List<Widget> widgets = [
-      PWidget.text('￥', [
-        Colours.app_main,
-        16
-      ], {
-        'ct': true
-      }, [
-        PWidget.textIs(start, [Colours.app_main, 26]),
-        PWidget.textIs('.$end', [Colours.app_main, 16]),
-      ]),
-      PWidget.boxh(30),
-      PWidget.container(
-          PWidget.column([
-            PWidget.textNormal('订单详情'),
-            PWidget.boxh(16),
-            PWidget.text(orderDesc,[],{'max':2}),
-            PWidget.boxh(8),
+      Center(
+        child: RichText(
+          text: TextSpan(
+            text: '￥',
+            style: TextStyle(color: Colours.app_main, fontSize: 16),
+            children: [
+              TextSpan(
+                text: start,
+                style: TextStyle(color: Colours.app_main, fontSize: 26),
+              ),
+              TextSpan(
+                text: '.$end',
+                style: TextStyle(color: Colours.app_main, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+      ),
+      SizedBox(height: 30),
+      Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('订单详情', style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+            SizedBox(height: 16),
+            Text(orderDesc, maxLines: 2, overflow: TextOverflow.ellipsis),
+            SizedBox(height: 8),
             Divider(),
-            PWidget.boxh(8),
-            PWidget.text('合计金额  ', [], {}, [PWidget.textIs('￥$start.$end')])
-          ]),
-          [null, null, Colors.white],
-          {'pd': 16, 'br': 16}),
+            SizedBox(height: 8),
+            RichText(
+              text: TextSpan(
+                text: '合计金额  ',
+                style: TextStyle(color: Colors.black),
+                children: [
+                  TextSpan(text: '￥$start.$end'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
       if(!isIos)
-        PWidget.boxh(20),
+        SizedBox(height: 20),
       if(!isIos)
-        PWidget.text('选择支付方式', [Colors.black, 16]),
+        Text('选择支付方式', style: TextStyle(color: Colors.black, fontSize: 16)),
       createPayItem()
     ];
     return Stack(
@@ -259,46 +284,51 @@ class _CashierPageState extends IOSPaymentState {
     }else {
       desc = '$valid天 ';
     }
-    return PWidget.container(
-        PWidget.text(desc, [
-          Colors.black,
-          14,
-          true
-        ], {}, [
-          PWidget.textIs(
-            '￥',
-            [Colours.app_main, 14, true],
-          ),
-          PWidget.textIs(
-            '$start.$end ',
-            [Colours.app_main, 20, true],
-          ),
-          if(rechargeType == 0)
-            PWidget.textIs(
-              '折合${(endPrice / 12).toStringAsFixed(2)}元/月',
-              [Colors.black, 14, true],
+    return Container(
+      width: 300,
+      height: 40,
+      decoration: BoxDecoration(
+        color: Color(0xffFAEDE6),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          bottomLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+          bottomRight: Radius.circular(12),
+        ),
+      ),
+      alignment: Alignment.centerLeft,
+      child: RichText(
+        text: TextSpan(
+          text: desc,
+          style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+          children: [
+            TextSpan(
+              text: '￥',
+              style: TextStyle(color: Colours.app_main, fontSize: 14, fontWeight: FontWeight.bold),
             ),
-          if(rechargeType != 0)
-            PWidget.textIs(
-              '折合${(endPrice / valid).toStringAsFixed(2)}元/天',
-              [Colors.black, 14, true],
+            TextSpan(
+              text: '$start.$end ',
+              style: TextStyle(color: Colours.app_main, fontSize: 20, fontWeight: FontWeight.bold),
             ),
-        ]),
-        [
-          300,
-          40,
-          Color(0xffFAEDE6)
-        ],
-        {
-          'ali': PFun.lg(0, 0),
-          'br': PFun.lg(12, 1, 1, 12),
-          'wali': PFun.lg(0, 0),
-        });
+            if(rechargeType == 0)
+              TextSpan(
+                text: '折合${(endPrice / 12).toStringAsFixed(2)}元/月',
+                style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            if(rechargeType != 0)
+              TextSpan(
+                text: '折合${(endPrice / valid).toStringAsFixed(2)}元/天',
+                style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget createPayItem() {
     List<Widget> items = [];
-    items.add(PWidget.boxh(15));
+    items.add(SizedBox(height: 15));
     List<Widget> payButtons = [];
     if (!Global.isIOS()) {
       if (alipayE == '1') {
@@ -326,35 +356,37 @@ class _CashierPageState extends IOSPaymentState {
         );
       }
       items.add(
-        PWidget.container(PWidget.column(payButtons), [null, null, Colors.white],
-            {'pd': 16, 'br': 16}),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: EdgeInsets.all(16),
+          child: Column(children: payButtons),
+        ),
       );
     }
 
-    items.add(PWidget.boxh(10));
+    items.add(SizedBox(height: 10));
     items.add(createPriceItem());
-    items.add(PWidget.boxh(10));
+    items.add(SizedBox(height: 10));
     items.add(createPayBtn());
-    items.add(PWidget.boxh(15));
-    items.add(PWidget.row([
-      PWidget.text('支付前请阅读', [
-        Colors.black45,
-        13,
-      ]),
-      PWidget.text('《加盟协议》', [
-        Colors.black45,
-        13,
-      ], {
-        'td': TextDecoration.underline,
-        'fun': () {
-          Global.showProtocolPage(Global.vipUrl, '加盟协议');
-        }
-      }),
-    ], [
-      '2',
-      '2',
-      '1'
-    ]));
+    items.add(SizedBox(height: 15));
+    items.add(Row(
+      children: [
+        Text('支付前请阅读', style: TextStyle(color: Colors.black45, fontSize: 13)),
+        GestureDetector(
+          onTap: () {
+            Global.showProtocolPage(Global.vipUrl, '加盟协议');
+          },
+          child: Text('《加盟协议》', style: TextStyle(
+            color: Colors.black45, 
+            fontSize: 13,
+            decoration: TextDecoration.underline,
+          )),
+        ),
+      ],
+    ));
     return MyScrollView(
       children: items,
     );
@@ -533,13 +565,16 @@ class _CashierPageState extends IOSPaymentState {
           'url': res['url'],
           'orderId': res['localOrderId'],
           'refresh': false,
-          'appBar': buildTitle(context,
-              title: '收银台',
-              widgetColor: Colors.black,
-              leftIcon: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              ))
+          'appBar': AppBar(
+            title: Text('收银台', style: TextStyle(color: Colors.black)),
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          )
         }).then((value) {
           if (value != null && value as bool) {
             refreshAfterPaySuccess();
@@ -619,55 +654,60 @@ class _CashierPageState extends IOSPaymentState {
                       height: iconSize,
                     ),
                   if (type == 3)
-                    PWidget.icon(
-                        Icons.credit_card_outlined, [Colors.blue, iconSize]),
+                    Icon(Icons.credit_card_outlined, color: Colors.blue, size: iconSize),
                   if (type == 4 && logoUrl.isEmpty)
-                    PWidget.icon(
-                        Icons.credit_score, [Colors.blue, iconSize]),
+                    Icon(Icons.credit_score, color: Colors.blue, size: iconSize),
                   if (type == 4 && logoUrl.isNotEmpty)
-                      PWidget.wrapperImage(logoUrl, [25, 15]),
-                  PWidget.boxw(2),
+                    Image.network(logoUrl, width: 25, height: 15),
+                  SizedBox(width: 2),
                   Text(name),
                   Spacer(),
                   if ((type == 1 && ac == '1') ||
                       (type == 2 && wc == '1') ||
                       (type == 3 && bc == '1') ||
                       type == 4 && bbc == '1')
-                    PWidget.container(
-                      PWidget.text('立减￥$coupon', [Colors.white, 12]),
-                      [null, null, Colours.app_main],
-                      {
-                        'bd': PFun.bdAllLg(Colours.app_main, 0.5),
-                        'pd': PFun.lg(1, 1, 4, 4),
-                        'br': PFun.lg(0, 4, 0, 4)
-                      },
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colours.app_main,
+                        border: Border.all(color: Colours.app_main, width: 0.5),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          bottomLeft: Radius.circular(4),
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                      child: Text('立减￥$coupon', style: TextStyle(color: Colors.white, fontSize: 12)),
                     ),
-                  PWidget.boxw(10),
+                  SizedBox(width: 10),
                   type==4 && cardList.isEmpty ?
-                  PWidget.icon(
-                      Icons.keyboard_arrow_right, [Colors.blue, 24])
+                  Icon(Icons.keyboard_arrow_right, color: Colors.blue, size: 24)
                   :
                   LoadAssetImage(
                       _withdrawalType == type ? 'cash/txxz' : 'cash/txwxz',
                       width: 16.0),
-                  PWidget.boxw(4),
+                  SizedBox(width: 4),
                 ],
               ),
               Padding(padding: EdgeInsets.only(top: 5)),
               if (type == 4 && cardList.isNotEmpty)
-                PWidget.row([
-                  PWidget.boxw(30),
-                  PWidget.text('换卡支付(暂不支持信用卡)', [Colors.grey, 12],
-                  {'fun':(){
-                    Cardlist();
-                  }}),
-                  PWidget.boxw(5),
-                  PWidget.icon(
-                      Icons.keyboard_arrow_right, [Colors.grey, 20],
-                      {'fun':(){
+                Row(
+                  children: [
+                    SizedBox(width: 30),
+                    GestureDetector(
+                      onTap: () {
                         Cardlist();
-                      }}),
-                ], '201')
+                      },
+                      child: Text('换卡支付(暂不支持信用卡)', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                    ),
+                    SizedBox(width: 5),
+                    GestureDetector(
+                      onTap: () {
+                        Cardlist();
+                      },
+                      child: Icon(Icons.keyboard_arrow_right, color: Colors.grey, size: 20),
+                    ),
+                   ],
+                 )
             ],
           ),
         ));
@@ -679,7 +719,7 @@ class _CashierPageState extends IOSPaymentState {
         context: context,
         dialogType: DialogType.noHeader,
         showCloseIcon: true,
-        body: PayConfirmDialog(start, end, bankNo, bankName,orderId,bizSn,phone, logoUrl),
+        body: PayConfirmDialog(start, end, bankNo, bankName,orderId,bizSn,phone, logoUrl, (pin) => _handleVerifyCode(pin, bizSn, orderId)),
         onDismissCallback: (DismissType type) {}
         // btnCancelOnPress: () {},
         // btnOkOnPress: () {}
@@ -690,29 +730,46 @@ class _CashierPageState extends IOSPaymentState {
       });
   }
 
+  void _handleVerifyCode(String pin, String bizSn, String orderId) async {
+    Loading.show(context);
+    var res = await BService.bindBankConfirm(pin, bizSn, orderId);
+    Loading.hide(context);
+    if (res['code'] == 200) {
+      Fluttertoast.showToast(msg: '支付成功');
+      Navigator.pop(context, true);
+    } else {
+      Fluttertoast.showToast(msg: res['msg']);
+    }
+  }
+
   void Cardlist() {
     showModalBottomSheet(
         context: context,
         builder: (context) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
-            PWidget.row([
-              PWidget.boxw(20),
-              PWidget.icon(Icons.add_card, [Colors.red, 28]),
-              PWidget.boxw(5),
-              Text('添加新的银行卡'),
-              Spacer(),
-              PWidget.icon(Icons.arrow_forward_ios_outlined, [Colors.grey, 14]),
-            ], {
-              'pd': PFun.lg(20, 0, 10, 10),
-              'fun': () {
+            GestureDetector(
+              onTap: () {
                 Navigator.pushNamed(context, "/addCard").then((value) {
                   setState(() {
                     getListData();
                     Navigator.pop(context);
                   });
                 });
-              }
-            }),
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 10, 10),
+                child: Row(
+                  children: [
+                    SizedBox(width: 20),
+                    Icon(Icons.add_card, color: Colors.red, size: 28),
+                    SizedBox(width: 5),
+                    Text('添加新的银行卡'),
+                    Spacer(),
+                    Icon(Icons.arrow_forward_ios_outlined, color: Colors.grey, size: 14),
+                  ],
+                ),
+              ),
+            ),
             Divider(),
             Container(
               // height: MediaQuery.of(context).size.height * 0.7,
@@ -720,44 +777,49 @@ class _CashierPageState extends IOSPaymentState {
               child: ListView.builder(
                   itemCount: cardList.length,
                   itemBuilder: (context, index) {
-                    return PWidget.container(
-                        PWidget.column([
-                          PWidget.row([
-                            PWidget.boxw(20),
-                            PWidget.wrapperImage(cardList[index]['logo'], [25, 15]),
-                            PWidget.boxw(5),
-                            Text(cardList[index]['bankName'] +
-                                '(' +
-                                cardList[index]['bankNo'] +
-                                ')'),
-                            Spacer(),
-                            // if(cardList[index]['isDefault'] == 1)
-                            // PWidget.container(
-                            //   PWidget.text('上次支付', [Colors.white, 12]),
-                            //   [null, null, Colors.grey],
-                            //   {
-                            //     'bd': PFun.bdAllLg(Colors.grey, 0.5), //边框线 0.5宽度
-                            //     'pd': PFun.lg(1, 2, 4, 4),
-                            //     'br': PFun.lg(4, 4, 4, 4)
-                            //   },
-                            // )
-                          ]),
-                          Divider(),
-                        ]),
-                        {
-                          'pd': PFun.lg(10, 0, 10, 10),
-                          'fun': () async {
-                            bankName = cardList[index]['bankName'];
-                            bankNo = cardList[index]['bankNo'];
-                            bankId = cardList[index]['id'];
-                            phone = cardList[index]['phone'];
-                            logoUrl = cardList[index]['logo'];
-                            setState(() {
+                    return GestureDetector(
+                      onTap: () async {
+                        bankName = cardList[index]['bankName'];
+                        bankNo = cardList[index]['bankNo'];
+                        bankId = cardList[index]['id'];
+                        phone = cardList[index]['phone'];
+                        logoUrl = cardList[index]['logo'];
+                        setState(() {
 
-                            });
-                            Navigator.pop(context);
-                          }
                         });
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(width: 20),
+                                Image.network(cardList[index]['logo'], width: 25, height: 15),
+                                SizedBox(width: 5),
+                                Text(cardList[index]['bankName'] +
+                                    '(' +
+                                    cardList[index]['bankNo'] +
+                                    ')'),
+                                Spacer(),
+                                // if(cardList[index]['isDefault'] == 1)
+                                // Container(
+                                //   decoration: BoxDecoration(
+                                //     color: Colors.grey,
+                                //     border: Border.all(color: Colors.grey, width: 0.5),
+                                //     borderRadius: BorderRadius.circular(4),
+                                //   ),
+                                //   padding: EdgeInsets.fromLTRB(1, 2, 4, 4),
+                                //   child: Text('上次支付', style: TextStyle(color: Colors.white, fontSize: 12)),
+                                // )
+                              ],
+                            ),
+                            Divider(),
+                          ],
+                        ),
+                      ),
+                    );
                   }),
             ),
           ]);
@@ -786,17 +848,18 @@ class _CashierPageState extends IOSPaymentState {
 }
 
 class PayConfirmDialog extends Dialog {
-  String start = '';
-  String end = '';
-  String bankNo = '';
-  String bankName = '';
-  String orderId = '';
-  String bizSn = '';
-  String phone = '';
-  String logo = '';
+  final String start;
+  final String end;
+  final String bankNo;
+  final String bankName;
+  final String orderId;
+  final String bizSn;
+  final String phone;
+  final String logo;
+  final Function(String) onVerifyCode;
 
   PayConfirmDialog(this.start, this.end, this.bankNo, this.bankName,
-      this.orderId, this.bizSn, this.phone, this.logo);
+      this.orderId, this.bizSn, this.phone, this.logo, this.onVerifyCode);
 
   @override
   Widget build(BuildContext context) {
@@ -815,15 +878,24 @@ class PayConfirmDialog extends Dialog {
                 color: Colors.black87,
               )),
           Padding(padding: EdgeInsets.only(top: 5)),
-          PWidget.text('￥', [
-            Colours.app_main,
-            16
-          ], {
-            'ct': true
-          }, [
-            PWidget.textIs(start, [Colours.app_main, 26]),
-            PWidget.textIs('.$end', [Colours.app_main, 16]),
-          ]),
+          Center(
+            child: RichText(
+              text: TextSpan(
+                text: '￥',
+                style: TextStyle(color: Colours.app_main, fontSize: 16),
+                children: [
+                  TextSpan(
+                    text: start,
+                    style: TextStyle(color: Colours.app_main, fontSize: 26),
+                  ),
+                  TextSpan(
+                    text: '.$end',
+                    style: TextStyle(color: Colours.app_main, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Padding(padding: EdgeInsets.only(top: 15)),
           Row(
             children: [
@@ -835,7 +907,7 @@ class PayConfirmDialog extends Dialog {
               Expanded(
                 child: Text(''),
               ),
-              PWidget.wrapperImage(logo, [25, 15]),
+              Image.network(logo, width: 25, height: 15),
               Text(bankName + '(' + bankNo + ')',
                   style: TextStyle(
                     color: Colors.black,
@@ -873,20 +945,8 @@ class PayConfirmDialog extends Dialog {
         length: 6,
         autofocus: true,
         onChanged: (pin) => {},
-        onCompleted: (pin) => {verify_code(pin)},
+        onCompleted: (pin) => {onVerifyCode(pin)},
       ),
     );
-  }
-
-  verify_code(String pin) async {
-    Loading.show(context);
-    Map res = await BService.bindBankConfirm(pin, bizSn, orderId);
-    Loading.hide(context);
-    if(res['success'] && res['data']['confirm']){
-      ToastUtils.showToast('支付成功');
-      Navigator.pop(context, true);
-    } else {
-      ToastUtils.showToast('支付失败，余额不足');
-    }
   }
 }

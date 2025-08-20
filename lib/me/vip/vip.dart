@@ -8,12 +8,6 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluwx/fluwx.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:vector_math/vector_math.dart' as vector;
@@ -22,7 +16,6 @@ import '../../../service.dart';
 import '../../../util/colors.dart';
 import '../../util/bao_icons.dart';
 import '../../util/login_util.dart';
-import '../../util/paixs_fun.dart';
 import '../../widget/CustomWidgetPage.dart';
 import '../../widget/custom_button.dart';
 import '../../widget/my_scroll_view.dart';
@@ -30,6 +23,19 @@ import '../listener/PersonalNotifier.dart';
 import '../listener/WxPayNotifier.dart';
 
 const marginSide = 14.0;
+
+// Simple DataModel replacement for maixs_utils
+class DataModel {
+  List<dynamic> list = [];
+
+  void addList(List<dynamic> items, bool clear, int maxItems) {
+    if (clear) list.clear();
+    list.addAll(items);
+    if (list.length > maxItems) {
+      list = list.take(maxItems).toList();
+    }
+  }
+}
 
 class VipPage extends StatefulWidget {
   final Map data;
@@ -303,51 +309,73 @@ class _VipPageState extends State<VipPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     if (data['multi']) {
-      return ScaffoldWidget(bgColor: Colours.vip_white, body: createContent(size));
+      return Scaffold(
+        backgroundColor: Colours.vip_white,
+        body: createContent(size),
+      );
     }
-    return ScaffoldWidget(
-        brightness: Brightness.dark,
-        appBar: buildTitle(context,
-            title: '加盟星选会员',
-            widgetColor: Colours.vip_black,
-            color: Colours.vip_white,
-            leftIcon: Icon(
-              Icons.arrow_back_ios,
-              color: Colours.vip_black,
-            )),
-        bgColor: Colours.vip_white,
-        body: createContent(size));
+    return Scaffold(
+      backgroundColor: Colours.vip_white,
+      appBar: AppBar(
+        title: Text(
+          '加盟星选会员',
+          style: TextStyle(color: Colours.vip_black),
+        ),
+        backgroundColor: Colours.vip_white,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colours.vip_black,
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        elevation: 0,
+      ),
+      body: createContent(size),
+    );
   }
 
   createContent(size) {
     List<Widget> widgets = [
       loading
           ? Global.showLoading2()
-          : PWidget.container(
-              PageView.builder(
+          : Container(
+              height: 200,
+              child: PageView.builder(
                   controller: _pageController,
                   itemCount: _grades.length,
                   itemBuilder: (context, index) {
                     return createItem(index, size);
                   }),
-              [null, 200]),
-      PWidget.container(
-          MyCustomScroll(
-            isShuaxin: false,
-            isGengduo: false,
-            itemPadding: EdgeInsets.all(5),
-            crossAxisCount: 2,
-            btmWidget: SizedBox(),
-            itemModel: listDm,
-            itemModelBuilder: (i, v) {
-              return PWidget.container(
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: createBoxItem(v)),
-                [null, null, Colors.white],
-                {'pd': 2, 'mg': PFun.lg(0, 16), 'fun': v['fun']},
+            ),
+      Container(
+          height: 250,
+          child: GridView.builder(
+            padding: EdgeInsets.all(5),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 1.0,
+            ),
+            itemCount: listDm.list.length,
+            itemBuilder: (context, i) {
+              var v = listDm.list[i];
+              return GestureDetector(
+                onTap: v['fun'],
+                child: Container(
+                  margin: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: createBoxItem(v),
+                  ),
+                ),
               );
             },
-          ),
-          [null, 250]),
+          )),
       createPayItem()
     ];
     return Stack(
@@ -367,17 +395,28 @@ class _VipPageState extends State<VipPage> {
     String title = v['title'];
     String desc = v['content'];
 
-    titleWidget = PWidget.text(title, [Colors.black, 14]);
+    titleWidget = Text(
+      title,
+      style: TextStyle(color: Colors.black, fontSize: 14),
+    );
     if (userLevel == 5) {
-      descWidget = shimmerWidget(PWidget.textNormal(desc, [Colors.black, 12]));
+      descWidget = shimmerWidget(
+        Text(
+          desc,
+          style: TextStyle(color: Colors.black, fontSize: 12),
+        ),
+      );
     } else {
-      descWidget = PWidget.textNormal(desc, [Colors.black, 12]);
+      descWidget = Text(
+        desc,
+        style: TextStyle(color: Colors.black, fontSize: 12),
+      );
     }
     return [
       v['icon'] == null
           ? SvgPicture.asset(v['path'], width: 24, height: 24, color: v['color'])
-          : PWidget.icon(v['icon'], [Colors.red, 24]),
-      PWidget.boxh(5),
+          : Icon(v['icon'], color: Colors.red, size: 24),
+      SizedBox(height: 5),
       titleWidget,
       descWidget,
     ];
@@ -407,9 +446,11 @@ class _VipPageState extends State<VipPage> {
         children: [
           Stack(
             children: [
-              PWidget.image(
+              Image.asset(
                 'assets/images/lv/vip_bg.png',
-                [450, 310],
+                width: 450,
+                height: 310,
+                fit: BoxFit.cover,
               ),
               Container(
                 padding: const EdgeInsets.all(12.0),
@@ -434,19 +475,21 @@ class _VipPageState extends State<VipPage> {
                     Row(
                       children: [
                         !Global.isEmpty(expired)
-                            ? PWidget.container(
-                                shimmerWidget(
-                                    PWidget.text(expired, [
-                                      Colors.white,
-                                      12
-                                    ], {
-                                      'pd': [0, 0, 4, 4]
-                                    }),
-                                    color: Colors.white),
-                                [],
-                                {
-                                  'pd': PFun.lg(4, 4, 4, 18),
-                                },
+                            ? Container(
+                                padding: EdgeInsets.fromLTRB(4, 4, 4, 18),
+                                child: shimmerWidget(
+                                  Container(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 4, 4),
+                                    child: Text(
+                                      expired,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                  color: Colors.white,
+                                ),
                               )
                             : SizedBox(),
                       ],
@@ -464,9 +507,9 @@ class _VipPageState extends State<VipPage> {
   Widget createPayItem() {
     List<Widget> items = [];
 
-    items.add(PWidget.boxh(10));
+    items.add(SizedBox(height: 10));
     if (_withdrawalType != 0) {
-      items.add(PWidget.boxh(10));
+      items.add(SizedBox(height: 10));
     }
     items.add(createPayBtn());
 
@@ -481,8 +524,9 @@ class _VipPageState extends State<VipPage> {
     if (helpUser.isNotEmpty) {
       okTxt = '立即代付';
     }
-    return PWidget.container(
-        CustomButton(
+    return Container(
+        padding: EdgeInsets.fromLTRB(0, 0, 30, 30),
+        child: CustomButton(
           bgColor: payEnabled ? Colours.open_shop : Colors.grey,
           showIcon: false,
           textColor: payEnabled ? Colors.white : Colours.text_disabled,
@@ -521,10 +565,7 @@ class _VipPageState extends State<VipPage> {
                 dialogType: DialogType.noHeader, showCloseIcon: true, context: context, body: signCashierPage())
               ..show();
           },
-        ),
-        {
-          'pd': [0, 0, 30, 30]
-        });
+        ));
   }
 
   refreshAfterPaySuccess() {
@@ -561,44 +602,56 @@ class _VipPageState extends State<VipPage> {
   }
 
   signCashierPage() {
-    return PWidget.container(
-      PWidget.column([
-        PWidget.textNormal('星选会员', [Colors.black, 18], {'ct': true}),
-        PWidget.boxh(15),
-        PWidget.textNormal('请选择加盟方式', [Colors.black, 14], {'ct': true}),
-        PWidget.boxh(15),
-        PWidget.row([
-          TextButton(
-              onPressed: () {
-                price = gradeModel['monthMoney'];
-                valid = gradeModel['monthValidDate'];
-                rechargeType = 2;
-                //有效期一个月
-                press(context);
-              },
-              child: Text("月会员￥${gradeModel['monthMoney']}", style: TextStyle(color: Colors.white, fontSize: 14)),
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.only(top: 4, left: 14, right: 14, bottom: 4),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                backgroundColor: Colors.orange,
-              )),
-          PWidget.boxw(20),
-          TextButton(
-              onPressed: () {
-                price = gradeModel['money'];
-                rechargeType = 0;
-                press(context);
-              },
-              child: Text("年会员￥${gradeModel['money']}", style: TextStyle(color: Colors.white, fontSize: 14)),
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.only(top: 4, left: 14, right: 14, bottom: 4),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                backgroundColor: Colours.app_main,
-              ))
-        ], '221')
-      ], {
-        'pd': [10, 20, 15, 15]
-      }),
+    return Container(
+      padding: EdgeInsets.fromLTRB(10, 20, 15, 15),
+      child: Column(
+        children: [
+          Text(
+            '星选会员',
+            style: TextStyle(color: Colors.black, fontSize: 18),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 15),
+          Text(
+            '请选择加盟方式',
+            style: TextStyle(color: Colors.black, fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    price = gradeModel['monthMoney'];
+                    valid = gradeModel['monthValidDate'];
+                    rechargeType = 2;
+                    //有效期一个月
+                    press(context);
+                  },
+                  child: Text("月会员￥${gradeModel['monthMoney']}", style: TextStyle(color: Colors.white, fontSize: 14)),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.only(top: 4, left: 14, right: 14, bottom: 4),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    backgroundColor: Colors.orange,
+                  )),
+              SizedBox(width: 20),
+              TextButton(
+                  onPressed: () {
+                    price = gradeModel['money'];
+                    rechargeType = 0;
+                    press(context);
+                  },
+                  child: Text("年会员￥${gradeModel['money']}", style: TextStyle(color: Colors.white, fontSize: 14)),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.only(top: 4, left: 14, right: 14, bottom: 4),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    backgroundColor: Colours.app_main,
+                  ))
+            ],
+          )
+        ],
+      ),
     );
   }
 

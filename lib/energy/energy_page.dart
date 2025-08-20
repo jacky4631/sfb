@@ -2,15 +2,7 @@
  *  Copyright (C) 2018-2024
  *  All rights reserved, Designed By www.mailvor.com
  */
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/energy/wave_view.dart';
 import 'package:sufenbao/me/styles.dart';
@@ -18,7 +10,6 @@ import 'package:sufenbao/me/styles.dart';
 import '../service.dart';
 import '../util/colors.dart';
 import '../util/login_util.dart';
-import '../util/paixs_fun.dart';
 import '../widget/rise_number_text.dart';
 
 ///热度页面
@@ -53,11 +44,11 @@ class _EnergyPageState extends State<EnergyPage>
   }
 
   ///列表数据
-  var listDm = DataModel();
+  var listDm = EnergyDataModel();
   Future<int> getListData({int page = 1, bool isRef = false}) async {
     listDm.addList([{"test":1}], isRef, 1);
     setState(() {});
-    return getTime();
+    return DateTime.now().millisecondsSinceEpoch;
   }
   Future getEnergy() async {
     userEnergy = await BService.getEnergyDetail();
@@ -67,137 +58,261 @@ class _EnergyPageState extends State<EnergyPage>
   }
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      bgColor: Colors.white,
-      appBar: buildTitle(context, title: '星选会员',
-          widgetColor: Colors.black, leftIcon: Icon(Icons.arrow_back_ios)),
-      body: MyCustomScroll(
-              isGengduo: false,
-              isShuaxin: true,
-              onRefresh: () => this.initData(),
-              onLoading: (p) => this.getListData(page: p),
-              itemModel: listDm,
-              refHeader: buildClassicHeader(color: Colors.grey),
-              refFooter: buildCustomFooter(color: Colors.grey),
-              crossAxisCount: 1,
-              crossAxisSpacing: 12,
-              headers: headers,
-              maskHeight: 40 + pmPadd.top,
-              itemPadding: EdgeInsets.all(16),
-              itemModelBuilder: (i, v) {
-                return SizedBox();
-              },
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('星选会员', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        elevation: 0,
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await initData();
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate(headers),
             ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  if (index < listDm.list.length) {
+                    return Padding(
+                      padding: EdgeInsets.all(16),
+                      child: SizedBox(),
+                    );
+                  } else if (listDm.hasNext) {
+                    // Load more trigger
+                    getListData(page: listDm.page + 1);
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  return null;
+                },
+                childCount: listDm.list.length + (listDm.hasNext ? 1 : 0),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
   List<Widget> get headers {
     return [
-      PWidget.container(
-        PWidget.column(
-            [
-              PWidget.row([
-                PWidget.column([
-                  PWidget.text('总热度', [Colors.white]),
-                  PWidget.boxh(5),
-                  loadingEnergy?SizedBox():RiseNumberText(userEnergy['totalEnergy'], fixed:1,
-                      style: TextStyles.ts(fontSize: 24)),
-                ]),
-                PWidget.spacer(),
-                PWidget.container(PWidget.text('热度明细', [Colours.app_main]),
-                  [null, null, Colors.white],
-                  {'bd': PFun.bdAllLg(Colors.white), 'pd': PFun.lg(4, 4, 8, 8),
-                    'mg': PFun.lg(4, 4, 8, 8),'br': PFun.lg(16, 16, 16, 16),'fun':(){
-                    Navigator.pushNamed(context, '/energyList', arguments: widget.data);
-                  }},
-
-                )
-              ],{'pd':[20,0,10,10]}
+      Container(
+        height: 700,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colours.app_main, Colours.app_main],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        padding: EdgeInsets.fromLTRB(0, 0, 20, 20),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(20, 0, 10, 10),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('总热度', style: TextStyle(color: Colors.white)),
+                      SizedBox(height: 5),
+                      loadingEnergy ? SizedBox() : RiseNumberText(
+                        userEnergy['totalEnergy'], 
+                        fixed: 1,
+                        style: TextStyles.ts(fontSize: 24)
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/energyList', arguments: widget.data);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.white),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: EdgeInsets.fromLTRB(4, 4, 8, 8),
+                      margin: EdgeInsets.fromLTRB(4, 4, 8, 8),
+                      child: Text('热度明细', style: TextStyle(color: Colours.app_main)),
+                    ),
+                  ),
+                ],
               ),
+            ),
 
-              PWidget.container(
-                  PWidget.column([
-                    PWidget.row([
-                      PWidget.column([
-                        PWidget.image('assets/images/mall/tb.png', [18, 18], {'crr': 8}),
-                        PWidget.boxh(8),
-                        PWidget.image('assets/images/mall/jd.png', [18, 18], {'crr': 8}),
-                        PWidget.boxh(8),
-                        PWidget.image('assets/images/mall/pdd.png', [18, 18], {'crr': 8}),
-                        PWidget.boxh(8),
-                        PWidget.image('assets/images/mall/dy.png', [18, 18], {'crr': 8}),
-                        PWidget.boxh(8),
-                        PWidget.image('assets/images/mall/vip.png', [18, 18], {'crr': 8}),
-                      ]),
-                      PWidget.boxw(20),
-                      PWidget.column([
-                        PWidget.text(loadingEnergy?'赠送: ':'赠送: ${userEnergy['tbEnergy']}',[Colors.white,14]),
-                        PWidget.boxh(8),
-                        PWidget.text(loadingEnergy?'赠送: ':'赠送: ${userEnergy['jdEnergy']}',[Colors.white,14]),
-                        PWidget.boxh(8),
-                        PWidget.text(loadingEnergy?'赠送: ':'赠送: ${userEnergy['pddEnergy']}',[Colors.white,14]),
-                        PWidget.boxh(8),
-                        PWidget.text(loadingEnergy?'赠送: ':'赠送: ${userEnergy['dyEnergy']}',[Colors.white,14]),
-                        PWidget.boxh(8),
-                        PWidget.text(loadingEnergy?'赠送: ':'赠送: ${userEnergy['vipEnergy']}',[Colors.white,14]),
-                      ]),
-                      PWidget.boxw(10),
-                      PWidget.column([
-                        PWidget.text(loadingEnergy?'推广: ':'推广: ${userEnergy['tbTuiEnergy']}',[Colors.white,14]),
-                        PWidget.boxh(8),
-                        PWidget.text(loadingEnergy?'推广: ':'推广: ${userEnergy['jdTuiEnergy']}',[Colors.white,14]),
-                        PWidget.boxh(8),
-                        PWidget.text(loadingEnergy?'推广: ':'推广: ${userEnergy['pddTuiEnergy']}',[Colors.white,14]),
-                        PWidget.boxh(8),
-                        PWidget.text(loadingEnergy?'推广: ':'推广: ${userEnergy['dyTuiEnergy']}',[Colors.white,14]),
-                        PWidget.boxh(8),
-                        PWidget.text(loadingEnergy?'推广: ':'推广: ${userEnergy['vipTuiEnergy']}',[Colors.white,14]),
-                      ]),
-                    ],),
-
-                  ]),
-                  [null, null, Colors.transparent], {'pd': PFun.lg(10, 15, 8, 8), 'br': PFun.lg(16, 16, 16, 16)}
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
               ),
-              loadingEnergy?SizedBox():PWidget.container(
-                  PWidget.row([
-                    createEnergyChangeWidget('tbDay', 'tb'),
-
-                    PWidget.boxw(20),
-                    createEnergyChangeWidget('jdDay', 'jd'),
-                    PWidget.boxw(20),
-                    createEnergyChangeWidget('pddDay', 'pdd'),
-                    PWidget.boxw(20),
-                    createEnergyChangeWidget('dyDay', 'dy'),
-                    PWidget.boxw(20),
-                    createEnergyChangeWidget('vipDay', 'vip'),
-
-                  ],
-                    '001',
-                    {'fill': true},),
-                  [null, null, Colours.energy_bg], {'pd': PFun.lg(10, 15, 8, 8), 'br': PFun.lg(16, 16, 16, 16)}
+              padding: EdgeInsets.fromLTRB(10, 15, 8, 8),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset('assets/images/mall/tb.png', width: 18, height: 18),
+                          ),
+                          SizedBox(height: 8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset('assets/images/mall/jd.png', width: 18, height: 18),
+                          ),
+                          SizedBox(height: 8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset('assets/images/mall/pdd.png', width: 18, height: 18),
+                          ),
+                          SizedBox(height: 8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset('assets/images/mall/dy.png', width: 18, height: 18),
+                          ),
+                          SizedBox(height: 8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset('assets/images/mall/vip.png', width: 18, height: 18),
+                          ),
+                        ],
+                      ),
+                      SizedBox(width: 20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(loadingEnergy ? '赠送: ' : '赠送: ${userEnergy['tbEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                          SizedBox(height: 8),
+                          Text(loadingEnergy ? '赠送: ' : '赠送: ${userEnergy['jdEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                          SizedBox(height: 8),
+                          Text(loadingEnergy ? '赠送: ' : '赠送: ${userEnergy['pddEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                          SizedBox(height: 8),
+                          Text(loadingEnergy ? '赠送: ' : '赠送: ${userEnergy['dyEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                          SizedBox(height: 8),
+                          Text(loadingEnergy ? '赠送: ' : '赠送: ${userEnergy['vipEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                        ],
+                      ),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(loadingEnergy ? '推广: ' : '推广: ${userEnergy['tbTuiEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                          SizedBox(height: 8),
+                          Text(loadingEnergy ? '推广: ' : '推广: ${userEnergy['jdTuiEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                          SizedBox(height: 8),
+                          Text(loadingEnergy ? '推广: ' : '推广: ${userEnergy['pddTuiEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                          SizedBox(height: 8),
+                          Text(loadingEnergy ? '推广: ' : '推广: ${userEnergy['dyTuiEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                          SizedBox(height: 8),
+                          Text(loadingEnergy ? '推广: ' : '推广: ${userEnergy['vipTuiEnergy']}', 
+                               style: TextStyle(color: Colors.white, fontSize: 14)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              PWidget.boxh(10),
-              PWidget.container(PWidget.column([
-                PWidget.text(
-                  '热度规则',
-                  [Colors.white, 16, true],
-                ),
-                PWidget.text('\t1.热度作用：获取用户下单后拆红包提成；', [Colors.white, 14], {'max': 2}),
-                PWidget.row([
-                  PWidget.text('\t2.赠送热度来源：加盟星选会员赠送，', [Colors.white, 14], {'max': 2}),
-                  PWidget.text('去加盟>', [Colors.white, 14], {'max': 2,
-                      'td': TextDecoration.underline,'fun':(){
-                        onTapLogin(context, '/tabVip', args: {'index': 0});
-                      }}),
-                ]),
-                PWidget.text('\t3.推广热度来源：自购拆红包、用户拆红包、用户加盟星选会员；', [Colors.white, 14], {'max': 2}),
-                PWidget.text('\t4.点击+-设置每日消耗的热度；', [Colors.white, 14], {'max': 2}),
-                PWidget.text('\t5.热度每日消耗可设置范围50-500；', [Colors.white, 14], {'max': 2}),
-                PWidget.text('\t6.热度消耗越大当日热度订单越多；', [Colors.white, 14], {'max': 2}),
-                PWidget.text('\t7.热度不足时，当日不消耗；', [Colors.white, 14], {'max': 2}),
-              ])),
-            ]
-        ), [null, 700, Colours.app_main], {'pd':[0, 0, 20, 20]}
+            ),
+            loadingEnergy ? SizedBox() : Container(
+              decoration: BoxDecoration(
+                color: Colours.energy_bg,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: EdgeInsets.fromLTRB(10, 15, 8, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  createEnergyChangeWidget('tbDay', 'tb'),
+                  SizedBox(width: 20),
+                  createEnergyChangeWidget('jdDay', 'jd'),
+                  SizedBox(width: 20),
+                  createEnergyChangeWidget('pddDay', 'pdd'),
+                  SizedBox(width: 20),
+                  createEnergyChangeWidget('dyDay', 'dy'),
+                  SizedBox(width: 20),
+                  createEnergyChangeWidget('vipDay', 'vip'),
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '热度规则',
+                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text('\t1.热度作用：获取用户下单后拆红包提成；', 
+                       style: TextStyle(color: Colors.white, fontSize: 14), 
+                       maxLines: 2),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text('\t2.赠送热度来源：加盟星选会员赠送，', 
+                             style: TextStyle(color: Colors.white, fontSize: 14), 
+                             maxLines: 2),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          onTapLogin(context, '/tabVip', args: {'index': 0});
+                        },
+                        child: Text('去加盟>', 
+                             style: TextStyle(
+                               color: Colors.white, 
+                               fontSize: 14,
+                               decoration: TextDecoration.underline
+                             ), 
+                             maxLines: 2),
+                      ),
+                    ],
+                  ),
+                  Text('\t3.推广热度来源：自购拆红包、用户拆红包、用户加盟星选会员；', 
+                       style: TextStyle(color: Colors.white, fontSize: 14), 
+                       maxLines: 2),
+                  Text('\t4.点击+-设置每日消耗的热度；', 
+                       style: TextStyle(color: Colors.white, fontSize: 14), 
+                       maxLines: 2),
+                  Text('\t5.热度每日消耗可设置范围50-500；', 
+                       style: TextStyle(color: Colors.white, fontSize: 14), 
+                       maxLines: 2),
+                  Text('\t6.热度消耗越大当日热度订单越多；', 
+                       style: TextStyle(color: Colors.white, fontSize: 14), 
+                       maxLines: 2),
+                  Text('\t7.热度不足时，当日不消耗；', 
+                       style: TextStyle(color: Colors.white, fontSize: 14), 
+                       maxLines: 2),
+                ],
+              ),
+            ),
+          ],
+        ),
       )
     ];
   }
@@ -210,13 +325,26 @@ class _EnergyPageState extends State<EnergyPage>
   }
 
   Widget createDayWidget(energy, platform, Function addF, Function removeF) {
-    return PWidget.column([
-      PWidget.icon(Icons.add, [Colors.black, 24], {'fun': addF}),
-      PWidget.boxh(8),
-      PWidget.container(WaveView(percentageValue: energy/5,txt: '店',platform: platform),[50,160]),
-      PWidget.boxh(8),
-      PWidget.icon(Icons.remove, {'fun': removeF}),
-    ],'221');
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: () => addF(),
+          child: Icon(Icons.add, color: Colors.black, size: 24),
+        ),
+        SizedBox(height: 8),
+        Container(
+          width: 50,
+          height: 160,
+          child: WaveView(percentageValue: energy/5, txt: '店', platform: platform),
+        ),
+        SizedBox(height: 8),
+        GestureDetector(
+          onTap: () => removeF(),
+          child: Icon(Icons.remove, color: Colors.black, size: 24),
+        ),
+      ],
+    );
   }
   Future addEnergyFun(key, platform) async {
       num tbDay = userEnergy[key];
@@ -240,5 +368,29 @@ class _EnergyPageState extends State<EnergyPage>
     setState(() {
 
     });
+  }
+}
+
+// Custom DataModel implementation to replace maixs_utils DataModel
+class EnergyDataModel {
+  List list = [];
+  bool hasNext = true;
+  int page = 1;
+  
+  void addList(List newList, bool isRefresh, int totalPages) {
+    if (isRefresh) {
+      list = newList;
+      page = 1;
+    } else {
+      list.addAll(newList);
+    }
+    hasNext = page < totalPages;
+    if (!isRefresh) page++;
+  }
+  
+  void clear() {
+    list.clear();
+    hasNext = true;
+    page = 1;
   }
 }

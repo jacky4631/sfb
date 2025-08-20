@@ -1,12 +1,9 @@
-/**
- *  Copyright (C) 2018-2024
+/** *  Copyright (C) 2018-2024
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 
 import '../../util/colors.dart';
 import '../../util/global.dart';
@@ -33,149 +30,217 @@ class _HelpFanliState extends State<HelpFanliPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.light,
-      bgColor: Colours.app_main,
-      appBar: buildTitle(context,
-          title: '开红包教程',
-          widgetColor: Colors.white,
-          leftIcon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          )),
-      body: PWidget.container(ListView.builder(
+    return Scaffold(
+      backgroundColor: Colours.app_main,
+      appBar: AppBar(
+        title: Text(
+          '开红包教程',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colours.app_main,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Container(
+        padding: EdgeInsets.fromLTRB(0, 20, 20, 20),
+        child: ListView.builder(
           itemCount: getWidgets().length,
           itemBuilder: (context, i) {
-        return getWidgets()[i];
-      }), {
-        'wali': [0.0, 0.0],
-        'pd': [0, 20, 20, 20]
-      }),
+            return getWidgets()[i];
+          },
+        ),
+      ),
     );
   }
 
   List<Widget> getWidgets() {
-    List blackStyle = [Colors.black, 16, true];
-    List redStyle = [Colors.red, 16, true];
     return [
-      PWidget.container(
-          ClipRRect(
-              borderRadius: BorderRadius.circular(28),
-              child: Image.asset(
-                'assets/images/logo.png',
-                height: 100,
-              )),
-          [
-            null,
-            null,
-            Colors.white
+      Container(
+        margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+        padding: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: Image.asset(      
+            'assets/images/logo.png',
+            height: 100,
+          ),
+        ),
+      ),
+      SizedBox(height: 30),
+      Center(
+        child: RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: '"简单',
+                style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: '四步',
+                style: TextStyle(color: Colors.yellow[800], fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              TextSpan(
+                text: '，轻松领红包"',
+                style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+      ),
+      SizedBox(height: 30),
+      Container(
+        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.fromLTRB(8, 8, 15, 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: 10),
+            Center(
+              child: RichText(
+                maxLines: 2,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '【一】',
+                      style: TextStyle(color: Colors.yellow[900], fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: ' 打开 ',
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '淘宝、京东、拼多多、唯品会、抖音',
+                      style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: ' 任意一款你想要的商品',
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/mall/tb.png', width: 32, height: 32),
+                SizedBox(width: 10),
+                Image.asset('assets/images/mall/jd.png', width: 32, height: 32),
+                SizedBox(width: 10),
+                Image.asset('assets/images/mall/pdd.png', width: 32, height: 32),
+                SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/helpVideo',
+                      arguments: {'title': '唯品会领券帮助', 'url':'viphelp.mp4'}),
+                  child: Image.asset('assets/images/mall/vip.png', width: 32, height: 32),
+                ),
+                SizedBox(width: 10),
+                Image.asset('assets/images/mall/dy.png', width: 32, height: 32),
+              ],
+            ),
+            SizedBox(height: 30),
+            Center(
+              child: RichText(
+                maxLines: 2,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '【二】',
+                      style: TextStyle(color: Colors.yellow[900], fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '点击右上角 ',
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '分享',
+                      style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '，然后点击 ',
+                      style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    TextSpan(
+                      text: '复制链接 ',
+                      style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              child: Image.asset('assets/images/help/copylink.png', width: 336, height: 150),
+            ),
+            SizedBox(height: 20),
+            RichText(
+              maxLines: 2,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '【三】',
+                    style: TextStyle(color: Colors.yellow[900], fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '打开 ',
+                    style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: APP_NAME,
+                    style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: ' 领取优惠',
+                    style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: Image.asset('assets/images/help/pickcou.png', width: 600, height: 250),
+            ),
+            SizedBox(height: 20),
+            RichText(
+              maxLines: 2,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '【四】',
+                    style: TextStyle(color: Colors.yellow[900], fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '成功下单，进入 ',
+                    style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '我的->订单中心',
+                    style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text: '，等待订单解锁，拆红包',
+                    style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              child: Image.asset('assets/images/help/chb.png', width: 600, height: 600),
+            ),
+            SizedBox(height: 30),
           ],
-          {
-            'mg': [10, 0, 0, 0],
-            'pd': 2,
-            'crr': 28,
-            'wali': [0.0, 0.0],
-          }),
-      PWidget.boxh(30),
-      PWidget.text('', [], {
-        'ct': true
-      }, [
-        PWidget.textIs('“简单', [Colors.white, 24, true], {}),
-        PWidget.textIs('四步', [Colors.yellow[800], 24, true], {}),
-        PWidget.textIs('，轻松领红包”', [Colors.white, 24, true], {}),
-      ]),
-      PWidget.boxh(30),
-      PWidget.container(
-          PWidget.column([
-            PWidget.boxh(10),
-            PWidget.text('【一】', [
-              Colors.yellow[900],
-              16,
-              true
-            ], {
-              'ct': true,
-              'max': 2
-            }, [
-              PWidget.textIsNormal(' 打开 ', blackStyle, {}),
-              PWidget.textIs('淘宝、京东、拼多多、唯品会、抖音', redStyle, {}),
-              PWidget.textIsNormal(' 任意一款你想要的商品', blackStyle, {}),
-            ]),
-            PWidget.boxh(10),
-            PWidget.row([
-              PWidget.image('assets/images/mall/tb.png', [32, 32]),
-              PWidget.boxw(10),
-              PWidget.image('assets/images/mall/jd.png', [32, 32]),
-              PWidget.boxw(10),
-              PWidget.image('assets/images/mall/pdd.png', [32, 32]),
-              PWidget.boxw(10),
-              PWidget.image('assets/images/mall/vip.png', [32, 32], {'fun':
-                  ()=>Navigator.pushNamed(context, '/helpVideo',
-                      arguments: {'title': '唯品会领券帮助', 'url':'viphelp.mp4'})}),
-              PWidget.boxw(10),
-              PWidget.image('assets/images/mall/dy.png', [32, 32]),
-            ], '221'),
-            PWidget.boxh(30),
-            PWidget.text('【二】', [
-              Colors.yellow[900],
-              16,
-              true
-            ], {
-              'ct': true,
-              'max': 2
-            }, [
-              PWidget.textIsNormal('点击右上角 ', blackStyle, {}),
-              PWidget.textIs('分享', redStyle, {}),
-              PWidget.textIsNormal('，然后点击 ', blackStyle, {}),
-              PWidget.textIs('复制链接 ', redStyle, {}),
-            ]),
-            PWidget.container(
-              PWidget.image('assets/images/help/copylink.png', [336, 150]),
-            ),
-            PWidget.boxh(20),
-            PWidget.text('【三】', [
-              Colors.yellow[900],
-              16,
-              true
-            ], {
-              'max': 2
-            }, [
-              PWidget.textIsNormal('打开 ', blackStyle, {}),
-              PWidget.textIs(APP_NAME, redStyle, {}),
-              PWidget.textIsNormal(' 领取优惠', blackStyle, {}),
-            ]),
-            PWidget.container(
-              PWidget.image('assets/images/help/pickcou.png', [600, 250]),
-            ),
-
-            PWidget.boxh(20),
-            PWidget.text('【四】', [
-              Colors.yellow[900],
-              16,
-              true
-            ], {
-              'max': 2
-            }, [
-              PWidget.textIsNormal('成功下单，进入 ', blackStyle, {}),
-              PWidget.textIs('我的->订单中心', redStyle, {}),
-              PWidget.textIsNormal('，等待订单解锁，拆红包', blackStyle, {}),
-            ]),
-            PWidget.boxh(10),
-            PWidget.container(
-              PWidget.image('assets/images/help/chb.png', [600, 600]),
-            ),
-            PWidget.boxh(30),
-          ]),
-          [
-            null,
-            null,
-            Colors.white
-          ],
-          {
-            'pd': [8,8,15,16],
-            'crr': 10,
-            'mg': [10, 10, 10, 10],
-            'wali': [0.0, 0.0],
-          })
+        ),
+      )
     ];
   }
 }

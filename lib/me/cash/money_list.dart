@@ -3,16 +3,9 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/mylistview.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/service.dart';
 
 import '../../util/colors.dart';
-import '../../util/paixs_fun.dart';
 
 ///余额明细
 class MoneyList extends StatelessWidget {
@@ -21,21 +14,26 @@ class MoneyList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      body: Stack(
-        children: [
-          PWidget.container(null, [double.infinity, double.infinity],
-              {'gd': PFun.cl2crGd(Colors.white, Colors.white)}),
-          ScaffoldWidget(
-            bgColor: Colors.transparent,
-            brightness: Brightness.dark,
-            appBar: buildTitle(context,
-                title: (data==null ||data['title']== null) ? '资金明细' : data['title'],
-                widgetColor: Colors.black,
-                leftIcon: Icon(Icons.arrow_back_ios)),
-            body: TopChild(data),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text((data['title'] == null) ? '资金明细' : data['title']),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.white],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-        ],
+        ),
+        child: TopChild(data),
       ),
     );
   }
@@ -63,36 +61,116 @@ class _TopChildState extends State<TopChild> {
   }
 
   ///列表数据
-  var listDm = DataModel();
+  List<Map> listData = [];
+  bool isLoading = false;
+  bool hasError = false;
+  bool hasMore = true;
+  int totalElements = 0;
+  int currentPage = 1;
+
   Future<int> getListData({int page = 1, bool isRef = false}) async {
-    String type = widget.data['type']??'';
-    String platform = widget.data['platform']??'';
-    var unlockStatus = widget.data['unlockStatus'];
-    var res = await BService.moneyList(page, category: 'now_money', type: type, platform: platform, unlockStatus: unlockStatus);
-    if (res != null) listDm.addList(res['data'], isRef, res['total']);
-    setState(() {});
-    return listDm.flag;
+    if (isLoading) return 0;
+    
+    setState(() {
+      isLoading = true;
+      hasError = false;
+    });
+    
+    try {
+      String type = widget.data['type']??'';
+      String platform = widget.data['platform']??'';
+      var unlockStatus = widget.data['unlockStatus'];
+      var res = await BService.moneyList(page, category: 'now_money', type: type, platform: platform, unlockStatus: unlockStatus);
+      
+      if (res != null && res['data'] != null) {
+        List<Map> newData = List<Map>.from(res['data']);
+        
+        if (isRef) {
+          listData = newData;
+          currentPage = 1;
+        } else {
+          listData.addAll(newData);
+        }
+        
+        totalElements = res['total'] ?? 0;
+        hasMore = listData.length < totalElements;
+        currentPage = page;
+      }
+      
+      setState(() {
+        isLoading = false;
+      });
+      
+      return hasMore ? 1 : 0;
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        hasError = true;
+      });
+      return -1;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitchBuilder(
-      value: listDm,
-      initialState: buildLoad(color: Colours.app_main),
-      errorOnTap: () => this.getListData(isRef: true),
-      listBuilder: (list, p, h) {
-        return MyListView(
-          isShuaxin: true,
-          isGengduo: h,
-          header: buildClassicHeader(color: Colors.grey),
-          footer: buildCustomFooter(color: Colors.grey),
-          onRefresh: () => this.getListData(isRef: true),
-          onLoading: () => this.getListData(page: p),
-          padding: EdgeInsets.only(top: 8, bottom: 8),
-          itemCount: list.length,
-          listViewType: ListViewType.Separated,
-          item: (i) {
-            var data = list[i] as Map;
+    return _buildBody();
+  }
+
+  Widget _buildBody() {
+    if (isLoading && listData.isEmpty) {
+      return const Center(
+        child: CircularProgressIndicator(color: Colours.app_main),
+      );
+    }
+
+    if (hasError && listData.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('加载失败，请重试'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => getListData(isRef: true),
+              child: const Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => getListData(isRef: true),
+      child: ListView.separated(
+        padding: const EdgeInsets.only(top: 8, bottom: 8),
+        itemCount: listData.length + (hasMore ? 1 : 0),
+        separatorBuilder: (context, index) => const SizedBox(height: 0),
+        itemBuilder: (context, index) {
+          if (index >= listData.length) {
+            if (isLoading) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else if (hasMore) {
+              // 自动加载更多
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                getListData(page: currentPage + 1);
+              });
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          }
+
+          int i = index;
+            var data = listData[i];
             String type = data['type'];
             String isPlus = (type == 'gain' || type== 'retail' || type == 'upgrade' || type=='system_add') ? '+' : '-';
             num changeIntegral = data['number'];
@@ -111,50 +189,92 @@ class _TopChildState extends State<TopChild> {
                 unlockStatusStr = '已失效';
               }
             }
-            return PWidget.container(
-              PWidget.row(
-                [
-                  PWidget.column([
-                    PWidget.row([
-                      PWidget.textNormal(data['title'],
-                          [Colors.black.withOpacity(0.75), 14, true], {'exp': true}),
-                      PWidget.textNormal(
-                        '$isPlus${changeIntegral}元',
-                        [Colors.red.withOpacity(0.75), 14],
-                      ),
-                    ]),
-                    PWidget.boxh(4),
-                    PWidget.row([
-                      PWidget.textNormal(data['createTime'], [Colors.black54, 12]),
-                      PWidget.spacer(),
-                      PWidget.textNormal(unlockStatusStr, [statusColor, 12],),
-                    ]),
-                    PWidget.boxh(4),
-                    if(unlockStatus == 1)
-                      PWidget.textNormal('解锁时间：${data['unlockTime']}', [Colors.red, 12],),
-                    PWidget.boxh(4),
-                    PWidget.textNormal('${data['mark']}', [Colors.black54, 12], {'max':2,
-                    'ss':StrutStyle(forceStrutHeight: true, height: 1, leading: 0.9),}),
-
-                    Divider(height: 1, color: Colors.grey[200],),
-                  ], {
-                    'exp': 1,
-                  }),
+            return Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(0, 12, 12, 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                data['title'],
+                                style: TextStyle(
+                                   color: Colors.black.withValues(alpha: 0.75),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '$isPlus${changeIntegral}元',
+                              style: TextStyle(
+                                 color: Colors.red.withValues(alpha: 0.75),
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              data['createTime'],
+                              style: const TextStyle(
+                                color: Colors.black54,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              unlockStatusStr,
+                              style: TextStyle(
+                                color: statusColor,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        if(unlockStatus == 1)
+                          Text(
+                            '解锁时间：${data['unlockTime']}',
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 12,
+                            ),
+                          ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${data['mark']}',
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 12,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          strutStyle: const StrutStyle(
+                            forceStrutHeight: true,
+                            height: 1,
+                            leading: 0.9,
+                          ),
+                        ),
+                        Divider(
+                          height: 1,
+                          color: Colors.grey[200],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
-                '001',
-                {'fill': true},
               ),
-              [null, null, Colors.white],
-              {
-                'pd': [0,12,12,12],
-                'fun': () => {
-                      // jumpPage(ProductDetails(data))
-                    }
-              },
             );
-          },
-        );
-      },
-    );
-  }
+         },
+       ),
+     );
+   }
 }

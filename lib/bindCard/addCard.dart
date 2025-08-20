@@ -3,12 +3,10 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 import 'package:pinput/pinput.dart';
 import 'package:sufenbao/util/colors.dart';
 
@@ -36,6 +34,7 @@ class _AddCardState extends State<AddCard> {
 
   @override
   void initState() {
+    super.initState();
     setState(() {
       bindBankType = widget.data['bindBankType']??'';
     });
@@ -51,36 +50,40 @@ class _AddCardState extends State<AddCard> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-        brightness: Brightness.dark,
-        bgColor: Colors.white,
-        appBar: buildTitle(context,
-            title: "添加银行卡",
-            widgetColor: Colors.black,
-            leftIcon: Icon(Icons.arrow_back_ios)),
-        body: PWidget.container(
-            PWidget.column(
-              [
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+            title: Text("添加银行卡"),
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            elevation: 0,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () => Navigator.pop(context),
+            ),
+        ),
+        body: Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text('输入卡号添加',
                     style: TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.bold)),
-                PWidget.boxh(10),
-                PWidget.container(
-                    PWidget.row([
-                      PWidget.icon(Icons.gpp_good_rounded, [Colors.grey, 16]),
-                      PWidget.boxw(5),
+                SizedBox(height: 10),
+                Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(children: [
+                      Icon(Icons.gpp_good_rounded, color: Colors.grey, size: 16),
+                      SizedBox(width: 5),
                       Text("为保障正常绑卡，需收集您的卡信息和身份信息",
                           style: TextStyle(color: Colors.grey, fontSize: 12)),
-                    ]),
-                    [
-                      null,
-                      30,
-                      Colors.grey[200]
-                    ],
-                    {
-                      'pd': [0, 0, 10, 0],
-                      'br': [8, 8, 8, 8],
-                    }),
-                PWidget.boxh(10),
+                    ])),
+                SizedBox(height: 10),
                 TextField(
                   onChanged: (s) async {
                     if (s.length == 19 || s.length == 23) {
@@ -138,46 +141,51 @@ class _AddCardState extends State<AddCard> {
                   ),
                 ),
                 if (check)
-                  PWidget.row([
+                  Row(children: [
                     if(logoUrl != null)
-                      PWidget.wrapperImage(logoUrl, [25, 15]),
-                    PWidget.boxw(2),
+                      Image.network(logoUrl, width: 25, height: 15),
+                    SizedBox(width: 2),
                     Text(bankName,
                         style: TextStyle(color: Colors.black54, fontSize: 15))
                   ]),
                 Divider(endIndent: 16),
                 if(check)
-                PWidget.row([
-                  PWidget.textNormal("手机号",[Colors.black, 16, true],{'pd':[10,0,0,0]}),
-                  buildTextField2(
-                      con: _mobileController,
-                      hint: '',
-                      height: 40,
-                      maxLines: 1,
-                      showSearch: false,
-                      bgColor: Colors.white,
+                Row(children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Text("手机号", style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: _mobileController,
                       keyboardType: TextInputType.number,
-                      border: new UnderlineInputBorder(
-                        // 焦点集中的时候颜色
-                        borderSide: BorderSide(
-                          color: Colors.white,
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                        hintText: '',
+                        fillColor: Colors.white,
+                        filled: true,
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
                         ),
-                      ))
-                ],'221'),
+                      ),
+                    ),
+                  ),
+                ]),
                 if(!check)
-                  PWidget.boxh(15),
+                  SizedBox(height: 15),
                 if (bindBankType.isEmpty && !check)
-                  PWidget.row([
-                    PWidget.boxw(3),
-                    Text('查看支持银行卡',
-                        style: TextStyle(color: Colors.grey, fontSize: 13)),
-                    PWidget.icon(Icons.keyboard_arrow_right, [Colors.grey, 20])
-                  ], {
-                    'fun': () {
+                  GestureDetector(
+                    onTap: () {
                       Navigator.pushNamed(context, "/supportBankList");
-                    }
-                  }),
-                PWidget.boxh(30),
+                    },
+                    child: Row(children: [
+                      SizedBox(width: 3),
+                      Text('查看支持银行卡',
+                          style: TextStyle(color: Colors.grey, fontSize: 13)),
+                      Icon(Icons.keyboard_arrow_right, color: Colors.grey, size: 20)
+                    ]),
+                  ),
+                SizedBox(height: 30),
                 RawMaterialButton(
                   constraints: BoxConstraints(minHeight: 44),
                   fillColor: check ? Colours.app_main : Color(0XFFE28D85),
@@ -218,9 +226,8 @@ class _AddCardState extends State<AddCard> {
                 ),
               ],
             ),
-            {
-              'pd': [20, 20, 20, 20]
-            }));
+        ),
+    );
   }
 
   TextEditingValue _addSeparator(String text, {String separator = " "}) {
@@ -290,9 +297,9 @@ class _AddCardState extends State<AddCard> {
 }
 
 class addCardContentDialog extends Dialog {
-  String No = '';
-  String mobilePhone = '';
-  String authSn = '';
+  final String No;
+  final String mobilePhone;
+  final String authSn;
 
   addCardContentDialog(this.No, this.mobilePhone, this.authSn);
 

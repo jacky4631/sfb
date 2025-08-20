@@ -3,7 +3,6 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
 
 import '../../../util/dimens.dart';
 
@@ -32,7 +31,7 @@ class ClickItem extends StatelessWidget {
       children: <Widget>[
         Text(title),
         const Spacer(),
-        PWidget.boxw(16),
+        SizedBox(width: 16),
         Expanded(
           flex: 4,
           child: Text(
@@ -43,7 +42,7 @@ class ClickItem extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall?.copyWith(fontSize: Dimens.font_sp14),
           ),
         ),
-        PWidget.boxw(8),
+        SizedBox(width: 8),
         Opacity(
           // 无点击事件时，隐藏箭头图标
           opacity: onTap == null ? 0 : 1,

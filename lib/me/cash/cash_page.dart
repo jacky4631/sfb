@@ -4,9 +4,6 @@
  */
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:pinput/pinput.dart';
 import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/util/toast_utils.dart';
@@ -15,7 +12,7 @@ import 'package:sufenbao/me/cash/widgets/number_text_input_formatter.dart';
 import 'package:sufenbao/service.dart';
 
 import '../../dialog/simple_text_dialog.dart';
-import '../../util/paixs_fun.dart';
+
 import '../../widget/CustomWidgetPage.dart';
 import '../../widget/load_image.dart';
 import '../../widget/loading.dart';
@@ -151,19 +148,27 @@ class _CashPageState extends State<CashPage> {
   @override
   Widget build(BuildContext context) {
 
-    return WillPopScope(
-      onWillPop: () {
-        /// 拦截返回，关闭键盘，否则会造成上一页面短暂的组件溢出
-        FocusManager.instance.primaryFocus?.unfocus();
-        return Future.value(true);
-      },
-      child: ScaffoldWidget(
-        brightness: Brightness.dark,
-        appBar: buildTitle(context, title: '提现', widgetColor: Colors.black, leftIcon: Icon(Icons.arrow_back_ios)),
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+         /// 拦截返回，关闭键盘，否则会造成上一页面短暂的组件溢出
+         FocusManager.instance.primaryFocus?.unfocus();
+       },
+      child: Scaffold(
+        backgroundColor: Colors.grey[100],
+        appBar: AppBar(
+          title: Text('提现', style: TextStyle(color: Colors.black)),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
         body: loading ? Global.showLoading2() : MyScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           children: <Widget>[
-            PWidget.boxh(5),
+            SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const <Widget>[
@@ -173,7 +178,7 @@ class _CashPageState extends State<CashPage> {
                 )),
               ],
             ),
-            PWidget.boxh(8),
+            SizedBox(height: 8),
             Row(
               children: <Widget>[
                 Container(
@@ -182,7 +187,7 @@ class _CashPageState extends State<CashPage> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: LoadAssetImage('cash/rmb', color: Theme.of(context).brightness == Brightness.dark ? Color(0xFFB8B8B8) : null,),
                 ),
-                PWidget.boxw(8),
+                SizedBox(width: 8),
                 Expanded(
                   child: TextField(
                     maxLength: 10,
@@ -221,7 +226,7 @@ class _CashPageState extends State<CashPage> {
               ],
             ),
             Divider(),
-            PWidget.boxh(8),
+            SizedBox(height: 8),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -258,7 +263,7 @@ class _CashPageState extends State<CashPage> {
               Divider(),
             if(alipay == '1')
               _buildWithdrawalType(1),
-            PWidget.boxh(24),
+            SizedBox(height: 24),
             MyButton(
               radius: 8,
               backgroundColor: _withdrawalType==2 && cardList.isEmpty ? Colors.grey :null,
@@ -403,7 +408,8 @@ class _CashPageState extends State<CashPage> {
         });
       },
       child:
-          PWidget.column([
+          Column(
+             children: [
       SizedBox(
         width: double.infinity,
         height: 74.0,
@@ -418,23 +424,39 @@ class _CashPageState extends State<CashPage> {
               top: 16.0,
               left: 24.0,
               right: 0.0,
-              child: PWidget.row([
+              child: Row(
+                   children: [
                 Text('银行卡到账'),
-                PWidget.boxw(5),
-                PWidget.spacer(),
+                SizedBox(width: 5),
+                Spacer(),
                 if(logoUrl.isNotEmpty)
-                  PWidget.wrapperImage(logoUrl, [25, 15]),
-                PWidget.textNormal(cardList.isEmpty ? '添加银行卡' :bankName + '(' + bankNo + ')'
-                    ,[], {'fun': () {
-                Cardlist();
-                }}),
-                PWidget.boxw(2),
-                PWidget.icon(
-                    Icons.keyboard_arrow_right, [Colors.black54, 24], {'fun': () {
-                  Cardlist();
-                }}),
-              ]),
-            ),
+                  Container(
+                    width: 25,
+                    height: 15,
+                    child: Image.network(logoUrl, fit: BoxFit.contain),
+                  ),
+                GestureDetector(
+                  onTap: () {
+                    Cardlist();
+                  },
+                  child: Text(
+                    cardList.isEmpty ? '添加银行卡' : bankName + '(' + bankNo + ')',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                SizedBox(width: 2),
+                GestureDetector(
+                  onTap: () {
+                    Cardlist();
+                  },
+                  child: Icon(
+                    Icons.keyboard_arrow_right,
+                    color: Colors.black54,
+                    size: 24,
+                  ),
+                ),
+               ]),
+             ),
             Positioned(
                 bottom: 16.0,
                 left: 24.0,
@@ -460,57 +482,67 @@ class _CashPageState extends State<CashPage> {
         context: context,
         builder: (context) {
           return Column(mainAxisSize: MainAxisSize.min, children: [
-            PWidget.row([
-              PWidget.boxw(20),
-              PWidget.icon(Icons.add_card, [Colors.red, 28]),
-              PWidget.boxw(5),
-              Text('添加新的银行卡'),
-              Spacer(),
-              PWidget.icon(Icons.arrow_forward_ios_outlined, [Colors.grey, 14]),
-            ], {
-              'pd': PFun.lg(20, 0, 10, 10),
-              'fun': () {
+            GestureDetector(
+              onTap: () {
                 Navigator.pushNamed(context, "/addCard",arguments: {'bindBankType':'cash_page'}).then((value) {
                   setState(() {
                     getListData();
                     Navigator.pop(context);
                   });
                 });
-              }
-            }),
+              },
+              child: Container(
+                padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Row(
+                 children: [
+                  SizedBox(width: 20),
+                  Icon(Icons.add_card, color: Colors.red, size: 28),
+                  SizedBox(width: 5),
+                  Text('添加新的银行卡'),
+                  Spacer(),
+                  Icon(Icons.arrow_forward_ios_outlined, color: Colors.grey, size: 14),
+                ]),
+               ),
+             ),
             Divider(),
             Container(
               height: 150,
               child: ListView.builder(
                   itemCount: cardList.length,
                   itemBuilder: (context, index) {
-                    return PWidget.container(
-                        PWidget.column([
-                          PWidget.row([
-                            PWidget.boxw(20),
-                            PWidget.wrapperImage(cardList[index]['logo'], [25, 15]),
-                            PWidget.boxw(5),
-                            Text(cardList[index]['bankName'] +
-                                '(' +
-                                cardList[index]['bankNo'] +
-                                ')'),
-                            Spacer(),
-                          ]),
-                          Divider(),
-                        ]),
-                        {
-                          'pd': PFun.lg(10, 0, 10, 10),
-                          'fun': () {
-                            setState(() {
-                              bankName = cardList[index]['bankName'];
-                              bankNo = cardList[index]['bankNo'];
-                              bankId = cardList[index]['id'];
-                              ListPhone = cardList[index]['phone'];
-                              logoUrl = cardList[index]['logo'];
-                              Navigator.pop(context);
-                            });
-                          }
-                        });
+                    return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            bankName = cardList[index]['bankName'];
+                            bankNo = cardList[index]['bankNo'];
+                            bankId = cardList[index]['id'];
+                            ListPhone = cardList[index]['phone'];
+                            logoUrl = cardList[index]['logo'];
+                            Navigator.pop(context);
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          child: Column(
+                             children: [
+                            Row(
+                               children: [
+                              SizedBox(width: 20),
+                              Container(
+                                width: 25,
+                                height: 15,
+                                child: Image.network(cardList[index]['logo'], fit: BoxFit.contain),
+                              ),
+                              SizedBox(width: 5),
+                              Text(cardList[index]['bankName'] +
+                                  '(' +
+                                  cardList[index]['bankNo'] +
+                                  ')'),
+                              Spacer(),
+                             ]),
+                             Divider(),
+                           ]),
+                        ));
                   }),
             ),
           ]);

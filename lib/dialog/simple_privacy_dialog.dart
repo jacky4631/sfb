@@ -7,8 +7,6 @@
  */
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:maixs_utils/util/utils.dart';
 
 import '../util/global.dart';
 
@@ -60,9 +58,9 @@ class SimplePrivacyDialog extends Dialog {
           Padding(padding: EdgeInsets.only(top: 10)),
           Row(
             children: [
-              Expanded(child: _createButton(false)),
+              Expanded(child: _createButton(context, false)),
               SizedBox(height: 5),
-              Expanded(child: _createButton(true)),
+              Expanded(child: _createButton(context, true)),
             ],
           )
         ],
@@ -70,7 +68,7 @@ class SimplePrivacyDialog extends Dialog {
     );
   }
 
-  _createButton(bool agree) {
+  _createButton(BuildContext context, bool agree) {
     return TextButton(
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
