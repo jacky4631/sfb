@@ -5,14 +5,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_base/flutter_base.dart';
 import 'package:http/http.dart' as http;
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/me/points_detail_img_widget.dart';
 import 'package:sufenbao/service.dart';
@@ -21,7 +16,29 @@ import '../util/colors.dart';
 import '../util/global.dart';
 import '../widget/custom_button.dart';
 import '../widget/detail_lunbo_widget.dart';
-import '../util/paixs_fun.dart';
+
+// 简单的数据模型类替代 DataModel
+class SimpleDataModel<T> {
+  T? object;
+  bool isLoading = false;
+  String? error;
+  int flag = 0;
+
+  SimpleDataModel({this.object});
+
+  void toError(String errorMsg) {
+    error = errorMsg;
+    flag = -1;
+  }
+
+  void addObject(T obj) {
+    object = obj;
+    error = null;
+    flag = 1;
+  }
+
+  bool get isEmpty => object == null;
+}
 
 class ValueChange extends ValueNotifier {
   ValueChange() : super(null);
@@ -84,35 +101,50 @@ class _PointsMallDetailState extends State<PointsMallDetail> {
   }
 
   ///详情数据
-  var detailDm = DataModel<Map>(object: {'storeInfo':{'price':0}});
+  var detailDm = SimpleDataModel<Map>(object: {
+    'storeInfo': {'price': 0}
+  });
   Future<int> getDetailData() async {
-    var res = await http.get(Uri.parse(BService.getMePointsMallDetailUrl(widget.data['id']))).catchError((v) {
+    try {
+      var res = await http.get(Uri.parse(BService.getMePointsMallDetailUrl(widget.data['id'])));
+      detailDm.addObject(jsonDecode(res.body)['data']);
+    } catch (e) {
       detailDm.toError('网络异常');
-    });
-    if (res != null) detailDm.addObject(jsonDecode(res.body)['data']);
+    }
 
     setState(() {});
     return detailDm.flag;
   }
-  var listSimilerGoodsByOpenDm = DataModel();
+
+  var listSimilerGoodsByOpenDm = SimpleDataModel();
+  // 获取屏幕安全区域
+  EdgeInsets get pmPadd => MediaQuery.of(context).padding;
+
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      // brightness: Brightness.light,
-      bgColor: Color(0xffF3F3F3),
+    return Scaffold(
+      backgroundColor: Color(0xffF3F3F3),
       body: Stack(children: [
-        MyCustomScroll(
-          isGengduo: false,
-          isShuaxin: false,
-          headers: headers,
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
+        CustomScrollView(
           controller: controller,
-          itemPadding: EdgeInsets.all(16).copyWith(bottom: 72),
-          itemModel: listSimilerGoodsByOpenDm, itemModelBuilder: (i, v) {
-          return SizedBox();
-        },
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate(headers),
+            ),
+            SliverPadding(
+              padding: EdgeInsets.all(16).copyWith(bottom: 72),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 10,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => SizedBox(),
+                  childCount: 0,
+                ),
+              ),
+            ),
+          ],
         ),
         titleBarView(),
         btmBarView(),
@@ -120,42 +152,56 @@ class _PointsMallDetailState extends State<PointsMallDetail> {
     );
   }
 
+  // 关闭页面方法
+  void close() {
+    Navigator.of(context).pop();
+  }
+
   ///底部操作栏
   Widget btmBarView() {
-    return PWidget.positioned(
-      PWidget.container(
-        CustomButton(
+    return Positioned(
+      bottom: detailDm.object!.isEmpty ? -64 : 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        color: Colors.white,
+        padding: EdgeInsets.fromLTRB(8, 8, 8, MediaQuery.of(context).padding.bottom + 8),
+        child: CustomButton(
           bgColor: Colours.app_main,
           showIcon: false,
           textColor: Colors.white,
           text: '立即兑换',
           onPressed: () {
-            if(Global.login) {
+            if (Global.login) {
               BService.integralConfirm(context, '${detailDm.object!['storeInfo']['id']}').then((value) => {
-                if(value['success']) {
-                  //积分足够 todo跳转订单页面
-                  Navigator.pushNamed(context, '/createOrder', arguments: detailDm.object?['storeInfo'])
-                } else {
-                  ToastUtils.showToast('积分不足，去购物获得积分吧')
-                }
-              });
-
+                    if (value['success'])
+                      {
+                        //积分足够 todo跳转订单页面
+                        Navigator.pushNamed(context, '/createOrder', arguments: detailDm.object?['storeInfo'])
+                      }
+                    else
+                      {ToastUtils.showToast('积分不足，去购物获得积分吧')}
+                  });
             } else {
               Navigator.pushNamed(context, '/login');
             }
           },
         ),
-        [null, null, Colors.white],
-        {'pd': [8,MediaQuery.of(context).padding.bottom+8,8,8], },
       ),
-      [null, detailDm.object!.isEmpty ? -64 : 0, 0, 0],
     );
   }
+
   Widget btmBtnView(name, icon, fun) {
-    return PWidget.column(
-      [PWidget.icon(icon ?? Icons.star_rate_rounded, PFun.lg1(Colors.black45)), PWidget.boxh(4), PWidget.text(name ?? '收藏', PFun.lg1(Colors.black45))],
-      '000',
-      {'fun': fun},
+    return GestureDetector(
+      onTap: fun,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon ?? Icons.star_rate_rounded, color: Colors.black45),
+          SizedBox(height: 4),
+          Text(name ?? '收藏', style: TextStyle(color: Colors.black45)),
+        ],
+      ),
     );
   }
 
@@ -170,29 +216,36 @@ class _PointsMallDetailState extends State<PointsMallDetail> {
       valueListenable: valueChange,
       builder: (_, __, ___) {
         var isGo = valueChange.value >= 100;
-        return PWidget.container(
-          PWidget.row([
-            PWidget.container(
-              PWidget.icon(Icons.keyboard_arrow_left_rounded, [isGo ? Colors.black : Colors.white]),
-              [32, 32, if (!isGo) Colors.black26],
-              {'br': 56, 'fun': () => close()},
-            ),
-            if (isGo) PWidget.spacer(),
-            if (isGo)
-              PWidget.row(
-                List.generate(tabList.length, (i) {
-                  if (i == 1 && ['', null].contains(detailDm.object?['detailPics'])) {
-                    return PWidget.boxh(0);
-                  }
-                  return PWidget.container(
-                    PWidget.column([
-                      PWidget.text(tabList[i]),
-                      PWidget.boxh(4),
-                      PWidget.container(null, [24, 2, Colors.red.withOpacity((valueChange.tabIndex == i) ? 1 : 0)]),
-                    ], '221'),
-                    {
-                      'pd': PFun.lg(0, 0, 16, 16),
-                      'fun': () {
+        return Container(
+          height: 56 + pmPadd.top,
+          color: isGo ? Colors.white : null,
+          padding: EdgeInsets.fromLTRB(16, pmPadd.top + 8, 16, 8),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () => close(),
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: !isGo ? Colors.black26 : null,
+                    borderRadius: BorderRadius.circular(56),
+                  ),
+                  child: Icon(
+                    Icons.keyboard_arrow_left_rounded,
+                    color: isGo ? Colors.black : Colors.white,
+                  ),
+                ),
+              ),
+              if (isGo) Spacer(),
+              if (isGo)
+                Row(
+                  children: List.generate(tabList.length, (i) {
+                    if (i == 1 && ['', null].contains(detailDm.object?['detailPics'])) {
+                      return SizedBox.shrink();
+                    }
+                    return GestureDetector(
+                      onTap: () {
                         valueChange.changeTabIndex(i);
                         switch (tabList[i]) {
                           case '商品':
@@ -203,68 +256,138 @@ class _PointsMallDetailState extends State<PointsMallDetail> {
                             break;
                         }
                       },
-                    },
-                  );
-                }),
-              ),
-            if (isGo) PWidget.spacer(),
-            if (isGo) PWidget.container(null, [32, 32]),
-          ]),
-          [null, 56 + pmPadd.top, if (isGo) Colors.white],
-          {
-            'pd': PFun.lg(pmPadd.top + 8, 8, 16, 16),
-          },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(tabList[i]),
+                            SizedBox(height: 4),
+                            Container(
+                              width: 24,
+                              height: 2,
+                              color: Colors.red.withValues(alpha: (valueChange.tabIndex == i) ? 1 : 0),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              if (isGo) Spacer(),
+              if (isGo) SizedBox(width: 32, height: 32),
+            ],
+          ),
         );
       },
     );
   }
 
   List<Widget> get headers {
+    final storeInfo = ValueUtil.toMap(detailDm.object!['storeInfo']);
     var imgs = '${detailDm.object!['storeInfo']['sliderImage'] ?? ''}'.trim().split(',');
     var price = '${detailDm.object!['storeInfo']['price']}';
     var priceInt = double.parse(price).toInt();
     return [
-      PWidget.column([
-        Stack(children: [
-          AnimatedSwitchBuilder(
-            value: detailDm,
-            errorOnTap: () => this.getDetailData(),
-            isAnimatedSize: false,
-            initialState: PWidget.container(null, [double.infinity, 200]),
-            objectBuilder: (v) {
-              return DetailLunboWidget(['${detailDm.object!['storeInfo']['image'] ?? ''}']);
-            },
-          ),
-        ]),
-        PWidget.container(
-          PWidget.column([
-            PWidget.container(
-              PWidget.row([
-                PWidget.text('', [], {}, [
-                  PWidget.textIs('积分', [Colors.red, 16, true]),
-                  PWidget.textIs('$priceInt ', [Colors.red, 24, true]),
-                  PWidget.textIs('原价 ¥${detailDm.object!['storeInfo']['otPrice']}', [Colors.black45, 12], {'td': TextDecoration.lineThrough}),
-                ]),
-                PWidget.spacer(),
-                PWidget.text('', [], {}, [
-                  PWidget.textIs('已兑', [Colors.black45, 12]),
-                  PWidget.textIs('${detailDm.object!['storeInfo']['sales']}', [Colors.red, 12]),
-                  PWidget.textIs('件', [Colors.black45, 12]),
-                ]),
-              ]),
-              {'pd': 8},
-            ),
-            PWidget.container(
-              PWidget.row([
-                PWidget.text(detailDm.object!['storeInfo']['storeName'], [Colors.black.withOpacity(0.75), 18, true], {'exp': true,'max':2}),
-              ]),
-              {'pd': 8},
-            ),
-
+      Column(
+        key: key1,
+        children: [
+          Stack(children: [
+            detailDm.object != null
+                ? DetailLunboWidget(['${detailDm.object!['storeInfo']['image'] ?? ''}'])
+                : GestureDetector(
+                    onTap: () => this.getDetailData(),
+                    child: Container(
+                      width: double.infinity,
+                      height: 200,
+                      color: Colors.grey.shade100,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.refresh, color: Colors.grey),
+                          SizedBox(height: 8),
+                          Text('点击重试', style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+                    ),
+                  ),
           ]),
-          [null, null, Colors.white],
-        ),
-      ], null, null, key1),
+          Container(
+            color: Colors.white,
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8),
+                  child: Row(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '积分',
+                              style: TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(
+                              text: '$priceInt ',
+                              style: TextStyle(color: Colors.red, fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            TextSpan(
+                              text: '原价 ¥${detailDm.object!['storeInfo']['otPrice']}',
+                              style: TextStyle(
+                                color: Colors.black45,
+                                fontSize: 12,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Spacer(),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '已兑',
+                              style: TextStyle(color: Colors.black45, fontSize: 12),
+                            ),
+                            TextSpan(
+                              text: '${detailDm.object!['storeInfo']['sales']}',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                            TextSpan(
+                              text: '件',
+                              style: TextStyle(color: Colors.black45, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          ValueUtil.toStr(storeInfo['storeName']),
+                          style: TextStyle(
+                            color: Colors.black.withValues(alpha: 0.75),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
       PointsDetailImgWidget(imgs, key: key2),
     ];
   }

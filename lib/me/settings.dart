@@ -3,11 +3,10 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
 import 'package:jpush_flutter/jpush_interface.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 import 'package:settings_ui/settings_ui.dart';
 import 'package:sufenbao/util/global.dart';
 
@@ -39,10 +38,18 @@ class _Settings extends State<Settings> {
   Future initData() async {}
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      bgColor: Colors.white,
-      brightness: Brightness.dark,
-      appBar: buildTitle(context, title: '设置', widgetColor: Colors.black, leftIcon: Icon(Icons.arrow_back_ios)),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('设置', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+      ),
       body: Stack(
         children: [
           SettingsList(
@@ -132,8 +139,11 @@ class _Settings extends State<Settings> {
 
   ///底部操作栏
   Widget btmBarView(BuildContext context) {
-    return PWidget.positioned(
-      SafeArea(
+    return Positioned(
+      bottom: 10,
+      left: 20,
+      right: 20,
+      child: SafeArea(
           child: Column(
         children: [
           CustomButton(
@@ -144,12 +154,11 @@ class _Settings extends State<Settings> {
             onPressed: () {
               Global.clearUser();
               Navigator.pushAndRemoveUntil(
-                  context, MaterialPageRoute(builder: (_) => Index()), (Route router) => router == null);
+                  context, MaterialPageRoute(builder: (_) => Index()), (Route router) => false);
             },
           )
         ],
       )),
-      [null, 10, 20, 20],
     );
   }
 

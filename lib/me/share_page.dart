@@ -4,11 +4,9 @@
  */
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sufenbao/util/repaintBoundary_util.dart';
 import 'package:sufenbao/widget/loading.dart';
@@ -18,7 +16,6 @@ import '../service.dart';
 import '../share/ShareDialog.dart';
 import '../util/global.dart';
 import '../util/toast_utils.dart';
-import '../util/paixs_fun.dart';
 
 class SharePage extends StatefulWidget {
   SharePage(Map arg);
@@ -43,7 +40,8 @@ class _SharePageState extends State<SharePage> {
     super.initState();
     initData();
   }
-  Future initData() async{
+
+  Future initData() async {
     await initSharetext();
     await initPoster();
     initWidget();
@@ -51,30 +49,33 @@ class _SharePageState extends State<SharePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-        brightness: Brightness.dark,
-        bgColor: Colors.white,
-        appBar: buildTitle(context,
-            title: '分享App',
-            widgetColor: Colors.black,
-            color: Colors.white,
-            leftIcon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            ),
-            rightWidget: PWidget.textNormal('邀请规则', {'pd':[0,0,0,8]}), rightCallback: (){
-              showGeneralDialog(
-                  context: context,
-                  barrierDismissible:false,
-                  barrierLabel: '',
-                  transitionDuration: Duration(milliseconds: 200),
-                  pageBuilder: (BuildContext context, Animation<double> animation,Animation<double> secondaryAnimation) {
-                    return Scaffold(backgroundColor: Colors.transparent, body:InviteRuleDialog(
-                        {}, (){
-
-                    }));
-                  });
-            }),
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text('分享App', style: TextStyle(color: Colors.black)),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+          actions: [
+            TextButton(
+              child: Text('邀请规则', style: TextStyle(color: Colors.black)),
+              onPressed: () {
+                showGeneralDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    barrierLabel: '',
+                    transitionDuration: Duration(milliseconds: 200),
+                    pageBuilder:
+                        (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+                      return Scaffold(backgroundColor: Colors.transparent, body: InviteRuleDialog({}, () {}));
+                    });
+              },
+            )
+          ],
+        ),
         body: createContent());
   }
 
@@ -87,104 +88,115 @@ class _SharePageState extends State<SharePage> {
           Color(0xFFF8E7CB),
         ], begin: FractionalOffset(2, 0), end: FractionalOffset(1, 1))),
       ),
-      loading ? Global.showLoading2() : PWidget.column([
-        PWidget.boxh(20.h),
-        PWidget.container(
-            PageView.builder(
-                onPageChanged: _onPageChanged,
-                controller: _pageController,
-                itemCount: childImages.length,
-                itemBuilder: (context, index) {
-                  return PWidget.container(
-                      Material(
-                        color: Colors.transparent,
-                        clipBehavior: Clip.antiAlias ,
-                        // elevation: 5.0,
-                        borderRadius: BorderRadius.circular(12.0.r),
-                        child: RepaintBoundary(
-                            key: keyList[index],
-                            child: Stack(
-                              // fit: StackFit.expand,
-                              alignment: Alignment.bottomCenter,
-                              children: [
-                                PWidget.wrapperImage(childImages[index],
-                                    [972.w, 600.h]),
-                                Positioned(
-                                    top: 450.h,
-                                    child: QrImageView(
-                                      data: Global.appInfo.share,
-                                      version: QrVersions.auto,
-                                      size: 105,
-                                      gapless: true,
-                                      // embeddedImage: AssetImage(qrImage),
+      loading
+          ? Global.showLoading2()
+          : Column(
+              children: [
+                SizedBox(height: 20.h),
+                Container(
+                    width: 972.w,
+                    height: 600.h,
+                    child: PageView.builder(
+                        onPageChanged: _onPageChanged,
+                        controller: _pageController,
+                        itemCount: childImages.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                              width: 972.w,
+                              height: 600.h,
+                              padding: EdgeInsets.all(4),
+                              child: Material(
+                                color: Colors.transparent,
+                                clipBehavior: Clip.antiAlias,
+                                // elevation: 5.0,
+                                borderRadius: BorderRadius.circular(12.0.r),
+                                child: RepaintBoundary(
+                                    key: keyList[index],
+                                    child: Stack(
+                                      // fit: StackFit.expand,
+                                      alignment: Alignment.bottomCenter,
+                                      children: [
+                                        Image.network(
+                                          childImages[index],
+                                          width: 972.w,
+                                          height: 600.h,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Container(
+                                              width: 972.w,
+                                              height: 600.h,
+                                              color: Colors.grey[300],
+                                              child: Icon(Icons.error),
+                                            );
+                                          },
+                                        ),
+                                        Positioned(
+                                            top: 450.h,
+                                            child: QrImageView(
+                                              data: Global.appInfo.share,
+                                              version: QrVersions.auto,
+                                              size: 105,
+                                              gapless: true,
+                                              // embeddedImage: AssetImage(qrImage),
+                                            )),
+                                        Positioned(
+                                            top: 573.h,
+                                            child: Container(
+                                              child: Text(
+                                                Global.userinfo!.code,
+                                                style: TextStyle(color: Colors.black, fontSize: 12),
+                                              ),
+                                            )),
+                                      ],
                                     )),
-                                Positioned(
-                                    top: 573.h,
-                                    child: PWidget.container(
-                                      PWidget.textNormal(Global.userinfo!.code,
-                                          [Colors.black, 12]),
-                                    )),
-                              ],
-                            )),
-                      ),
-                      {
-                        'pd': PFun.lg(0, 0, 4, 4),
-                      }, [972.w, 600.h]);
-                }),
-            [972.w, 600.h]),
-      ]),
+                              ));
+                        })),
+              ],
+            ),
       Positioned(
         bottom: 0,
         left: 0,
         right: 0,
-        child: PWidget.container(
-            PWidget.row([
-              TextButton.icon(
-                  style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.all(Colors.black12)),
-                  icon: PWidget.icon(Icons.share, [Colors.grey, 15]),
-                  onPressed: () {
-                    copyLink();
-                  },
-                  label: Text("复制链接",
-                      style: TextStyle(color: Colors.grey, fontSize: 14))),
-              Expanded(child: Text("")),
-              TextButton.icon(
-                  style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.all(Colors.black12)),
-                  icon: PWidget.icon(Icons.file_download, [Colors.grey, 15]),
-                  onPressed: () {
-                    savePhoto();
-                  },
-                  label: Text("保存图片",
-                      style: TextStyle(color: Colors.grey, fontSize: 14))),
-              Expanded(child: Text("")),
-              TextButton.icon(
-                  style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.all(Colors.black12)),
-                  icon:
-                      PWidget.icon(Icons.ios_share_outlined, [Colors.grey, 15]),
-                  onPressed: () {
-                    shareImage();
-                  },
-                  label: Text("分享海报",
-                      style: TextStyle(color: Colors.grey, fontSize: 14))),
-            ]),
-            [
-              null,
-              40,
-              Colors.white
-            ], //宽度，高度，背景色
-            {
-              'br': PFun.lg(6, 6, 6, 6), //圆角
-              'mg': PFun.lg(0, 35, 30, 30) //margin
-            }),
+        child: Container(
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            margin: EdgeInsets.fromLTRB(30, 35, 30, 30),
+            child: Row(
+              children: [
+                TextButton.icon(
+                    style: ButtonStyle(overlayColor: WidgetStateProperty.all(Colors.black12)),
+                    icon: Icon(Icons.share, color: Colors.grey, size: 15),
+                    onPressed: () {
+                      copyLink();
+                    },
+                    label: Text("复制链接", style: TextStyle(color: Colors.grey, fontSize: 14))),
+                Expanded(child: Text("")),
+                TextButton.icon(
+                    style: ButtonStyle(overlayColor: WidgetStateProperty.all(Colors.black12)),
+                    icon: Icon(Icons.file_download, color: Colors.grey, size: 15),
+                    onPressed: () {
+                      savePhoto();
+                    },
+                    label: Text("保存图片", style: TextStyle(color: Colors.grey, fontSize: 14))),
+                Expanded(child: Text("")),
+                TextButton.icon(
+                    style: ButtonStyle(overlayColor: WidgetStateProperty.all(Colors.black12)),
+                    icon: Icon(Icons.ios_share_outlined, color: Colors.grey, size: 15),
+                    onPressed: () {
+                      shareImage();
+                    },
+                    label: Text("分享海报", style: TextStyle(color: Colors.grey, fontSize: 14))),
+              ],
+            )),
       )
     ]);
   }
 
   initWidget() {
-    if (images == null || images.isEmpty) {
+    if (images.isEmpty) {
       return;
     }
     if (images.length == 1) {
@@ -199,9 +211,7 @@ class _SharePageState extends State<SharePage> {
     }
     _pageController = PageController(viewportFraction: 0.9);
     loading = false;
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   _onPageChanged(index) async {
@@ -229,8 +239,7 @@ class _SharePageState extends State<SharePage> {
     if (!Global.login) {
       return;
     }
-    FlutterClipboard.copy(sharetext)
-        .then((value) => ToastUtils.showToastBOTTOM('复制链接成功'));
+    FlutterClipboard.copy(sharetext).then((value) => ToastUtils.showToastBOTTOM('复制链接成功'));
   }
 
   Future<void> shareImage() async {
@@ -241,7 +250,7 @@ class _SharePageState extends State<SharePage> {
     boundaryKey = keyList[currentIndex];
     String filePath = await RepaintBoundaryUtils().captureImage();
     Loading.hide(context);
-    if (filePath != null) {
+    if (filePath.isNotEmpty) {
       ShareDialog.showShareDialog(context, filePath);
     }
   }
@@ -261,12 +270,9 @@ class _SharePageState extends State<SharePage> {
       return;
     }
     String shareContent = Global.appInfo.shareContent;
-    shareContent = shareContent
-        .replaceFirst("#url#", Global.appInfo.share)
-        .replaceFirst('#APPNAME#', APP_NAME);
+    shareContent = shareContent.replaceFirst("#url#", Global.appInfo.share).replaceFirst('#APPNAME#', APP_NAME);
     if (Global.userinfo != null) {
-      shareContent = shareContent.replaceFirst(
-          "#code#", '邀请口令：${Global.userinfo!.code}\n━┉┉┉┉∞┉┉┉┉━\n');
+      shareContent = shareContent.replaceFirst("#code#", '邀请口令：${Global.userinfo!.code}\n━┉┉┉┉∞┉┉┉┉━\n');
     } else {
       shareContent = shareContent.replaceFirst("#code#", '');
     }
@@ -275,15 +281,14 @@ class _SharePageState extends State<SharePage> {
 
   @override
   void dispose() {
-    if(_pageController != null) {
-      _pageController.dispose();
-    }
+    // PageController is always initialized, so no null check needed
+    _pageController.dispose();
     super.dispose();
   }
 
   Future initPoster() async {
     List res = await BService.userShareImages();
-    if (res != null) {
+    if (res.isNotEmpty) {
       res.forEach((element) {
         images.add(element);
       });

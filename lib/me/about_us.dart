@@ -5,9 +5,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 
 import '../util/launchApp.dart';
 import '../util/toast_utils.dart';
@@ -15,6 +12,7 @@ import '../service.dart';
 import '../util/global.dart';
 import '../generated/l10n.dart';
 import '../widget/CustomWidgetPage.dart';
+
 //关于我们
 class AboutUs extends StatefulWidget {
   @override
@@ -39,98 +37,109 @@ class _AboutUsState extends State<AboutUs> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      bgColor: Colors.white,
-      appBar: buildTitle(context,
-          title: S.of(context).aboutUs,
-          widgetColor: Colors.black,
-          leftIcon: Icon(Icons.arrow_back_ios)),
-      body: PWidget.container(
-          Column(
-            children: [
-              Expanded(
-                  child: PWidget.ccolumn([
-                PWidget.image(
-                    'assets/images/logo.png', [100, 100], {'crr': 25}),
-                PWidget.boxh(10),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(S.of(context).aboutUs),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: Container(
+        padding: EdgeInsets.fromLTRB(20, MediaQuery.of(context).padding.bottom + 60, 20, 20),
+        child: Column(
+          children: [
+            Expanded(
+                child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 100,
+                    height: 100,
+                  ),
+                ),
+                SizedBox(height: 10),
                 Text('— $APP_NAME 全场宝贝都有券 外卖红包天天有 —'),
-                PWidget.boxh(10),
+                SizedBox(height: 10),
                 Text('V$version'),
                 Padding(padding: EdgeInsets.only(top: 50)),
-              ])),
-              //按钮
-              RawMaterialButton(
-                //宽高
-                constraints: BoxConstraints(minHeight: 44),
-                //背景颜色
-                // fillColor: Colors.redAccent,
-                //圆角
-                // shape: RoundedRectangleBorder(
-                //   borderRadius: BorderRadius.all(Radius.circular(25)),
-                // ),
-                //点击事件
-                onPressed: () {
-                  _update();
-                },
-                child: Row(
-                  //此时主轴 Column 纵向 字体居中
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      '检查更新',
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 14,
-                      ),
+              ],
+            )),
+            //按钮
+            RawMaterialButton(
+              //宽高
+              constraints: BoxConstraints(minHeight: 44),
+              //背景颜色
+              // fillColor: Colors.redAccent,
+              //圆角
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.all(Radius.circular(25)),
+              // ),
+              //点击事件
+              onPressed: () {
+                _update();
+              },
+              child: Row(
+                //此时主轴 Column 纵向 字体居中
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '检查更新',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 14,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              Center(
-                child: Column(
-                  children: [
-                    Divider(),
-                    RichText(
-                        text: TextSpan(
-                      text: '',
-                      style: TextStyle(color: Colors.black),
-                      children: [
-                        TextSpan(
-                          text: '《用户服务协议》',
-                          style: TextStyle(color: Colors.red),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Global.showProtocolPage(Global.userUrl, '用户服务协议');
-                            },
-                        ),
-                        TextSpan(
-                          text: '  ',
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        TextSpan(
-                          text: '《$APP_NAME隐私政策》',
-                          style: TextStyle(color: Colors.red),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Global.showProtocolPage(
-                                  Global.privacyUrl, '$APP_NAME隐私政策');
-                            },
-                        ),
-                      ],
-                    )),
-                    PWidget.boxh(10),
-                    Text(COMPANY_NAME),
-                    PWidget.boxh(20),
-                  ],
-                ),
-              )
-            ],
-          ),
-          {
-            'pd': [80, MediaQuery.of(context).padding.bottom + 20, 20, 20]
-          }),
+            ),
+            Center(
+              child: Column(
+                children: [
+                  RichText(
+                      text: TextSpan(
+                    text: '',
+                    style: TextStyle(color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text: '《用户服务协议》',
+                        style: TextStyle(color: Colors.red),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Global.showProtocolPage(Global.userUrl, '用户服务协议');
+                          },
+                      ),
+                      TextSpan(
+                        text: '  ',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: '《$APP_NAME隐私政策》',
+                        style: TextStyle(color: Colors.red),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Global.showProtocolPage(Global.privacyUrl, '$APP_NAME隐私政策');
+                          },
+                      ),
+                    ],
+                  )),
+                  SizedBox(height: 10),
+                  Text(COMPANY_NAME),
+                  SizedBox(height: 20),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -141,10 +150,10 @@ class _AboutUsState extends State<AboutUs> {
     }
     String version = packageInfo.version;
     Map res = await BService.updateConfig();
-    if(res == null || res.isEmpty) {
+    if (res == null || res.isEmpty) {
       return;
     }
-    String enable = res['enable']??'0';
+    String enable = res['enable'] ?? '0';
     if (enable == '0') {
       return;
     }
@@ -163,20 +172,19 @@ class _AboutUsState extends State<AboutUs> {
     if (curs.length != las.length) {
       return;
     }
-    if(num.parse(las[0])>num.parse(curs[0])
-        || (num.parse(las[0])==num.parse(curs[0]) && num.parse(las[1])>num.parse(curs[1]))
-        || (curs.length > 2 && num.parse(las[0])==num.parse(curs[0]) &&
-            num.parse(las[1])==num.parse(curs[1]) &&
-            num.parse(las[2])>num.parse(curs[2]))) {
-      showSignDialog(context, title: '新版本上线啦', desc: '立即更新', okTxt: '去更新',
-              () {
-            LaunchApp.launchInBrowser(url);
-            // launchUrl(Uri.parse(url));
-          });
+    if (num.parse(las[0]) > num.parse(curs[0]) ||
+        (num.parse(las[0]) == num.parse(curs[0]) && num.parse(las[1]) > num.parse(curs[1])) ||
+        (curs.length > 2 &&
+            num.parse(las[0]) == num.parse(curs[0]) &&
+            num.parse(las[1]) == num.parse(curs[1]) &&
+            num.parse(las[2]) > num.parse(curs[2]))) {
+      showSignDialog(context, title: '新版本上线啦', desc: '立即更新', okTxt: '去更新', () {
+        LaunchApp.launchInBrowser(url);
+        // launchUrl(Uri.parse(url));
+      });
     } else {
       ToastUtils.showToast('暂无更新');
       return;
     }
-
   }
 }

@@ -3,7 +3,7 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
+
 import 'package:sufenbao/me/styles.dart';
 
 class SelectTextItem extends StatelessWidget {
@@ -54,7 +54,7 @@ class SelectTextItem extends StatelessWidget {
                     offstage: leading == null,
                     child: Row(children: <Widget>[
                       leading??SizedBox(),
-                      PWidget.boxw(8)
+                      SizedBox(width: 8)
                     ])),
                 Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

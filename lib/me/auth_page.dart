@@ -4,9 +4,6 @@
  */
 import 'package:flutter/material.dart';
 import 'package:fluwx/fluwx.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:tobias/tobias.dart';
 
@@ -50,7 +47,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
   void _wechatBindingCallback() {
     WeChatResponse res = wxPayNotifier.value;
-    if (!authed && res != null && res is WeChatAuthResponse) {
+    if (!authed && res is WeChatAuthResponse) {
       authed = true;
       //返回的res.code就是授权code
       WeChatAuthResponse authResponse = res;
@@ -100,13 +97,20 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      bgColor: Colors.white,
-      appBar: buildTitle(context,
-          title: '账户与安全',
-          widgetColor: Colors.black,
-          leftIcon: Icon(Icons.arrow_back_ios)),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          '账户与安全',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: loading ? Global.showLoading2() : SettingsList(
         lightTheme: SettingsThemeData(settingsListBackground: Colors.white),
         contentPadding: EdgeInsets.all(0),
@@ -127,7 +131,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         trailing: Row(
           children: [
             Text(BService.formatPhone(phone)),
-            PWidget.boxw(4),
+            SizedBox(width: 4),
             Icon(
               Icons.arrow_forward_ios,
               color: Colors.grey,
@@ -147,7 +151,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         trailing: Row(
           children: [
             Text(BService.formatName(realName)),
-            PWidget.boxw(4),
+            SizedBox(width: 4),
             Icon(
               Icons.arrow_forward_ios,
               color: Colors.grey,
@@ -167,7 +171,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         trailing: Row(
           children: [
             loading ? SizedBox() : (!isSign ? Text('未认证') : Text('已认证')),
-            PWidget.boxw(4),
+            SizedBox(width: 4),
             Icon(
               Icons.arrow_forward_ios,
               color: Colors.grey,
@@ -185,7 +189,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         trailing: Row(
           children: [
             wxProfile.isEmpty ? Text('未授权') : Text('已授权'),
-            PWidget.boxw(4),
+            SizedBox(width: 4),
             Icon(
               Icons.arrow_forward_ios,
               color: Colors.grey,
@@ -207,7 +211,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         trailing: Row(
           children: [
             isEmpty(aliProfile) ? Text('未授权') : Text('已授权'),
-            PWidget.boxw(4),
+            SizedBox(width: 4),
             Icon(
               Icons.arrow_forward_ios,
               color: Colors.grey,
@@ -236,8 +240,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   Future changePhone() async {
 
   }
-  bool isEmpty(String str) {
-    return str == null || str=='';
+  bool isEmpty(String? str) {
+    return str == null || str == '';
   }
 
   Future alipayBinding() async {

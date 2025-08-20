@@ -4,16 +4,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/mylistview.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 
 import '../util/colors.dart';
-import '../util/paixs_fun.dart';
 import '../service.dart';
 
 class AddressList extends StatefulWidget {
@@ -26,7 +18,9 @@ class AddressList extends StatefulWidget {
 }
 
 class _AddressListState extends State<AddressList> {
-  late List addressList;
+  late List addressList = [];
+  bool isLoading = true;
+  bool hasError = false;
 
   @override
   void initState() {
@@ -39,37 +33,46 @@ class _AddressListState extends State<AddressList> {
     await getListData(isRef: false);
   }
 
-  ///列表数据
-  var listDm = DataModel();
-
   Future<int> getListData({int page = 1, bool isRef = true}) async {
-    addressList = await BService.addressList();
-    if (addressList != null) {
-      listDm.addList(addressList, isRef, addressList.length);
+    try {
+      setState(() {
+        isLoading = true;
+        hasError = false;
+      });
+      
+      addressList = await BService.addressList();
+      
+      setState(() {
+        isLoading = false;
+      });
+      return 1;
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        hasError = true;
+      });
+      return 0;
     }
-    setState(() {});
-    return listDm.flag;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('地址管理'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Stack(
         children: [
-          PWidget.container(null, [double.infinity, double.infinity],
-              {'gd': PFun.tbGd(Colors.white, Colors.white)}),
-          ScaffoldWidget(
-            brightness: Brightness.dark,
-            bgColor: Colors.transparent,
-            appBar: buildTitle(context,
-                title: '地址管理',
-                widgetColor: Colors.black,
-                leftIcon: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.black,
-                )),
-            body: createHomeChild(context),
-          ),
+          createHomeChild(context),
           btmBarView(context),
         ],
       ),
@@ -78,154 +81,211 @@ class _AddressListState extends State<AddressList> {
 
   ///底部操作栏
   Widget btmBarView(BuildContext context) {
-    return PWidget.positioned(
-      PWidget.container(
-        PWidget.row([
-          PWidget.container(
-            PWidget.row([
-              PWidget.container(
-                PWidget.ccolumn([
-                  PWidget.text('', [], {}, [
-                    PWidget.textIsNormal('新建收获地址', [Colors.white, 16, true]),
-                  ]),
-                ], '221'),
-                [null, null, Colours.app_main],
-                {
-                  'exp': true,
-                },
+    return Positioned(
+      bottom: 12,
+      left: 12,
+      right: 12,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(8, 8, 8, MediaQuery.of(context).padding.bottom + 8),
+        color: Colors.white,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/createAddress').then((value) {
+              getListData(isRef: true);
+            });
+          },
+          child: Container(
+            height: 44,
+            decoration: BoxDecoration(
+              color: Colours.app_main,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Center(
+              child: Text(
+                '新建收获地址',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ]),
-            [null, 44],
-            {'crr': 8, 'exp': true},
+            ),
           ),
-        ]),
-        [null, null, Colors.white],
-        {
-          'pd': [8,MediaQuery.of(context).padding.bottom+8,8,8],
-          'fun': () => {Navigator.pushNamed(context, '/createAddress').then((value) {
-            getListData(isRef:true);
-          })},
-        },
+        ),
       ),
-      [null, 0, 12, 12],
     );
   }
   Widget createHomeChild(BuildContext context) {
-    return AnimatedSwitchBuilder(
-      value: listDm,
-      initialState: buildLoad(color: Colors.white),
-      errorOnTap: () => this.getListData(isRef: true),
-      listBuilder: (list, p, h) {
-        return MyListView(
-          isShuaxin: true,
-          isGengduo: h,
-          header: buildClassicHeader(color: Colors.white),
-          onRefresh: () => this.getListData(isRef: true),
-          // onLoading: () => this.getListData(page: p),
-          itemCount: list.length,
-          listViewType: ListViewType.Separated,
-          padding: const EdgeInsets.all(12),
-          divider: const Divider(height: 12, color: Colors.transparent),
-          item: (i) {
-            Map data = list[i] as Map;
-            return Slidable(
-              // Specify a key if the Slidable is dismissible.
-              key: const ValueKey(0),
-
-              // The end action pane is the one at the right or the bottom side.
-              endActionPane: ActionPane(
-                motion: ScrollMotion(),
-                children: [
-                  SlidableAction(
-                    // An action can be bigger than the others.
-                    onPressed: (context) {
-                      BService.addressDefaultSet(data['id']).then((value) => getListData(isRef: true));
-                    },
-                    backgroundColor: Colors.grey.shade200,
-                    foregroundColor: Colors.black,
-                    label: '设为默认',
-                  ),
-                  SlidableAction(
-                    onPressed: (context) {
-                      BService.addressDel(data['id']).then((value) => getListData(isRef: true));
-                    },
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    label: '删除',
-                  ),
-                ],
-              ),
-
-              // The child of the Slidable is what the user sees when the
-              // component is not dragged.
-              child: createItem(data),
-            );
-          },
-        );
-      },
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    
+    if (hasError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('加载失败'),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => getListData(isRef: true),
+              child: Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    return RefreshIndicator(
+      onRefresh: () => getListData(isRef: true),
+      child: ListView.separated(
+        padding: const EdgeInsets.all(12),
+        itemCount: addressList.length,
+        separatorBuilder: (context, index) => const Divider(height: 12, color: Colors.transparent),
+        itemBuilder: (context, i) {
+          Map data = addressList[i] as Map;
+          return Slidable(
+            key: ValueKey(data['id']),
+            endActionPane: ActionPane(
+              motion: ScrollMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) {
+                    BService.addressDefaultSet(data['id']).then((value) => getListData(isRef: true));
+                  },
+                  backgroundColor: Colors.grey.shade200,
+                  foregroundColor: Colors.black,
+                  label: '设为默认',
+                ),
+                SlidableAction(
+                  onPressed: (context) {
+                    BService.addressDel(data['id']).then((value) => getListData(isRef: true));
+                  },
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  label: '删除',
+                ),
+              ],
+            ),
+            child: createItem(data),
+          );
+        },
+      ),
     );
   }
 
   Widget createItem(data) {
-    return PWidget.row([
-      PWidget.container(
-        PWidget.column([
-          PWidget.row([
-            PWidget.text(
-                data['province'], [Colors.black.withOpacity(0.75), 14]),
-            data['province']== data['city'] ? SizedBox() :PWidget.boxw(2),
-            data['province']== data['city'] ? SizedBox() :PWidget.text(
-                data['city'], [Colors.black.withOpacity(0.75), 14]),
-            PWidget.boxw(2),
-            PWidget.text(
-                data['district'], [Colors.black.withOpacity(0.75), 14]),
-          ]),
-          PWidget.boxh(8),
-          PWidget.column([
-            PWidget.text(data['detail'],
-                [Colors.black.withOpacity(0.75), 16, true]),
-          ]),
-          PWidget.boxh(8),
-          PWidget.row([
-            PWidget.text(
-                data['realName'], [Colors.black.withOpacity(0.75)]),
-            PWidget.boxw(8),
-            PWidget.text(
-                data['phone'], [Colors.black.withOpacity(0.75)]),
-            PWidget.boxw(8),
-            data['isDefault']==1 ?PWidget.container(
-              PWidget.text('默认', [Colors.white, 12]),
-              [null, null, Colours.app_main],
-              {
-                'bd': PFun.bdAllLg(Colours.app_main, 0.5),
-                'pd': PFun.lg(1, 1, 4, 4),
-                'br': PFun.lg(0, 4, 0, 4)
-              },
-            ): SizedBox(),
-          ]),
-        ]),
-        [null, null, Colors.white],
-        {
-          'br': 12,
-          'pd': 12,
-          'fun': () => {Navigator.pop(context, data)}
-        },
-      ),
-      Spacer(),
-      PWidget.container(
-        PWidget.column([
-          Icon(Icons.edit_outlined)
-        ]),
-        [null, null, Colors.white],
-        {
-          'br': 12,
-          'pd': 12,
-          'fun': () {
-            Navigator.pushNamed(context, '/createAddress', arguments: data).then((value) => getListData(isRef: true));
-          }
-        },
-      ),
-    ]);
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => Navigator.pop(context, data),
+            child: Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        data['province'],
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.75),
+                          fontSize: 14,
+                        ),
+                      ),
+                      if (data['province'] != data['city']) ...[
+                        SizedBox(width: 2),
+                        Text(
+                          data['city'],
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.75),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                      SizedBox(width: 2),
+                      Text(
+                        data['district'],
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.75),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    data['detail'],
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.75),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        data['realName'],
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.75),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        data['phone'],
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.75),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      if (data['isDefault'] == 1)
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: Colours.app_main,
+                            border: Border.all(color: Colours.app_main, width: 0.5),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            '默认',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 8),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/createAddress', arguments: data)
+                .then((value) => getListData(isRef: true));
+          },
+          child: Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.edit_outlined),
+          ),
+        ),
+      ],
+    );
   }
 }
 

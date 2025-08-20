@@ -3,9 +3,7 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 import 'package:sufenbao/me/select_text_item.dart';
 import 'package:sufenbao/util/bao_icons.dart';
 
@@ -17,50 +15,64 @@ class MessageCenter extends StatefulWidget {
 }
 
 class _messageCenter extends State<MessageCenter> {
-
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-        bgColor: Colors.white,
-        brightness: Brightness.dark,
-        appBar: buildTitle(context,
-            title: '消息通知',
-            widgetColor: Colors.black,
-            leftIcon: Icon(Icons.arrow_back_ios)),
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text('消息通知'),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
         body: createMessageItem());
   }
 
   createMessageItem() {
-    return PWidget.container(
-        PWidget.column([
+    return Container(
+      padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
+      child: Column(
+        children: [
           SelectTextItem(
-              title: '用户消息', leading: Icon(BaoIcons.fans), onTap: () {
-            onTapLogin(context, '/fans');
-          }),
+              title: '用户消息',
+              leading: Icon(BaoIcons.fans),
+              onTap: () {
+                onTapLogin(context, '/fans');
+              }),
           SelectTextItem(
-              title: '收益消息', leading: Icon(BaoIcons.shop), onTap: () {
-            onTapLogin(context, '/moneyList');
-          }),
+              title: '收益消息',
+              leading: Icon(BaoIcons.shop),
+              onTap: () {
+                onTapLogin(context, '/moneyList');
+              }),
           SelectTextItem(
-              title: '订单消息', leading: Icon(BaoIcons.order), onTap: () {
-            onTapLogin(context, '/orderList');
-          }),
+              title: '订单消息',
+              leading: Icon(BaoIcons.order),
+              onTap: () {
+                onTapLogin(context, '/orderList');
+              }),
           SelectTextItem(
-              title: '热度消息', leading: Icon(BaoIcons.kefu), onTap: () {
-            onTapLogin(context, '/energyList');
-          }),
-        ]),
-        {
-          'pd': [0, 0, 8, 8]
-        });
+              title: '热度消息',
+              leading: Icon(BaoIcons.kefu),
+              onTap: () {
+                onTapLogin(context, '/energyList');
+              }),
+        ],
+      ),
+    );
   }
 
   @override
   void initState() {
+    super.initState();
     initData();
   }
 
-  Future<void> initData() async {
-
-  }
+  Future<void> initData() async {}
 }
