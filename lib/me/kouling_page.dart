@@ -3,9 +3,6 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/util/colors.dart';
 
 import '../util/global.dart';
@@ -44,72 +41,84 @@ class _KoulingPage extends State<KoulingPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-        brightness: Brightness.dark,
-        bgColor: Colors.white,
-        appBar: buildTitle(context,
-            title: '申请专属口令',
-            widgetColor: Colors.black,
-            leftIcon: Icon(Icons.arrow_back_ios)),
-        body: PWidget.container(PWidget.ccolumn([
-          PWidget.boxh(10),
-          PWidget.text('邀请口令的作用',[Colors.black54, 12, true]),
-          PWidget.text('1.邀请口令可用于好友下载APP注册后绑定',[Colors.black54, 12, false], {'max':2}),
-          PWidget.text('2.好友通过您的邀请口令绑定后，将成为您的用户',[Colors.black54, 12, false], {'max':2}),
-          PWidget.boxh(10),
-          PWidget.text('敏感词的说明',[Colors.black54, 12, true]),
-          PWidget.text('1.不可申请带有政治、情色、赌博等违规的邀请口令',[Colors.black54, 12, false], {'max':2}),
-          PWidget.text('2.不可申请带有$APP_NAME官方名义的邀请口令',[Colors.black54, 12, false], {'max':2}),
-          PWidget.boxh(10),
-          PWidget.text('专属口令申请/修改条件',[Colors.black54, 12, true]),
-          PWidget.text('1.邀请人数≥2人时，可修改一次专属口令',[Colors.black54, 12, false], {'max':2}),
-          PWidget.text('2.邀请人数≥20且有效下单人数≥10人，可修改一次专属口令',[Colors.black54, 12, false], {'max':2}),
-          PWidget.text('2.邀请人数≥200且有效下单人数≥100人，可修改一次专属口令',[Colors.black54, 12, false], {'max':2}),
-          PWidget.boxh(10),
-          PWidget.text('三次修改机会使用完毕，将不允许用户修改专属口令，请谨慎设置',[Colors.black54, 12, false], {'max':2}),
-          PWidget.boxh(30),
-          PWidget.row([
-            PWidget.text('当前邀请人数',[Colors.black54, 12, false]),
-            PWidget.text(fans,[Colors.red, 12, false]),
-            PWidget.text('人',[Colors.black54, 12, false]),
-          ],['2','2','1']),
-          PWidget.boxh(10),
-          // createTextField(),
-          canChanged ==1 ? createTextField() : SizedBox(),
-          canChanged ==1 ? PWidget.boxh(10) : SizedBox(),
-        Column(
+    return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text('申请专属口令'),
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RawMaterialButton(
-                  constraints: BoxConstraints(minHeight: 45),
-                  fillColor: canChanged == 1 ? Colours.app_main : Colors.grey,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                  ),
-                  onPressed: canChanged == 1 ? () {
-                    modifyPhone();
-                  } : null,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          canChanged==1 ? '确定' : '不符合修改条件',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
+              SizedBox(height: 10),
+              Text('邀请口令的作用', style: TextStyle(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('1.邀请口令可用于好友下载APP注册后绑定', style: TextStyle(color: Colors.black54, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              Text('2.好友通过您的邀请口令绑定后，将成为您的用户', style: TextStyle(color: Colors.black54, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              SizedBox(height: 10),
+              Text('敏感词的说明', style: TextStyle(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('1.不可申请带有政治、情色、赌博等违规的邀请口令', style: TextStyle(color: Colors.black54, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              Text('2.不可申请带有$APP_NAME官方名义的邀请口令', style: TextStyle(color: Colors.black54, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              SizedBox(height: 10),
+              Text('专属口令申请/修改条件', style: TextStyle(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
+              Text('1.邀请人数≥2人时，可修改一次专属口令', style: TextStyle(color: Colors.black54, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              Text('2.邀请人数≥20且有效下单人数≥10人，可修改一次专属口令', style: TextStyle(color: Colors.black54, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              Text('2.邀请人数≥200且有效下单人数≥100人，可修改一次专属口令', style: TextStyle(color: Colors.black54, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              SizedBox(height: 10),
+              Text('三次修改机会使用完毕，将不允许用户修改专属口令，请谨慎设置', style: TextStyle(color: Colors.black54, fontSize: 12), maxLines: 2, overflow: TextOverflow.ellipsis),
+              SizedBox(height: 30),
+              Row(
+                children: [
+                  Expanded(flex: 2, child: Text('当前邀请人数', style: TextStyle(color: Colors.black54, fontSize: 12))),
+                  Expanded(flex: 2, child: Text('$fans', style: TextStyle(color: Colors.red, fontSize: 12))),
+                  Expanded(flex: 1, child: Text('人', style: TextStyle(color: Colors.black54, fontSize: 12))),
+                ],
+              ),
+              SizedBox(height: 10),
+              // createTextField(),
+              canChanged ==1 ? createTextField() : SizedBox(),
+              canChanged ==1 ? SizedBox(height: 10) : SizedBox(),
+              Column(
+                children: [
+                  RawMaterialButton(
+                      constraints: BoxConstraints(minHeight: 45),
+                      fillColor: canChanged == 1 ? Colours.app_main : Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                      ),
+                      onPressed: canChanged == 1 ? () {
+                        modifyPhone();
+                      } : null,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 20, right: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              canChanged==1 ? '确定' : '不符合修改条件',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )),
-              Padding(padding: EdgeInsets.only(top: 20)),
+                      )),
+                  Padding(padding: EdgeInsets.only(top: 20)),
+                ],
+              )
             ],
-          )
-        ], ['0', '0', '1'], {
-          'pd': 15
-        })));
+          ),
+        ));
   }
   Widget createTextField() {
     return TextField(
