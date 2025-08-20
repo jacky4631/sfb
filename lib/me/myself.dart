@@ -240,7 +240,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
           ),
-          padding: EdgeInsets.fromLTRB(0, 1, 8, 8),
+          padding: EdgeInsets.fromLTRB(8, 1, 0, 8),
           child: Column(children: <Widget>[
             SelectTextItem(
                 title: '订单明细',
@@ -273,7 +273,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
           ),
-          padding: EdgeInsets.fromLTRB(0, 1, 8, 8),
+          padding: EdgeInsets.fromLTRB(8, 1, 0, 8),
           child: Column(children: <Widget>[
             SelectTextItem(
                 title: '我的用户',
@@ -299,7 +299,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
             ),
-            padding: EdgeInsets.fromLTRB(0, 1, 8, 8),
+            padding: EdgeInsets.fromLTRB(8, 1, 0, 8),
             child: Column(children: <Widget>[
               SelectTextItem(
                   title: '积分商城',
@@ -314,7 +314,7 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
           ),
-          padding: EdgeInsets.fromLTRB(0, 1, 8, 8),
+          padding: EdgeInsets.fromLTRB(8, 1, 0, 8),
           child: Column(children: <Widget>[
             SelectTextItem(
                 title: '我的收藏',

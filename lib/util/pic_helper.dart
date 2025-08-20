@@ -12,12 +12,11 @@ import 'package:sufenbao/util/global.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
-class PicHelper{
-
-  static void selectPic(BuildContext context, Function callback, {maxAssets=1}) async {
+class PicHelper {
+  static void selectPic(BuildContext context, Function callback, {maxAssets = 1}) async {
     final PermissionState ps = await PhotoManager.requestPermissionExtend();
     if (ps != PermissionState.authorized && ps != PermissionState.limited) {
-      Global.showPhotoDialog((){
+      Global.showPhotoDialog(() {
         openAppSettings();
       });
       return;
@@ -25,22 +24,23 @@ class PicHelper{
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(context,
         pickerConfig: AssetPickerConfig(maxAssets: maxAssets, textDelegate: AssetPickerTextDelegate()));
     if (assets != null && assets.isNotEmpty) {
-      File file = await assets[0].file ??File('a');
+      File file = await assets[0].file ?? File('a');
 
-      if(file != null && callback != null) {
+      if (file != null && callback != null) {
         callback(file);
       }
     }
   }
 
   static void openCamera(BuildContext context,
-      {required Function callback,preferredLensDirection=CameraLensDirection.back,
-        cameraQuarterTurns=0,
-        ForegroundBuilder? foregroundBuilder}) async {
+      {required Function callback,
+      preferredLensDirection = CameraLensDirection.back,
+      cameraQuarterTurns = 0,
+      ForegroundBuilder? foregroundBuilder}) async {
     // 相机权限
     var isGrantedCamera = await Permission.camera.request().isGranted;
     if (!isGrantedCamera) {
-      Global.showCameraDialog((){
+      Global.showCameraDialog(() {
         openAppSettings();
       });
       return;
@@ -54,39 +54,43 @@ class PicHelper{
     //   }
     // });
 
-    final AssetEntity? result = await CameraPicker.pickFromCamera(context,
+    final AssetEntity? result = await CameraPicker.pickFromCamera(
+      context,
       pickerConfig: CameraPickerConfig(
           preferredLensDirection: preferredLensDirection,
           cameraQuarterTurns: cameraQuarterTurns,
-          foregroundBuilder: (context, controller){
+          foregroundBuilder: (context, controller) {
             return Center(
-                child: PWidget.stack([
-                  RotatedBox(quarterTurns: 45, child:PWidget.text('请将身份证置于虚线框内',[Colors.grey, 18,true])),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: DottedBorder(
+              child: PWidget.stack([
+                RotatedBox(quarterTurns: 45, child: PWidget.text('请将身份证置于虚线框内', [Colors.grey, 18, true])),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: DottedBorder(
+                    options: RectDottedBorderOptions(
                       dashPattern: [8, 4],
                       strokeWidth: 4,
                       color: Colors.grey,
                       padding: EdgeInsets.all(8),
                       borderPadding: EdgeInsets.all(4),
-                      child: Container(
-                        width: 280,
-                        height: 450,
-                        color: Colors.grey.withOpacity(0.3),
-                      ),
                     ),
-                  )
-                ],[0.0,0.0]),
-              );
-          }
-      ),
+                    child: Container(
+                      width: 280,
+                      height: 450,
+                      color: Colors.grey.withOpacity(0.3),
+                    ),
+                  ),
+                )
+              ], [
+                0.0,
+                0.0
+              ]),
+            );
+          }),
     );
     File? file = await result?.file;
 
-    if(file != null && callback != null) {
+    if (file != null && callback != null) {
       callback(file);
     }
   }
-
 }

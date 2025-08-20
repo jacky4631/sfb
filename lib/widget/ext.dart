@@ -1,5 +1,3 @@
-import 'package:dart_json_mapper/dart_json_mapper.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -187,22 +185,11 @@ extension TExt on Object {
     }
   }
 
-  String json({bool ignoreNullMembers = true}) {
-    return JsonMapper.toJson(
-        this,
-        SerializationOptions(
-          indent: ' ',
-          ignoreNullMembers: ignoreNullMembers,
-        ));
+  String json2({bool ignoreNullMembers = true}) {
+    return '';
   }
 
-  Map<String, dynamic>? jsonMap({bool ignoreNullMembers = true}) {
-    return JsonMapper.toMap(
-            this,
-            SerializationOptions(
-              indent: ' ',
-              ignoreNullMembers: ignoreNullMembers,
-            )) ??
-        <String, dynamic>{};
+  Map<String, dynamic>? jsonMap2({bool ignoreNullMembers = true}) {
+    return <String, dynamic>{};
   }
 }
