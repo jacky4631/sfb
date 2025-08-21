@@ -5,11 +5,9 @@
 //APP启动页
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
+
 
 import '../dialog/privacyDialog.dart';
-import '../index/Index.dart';
 import '../util/global.dart';
 import 'countdown.dart';
 
@@ -52,7 +50,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     if (!agree) {
-      return ScaffoldWidget(
+      return Scaffold(
         body: Container(
           child: Stack(
             children: <Widget>[
@@ -62,7 +60,7 @@ class _SplashPageState extends State<SplashPage> {
         ),
       );
     }
-    return ScaffoldWidget(
+    return Scaffold(
       body: Container(
         child: Stack(
           children: <Widget>[
@@ -79,23 +77,20 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Widget createContent() {
-    return PWidget.container(
-        PWidget.image(
-          'assets/images/splash.png',
-          [1080, 1920, null, BoxFit.contain],
-        ),
-        [
-          null,
-          null,
-          Colors.white
-        ],
-        {
-          'pd': [16, 16, 16, 16]
-        });
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(16),
+      child: Image.asset(
+        'assets/images/splash.png',
+        width: 1080,
+        height: 1920,
+        fit: BoxFit.contain,
+      ),
+    );
   }
 
   Future showPrivacyDialog({func}) async {
-    if ((agree == null || !agree) && !Global.showPrivacy) {
+    if (!agree && !Global.showPrivacy) {
       Global.showPrivacy = true;
       AwesomeDialog(
         dismissOnTouchOutside: false,

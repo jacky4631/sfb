@@ -3,9 +3,6 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 import '../util/toast_utils.dart';
@@ -39,7 +36,7 @@ class _LoginCodeState extends State<LoginCode> {
 
   ///初始化函数
   Future initData() async {
-    String code = await Global.getPrefsString(PREFS_INVITE_CODE)??'';
+    String code = await Global.getPrefsString(PREFS_INVITE_CODE);
     _mobileController.text = code;
     refreshStatus(code);
     await initSkipCode();
@@ -68,15 +65,13 @@ class _LoginCodeState extends State<LoginCode> {
 
   Future initSkipCode() async {
     //如果配置了全局可跳过 直接跳过
-    skipCode = Global.appInfo.skipCode != null && Global.appInfo.skipCode == '1';
+    skipCode = Global.appInfo.skipCode == '1';
 
     //如果未配置跳过 校验是否是华为手机 是可跳过 因为华为不允许强制邀请码的app存在
     if(!skipCode) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      if(androidInfo != null && androidInfo.manufacturer != null) {
-        skipCode = androidInfo.manufacturer.toLowerCase() == 'huawei';
-      }
+      skipCode = androidInfo.manufacturer.toLowerCase() == 'huawei';
     }
     setState(() {
 
@@ -85,11 +80,17 @@ class _LoginCodeState extends State<LoginCode> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      bgColor: Colors.white,
-      appBar: buildTitle(context,
-          widgetColor: Colors.white, leftIcon: Icon(Icons.arrow_back)),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Container(
           padding: EdgeInsets.only(left: 30, right: 30),
           child: Column(
@@ -124,7 +125,7 @@ class _LoginCodeState extends State<LoginCode> {
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
                       suffixIcon:
                           (phone['value'] == null || phone['value'] == '')
-                              ? new SizedBox()
+                              ? SizedBox()
                               : IconButton(
                                   onPressed: () {
                                     setState(() {
@@ -140,7 +141,7 @@ class _LoginCodeState extends State<LoginCode> {
                       suffixIconColor: Colors.grey,
                       border: InputBorder.none)),
               Divider(),
-              PWidget.boxh(20),
+              SizedBox(height: 20),
               Column(
                 children: [
                   CustomButton(onPressed: () {
@@ -159,11 +160,22 @@ class _LoginCodeState extends State<LoginCode> {
                   Padding(padding: EdgeInsets.only(top: 20)),
                 ],
               ),
-              PWidget.boxh(20),
+              SizedBox(height: 20),
               if(skipCode)
-                PWidget.textNormal('跳过填写>',[Colors.grey, 18], {'ct': true, 'fun':(){
-                  loginThenRoutingMe(context, widget.data);
-                }})
+                GestureDetector(
+                  onTap: () {
+                    loginThenRoutingMe(context, widget.data);
+                  },
+                  child: Center(
+                    child: Text(
+                      '跳过填写>',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                )
             ],
           )),
     );

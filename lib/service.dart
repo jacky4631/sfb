@@ -10,6 +10,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_base/utils/logger_util.dart';
 
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:sufenbao/util/login_util.dart';
@@ -729,7 +730,8 @@ abstract class BService {
     var res = await suClient.get(
       API.nineTop,
     );
-    return res.data['data'];
+    final data = res.data['data'];
+    return data;
   }
 
   static Future<Map> nineList(pageId, cid, {pageSize = 10}) async {

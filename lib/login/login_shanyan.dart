@@ -4,11 +4,10 @@
  */
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_base/utils/logger_util.dart';
-import 'package:maixs_utils/util/utils.dart';
+
 import 'package:shanyan/shanYanResult.dart';
 import 'package:shanyan/shanYanUIConfig.dart';
 import 'package:shanyan/shanyan.dart';
@@ -49,14 +48,15 @@ class LoginShanyan {
     //闪验SDK 初始化
     ShanYanResult shanYanResult = await oneKeyLoginManager.init(appId: appId);
     bool initSuc = 1000 == shanYanResult.code;
+    Log.e("-----闪验SDK 初始化---${shanYanResult.toJson()}");
+
     if (initSuc) {
       //初始化成功
       initSuc = await _getPhoneInfoPlatformState();
     }
-    Log.e("-----22222222---$initSuc");
 
     if (Platform.isAndroid) {
-      oneKeyLoginManager.setDebug(false);
+      oneKeyLoginManager.setDebug(true);
       oneKeyLoginManager.getOperatorType().then((value) => print("getOperatorType===" + value));
       oneKeyLoginManager.getOperatorInfo().then((value) => print("getOperatorInfo===" + value));
       oneKeyLoginManager.setPrivacyOnClickListener((PrivacyOnClickEvent privacyOnclickEvent) {
@@ -72,13 +72,14 @@ class LoginShanyan {
   Future<bool> _getPhoneInfoPlatformState() async {
     //闪验SDK 预取号
     ShanYanResult shanYanResult = await oneKeyLoginManager.getPhoneInfo();
+    Log.e("-----/闪验SDK 预取号---${shanYanResult.toJson()}");
 
     return 1000 == shanYanResult.code;
   }
 
   //3 设置授权页  沉浸样式
-  void _setAuthThemeConfig() {
-    double screenWidthPortrait = window.physicalSize.width / window.devicePixelRatio; //竖屏宽
+  void _setAuthThemeConfig(BuildContext context) {
+    double screenWidthPortrait = MediaQuery.of(context).size.width; //竖屏宽
 
     ShanYanUIConfig shanYanUIConfig = ShanYanUIConfig();
 
@@ -292,7 +293,7 @@ class LoginShanyan {
     shanYanUIConfig.androidPortrait.setActivityTranslateAnim = ["activity_anim_bottom_in", "activity_anim_bottom_out"];
     //oneKeyLoginManager.setAuthThemeConfig(uiConfig: shanYanUIConfig);
     oneKeyLoginManager.addClikWidgetEventListener((eventId) {
-      flog(eventId);
+      Log.e(eventId);
       if (btnOtherLogin == eventId) {
         Navigator.pushNamed(context, '/login');
       } else if ('weixin' == eventId) {
@@ -326,8 +327,8 @@ class LoginShanyan {
   }
 
   //4 拉起授权页
-  Future<void> openLoginAuthPlatformState() async {
-    _setAuthThemeConfig();
+  Future<void> openLoginAuthPlatformState(BuildContext context) async {
+    _setAuthThemeConfig(context);
 
     ///闪验SDK 设置授权页一键登录回调（“一键登录按钮”、返回按钮（包括物理返回键））
     oneKeyLoginManager.setOneKeyLoginListener((ShanYanResult shanYanResult) async {
@@ -344,7 +345,6 @@ class LoginShanyan {
         oneKeyLoginManager.setLoadingVisibility(false);
       } else {
         ///一键登录获取token失败
-
         //关闭授权页
         oneKeyLoginManager.finishAuthControllerCompletion();
       }
@@ -352,6 +352,7 @@ class LoginShanyan {
 
     ///闪验SDK 拉起授权页
     oneKeyLoginManager.openLoginAuth().then((ShanYanResult shanYanResult) {
+      Log.e(shanYanResult.toJson());
       if (1000 == shanYanResult.code) {
         //拉起授权页成功
       } else {

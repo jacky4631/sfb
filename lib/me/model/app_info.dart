@@ -1,4 +1,6 @@
+import 'package:flutter_base/flutter_base.dart';
 import 'package:sufenbao/me/model/activity_info.dart';
+import 'package:sufenbao/me/points_mall_details.dart';
 
 /**
  *  Copyright (C) 2018-2024
@@ -32,7 +34,7 @@ class AppInfo {
         yeePaySuccUrl = json['yeePaySuccUrl'],
         yeePayFailUrl = json['yeePayFailUrl'],
         spreadLevel = json['spreadLevel'] ?? 3,
-        huodong = ActivityInfo.fromJson(json['huodong']);
+        huodong = ActivityInfo.fromJson(ValueUtil.toMap(json['huodong']));
 
   Map<String, dynamic> toJson() => {
         'kuCid': kuCid,

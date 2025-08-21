@@ -100,26 +100,27 @@ getLabelWidget(label, {textSize = 12}) {
   );
 }
 
-getTitleWidget(
-  title, {
-  size = 14,
-  max = 1,
-  isOf = true,
+Widget getTitleWidget(
+  String title, {
+  double size = 14,
+  int max = 1,
+  bool isOf = true,
 }) {
-  return PWidget.text(title, [
-    Colors.black.withOpacity(0.75),
-    size,
-    true
-  ], {
-    'max': max,
-    'exp': true,
-    'isOf': isOf,
-  });
+  return Text(
+    title,
+    style: TextStyle(
+      color: Colors.black.withValues(alpha: 0.75),
+      fontSize: size,
+      fontWeight: FontWeight.bold,
+    ),
+    maxLines: max,
+    overflow: isOf ? TextOverflow.ellipsis : TextOverflow.visible,
+  );
 }
 
 getSalesWidget(sales) {
   return PWidget.row([
-    PWidget.icon(Icons.local_fire_department_outlined, [Colors.black45, 14]),
+    PWidget.icon(Icons.local_fire_department_outlined, [Colors.black45, 12]),
     PWidget.text(
       '$sales',
       [Colors.black45, 12],

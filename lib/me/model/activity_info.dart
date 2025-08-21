@@ -10,18 +10,12 @@ class ActivityInfo {
   String color = '';
   ActivityInfo();
 
-  ActivityInfo.fromJson(Map<String, dynamic> json)
-      : img = json['img']??'',
-        url = json['url']??'',
-        webUrl = json['webUrl']??'',
-        title = json['title']??'',
-        color = json['color']??'';
+  ActivityInfo.fromJson(Map json)
+      : img = json['img'] ?? '',
+        url = json['url'] ?? '',
+        webUrl = json['webUrl'] ?? '',
+        title = json['title'] ?? '',
+        color = json['color'] ?? '';
 
-  Map<String, dynamic> toJson() => {
-    'img': img,
-    'url': url,
-    'webUrl': webUrl,
-    'title': title,
-    'color': color
-  };
+  Map<String, dynamic> toJson() => {'img': img, 'url': url, 'webUrl': webUrl, 'title': title, 'color': color};
 }

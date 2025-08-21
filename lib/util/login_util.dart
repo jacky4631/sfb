@@ -48,10 +48,11 @@ onTapLogin(context, url, {args}) async {
       args = {};
     }
 
-    Log.e(LoginShanyan.initSuc);
+    // Log.e(LoginShanyan.initSuc);
+    // LoginShanyan.getInstance().openLoginAuthPlatformState(context);
 
     if (LoginShanyan.initSuc) {
-      LoginShanyan.getInstance().openLoginAuthPlatformState();
+      LoginShanyan.getInstance().openLoginAuthPlatformState(context);
       return;
     } else {
       args['prePage'] = url;
@@ -67,7 +68,7 @@ onTapDialogLogin(BuildContext context, {fun, args}) async {
       args = {};
     }
     if (LoginShanyan.initSuc) {
-      LoginShanyan.getInstance().openLoginAuthPlatformState();
+      LoginShanyan.getInstance().openLoginAuthPlatformState(context);
       return;
     } else {
       Navigator.pushNamed(context, '/login', arguments: args);

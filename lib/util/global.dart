@@ -546,7 +546,7 @@ class Global {
         closedBuilder: (BuildContext context, VoidCallback _) {
           return first;
         },
-        transitionDuration: const Duration(milliseconds: 600),
+        transitionDuration: const Duration(milliseconds: 300),
         //点击后跳转的页面
         openBuilder: (BuildContext _, VoidCallback openContainer) {
           return SwipeToDismissWrap(child: second);

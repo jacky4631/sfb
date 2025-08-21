@@ -3,9 +3,7 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+import 'package:flutter/services.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/service.dart';
 
@@ -27,10 +25,11 @@ class OrderRetrieval extends StatefulWidget {
 }
 
 class _OrderRetrievalState extends State<OrderRetrieval> {
-  TextEditingController _orderController = new TextEditingController();
+  TextEditingController _orderController = TextEditingController();
   Map phone = {"value": null, "verify": false};
   int inputLength = 0;
   bool running = false;
+
   @override
   void initState() {
     initData();
@@ -39,6 +38,7 @@ class _OrderRetrievalState extends State<OrderRetrieval> {
 
   ///初始化函数
   Future initData() async {}
+
   Future _submitOrder() async {
     if (running) {
       return;
@@ -67,144 +67,194 @@ class _OrderRetrievalState extends State<OrderRetrieval> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-        body: Stack(children: [
-      ScaffoldWidget(
-
-          brightness: Brightness.dark,
-          bgColor: Colors.white,
-          appBar: buildTitle(context,
-              title: '订单找回',
-              widgetColor: Colors.black,
-              leftIcon: Icon(Icons.arrow_back)),
-          body: PWidget.container(
-              SingleChildScrollView(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    Center(
-                      child:
-                          Image.asset('assets/images/me/order_retrieval.jpg'),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          '订单找回',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+      ),
+      body: Container(
+        padding: EdgeInsets.fromLTRB(20, 5, 20, 20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Image.asset('assets/images/me/order_retrieval.jpg'),
+              ),
+              createTextField(),
+              SizedBox(height: 30),
+              Container(
+                padding: EdgeInsets.fromLTRB(5, 5, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '找回规则',
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    createTextField(),
-                    PWidget.boxh(30),
-                    PWidget.container(PWidget.column([
-                      PWidget.text(
-                        '找回规则',
-                        [Colors.black54, 16, true],
+                    SizedBox(height: 8),
+                    RichText(
+                      maxLines: 2,
+                      text: TextSpan(
+                        style: TextStyle(color: Colors.black54, fontSize: 14),
+                        children: [
+                          TextSpan(text: '\t1.支持'),
+                          TextSpan(
+                            text: '淘宝',
+                            style: TextStyle(color: Colours.app_main),
+                          ),
+                          TextSpan(text: '、'),
+                          TextSpan(
+                            text: '京东',
+                            style: TextStyle(color: Colours.app_main),
+                          ),
+                          TextSpan(text: '、'),
+                          TextSpan(
+                            text: '拼多多',
+                            style: TextStyle(color: Colours.app_main),
+                          ),
+                          TextSpan(text: '、'),
+                          TextSpan(
+                            text: '抖音',
+                            style: TextStyle(color: Colours.app_main),
+                          ),
+                          TextSpan(text: '、'),
+                          TextSpan(
+                            text: '唯品会',
+                            style: TextStyle(color: Colours.app_main),
+                          ),
+                          TextSpan(text: '、'),
+                          TextSpan(
+                            text: '美团外卖',
+                            style: TextStyle(color: Colours.app_main),
+                          ),
+                          TextSpan(text: '订单；'),
+                        ],
                       ),
-                      PWidget.textNormal('\t1.支持',
-                          [Colors.black54, 14], {'max': 2},
-                          [
-                            PWidget.textIs('淘宝', [Colours.app_main, 14]),
-                            PWidget.textIs('、', [Colors.black54, 14]),
-                            PWidget.textIs('京东', [Colours.app_main, 14]),
-                            PWidget.textIs('、', [Colors.black54, 14]),
-                            PWidget.textIs('拼多多', [Colours.app_main, 14]),
-                            PWidget.textIs('、', [Colors.black54, 14]),
-                            PWidget.textIs('抖音', [Colours.app_main, 14]),
-                            PWidget.textIs('、', [Colors.black54, 14]),
-                            PWidget.textIs('唯品会', [Colours.app_main, 14]),
-                            PWidget.textIs('、', [Colors.black54, 14]),
-                            PWidget.textIs('美团外卖', [Colours.app_main, 14]),
-                            PWidget.textIsNormal('订单；', [Colors.black54, 14]),
-                          ]
-                      ),
-                      PWidget.textNormal('\t2.没有自动同步的订单可以通过这里找回；',
-                          [Colors.black54, 14], {'max': 2}),
-                      PWidget.textNormal('\t3.当查找人查找到订单，并且该订单确实找不到归属时，该订单归属查找人；',
-                          [Colors.black54, 14], {'max': 2}),
-                      PWidget.textNormal('\t4.已归属的订单不支持继续找回；', [Colors.black54, 14],
-                          {'max': 2}),
-                    ])),
-                  ])),
-              [],
-              {
-                'pd': [5, 5, 20, 20]
-              })),
-      btmBarView(context),
-    ]));
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      '\t2.没有自动同步的订单可以通过这里找回；',
+                      style: TextStyle(color: Colors.black54, fontSize: 14),
+                      maxLines: 2,
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      '\t3.当查找人查找到订单，并且该订单确实找不到归属时，该订单归属查找人；',
+                      style: TextStyle(color: Colors.black54, fontSize: 14),
+                      maxLines: 2,
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      '\t4.已归属的订单不支持继续找回；',
+                      style: TextStyle(color: Colors.black54, fontSize: 14),
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
+              ),
+              btmBarView(context),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  createTextField() {
+  Widget createTextField() {
     return TextField(
-        controller: _orderController,
-        maxLines: 1,
-        //是否自动更正
-        autocorrect: true,
-        //是否是密码
-        style: TextStyles.orderTitle,
-        onChanged: (e) {
-          //长度变化
-          setState(() {
-            print(e);
-            phone['value'] = e;
-            bool verify = e.trim() != '';
-            phone['verify'] = verify;
-          });
-        },
-        onSubmitted: (text) {
-          print("内容提交时回调");
-        },
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          counterText: "",
-          hintText: "请输入或粘贴订单号",
-          hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-          suffixIcon: (phone['value'] == null || phone['value'] == '')
-              ? new SizedBox()
-              : IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _orderController.clear();
-                      phone['value'] = null;
-                      phone['verify'] = false;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.grey,
-                  )),
-          suffixIconColor: Colors.grey,
-        ));
+      controller: _orderController,
+      maxLines: 1,
+      //是否自动更正
+      autocorrect: true,
+      //是否是密码
+      style: TextStyles.orderTitle,
+      onChanged: (e) {
+        //长度变化
+        setState(() {
+          print(e);
+          phone['value'] = e;
+          bool verify = e.trim() != '';
+          phone['verify'] = verify;
+        });
+      },
+      onSubmitted: (text) {
+        print("内容提交时回调");
+      },
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        counterText: "",
+        hintText: "请输入或粘贴订单号",
+        hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+        suffixIcon: (phone['value'] == null || phone['value'] == '')
+            ? SizedBox()
+            : IconButton(
+                onPressed: () {
+                  setState(() {
+                    _orderController.clear();
+                    phone['value'] = null;
+                    phone['verify'] = false;
+                  });
+                },
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.grey,
+                ),
+              ),
+        suffixIconColor: Colors.grey,
+      ),
+    );
   }
 
   ///底部操作栏
   Widget btmBarView(BuildContext context) {
-    return PWidget.positioned(
-      SafeArea(child: Column(
+    return SafeArea(
+      child: Column(
         children: [
           RawMaterialButton(
-              constraints: BoxConstraints(minHeight: 44),
-              fillColor:
-              phone['verify'] ? Colours.app_main : Color(0xFFD6D6D6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
-              ),
-              onPressed: phone['verify']
-                  ? () {
-                _submitOrder();
-              }
-                  : null,
-              child: Padding(
-                padding: EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      '提交订单',
-                      style: TextStyle(
-                        color: phone['verify'] ? Colors.white : Colors.grey,
-                        fontSize: 16,
-                      ),
+            constraints: BoxConstraints(minHeight: 44),
+            fillColor: phone['verify'] ? Colours.app_main : Color(0xFFD6D6D6),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25)),
+            ),
+            onPressed: phone['verify']
+                ? () {
+                    _submitOrder();
+                  }
+                : null,
+            child: Padding(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '提交订单',
+                    style: TextStyle(
+                      color: phone['verify'] ? Colors.white : Colors.grey,
+                      fontSize: 16,
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
-      )),
-      [null, 10, 20, 20],
+      ),
     );
   }
 }

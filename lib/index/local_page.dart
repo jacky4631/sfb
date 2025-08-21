@@ -7,15 +7,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_z_location/flutter_z_location.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sufenbao/index/provider/provider.dart';
 import 'package:sufenbao/index/widget/banner_widget.dart';
 import 'package:sufenbao/service.dart';
-import 'package:sufenbao/util/paixs_fun.dart';
 
 import '../models/data_model.dart';
 import '../util/colors.dart';
@@ -57,6 +53,8 @@ class _LocalPageState extends State<LocalPage> {
   Widget build(BuildContext context) {
     return _page();
   }
+
+  EdgeInsets get pmPadd => MediaQuery.of(context).padding;
 
   @override
   void initState() {
@@ -101,6 +99,7 @@ class _LocalPageState extends State<LocalPage> {
             categoryId: categoryVal, cityCode: cityVal, longitude: longitude, latitude: latitude)
         .catchError((v) {
       listDm.toError('网络异常');
+      return <String, dynamic>{};
     });
     if (lifeGoodsList.isNotEmpty) {
       print(lifeGoodsList);
@@ -135,81 +134,87 @@ class _LocalPageState extends State<LocalPage> {
   }
 
   _page() {
-    return ScaffoldWidget(
-      scaffoldKey: _scaffoldKey,
+    return Scaffold(
+      key: _scaffoldKey,
       endDrawer: _drawer(),
-      bgColor: Colors.white,
-      brightness: Brightness.dark,
-      appBar: titleBarView(),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: TextButton(
+          style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
+          child: Row(
+            children: [
+              Text(
+                cityName,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+              // Icon(Icons.arrow_drop_down, color: Colors.grey, size: 20),
+            ],
+          ),
+          onPressed: () {
+            // _switchAddress();
+          },
+        ),
+        // title: titleBarView()
+      ),
       body: _container(),
     );
   }
 
   _container() {
-    return ScaffoldWidget(
-        body: Stack(
+    return Stack(
       children: [
-        ScaffoldWidget(
-            floatingActionButton: _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
-                ? FloatingActionButton(
-                    backgroundColor: Colours.app_main,
-                    mini: true,
-                    onPressed: () {
-                      // scrollController 通过 animateTo 方法滚动到某个具体高度
-                      // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
-                      _scrollController.animateTo(0.0,
-                          duration: Duration(milliseconds: 1000), curve: Curves.decelerate);
-                    },
-                    child: Icon(
-                      Icons.arrow_upward,
-                      color: Colors.white,
+        ListView.builder(
+            controller: _scrollController,
+            itemCount: listDm.list.length,
+            itemBuilder: (context, index) {
+              final v = listDm.list[index];
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
                     ),
-                  )
-                : null,
-            body: ListView.builder(
-                itemCount: listDm.list.length,
-                itemBuilder: (context, index) {
-                  final v = listDm.list[index];
-                  return PWidget.container(
-                    createListItem(index, v),
-                    [null, null, Colors.white],
-                    {
-                      'fun': () {
-                        onTapDialogLogin(context, fun: () async {
-                          Loading.show(context);
-                          var res = await BService.getLifeGoodsWord(v['id']);
-                          Loading.hide(context);
-                          LaunchApp.launchDy(context, res['dy_deeplink'], res['dy_zlink']);
-                        });
-                      },
-                      'sd': PFun.sdLg(Colors.black12),
-                      'br': 8,
-                      'mg': PFun.lg(0, 6),
-                      'crr': [5, 5, 5, 5]
-                    },
-                  );
-                })
-
-            // MyCustomScroll(
-            //   controller: _scrollController,
-            //   isGengduo: pageIndex != 0 ? true : false,
-            //   isShuaxin: true,
-            //   onRefresh: () => this.getLifeGoodsList(isRef: true),
-            //   onLoading: (p) => this.getLifeGoodsList(page: pageIndex),
-            //   refHeader: buildClassicHeader(color: Colors.grey),
-            //   refFooter: buildCustomFooter(color: Colors.grey),
-            //   itemPadding: EdgeInsets.all(8),
-            //   crossAxisCount: 2,
-            //   crossAxisSpacing: 6,
-            //   itemModel: null,
-            //   headers: headers,
-            //   itemModelBuilder: (i, v) {
-            //
-            //   },
-            // )
+                  ],
+                ),
+                child: InkWell(
+                  onTap: () {
+                    onTapDialogLogin(context, fun: () async {
+                      Loading.show(context);
+                      var res = await BService.getLifeGoodsWord(v['id']);
+                      Loading.hide(context);
+                      LaunchApp.launchDy(context, res['dy_deeplink'], res['dy_zlink']);
+                    });
+                  },
+                  child: createListItem(index, v),
+                ),
+              );
+            }),
+        if (_showBackTop)
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              backgroundColor: Colours.app_main,
+              mini: true,
+              onPressed: () {
+                _scrollController.animateTo(0.0, duration: Duration(milliseconds: 1000), curve: Curves.decelerate);
+              },
+              child: Icon(
+                Icons.arrow_upward,
+                color: Colors.white,
+              ),
             ),
+          ),
       ],
-    ));
+    );
   }
 
   Widget createListItem(i, v) {
@@ -227,22 +232,43 @@ class _LocalPageState extends State<LocalPage> {
       content0 = v['item_tag'].isNotEmpty ? v['item_tag'][0] : '';
       content1 = v['item_tag'][1].isNotEmpty ? v['item_tag'][1] : '';
     }
-    return PWidget.container(
-      PWidget.column([
-        PWidget.wrapperImage(getLifeMainPic(v), {'ar': 1 / 1}),
-        PWidget.container(
-            PWidget.column([
-              PWidget.row([getTitleWidget(v['item_title'], max: max)]),
-              PWidget.boxh(8),
-              PWidget.row([getPriceWidget(v['price'], v['origin_price']), PWidget.spacer(), getSalesWidget(sales)]),
-              PWidget.boxh(4),
-              getMoneyWidget(context, fee, DY),
-              PWidget.boxh(4),
-              PWidget.text('$content0 | $content1', [Colors.black45, 12]),
-            ]),
-            {'pd': 8}),
-      ]),
-      [null, null, Colors.white],
+    return Container(
+      color: Colors.white,
+      child: Column(
+        children: [
+          AspectRatio(
+            aspectRatio: 1.0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                getLifeMainPic(v),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              children: [
+                Row(
+                  children: [getTitleWidget(v['item_title'], max: max)],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [getPriceWidget(v['price'], v['origin_price']), Spacer(), getSalesWidget(sales)],
+                ),
+                SizedBox(height: 4),
+                getMoneyWidget(context, fee, DY),
+                SizedBox(height: 4),
+                Text(
+                  '$content0 | $content1',
+                  style: TextStyle(color: Colors.black45, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -260,55 +286,63 @@ class _LocalPageState extends State<LocalPage> {
           Global.kuParse(context, v);
         });
       }),
-      PWidget.boxh(6),
-      if (listDm.list.isNotEmpty) PWidget.text('~ 本地精选 ~', [Colors.black.withOpacity(0.75), 16, true], {'ct': true}),
-      PWidget.boxh(8),
+      SizedBox(height: 6),
+      if (listDm.list.isNotEmpty)
+        Container(
+          alignment: Alignment.center,
+          child: Text(
+            '~ 本地精选 ~',
+            style: TextStyle(
+              color: Colors.black.withOpacity(0.75),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      SizedBox(height: 8),
     ];
   }
 
   titleBarView() {
-    return PWidget.container(
-      PWidget.row([
-        PWidget.row(
-          [
-            TextButton(
-              style: ButtonStyle(overlayColor: MaterialStateProperty.all(Colors.transparent)),
-              child: PWidget.row([
-                PWidget.text(cityName, [Colors.grey, 14]),
-                // PWidget.icon(Icons.arrow_drop_down, [Colors.grey, 20]),
-              ]),
-              onPressed: () {
-                // _switchAddress();
-              },
+    return Container(
+      height: 56 + pmPadd.top,
+      padding: EdgeInsets.only(
+        top: pmPadd.top + 8,
+        left: 8,
+        right: 8,
+        bottom: 8,
+      ),
+      child: Row(
+        children: [
+          // SearchBarWidget(
+          //   '',
+          //   searchRankingListDm,
+          //   readOnly: true,
+          //   onChanged: (v) {},
+          //   onSubmit: (v, t) {
+          //     navigatorToSearchPage();
+          //   },
+          //   onClear: () {},
+          //   onTap: (f) {
+          //     navigatorToSearchPage();
+          //   },
+          // ),
+          SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              _scaffoldKey.currentState!.openEndDrawer();
+            },
+            child: Container(
+              child: Icon(
+                Icons.menu,
+                color: Colors.grey,
+                size: 20,
+              ),
             ),
-          ],
-        ),
-        // SearchBarWidget(
-        //   '',
-        //   searchRankingListDm,
-        //   readOnly: true,
-        //   onChanged: (v) {},
-        //   onSubmit: (v, t) {
-        //     navigatorToSearchPage();
-        //   },
-        //   onClear: () {},
-        //   onTap: (f) {
-        //     navigatorToSearchPage();
-        //   },
-        // ),
-        PWidget.boxw(8),
-        PWidget.container(PWidget.icon(Icons.menu, [
-          Colors.grey,
-          20
-        ], {
-          'fun': () {
-            _scaffoldKey.currentState!.openEndDrawer();
-          }
-        })),
-        PWidget.boxw(8),
-      ]),
-      [null, 56 + pmPadd.top],
-      {'pd': PFun.lg(pmPadd.top + 8, 8)},
+          ),
+          SizedBox(width: 8),
+        ],
+      ),
     );
   }
 
@@ -320,7 +354,7 @@ class _LocalPageState extends State<LocalPage> {
   }
 
   _drawer() {
-    return ScaffoldWidget(
+    return Scaffold(
         floatingActionButton: FloatingActionButton(
           mini: true,
           backgroundColor: Colours.app_main,
@@ -332,34 +366,36 @@ class _LocalPageState extends State<LocalPage> {
             Navigator.pop(context);
           },
         ),
-        body: PWidget.container(
-          PWidget.row([
-            Expanded(
-                child: Container(
-                  color: Colors.white,
-                  child: ListView.builder(
-                    itemCount: _datas.length,
-                    itemBuilder: (BuildContext context, int position) {
-                      return getRow(position);
-                    },
+        body: Container(
+          height: double.infinity,
+          color: Colors.grey[100],
+          child: Row(
+            children: [
+              Expanded(
+                  child: Container(
+                    color: Colors.white,
+                    child: ListView.builder(
+                      itemCount: _datas.length,
+                      itemBuilder: (BuildContext context, int position) {
+                        return getRow(position);
+                      },
+                    ),
                   ),
-                ),
-                flex: 2),
-            Expanded(
-                child: ListView(
-                  children: [
-                    Container(
-                      alignment: Alignment.topLeft,
-                      padding: EdgeInsets.all(10),
-                      color: Colors.grey[100],
-                      child: getChip(_index), //传入一级分类下标
-                    )
-                  ],
-                ),
-                flex: 5),
-          ]),
-          // ]),
-          [null, double.infinity, Colors.grey[100]],
+                  flex: 2),
+              Expanded(
+                  child: ListView(
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        padding: EdgeInsets.all(10),
+                        color: Colors.grey[100],
+                        child: getChip(_index), //传入一级分类下标
+                      )
+                    ],
+                  ),
+                  flex: 5),
+            ],
+          ),
         ));
   }
 

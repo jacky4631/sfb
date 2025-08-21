@@ -1,8 +1,4 @@
-// import 'dart:html';
-
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/global.dart';
 
@@ -24,6 +20,7 @@ class _BlankPageState extends State<BlankPage> {
     initData();
     super.initState();
   }
+  
   Future wechatAppLogin(code) async {
     var data = await BService.wechatLogin(code);
     if(data['data']['openId'] != null) {
@@ -32,6 +29,7 @@ class _BlankPageState extends State<BlankPage> {
       afterLogin(data, context, redirectUrl: widget.data!['prePage']);
     }
   }
+  
   ///初始化函数
   Future initData() async {
     if(Global.isWeb()) {
@@ -46,17 +44,20 @@ class _BlankPageState extends State<BlankPage> {
 
       //login
       await wechatAppLogin(code);
-
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      body: Stack(
-        children: [
-
-        ],
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: Stack(
+          children: [
+            // 空白页面内容
+          ],
+        ),
       ),
     );
   }

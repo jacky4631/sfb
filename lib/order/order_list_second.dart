@@ -6,11 +6,6 @@ import 'dart:ui';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/mylistview.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/dy/dy_detail_page.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/service.dart';
@@ -19,76 +14,109 @@ import 'package:sufenbao/vip/vip_detail_page.dart';
 
 import '../hb/red_packet.dart';
 import '../httpUrl.dart';
-import '../jd/jd_details_page.dart';
+import '../jd/jd_details_page.dart' hide DataModel;
 import '../me/listener/PersonalNotifier.dart';
 import '../page/product_details.dart';
 import '../pdd/pdd_detail_page.dart';
 import '../util/colors.dart';
-import '../util/paixs_fun.dart';
 import '../widget/CustomWidgetPage.dart';
 import '../widget/order_tab_widget.dart';
+
 //订单明细
 class OrderListSecond extends StatefulWidget {
   final Map data;
-  const OrderListSecond(this.data, {Key? key,}) : super(key: key);
+  const OrderListSecond(
+    this.data, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   _OrderListSecondState createState() => _OrderListSecondState();
 }
 
 class _OrderListSecondState extends State<OrderListSecond> {
+  List<Map> _tabList = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+
   @override
   void initState() {
-    initData();
     super.initState();
+    _initData();
   }
 
   ///初始化函数
-  Future<int> initData() async {
+  Future<void> _initData() async {
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
 
-    var res = await BService.orderTab(widget.data['level'], widget.data['innerType']);
-    if (res != null) {
-      tabDm.addList(res, true, 0);
-    };
-    setState(() {});
-    return tabDm.flag;
-  }
-
-  ///tab数据
-  var tabDm = DataModel();
-
-  getTabList(m) {
-      Map map = m! as Map;
-      return map['title'];
+    try {
+       var res = await BService.orderTab(widget.data['level'], widget.data['innerType']);
+       if (mounted) {
+         setState(() {
+           _tabList = List<Map>.from(res);
+           _isLoading = false;
+           _hasError = false;
+         });
+       }
+     } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    }
+
+    if (_hasError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text('加载失败，请重试', style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _initData,
+              child: Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
     int page = 0;
-    if(widget.data != null && widget.data['page'] != null) {
+    if (widget.data['page'] != null) {
       page = widget.data['page'];
     }
-    return AnimatedSwitchBuilder(
-      value: tabDm,
-      errorOnTap: () => this.initData(),
-      initialState: buildLoad(color: Colors.white),
-      listBuilder: (list, _, __) {
-        var tabList = list.map<Map>((m) => m).toList();
-        return OrderTabWidget(
-          color: Colours.app_main,
-          unselectedColor: Colors.black.withOpacity(0.5),
-          indicatorColor: Colours.app_main,
-          page: page,
-          fontSize: 15,
-          tabList: tabList,
-          indicatorWeight: 2,
-          padding: EdgeInsets.only(top:10),
-          labelBgColor: Colours.app_main,
-          tabPage: List.generate(list.length, (i) {
-            return TopChild(i, widget.data);
-          }),
-        );
-      },
+
+    return OrderTabWidget(
+      color: Colours.app_main,
+      unselectedColor: Colors.black.withValues(alpha: 0.5),
+      indicatorColor: Colours.app_main,
+      page: page,
+      fontSize: 15,
+      tabList: _tabList,
+      indicatorWeight: 2,
+      padding: EdgeInsets.only(top: 10),
+      labelBgColor: Colours.app_main,
+      tabPage: List.generate(_tabList.length, (i) {
+        return TopChild(i, widget.data);
+      }),
     );
   }
 }
@@ -103,224 +131,354 @@ class TopChild extends StatefulWidget {
 }
 
 class _TopChildState extends State<TopChild> {
+  List<Map> _orderList = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+  bool _hasMore = true;
+  int _currentPage = 1;
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
-    initData();
     super.initState();
+    _initData();
   }
 
   ///初始化函数
-  Future initData() async {
-    await getListData(isRef: true);
+  Future<void> _initData() async {
+    await _getListData(isRefresh: true);
   }
 
   ///列表数据
-  var listDm = DataModel();
-  Future<int> getListData({int page = 1, bool isRef = false}) async {
-    int innerType = widget.data['innerType'];
-    Map param = getPlatformData(widget.index, 0);
-    var res = await BService.taoOrders(page, param, level: widget.data['level'],
-        innerType: innerType);
-    if (res != null) listDm.addList(res['content'], isRef, res['totalElements']);
-    setState(() {});
-    return listDm.flag;
+  Future<void> _getListData({int page = 1, bool isRefresh = false}) async {
+    if (isRefresh) {
+      setState(() {
+        _isLoading = true;
+        _hasError = false;
+        _currentPage = 1;
+      });
+    } else {
+      setState(() {
+        _isLoadingMore = true;
+      });
+    }
+
+    try {
+      int innerType = widget.data['innerType'];
+      Map param = _getPlatformData(widget.index, 0);
+      var res = await BService.taoOrders(page, param, level: widget.data['level'], innerType: innerType);
+       
+       if (mounted) {
+         setState(() {
+           if (isRefresh) {
+             _orderList = List<Map>.from(res?['content'] ?? []);
+           } else {
+             _orderList.addAll(List<Map>.from(res?['content'] ?? []));
+           }
+           _hasMore = _orderList.length < (res?['totalElements'] ?? 0);
+           _currentPage = page;
+           _isLoading = false;
+           _isLoadingMore = false;
+           _hasError = false;
+         });
+       }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _isLoadingMore = false;
+          _hasError = true;
+        });
+      }
+    }
+  }
+
+  Future<void> _onRefresh() async {
+    await _getListData(isRefresh: true);
+  }
+
+  Future<void> _onLoadMore() async {
+    if (!_hasMore || _isLoadingMore) return;
+    await _getListData(page: _currentPage + 1);
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitchBuilder(
-      value: listDm,
-      initialState: buildLoad(color: Colours.app_main),
-      errorOnTap: () => this.getListData(isRef: true),
-      listBuilder: (list, p, h) {
-        return MyListView(
-          isShuaxin: true,
-          isGengduo: h,
-          header: buildClassicHeader(color: Colors.grey),
-          onRefresh: () => this.getListData(isRef: true),
-          onLoading: () => this.getListData(page: p),
-          padding: EdgeInsets.all(8),
-          divider: const Divider(height: 4, color: Colors.transparent),
-          itemCount: list.length,
-          listViewType: ListViewType.Separated,
-          item: (i) {
-            Map data = list[i] as Map;
-            return getPlatformData(widget.index, 1, i: i, data: data);
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colours.app_main),
+        ),
+      );
+    }
 
+    if (_hasError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text('加载失败，请重试', style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _getListData(isRefresh: true),
+              child: Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent &&
+              _hasMore &&
+              !_isLoadingMore) {
+            _onLoadMore();
+          }
+          return false;
+        },
+        child: ListView.separated(
+          padding: EdgeInsets.all(8),
+          itemCount: _orderList.length + (_hasMore ? 1 : 0),
+          separatorBuilder: (context, index) => SizedBox(height: 4),
+          itemBuilder: (context, index) {
+            if (index == _orderList.length) {
+              return Container(
+                padding: EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: _isLoadingMore
+                    ? CircularProgressIndicator()
+                    : Text('没有更多数据了', style: TextStyle(color: Colors.grey)),
+              );
+            }
+            Map data = _orderList[index];
+            return _getPlatformWidget(widget.index, data);
           },
-        );
-      },
+        ),
+      ),
     );
   }
 
   /**
    * type=0是接口数据， type = 1是组件数据
    * */
-  getPlatformData(int index, int type,{i, data}) {
-    switch(index){
+  _getPlatformData(int index, int type) {
+    switch (index) {
       case 0:
-        if(type == 0) {
-          return { "api": API.taoOrders, "sort": 'tk_create_time'};
-        } else {
-          return getTaoWidget(i, data);
-        }
+        return {"api": API.taoOrders, "sort": 'tk_create_time'};
       case 1:
-        if(type == 0) {
-          return { "api": API.jdOrders, "sort": 'order_time'};
-        } else {
-          return getJdWidget(i, data);
-        }
+        return {"api": API.jdOrders, "sort": 'order_time'};
       case 2:
-        if(type == 0) {
-          return { "api": API.pddOrders, "sort": 'order_create_time'};
-        } else {
-          return getPddWidget(i, data);
-        }
+        return {"api": API.pddOrders, "sort": 'order_create_time'};
       case 3:
-        if(type == 0) {
-          return { "api": API.dyOrders, "sort": 'pay_success_time'};
-        } else {
-          return getDyWidget(i, data);
-        }
+        return {"api": API.dyOrders, "sort": 'pay_success_time'};
       case 4:
-        if(type == 0) {
-          return { "api": API.vipOrders, "sort": 'order_time'};
-        } else {
-          return getVipWidget(i, data);
-        }
+        return {"api": API.vipOrders, "sort": 'order_time'};
       case 5:
-        if(type == 0) {
-          return { "api": API.mtOrders, "sort": 'order_pay_time'};
-        } else {
-          return getMtWidget(i, data);
-        }
+        return {"api": API.mtOrders, "sort": 'order_pay_time'};
+      default:
+        return {"api": API.taoOrders, "sort": 'tk_create_time'};
     }
   }
 
-  Widget getTaoWidget(i, data) {
+  Widget _getPlatformWidget(int index, Map data) {
+    switch (index) {
+      case 0:
+        return _buildTaoWidget(data);
+      case 1:
+        return _buildJdWidget(data);
+      case 2:
+        return _buildPddWidget(data);
+      case 3:
+        return _buildDyWidget(data);
+      case 4:
+        return _buildVipWidget(data);
+      case 5:
+        return _buildMtWidget(data);
+      default:
+        return _buildTaoWidget(data);
+    }
+  }
+
+  Widget _buildTaoWidget(Map data) {
     String img = BService.formatUrl(data['itemImg']);
     num fee = data['pubSharePreFee'];
-    return PWidget.container(
-      createGoodsDesc(data, data['itemTitle'],
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: () => _showRed(data, data['tradeParentId'], fee, 'tb'),
+        child: _createGoodsDesc(
+          data,
+          data['itemTitle'],
           data['tradeParentId'],
-          data['alipayTotalPrice']??0,
+          data['alipayTotalPrice'] ?? 0,
           fee,
-          data['tkCreateTime'], 'tb',
-          img, data['orderType'] == '天猫'?'assets/images/mall/tm.png':'assets/images/mall/tb.png'),
-      [null, null, Colors.white],
-      {'pd': [4,4,4,4], 'br':8, 'fun': () {
-        showRed(data, data['tradeParentId'], fee, 'tb');
-      }},
+          data['tkCreateTime'],
+          'tb',
+          img,
+          data['orderType'] == '天猫' ? 'assets/images/mall/tm.png' : 'assets/images/mall/tb.png',
+        ),
+      ),
     );
   }
 
-  Widget getJdWidget(i, data) {
+  Widget _buildJdWidget(Map data) {
     num price = data['estimateCosPrice'];
     num fee = data['estimateFee'];
-    if(price == 0) {
+    if (price == 0) {
       fee = 0;
     }
-    return PWidget.container(
-      createGoodsDesc(data, data['skuName'],
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: () => _showRed(data, data['orderId'], fee, 'jd'),
+        child: _createGoodsDesc(
+          data,
+          data['skuName'],
           data['orderId'],
           price,
           fee,
-          data['orderTime'], 'jd',data['goodsInfo']['imageUrl'], 'assets/images/mall/jd.png'),
-      [null, null, Colors.white],
-      {'pd': [4,4,4,4], 'br':8,  'fun': () {
-        showRed(data, data['orderId'], fee, 'jd');
-      }},
+          data['orderTime'],
+          'jd',
+          data['goodsInfo']['imageUrl'],
+          'assets/images/mall/jd.png',
+        ),
+      ),
     );
   }
 
-
-  Widget getPddWidget(i, data) {
-    num fee = data['promotionAmount']/100;
-    return PWidget.container(
-      createGoodsDesc(data, data['goodsName'],
+  Widget _buildPddWidget(Map data) {
+    num fee = data['promotionAmount'] / 100;
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: () => _showRed(data, data['orderSn'], fee, 'pdd'),
+        child: _createGoodsDesc(
+          data,
+          data['goodsName'],
           data['orderSn'],
-          data['orderAmount']!=null ? data['orderAmount']/100 : 0,
+          data['orderAmount'] != null ? data['orderAmount'] / 100 : 0,
           fee,
-          data['orderCreateTime'], 'pdd',data['goodsThumbnailUrl'], 'assets/images/mall/pdd.png'),
-      [null, null, Colors.white],
-      {'pd': [4,4,4,4], 'br':8,  'fun': () {
-        showRed(data, data['orderSn'], fee, 'pdd');
-      }},
+          data['orderCreateTime'],
+          'pdd',
+          data['goodsThumbnailUrl'],
+          'assets/images/mall/pdd.png',
+        ),
+      ),
     );
   }
 
-
-  Widget getDyWidget(i, data) {
+  Widget _buildDyWidget(Map data) {
     num fee = data['estimatedTotalCommission'];
-    return PWidget.container(
-      createGoodsDesc(data, data['productName'],
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: () => _showRed(data, data['orderId'], fee, 'dy'),
+        child: _createGoodsDesc(
+          data,
+          data['productName'],
           data['orderId'],
           data['totalPayAmount'],
           fee,
-          data['paySuccessTime'], 'dy',data['productImg'], 'assets/images/mall/dy.png'),
-      [null, null, Colors.white],
-      {'pd': [4,4,4,4], 'br':8, 'fun': () {
-        showRed(data, data['orderId'], fee, 'dy');
-      }},
+          data['paySuccessTime'],
+          'dy',
+          data['productImg'],
+          'assets/images/mall/dy.png',
+        ),
+      ),
     );
   }
 
-  Widget getVipWidget(i, data) {
+  Widget _buildVipWidget(Map data) {
     num fee = double.parse(data['commission']);
-    return PWidget.container(
-      createGoodsDesc(data, data['detailList'][0]['goodsName'],
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: () => _showRed(data, data['orderSn'], fee, 'vip'),
+        child: _createGoodsDesc(
+          data,
+          data['detailList'][0]['goodsName'],
           data['orderSn'],
           data['totalCost'],
           fee,
           data['orderTime'],
           'vip',
           data['detailList'][0]['goodsThumb'],
-          'assets/images/mall/vip.png'
+          'assets/images/mall/vip.png',
+        ),
       ),
-      [null, null, Colors.white],
-      {'pd': [4,4,4,4], 'br':8, 'fun': () {
-        showRed(data, data['orderSn'], fee, 'vip');
-      }},
     );
   }
 
-  Widget getMtWidget(i, data) {
+  Widget _buildMtWidget(Map data) {
     num price = data['actualItemAmount'];
     num fee = data['balanceAmount'];
     String orderType = data['orderType'];
 
-
-    return PWidget.container(
-      createGoodsDesc(data, data['shopName'],
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: InkWell(
+        onTap: () => _showRed(data, data['uniqueItemId'], fee, 'jd'),
+        child: _createGoodsDesc(
+          data,
+          data['shopName'],
           data['orderId'],
           price,
           fee,
-          data['orderPayTime'], 'mt',
+          data['orderPayTime'],
+          'mt',
           orderType == '外卖' ? 'assets/images/mall/mtwm_bg.png' : 'assets/images/mall/mt_bg.png',
-          'assets/images/mall/mt.png'),
-      [null, null, Colors.white],
-      {'pd': [4,4,4,4], 'br':8,  'fun': () {
-        showRed(data, data['uniqueItemId'], fee, 'jd');
-      }},
+          'assets/images/mall/mt.png',
+        ),
+      ),
     );
   }
-  Future showRed(data, orderId, num fee, type) async {
+
+  Future _showRed(data, orderId, num fee, type) async {
     var remain = data['remain'];
-    if(remain == 'err') {
+    if (remain == 'err') {
       ToastUtils.showToast('红包已失效');
       return;
     }
-    if(data['bind'] == 1) {
+    if (data['bind'] == 1) {
       ToastUtils.showToast('红包已领取');
       return;
     }
     int index = widget.data['index'];
-    if(index == 1 || index == 2 || index == 3) {
+    if (index == 1 || index == 2 || index == 3) {
       ToastUtils.showToast('这不是您的订单哦');
       return;
     }
-    showRedPacket(context, fee, type, () async{
-      if(remain != 'ok') {
+    showRedPacket(context, fee, type, () async {
+      if (remain != 'ok') {
         await Future.delayed(Duration(seconds: 1));
         ToastUtils.showToast('红包尚未解锁');
         return;
@@ -328,11 +486,11 @@ class _TopChildState extends State<TopChild> {
       await Future.delayed(Duration(milliseconds: 400));
       //京东订单可能相同订单号，商品不同，使用skuId做区分
       int skuId = 0;
-      if(type=='jd'){
+      if (type == 'jd') {
         skuId = data['skuId'];
       }
       Map res = await BService.spreadHb(orderId, type, skuId: skuId);
-      if(!res['success']) {
+      if (!res['success']) {
         ToastUtils.showToast(res['msg']);
         return;
       }
@@ -348,7 +506,7 @@ class _TopChildState extends State<TopChild> {
         titleTextStyle: TextStyle(color: Colors.white),
         desc: desc,
         dialogBackgroundColor: Colors.redAccent,
-        descTextStyle: TextStyle(color: Colors.white,fontSize: 24),
+        descTextStyle: TextStyle(color: Colors.white, fontSize: 24),
         btnOkColor: Color(0xFFE5CDA8),
         btnOkText: '确定',
         btnOkOnPress: () async {
@@ -357,33 +515,43 @@ class _TopChildState extends State<TopChild> {
           data['baseHb'] = res['data']['baseHb'];
           data['shopHb'] = res['data']['shopHb'];
           personalNotifier.value = true;
-          setState(() {
-
-          });
+          setState(() {});
         },
       )..show();
     });
   }
 
-  Widget createImageWidget(img, logo, data, type) {
+  Widget _createImageWidget(String img, String logo, Map data, String type) {
     Widget imgWidget;
-    if(widget.data['level'] > 0 && isBlur){
-      imgWidget =
-          ClipRRect(
-              child: ImageFiltered(
-                // 设置模糊过滤器
-                  imageFilter: ImageFilter.blur(
-                    sigmaX: 7,
-                    sigmaY: 7,
-                  ),child:type== 'mt' ? PWidget.image(img, [124, 124]): PWidget.wrapperImage(img, [124, 124])),
-              borderRadius: BorderRadius.all(Radius.circular(8))
-          );
+    if (widget.data['level'] > 0 && isBlur) {
+      imgWidget = ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: ImageFiltered(
+          imageFilter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+          child: type == 'mt'
+              ? Image.asset(img, width: 124, height: 124, fit: BoxFit.cover)
+              : Image.network(
+                  img,
+                  width: 124,
+                  height: 124,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 124,
+                      height: 124,
+                      color: Colors.grey[200],
+                      child: Icon(Icons.image, color: Colors.grey),
+                    );
+                  },
+                ),
+        ),
+      );
     } else {
-      if(type == 'mt') {
-        imgWidget = PWidget.image(img, [124, 124]);
+      if (type == 'mt') {
+        imgWidget = Image.asset(img, width: 124, height: 124, fit: BoxFit.cover);
       } else {
         Widget detailPage = SizedBox();
-        switch(type){
+        switch (type) {
           case 'tb':
             detailPage = ProductDetails(data);
             break;
@@ -402,22 +570,51 @@ class _TopChildState extends State<TopChild> {
             break;
         }
 
-        imgWidget = Global.openFadeContainer(PWidget.wrapperImage(img, [124, 124], {'br': 8}), detailPage);
+        imgWidget = Global.openFadeContainer(
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              img,
+              width: 124,
+              height: 124,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 124,
+                  height: 124,
+                  color: Colors.grey[200],
+                  child: Icon(Icons.image, color: Colors.grey),
+                );
+              },
+            ),
+          ),
+          detailPage,
+        );
       }
     }
 
-    return Stack(children: [
-      imgWidget,
-      PWidget.image(logo, [16, 16, null, BoxFit.fill]),
-    ]);
+    return Stack(
+      children: [
+        imgWidget,
+        Positioned(
+          top: 0,
+          left: 0,
+          child: Image.asset(
+            logo,
+            width: 16,
+            height: 16,
+            fit: BoxFit.fill,
+          ),
+        ),
+      ],
+    );
   }
 
-  Widget createGoodsDesc(data, title, orderSn, price, num fee, createTime, type,
-      img, imgTag) {
+  Widget _createGoodsDesc(Map data, String title, orderSn, num price, num fee, String createTime, String type, String img, String imgTag) {
     var remain = data['remain'];
     var bind = data['bind'];
     var hb = data['baseHb'];
-    if(hb == null || hb == 0) {
+    if (hb == null || hb == 0) {
       hb = data['hb'];
     }
 
@@ -426,18 +623,18 @@ class _TopChildState extends State<TopChild> {
     var okBg = 'ljq.jpg';
     bool notValid = remain == 'err';
     //如果已经绑定说明用户领过红包，直接显示红包数量
-    if(bind == 1) {
+    if (bind == 1) {
       unlockText = '奖励$hb元';
       var shopHb = data['shopHb'];
-      if(shopHb != null && shopHb > 0) {
+      if (shopHb != null && shopHb > 0) {
         unlockText = '$unlockText,星选奖励$shopHb元';
       }
       okText = '已拆';
       okBg = 'ljq_disabled.png';
-    } else if(remain == 'ok') {
+    } else if (remain == 'ok') {
       okText = '拆红包';
       unlockText = '红包已解锁';
-    } else if( bind==3 || notValid) {
+    } else if (bind == 3 || notValid) {
       okText = '已失效';
       unlockText = '红包失效';
       okBg = 'ljq_disabled.png';
@@ -445,76 +642,155 @@ class _TopChildState extends State<TopChild> {
 
     String orderNo = orderSn.toString();
     //下级订单 热度订单 隐藏订单后6位
-    if(widget.data['level'] > 0 || widget.data['innerType'] == 2) {
-      orderNo = orderNo.substring(0, orderNo.length-6) + '******';
+    if (widget.data['level'] > 0 || widget.data['innerType'] == 2) {
+      orderNo = orderNo.substring(0, orderNo.length - 6) + '******';
     }
 
-    if(widget.data['level'] > 0 && isBlur) {
+    if (widget.data['level'] > 0 && isBlur) {
       title = '********************';
     }
 
-    return PWidget.column([
-      PWidget.row([
-        createImageWidget(img, imgTag, data, type),
-        PWidget.boxw(8),
-        PWidget.column([
-          PWidget.row([
-            PWidget.text(title, [Colors.black.withOpacity(0.75), 16], {'exp': true,'max':2}),
-          ]),
-          PWidget.boxh(8),
-          PWidget.text('', [], {}, [
-            PWidget.textIs('订单号  ', [Colors.black45, 12]),
-            PWidget.textIs('$orderNo', [Colors.black45, 12], {}),
-          ]),
-
-          PWidget.boxh(4),
-          PWidget.text('', [], {}, [
-            PWidget.textIs('付款时间  ', [Colors.black45, 12]),
-            PWidget.textIs('$createTime', [Colors.black45, 12], {}),
-          ]),
-          if(!notValid && bind==0)
-            PWidget.boxh(4),
-          if(!notValid && bind==0)
-            PWidget.row([
-              getMoneyWidget(context, fee, type, canClick: false, column: false, txtSize: 14,
-                  br: PFun.lg(8, 8, 0, 0)),
-            ]),
-          PWidget.spacer(),
-          PWidget.row([
-            PWidget.text('', [], {}, [
-              PWidget.textIs('实付￥', [Colors.black45, 12]),
-              PWidget.textIs('$price', [Colors.red, 16], {}),
-            ]),
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _createImageWidget(img, imgTag, data, type),
+            SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.black.withValues(alpha: 0.75),
+                      fontSize: 16,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 8),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '订单号  ',
+                          style: TextStyle(color: Colors.black45, fontSize: 12),
+                        ),
+                        TextSpan(
+                          text: orderNo,
+                          style: TextStyle(color: Colors.black45, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: '付款时间  ',
+                          style: TextStyle(color: Colors.black45, fontSize: 12),
+                        ),
+                        TextSpan(
+                          text: createTime,
+                          style: TextStyle(color: Colors.black45, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (!notValid && bind == 0) SizedBox(height: 4),
+                  if (!notValid && bind == 0)
+                    getMoneyWidget(
+                      context,
+                      fee,
+                      type,
+                      canClick: false,
+                      column: false,
+                      txtSize: 14,
+                      br: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8),
+                      ),
+                    ),
+                  Spacer(),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 8),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '实付￥',
+                            style: TextStyle(color: Colors.black45, fontSize: 12),
+                          ),
+                          TextSpan(
+                            text: '$price',
+                            style: TextStyle(color: Colors.red, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
-              {'pd':[0,0,0,8]}),
-
-        ], {
-          'exp': 1,
-        }),
-      ],
-        '001',
-        {'fill': true},
-      ),
-      Stack(alignment: Alignment.centerRight, children: [
-        PWidget.container(
-          PWidget.text('', [], {'max':2}, [
-            PWidget.textIs('', [Color(0xff793E1B), 14]),
-            PWidget.textIs(unlockText, [Color(0xffDF5C12), 14]),
-          ]),
-          [double.infinity, 32, Color(0xffFAEDE6)],
-          {'pd': PFun.lg(0, 0, 8, 8), 'mg': PFun.lg(0, 0, 0, 45), 'ali': PFun.lg(-1, 0),
-            'br': [0,0,8,0]},
         ),
-        Stack(alignment: Alignment.center, children: [
-          PWidget.image('assets/images/mall/$okBg', [90, 39]),
-          okText=='拆红包' ? rainbowText(okText, onTap: (){
-            showRed(data, orderSn, fee, type);
-          })
-              :PWidget.text(okText, [Colors.white, 14, true], {'pd': PFun.lg(0, 4)}),
-        ]),
-      ]),
-    ],
-
+        Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            Container(
+              width: double.infinity,
+              height: 32,
+              margin: EdgeInsets.only(right: 45),
+              padding: EdgeInsets.only(left: 8, bottom: 8),
+              decoration: BoxDecoration(
+                color: Color(0xffFAEDE6),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                ),
+              ),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                unlockText,
+                style: TextStyle(
+                  color: Color(0xffDF5C12),
+                  fontSize: 14,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/mall/$okBg',
+                  width: 90,
+                  height: 39,
+                ),
+                okText == '拆红包'
+                    ? rainbowText(
+                        okText,
+                        onTap: () => _showRed(data, orderSn, fee, type),
+                      )
+                    : Padding(
+                        padding: EdgeInsets.symmetric(vertical: 4),
+                        child: Text(
+                          okText,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

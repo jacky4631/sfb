@@ -5,10 +5,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+
 
 import '../util/colors.dart';
 import '../util/global.dart';
@@ -74,21 +71,23 @@ class _LoginSecondState extends State<LoginSecond> {
     }).catchError((err) {
       print(err);
     });
-    String? openId;
-    if(widget.data != null) {
-      openId = widget.data['openId'];
-    }
+    String? openId = widget.data['openId'];
     Navigator.pushNamed(context, "/loginThird",
         arguments: {'mobile': _mobileController.text.toString(), 'openId': openId});
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      brightness: Brightness.dark,
-      bgColor: Colors.white,
-      appBar: buildTitle(context,
-          widgetColor: Colors.white, leftIcon: Icon(Icons.arrow_back)),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: Container(
           padding: EdgeInsets.only(left: 30, right: 30),
           child: Column(
@@ -145,9 +144,9 @@ class _LoginSecondState extends State<LoginSecond> {
                       suffixIconColor: Colors.grey,
                       border: InputBorder.none)),
               Divider(),
-              PWidget.boxh(20),
+              SizedBox(height: 20),
               createPrivacyContent(),
-              PWidget.boxh(10),
+              SizedBox(height: 10),
               Column(
                 children: [
                   CustomButton(onPressed: () {

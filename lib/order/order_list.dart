@@ -3,99 +3,147 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+import 'package:flutter/services.dart';
 import 'package:sufenbao/order/order_list_second.dart';
 import 'package:sufenbao/service.dart';
 
 import '../util/colors.dart';
 import '../util/global.dart';
-import '../util/paixs_fun.dart';
 import '../widget/order_tab_widget.dart';
 import 'order_list_integral.dart';
+
 //订单明细
 class OrderList extends StatefulWidget {
   final Map data;
-  const OrderList(this.data, {Key? key,}) : super(key: key);
+  const OrderList(this.data, {Key? key}) : super(key: key);
 
   @override
   _OrderListState createState() => _OrderListState();
 }
 
 class _OrderListState extends State<OrderList> {
+  List<Map> _tabList = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+
   @override
   void initState() {
-    initData();
     super.initState();
+    _initData();
   }
 
-  ///tab数据
-  var tabDm = DataModel();
   ///初始化函数
-  Future<int> initData() async {
+  Future<void> _initData() async {
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+    });
 
-    var res = await BService.orderTabFirst();
-    if (res != null) {
-      if(hidePonitsMall) {
-        res.removeAt(res.length - 1);
+    try {
+      var res = await BService.orderTabFirst();
+      if (mounted) {
+        if (hidePonitsMall && res.isNotEmpty) {
+          res.removeAt(res.length - 1);
+        }
+        setState(() {
+          _tabList = List<Map>.from(res);
+          _isLoading = false;
+          _hasError = false;
+        });
       }
-      tabDm.addList(res, true, 0);
-    };
-    setState(() {});
-    return tabDm.flag;
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     int page = 0;
-    if(widget.data != null && widget.data['page'] != null) {
+    if (widget.data['page'] != null) {
       page = widget.data['page'];
     }
-    return ScaffoldWidget(
-      body: Stack(
-        children: [
-          PWidget.container(null, [double.infinity, double.infinity], {'gd': PFun.cl2crGd(Colors.white, Colors.white)}),
-          ScaffoldWidget(
-            bgColor: Color(0xfffafafa),
-            brightness: Brightness.dark,
-            appBar: buildTitle(context, title: '订单中心', widgetColor: Colors.black, leftIcon: Icon(Icons.arrow_back_ios)),
-            body: AnimatedSwitchBuilder(
-              value: tabDm,
-              errorOnTap: () => this.initData(),
-              initialState: buildLoad(color: Colors.white),
-              listBuilder: (list, _, __) {
-                var length = list.length;
-                var tabList = list.map<Map>((m) => m).toList();
-                return OrderTabWidget(
-                  color: Colors.black,
-                  fontSize: 16,
-                  page: page,
-                  tabList: tabList,
-                  padding: EdgeInsets.only(bottom: 10),
-                  indicatorColor: Colours.app_main,
-                  indicatorWeight: 2,
-                  tabPage: List.generate(length, (i) {
 
-                    Map data = tabDm.list[i];
-                    data['index'] = i;
-                    //最后一个跳转积分订单
-                    if(i == (length - 1)) {
-                      return OrderListIntegral(data);
-                    }
-                    if(widget.data != null) {
-                      data['page'] = widget.data['pageTwo'];
-                    }
-                    return OrderListSecond(data);
-                  }),
-                );
-              },
-            ),
-          ),
-        ],
+    return Scaffold(
+      backgroundColor: Color(0xfffafafa),
+      appBar: AppBar(
+        title: Text(
+          '订单中心',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.white, Colors.white],
+          ),
+        ),
+        child: _buildBody(page),
+      ),
+    );
+  }
+
+  Widget _buildBody(int page) {
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    }
+
+    if (_hasError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, size: 64, color: Colors.grey),
+            SizedBox(height: 16),
+            Text('加载失败，请重试', style: TextStyle(color: Colors.grey)),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _initData,
+              child: Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    var length = _tabList.length;
+    return OrderTabWidget(
+      color: Colors.black,
+      fontSize: 16,
+      page: page,
+      tabList: _tabList,
+      padding: EdgeInsets.only(bottom: 10),
+      indicatorColor: Colours.app_main,
+      indicatorWeight: 2,
+      tabPage: List.generate(length, (i) {
+        Map data = Map.from(_tabList[i]);
+        data['index'] = i;
+        //最后一个跳转积分订单
+        if (i == (length - 1)) {
+          return OrderListIntegral(data);
+        }
+        if (widget.data.isNotEmpty) {
+          data['page'] = widget.data['pageTwo'];
+        }
+        return OrderListSecond(data);
+      }),
     );
   }
 }

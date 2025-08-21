@@ -4,14 +4,9 @@
  */
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/util/global.dart';
 
 import '../util/toast_utils.dart';
-import '../util/paixs_fun.dart';
 
 ///支付宝红包
 class AliRedPage extends StatefulWidget {
@@ -31,29 +26,60 @@ class _AliRedPageState extends State<AliRedPage> {
   }
 
   ///初始化函数
-  Future initData() async {
-  }
+  Future initData() async {}
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
+    return Scaffold(
       body: Stack(
         children: [
-          PWidget.container(null, [double.infinity, double.infinity],
-              {'gd': PFun.tbGd(Color(0xFF7AB4FE), Color(0xFF7AB4FE))}),
-          PWidget.wrapperImage('https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/alired.jpg', {'ar': 3 / 4}),
-
-          titleBarView(),
-          PWidget.positioned(
-            PWidget.container(
-              PWidget.text('复制 ${Global.appInfo.alired} 打开支付宝去搜索，红包拿来，实惠优享', [Colors.white, 12],{'max':2},),
-              [200, 60, Colors.transparent],
-              {},
+          // 背景渐变
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF7AB4FE), Color(0xFF7AB4FE)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
-            [360, null, 110, 110],
           ),
-          btmBarView()
-
+          // 背景图片
+          Container(
+            width: double.infinity,
+            child: AspectRatio(
+              aspectRatio: 3 / 4,
+              child: Image.network(
+                'https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/alired.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // 标题栏
+          titleBarView(),
+          // 文字说明
+          Positioned(
+            top: 360,
+            left: 110,
+            right: 110,
+            child: Container(
+              width: 200,
+              height: 60,
+              color: Colors.transparent,
+              child: Text(
+                '复制 ${Global.appInfo.alired} 打开支付宝去搜索，红包拿来，实惠优享',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          // 底部按钮
+          btmBarView(),
         ],
       ),
     );
@@ -61,37 +87,67 @@ class _AliRedPageState extends State<AliRedPage> {
 
   ///标题栏视图
   Widget titleBarView() {
-    return PWidget.container(
-      PWidget.row([
-        PWidget.container(
-          PWidget.icon(Icons.keyboard_arrow_left_rounded, [Colors.white]),
-          [36, 36, Colors.black26],
-          {'br': 56, 'fun': () => close()},
-        ),
-      ]),
-      [null, 56 + pmPadd.top],
-      {'pd': PFun.lg(pmPadd.top + 8, 8, 16, 16)},
+    return Container(
+      height: 56 + MediaQuery.of(context).padding.top,
+      padding: EdgeInsets.fromLTRB(
+        16,
+        MediaQuery.of(context).padding.top + 8,
+        16,
+        8,
+      ),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Icon(
+                Icons.keyboard_arrow_left_rounded,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
+
   ///底部操作栏
   Widget btmBarView() {
-    return PWidget.positioned(
-      PWidget.container(
-        PWidget.wrapperImage('https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/aliredbtn.jpg',
-            {'ar': 460 / 95, 'br':40}),
-
-        // PWidget.text('复制口令，支付宝搜索领红包', [Color(0xFF7AB4FE), 14, true], {'ct': true}),
-        {'pd': [8,MediaQuery.of(context).padding.bottom+8,70,70],
-          'fun': () => {
-          FlutterClipboard.copy(Global.appInfo.alired).then(
-                  (value){
-                    ToastUtils.showToast('复制成功', bgColor: Color(0xFF4283D5));
-        }
-
-          )
-        }},
+    return Positioned(
+      top: 500,
+      left: 0,
+      right: 0,
+      child: GestureDetector(
+        onTap: () {
+          FlutterClipboard.copy(Global.appInfo.alired).then((value) {
+            ToastUtils.showToast('复制成功', bgColor: Color(0xFF4283D5));
+          });
+        },
+        child: Container(
+          margin: EdgeInsets.fromLTRB(
+            70,
+            8,
+            70,
+            MediaQuery.of(context).padding.bottom + 8,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: AspectRatio(
+              aspectRatio: 460 / 95,
+              child: Image.network(
+                'https://shengqianapp.oss-cn-shanghai.aliyuncs.com/sfb/menu/aliredbtn.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
       ),
-      [500, null, 0, 0],
     );
   }
 }
