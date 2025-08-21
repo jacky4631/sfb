@@ -3,10 +3,10 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_base/flutter_base.dart';
 import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/util/utils.dart';
 import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/mylistview.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
@@ -60,99 +60,100 @@ class _SeckillPageState extends State<SeckillPage> {
 
   @override
   Widget build(BuildContext context) {
+    final goodsList = ValueUtil.toList(cardDm.object?['goodsList']);
+
     return ScaffoldWidget(
       brightness: Brightness.light,
       body: Stack(children: [
-        // Positioned.fill(child: Image.asset('assets/ms_bg.png', fit: BoxFit.cover)),
-        MyListView(
-          isShuaxin: false,
-          flag: false,
-          item: (i) => item[i],
-          itemCount: item.length,
-          listViewType: ListViewType.Separated,
+        ListView(
+          children: [
+            Image.asset('assets/images/mall/ms_bg.png',
+                width: double.infinity, fit: BoxFit.cover, alignment: Alignment.topCenter),
+            PWidget.container(
+              AnimatedSwitchBuilder(
+                value: cardDm,
+                errorOnTap: () => this.getCardData(true),
+                errorView: PWidget.boxh(0),
+                noDataView: PWidget.boxh(0),
+                initialState: PWidget.container(null, [double.infinity]),
+                isAnimatedSize: false,
+                objectBuilder: (v) {
+                  Map map = v! as Map;
+                  var roundsList = map['roundsList'] as List;
+
+                  return PWidget.row(
+                    List.generate(roundsList.length, (i) {
+                      var rounds = roundsList[i];
+                      // flog(roundTime, '哈哈哈');
+                      var isDy = '${rounds['ddqTime']}' == roundTime;
+                      // flog(rounds['ddqTime'], '哈哈哈');
+                      // flog(isDy, '哈哈哈');
+                      // flog(rounds['ddqTime']);
+                      // flog(roundTimeStr, 'roundTimeStr');
+                      var ddqTime = DateTime.parse(rounds['ddqTime']);
+                      var list = ddqTime.toString().split(' ').last.split(':');
+                      list.removeLast();
+                      return PWidget.container(
+                        PWidget.ccolumn([
+                          PWidget.text(
+                            '${list.join(':')}',
+                            [isDy ? Colours.app_main : Colors.black.withOpacity(0.75), 16, true],
+                          ),
+                          PWidget.spacer(),
+                          PWidget.container(
+                            PWidget.text(
+                              '${['已开抢', '疯抢中', '即将开始'][rounds['status']]}',
+                              [isDy ? Colors.white : Colors.black.withOpacity(0.6)],
+                            ),
+                            [double.infinity],
+                            {
+                              'ali': PFun.lg(0, 0),
+                              'pd': PFun.lg(2, 2),
+                              'br': 56,
+                              'gd': PFun.cl2crGd(Colours.app_main.withOpacity(isDy ? 1 : 0),
+                                  Colours.app_main.withOpacity(isDy ? 1 : 0)),
+                            },
+                          ),
+                          PWidget.spacer(),
+                        ]),
+                        [75, 56],
+                        {
+                          'fun': () {
+                            seleRounds = rounds;
+                            roundTime = rounds['ddqTime'];
+                            this.getCardData(false);
+                            // flog(ddqTime);
+                          },
+                        },
+                      );
+                    }),
+                    {'pd': 8},
+                  );
+                },
+              ),
+            ),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: goodsList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if (seleRounds['status'] == 2) {
+                    return createItem(index);
+                  }
+                  var data = goodsList[index];
+                  return Global.openFadeContainer(createItem(index), ProductDetails(data));
+                })
+          ],
         ),
         titleBar(),
       ]),
     );
   }
 
-  List<Widget> get item {
-    return [
-      Image.asset('assets/images/mall/ms_bg.png', width: double.infinity, fit: BoxFit.cover, alignment: Alignment.topCenter),
-      PWidget.container(
-        AnimatedSwitchBuilder(
-          value: cardDm,
-          errorOnTap: () => this.getCardData(true),
-          errorView: PWidget.boxh(0),
-          noDataView: PWidget.boxh(0),
-          initialState: PWidget.container(null, [double.infinity]),
-          isAnimatedSize: false,
-          objectBuilder: (v) {
-            Map map = v! as Map;
-            var roundsList = map['roundsList'] as List;
-            return PWidget.row(
-              List.generate(roundsList.length, (i) {
-                var rounds = roundsList[i];
-                // flog(roundTime, '哈哈哈');
-                var isDy = '${rounds['ddqTime']}' == roundTime;
-                // flog(rounds['ddqTime'], '哈哈哈');
-                // flog(isDy, '哈哈哈');
-                // flog(rounds['ddqTime']);
-                // flog(roundTimeStr, 'roundTimeStr');
-                var ddqTime = DateTime.parse(rounds['ddqTime']);
-                var list = ddqTime.toString().split(' ').last.split(':');
-                list.removeLast();
-                return PWidget.container(
-                  PWidget.ccolumn([
-                    PWidget.text(
-                      '${list.join(':')}',
-                      [isDy ? Colours.app_main : Colors.black.withOpacity(0.75), 16, true],
-                    ),
-                    PWidget.spacer(),
-                    PWidget.container(
-                      PWidget.text(
-                        '${['已开抢', '疯抢中', '即将开始'][rounds['status']]}',
-                        [isDy ? Colors.white : Colors.black.withOpacity(0.6)],
-                      ),
-                      [double.infinity],
-                      {
-                        'ali': PFun.lg(0, 0),
-                        'pd': PFun.lg(2, 2),
-                        'br': 56,
-                        'gd': PFun.cl2crGd(Colours.app_main.withOpacity(isDy ? 1 : 0), Colours.app_main.withOpacity(isDy ? 1 : 0)),
-                      },
-                    ),
-                    PWidget.spacer(),
-                  ]),
-                  [75, 56],
-                  {
-                    'fun': () {
-                      seleRounds = rounds;
-                      roundTime = rounds['ddqTime'];
-                      this.getCardData(false);
-                      // flog(ddqTime);
-                    },
-                  },
-                );
-              }),
-              {'pd': 8},
-            );
-          },
-        ),
-      ),
-      ...List.generate(((cardDm.object?['goodsList'] ?? []) as List).length, (i) {
-        if(seleRounds['status'] == 2) {
-          return createItem(i);
-        }
-        var data = ((cardDm.object?['goodsList'] ?? []) as List)[i];
-        return Global.openFadeContainer(createItem(i), ProductDetails(data));;
-      }),
-    ];
-  }
-
   void notStart() {
     ToastUtils.showToast('活动未开始');
   }
+
   Widget createItem(i) {
     var data = ((cardDm.object?['goodsList'] ?? []) as List)[i];
     var mainPic = data['mainPic'];
@@ -164,9 +165,7 @@ class _SeckillPageState extends State<SeckillPage> {
           PWidget.wrapperImage('${mainPic}_310x310', [124, 124], {'br': 8}),
           PWidget.boxw(8),
           PWidget.column([
-            PWidget.row([
-              getTitleWidget(data['dtitle'])
-            ]),
+            PWidget.row([getTitleWidget(data['dtitle'])]),
             PWidget.spacer(),
             getLabelWidget(((data['specialText']) as List).join(), textSize: 12),
             PWidget.spacer(),
@@ -201,7 +200,7 @@ class _SeckillPageState extends State<SeckillPage> {
         {'fill': true},
       ),
       [null, null, Colors.white],
-      {'mg': PFun.lg(0, 10), 'pd': 8, 'br': 8, 'fun':detailFun},
+      {'mg': PFun.lg(0, 10), 'pd': 8, 'br': 8, 'fun': detailFun},
     );
   }
 
@@ -217,7 +216,8 @@ class _SeckillPageState extends State<SeckillPage> {
         ),
         PWidget.container(
           PWidget.row([
-            PWidget.container(PWidget.icon(Icons.arrow_back_ios_new_rounded, [Colors.white, 20]), [32, 32], {'fun': () => close()}),
+            PWidget.container(
+                PWidget.icon(Icons.arrow_back_ios_new_rounded, [Colors.white, 20]), [32, 32], {'fun': () => close()}),
             PWidget.spacer(),
             PWidget.image('assets/images/mall/ms_logo.png', [71, 24]),
             PWidget.spacer(),

@@ -6,11 +6,6 @@ import 'dart:convert';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sufenbao/util/tao_util.dart';
 
@@ -20,11 +15,11 @@ import '../share/ShareDialog.dart';
 import '../util/colors.dart';
 import '../util/custom.dart';
 import '../util/global.dart';
-import '../util/paixs_fun.dart';
 import '../util/repaintBoundary_util.dart';
 import '../util/toast_utils.dart';
 import '../widget/CustomWidgetPage.dart';
 import '../widget/loading.dart';
+
 //转卖
 class SellPage extends StatefulWidget {
   final Map data;
@@ -39,7 +34,7 @@ class SellPage extends StatefulWidget {
 }
 
 class _SellPageState extends State<SellPage> {
-  var detailDm = DataModel<Map>(object: {'actualPrice': ''});
+  Map<String, dynamic> detailData = {'actualPrice': ''};
   String sale = '';
   late String title = '';
   late String startPrice = '0';
@@ -61,7 +56,7 @@ class _SellPageState extends State<SellPage> {
   }
 
   Future initData() async {
-    if(Global.userinfo == null) {
+    if (Global.userinfo == null) {
       Map<String, dynamic> json = await BService.userinfo(baseInfo: true);
       if (json.isEmpty) {
         return;
@@ -69,169 +64,241 @@ class _SellPageState extends State<SellPage> {
       Global.userinfo = Userinfo.fromJson(json);
     }
     loading = false;
-    setState(() {
-
-    });
+    setState(() {});
     data = widget.data['res'];
-    detailDm.addObject(data);
+    detailData = Map<String, dynamic>.from(data);
     String platType = widget.data['platType'];
     iconPath = getIconPath(platType);
     getPlatTypeDetail(platType);
     initShareInfo();
   }
+
+  // 构建标题栏的辅助方法
+  PreferredSizeWidget buildTitle(
+    BuildContext context, {
+    required String title,
+    Color? widgetColor,
+    Color? color,
+    Widget? leftIcon,
+  }) {
+    return AppBar(
+      title: Text(
+        title,
+        style: TextStyle(
+          color: widgetColor ?? Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      leading: leftIcon != null
+          ? IconButton(
+              icon: leftIcon,
+              onPressed: () => Navigator.pop(context),
+            )
+          : null,
+      backgroundColor: color ?? Colors.white,
+      elevation: 0,
+      centerTitle: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-        brightness: Brightness.dark,
-        bgColor: Colors.white,
-        appBar: buildTitle(context,
-            title: '转卖好货',
-            widgetColor: Colors.black,
-            color: Colors.white,
-            leftIcon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.black,
-            )),
-        body: Stack(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: buildTitle(context,
+          title: '转卖好货',
+          widgetColor: Colors.black,
+          color: Colors.white,
+          leftIcon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black,
+          )),
+      body: Container(
+        color: Colors.white,
+        padding: EdgeInsets.all(10),
+        child: Column(
           children: [
-            ScaffoldWidget(
-              body: PWidget.container(
-               PWidget.column([
-               RepaintBoundary(
+            Expanded(
+              child: RepaintBoundary(
                 key: glokey,
-                child: PWidget.container(
-                  PWidget.column([
-                    PWidget.container(
-                      PWidget.row([
-                        PWidget.image(iconPath, [14, 14]),
-                        PWidget.boxw(10),
-                        getTitleWidget(title, size: 16)
-                      ], '200'),
-                      {
-                        'pd': [18, 8, 12, 0]
-                      },
-                    ),
-                    PWidget.container(
-                      PWidget.row([
-                        getPriceWidget(endPrice, startPrice,
-                            endTextSize: 24,
-                            startPrefix: '原价 ',
-                            endPrefixSize: 16),
-                        PWidget.spacer(),
-                        PWidget.text(
-                          '已售$sale件',
-                          [Colors.black45, 12],
-                          {},
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 8),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(18, 8, 12, 0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.asset(iconPath, width: 14, height: 14),
+                            SizedBox(width: 10),
+                            Expanded(child: getTitleWidget(title, size: 16))
+                          ],
                         ),
-                      ]),
-                      {
-                        'pd': [4, 8, 12, 0]
-                      },
-                    ),
-                    PWidget.container(
-                      PWidget.row([
-                        getMoneyWidget(context, fee, widget.data['platType'],
-                            column: false),
-                      ]),
-                      {
-                        'pd': [4, 4, 12, 8]
-                      },
-                    ),
-                    PWidget.row([
-                      Expanded(
-                        child: PWidget.wrapperImage(pic, [100, 370]),
-                        flex: 1,
                       ),
-                    ], {
-                      'pd': [8, 24, 10, 0]
-                    }),
-                    PWidget.row([
-                      PWidget.column([
-                        PWidget.row([
-                          PWidget.image(
-                              'assets/images/logo.png', [30, 30], {'crr': 5}),
-                          PWidget.boxw(12),
-                          PWidget.textNormal(
-                              APP_NAME, [Colors.black, 20, true]),
-                        ], {
-                          'pd': [0, 0, 0, 0]
-                        }),
-                        PWidget.boxh(10),
-                        PWidget.textNormal(
-                            '— $APP_NAME 购物拆红包 —', [Colors.black, 14, true]),
-                        PWidget.boxh(10),
-                        if(!loading)
-                        PWidget.textNormal(
-                            '邀请口令：${Global.userinfo!.code}', [Colors.black, 12, true]),
-                      ], '200'),
-                      PWidget.spacer(),
-                      PWidget.column([
-                        shareUrl.isNotEmpty ? QrImageView(
-                          data: shareUrl,
-                          version: QrVersions.auto,
-                          size: 120.0,
-                          gapless: false,
-                          embeddedImage: AssetImage(qrImage),
-                        ): SizedBox(),
-                        PWidget.boxw(10),
-                        PWidget.textNormal(
-                            '长按二维码领券购买', [Colors.black, 11, true])
-                      ], '200')
-                    ], {
-                      'pd': [0, 0, 12, 12]
-                    }),
-                  ]),
-                  [null, null, Colors.white],
-                  {
-                    'pd': [0, 10, 0, 8]
-                  },
+                      Container(
+                        padding: EdgeInsets.fromLTRB(4, 8, 12, 0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: getPriceWidget(endPrice, startPrice,
+                                  endTextSize: 24, startPrefix: '原价 ', endPrefixSize: 16),
+                            ),
+                            Text(
+                              '已售${sale}件',
+                              style: TextStyle(color: Colors.black45, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(4, 4, 12, 8),
+                        child: Row(
+                          children: [
+                            getMoneyWidget(context, fee, widget.data['platType'], column: false),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(8, 24, 10, 0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _buildProductImage(pic),
+                              flex: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(18, 0, 12, 12),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Image.asset('assets/images/logo.png', width: 30, height: 30),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Text(APP_NAME,
+                                          style: TextStyle(
+                                              color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text('— $APP_NAME 购物拆红包 —',
+                                      style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold)),
+                                  SizedBox(height: 10),
+                                  if (!loading)
+                                    Text('邀请口令：${Global.userinfo!.code}',
+                                        style:
+                                            TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                shareUrl.isNotEmpty
+                                    ? QrImageView(
+                                        data: shareUrl,
+                                        version: QrVersions.auto,
+                                        size: 120.0,
+                                        gapless: false,
+                                        embeddedImage: AssetImage(qrImage),
+                                      )
+                                    : SizedBox(),
+                                SizedBox(width: 10),
+                                Text('长按二维码领券购买',
+                                    style: TextStyle(color: Colors.black, fontSize: 11, fontWeight: FontWeight.bold))
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-               PWidget.spacer(),
-               PWidget.container(
-                  PWidget.row([
-                    Expanded(child: Text("")),
-                    TextButton(
-                        style: ButtonStyle(
-                            overlayColor: MaterialStateProperty.all(Colours.app_main)),
-                        child: PWidget.row([
-                          PWidget.icon(Icons.file_download, [Colors.white, 15]),
-                          PWidget.boxw(4),
-                          Text("保存图片",
-                              style: TextStyle(color: Colors.white, fontSize: 14)),
-                        ]),
-                        onPressed: () {
-                          savePhoto();
-                        }),
-                    Expanded(child: Text("")),
-                    TextButton(
-                        style: ButtonStyle(
-                            overlayColor: MaterialStateProperty.all(Colours.app_main)),
-                        child: PWidget.row([
-                          PWidget.icon(Icons.ios_share_outlined, [Colors.white, 15]),
-                          PWidget.boxw(4),
-                          Text("分享好货",
-                              style: TextStyle(color: Colors.white, fontSize: 14))
-                        ]),
-                        onPressed: () {
-                          shareGoods();
-                        }),
-                    Expanded(child: Text("")),
-                  ]),
-                  [
-                    null,
-                    40,
-                    Colours.app_main
-                  ], //宽度，高度，背景色
-                  {
-                    'br': PFun.lg(6, 6, 6, 6), //圆角
-                    'mg': PFun.lg(0, 20, 20, 20) //margin
-                  }),
-               ]),
-                [null, null, Colors.white])
-            )
+            ),
+            Container(
+              height: 40,
+              margin: EdgeInsets.fromLTRB(0, 20, 20, 20),
+              decoration: BoxDecoration(
+                color: Colours.app_main,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                children: [
+                  Expanded(child: Text("")),
+                  TextButton(
+                      style: ButtonStyle(overlayColor: WidgetStateProperty.all(Colours.app_main)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.file_download, color: Colors.white, size: 15),
+                          SizedBox(width: 4),
+                          Text("保存图片", style: TextStyle(color: Colors.white, fontSize: 14)),
+                        ],
+                      ),
+                      onPressed: () {
+                        savePhoto();
+                      }),
+                  Expanded(child: Text("")),
+                  TextButton(
+                      style: ButtonStyle(overlayColor: WidgetStateProperty.all(Colours.app_main)),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.ios_share_outlined, color: Colors.white, size: 15),
+                          SizedBox(width: 4),
+                          Text("分享好货", style: TextStyle(color: Colors.white, fontSize: 14))
+                        ],
+                      ),
+                      onPressed: () {
+                        shareGoods();
+                      }),
+                  Expanded(child: Text("")),
+                ],
+              ),
+            ),
           ],
-        ));
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProductImage(String imageUrl) {
+    if (imageUrl.isEmpty) {
+      return Container(
+        width: 100,
+        height: 370,
+        color: Colors.grey[200],
+        child: Icon(Icons.image, color: Colors.grey),
+      );
+    }
+    return Image.network(
+      imageUrl,
+      width: 100,
+      height: 370,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: 100,
+          height: 370,
+          color: Colors.grey[200],
+          child: Icon(Icons.broken_image, color: Colors.grey),
+        );
+      },
+    );
   }
 
   Future initShareInfo() async {
@@ -253,7 +320,7 @@ class _SellPageState extends State<SellPage> {
 
     String vars = '';
     List<String> keys = shareMap.keys.toList();
-    for(int i = 0; i < keys.length; i++) {
+    for (int i = 0; i < keys.length; i++) {
       String key = keys[i];
       vars += '$key=${shareMap[key]}&';
     }
@@ -261,9 +328,7 @@ class _SellPageState extends State<SellPage> {
     String longUrl = '${Global.appInfo.shareGoods}?$vars';
     //由接口做urlencode
     shareUrl = await BService.shortLink(Uri.encodeComponent(longUrl));
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   String getIconPath(String platType) {
@@ -288,9 +353,7 @@ class _SellPageState extends State<SellPage> {
   void getPlatTypeDetail(String platType) {
     switch (platType) {
       case 'TB':
-        fee = detailDm.object?['commissionRate'] *
-            detailDm.object?['actualPrice'] /
-            100;
+        fee = detailData['commissionRate'] * detailData['actualPrice'] / 100;
         startPrice = data['originalPrice'].toString();
         endPrice = data['actualPrice'].toString();
         title = data['dtitle'] == '' ? data['title'] : data['dtitle'];
@@ -298,35 +361,31 @@ class _SellPageState extends State<SellPage> {
         pic = data['mainPic'];
         break;
       case 'JD':
-        fee = detailDm.object?['commission'];
+        fee = detailData['commission'];
         pic = data['picMain'];
         title = data['skuName'];
         endPrice = data['actualPrice'].toString();
         startPrice = data['originPrice'].toString();
-        sale = BService.formatNum(data?['inOrderCount30Days']);
+        sale = BService.formatNum(data['inOrderCount30Days']);
         break;
       case 'PDD':
-        fee = detailDm.object?['promotionRate'] *
-            detailDm.object?['minGroupPrice'] /
-            100;
+        fee = detailData['promotionRate'] * detailData['minGroupPrice'] / 100;
         pic = data['goodsThumbnailUrl'];
         title = data['goodsName'];
-        startPrice = detailDm.object!['minNormalPrice'].toString();
-        endPrice = detailDm.object!['minGroupPrice'].toString();
+        startPrice = detailData['minNormalPrice'].toString();
+        endPrice = detailData['minGroupPrice'].toString();
         sale = data['salesTip'];
         break;
       case 'DY':
-        fee = detailDm.object?['cosFee'];
+        fee = detailData['cosFee'];
         pic = data['cover'];
         title = data['title'];
-        endPrice = data['couponPrice'] > 0
-            ? data['couponPrice'].toString()
-            : data['price'].toString();
+        endPrice = data['couponPrice'] > 0 ? data['couponPrice'].toString() : data['price'].toString();
         startPrice = data['price'].toString();
         sale = BService.formatNum(data['sales']);
         break;
       case 'VIP':
-        fee = double.parse(detailDm.object?['commission']);
+        fee = double.parse(detailData['commission']);
         pic = data['goodsMainPicture'];
         title = data['goodsName'];
         startPrice = data['marketPrice'];
@@ -340,9 +399,9 @@ class _SellPageState extends State<SellPage> {
     if (!Global.login) {
       return;
     }
-    FlutterClipboard.copy(getShareContent())
-        .then((value) => ToastUtils.showToast('复制成功'));
+    FlutterClipboard.copy(getShareContent()).then((value) => ToastUtils.showToast('复制成功'));
   }
+
   void savePhoto() async {
     if (!Global.login) {
       return;
@@ -352,15 +411,15 @@ class _SellPageState extends State<SellPage> {
     await RepaintBoundaryUtils().savePhoto();
     Loading.hide(context);
   }
+
   void shareGoods() async {
     if (!Global.login) {
       return;
     }
     boundaryKey = glokey;
     String filePath = await RepaintBoundaryUtils().captureImage();
-    if (filePath != null) {
+    if (filePath.isNotEmpty) {
       ShareDialog.showShareDialog(context, filePath);
     }
   }
-
 }

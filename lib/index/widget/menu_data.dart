@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:sufenbao/util/colors.dart';
 
 const List menuData = [
-  [
-  ],
+  [],
   //type 1=native 2=外部 3=小程序 4=webview
   [
-
     {
       "title": "购物拆红包",
-      "img":
-      "https://img.alicdn.com/imgextra/i3/2053469401/O1CN01FqA1ff2JJi9Jb6VCV_!!2053469401.gif",
+      "img": "https://img.alicdn.com/imgextra/i3/2053469401/O1CN01FqA1ff2JJi9Jb6VCV_!!2053469401.gif",
       'path': 'assets/images/menu/7.png',
       "type": "1",
       "url": "/helpFanliPage",
@@ -26,8 +23,7 @@ const List menuData = [
 
     {
       "title": "美团红包",
-      "img":
-      "https://img.alicdn.com/imgextra/i3/2053469401/O1CN01FqA1ff2JJi9Jb6VCV_!!2053469401.gif",
+      "img": "https://img.alicdn.com/imgextra/i3/2053469401/O1CN01FqA1ff2JJi9Jb6VCV_!!2053469401.gif",
       'path': 'assets/images/mt.gif',
       "type": "1",
       "url": "/meiTuanPage",
@@ -35,8 +31,7 @@ const List menuData = [
     },
     {
       "title": "饿了么",
-      "img":
-      "https://img.alicdn.com/imgextra/i2/2053469401/O1CN01ZiytSl2JJi9mY2paN_!!2053469401.png",
+      "img": "https://img.alicdn.com/imgextra/i2/2053469401/O1CN01ZiytSl2JJi9mY2paN_!!2053469401.png",
       'path': 'assets/images/ele.gif',
       "type": "1",
       "url": "/elePage",
@@ -46,12 +41,11 @@ const List menuData = [
       'path': 'assets/images/menu/6.png',
       'title': '本地团购',
       'type': '1',
-      'url': '/localPage',
+      'url': '/pickLeakPage',
       'color': Colors.green,
     },
     {
-      'img':
-      'https://mailvor.oss-cn-shanghai.aliyuncs.com/sufenbao/cao.png',
+      'img': 'https://mailvor.oss-cn-shanghai.aliyuncs.com/sufenbao/cao.png',
       'title': '淘券',
       'path': 'assets/images/menu/5.gif',
       "type": "1",
@@ -62,8 +56,7 @@ const List menuData = [
     },
     {
       "title": "京券",
-      "img":
-      "https://img.alicdn.com/imgextra/i2/2053469401/O1CN01Iu2xBJ2JJi9nqIQpb_!!2053469401.png",
+      "img": "https://img.alicdn.com/imgextra/i2/2053469401/O1CN01Iu2xBJ2JJi9nqIQpb_!!2053469401.png",
       'path': 'assets/images/menu/jd.png',
       "type": '1',
       // 'arrow': '立省40%',
@@ -72,8 +65,7 @@ const List menuData = [
     },
     {
       "title": "多券",
-      "img":
-      "https://img.alicdn.com/imgextra/i4/2053469401/O1CN01fSvhoh2JJi9hQMrEF_!!2053469401.png",
+      "img": "https://img.alicdn.com/imgextra/i4/2053469401/O1CN01fSvhoh2JJi9hQMrEF_!!2053469401.png",
       'path': 'assets/images/menu/pdd.png',
       "type": "1",
       "url": "/pddIndex",
@@ -89,8 +81,7 @@ const List menuData = [
     },
     {
       "title": "唯券",
-      "img":
-      "https://img.alicdn.com/imgextra/i3/2053469401/O1CN01NR08P22JJiAret8ZV_!!2053469401.gif",
+      "img": "https://img.alicdn.com/imgextra/i3/2053469401/O1CN01NR08P22JJiAret8ZV_!!2053469401.gif",
       'path': 'assets/images/menu/vip.gif',
       "type": "1",
       // 'arrow': '100%正品',

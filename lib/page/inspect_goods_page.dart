@@ -3,20 +3,12 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/image.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/page/product_details.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/widget/CustomWidgetPage.dart';
 
 import '../util/colors.dart';
-import '../util/paixs_fun.dart';
 import '../widget/lunbo_widget.dart';
 import '../widget/tab_widget.dart';
 
@@ -29,9 +21,14 @@ class InspectGoodsPage extends StatefulWidget {
   _MIniPageState createState() => _MIniPageState();
 }
 
-class _MIniPageState extends State<InspectGoodsPage>{
+class _MIniPageState extends State<InspectGoodsPage> with TickerProviderStateMixin {
   ScrollController _scrollController = ScrollController();
   var _showBackTop = false;
+  
+  // 替换DataModel的状态管理
+  List<Map> _tabList = [];
+  bool _tabLoading = true;
+  bool _tabError = false;
 
   @override
   void initState() {
@@ -47,14 +44,25 @@ class _MIniPageState extends State<InspectGoodsPage>{
   }
 
   ///tab数据
-  var tabDm = DataModel();
-  Future<int> getTabData() async {
-      tabDm.addList(
-          Global.getFullCategory(),
-          true,
-          0);
-      // tabCon = TabController(length: tabDm.list.where((w) => w['type'] != 0).toList().length, vsync: this);
-    return tabDm.flag;
+  Future<void> getTabData() async {
+    try {
+      setState(() {
+        _tabLoading = true;
+        _tabError = false;
+      });
+      
+      var tabData = Global.getFullCategory();
+      _tabList = List<Map>.from(tabData);
+      
+      setState(() {
+        _tabLoading = false;
+      });
+    } catch (e) {
+        setState(() {
+          _tabLoading = false;
+          _tabError = true;
+        });
+      }
   }
 
   @override
@@ -67,47 +75,48 @@ class _MIniPageState extends State<InspectGoodsPage>{
   @override
   Widget build(BuildContext context) {
     List imgs = [{'img':'https://img.alicdn.com/imgextra/i1/2053469401/O1CN01TbOBvx2JJiAJR6p32_!!2053469401.png'}];
-    return ScaffoldWidget(
-      body: Stack(
-        children: [
-          PWidget.container(null, [double.infinity, double.infinity],
-              {'gd': PFun.tbGd(Color(0xFF39A638), Colors.white)}),
-          ScaffoldWidget(
-              floatingActionButton:
-                  _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
-                      ? FloatingActionButton(
-                          backgroundColor: Colors.grey[300],
-                          onPressed: () {
-                            // scrollController 通过 animateTo 方法滚动到某个具体高度
-                            // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
-                            _scrollController.animateTo(0.0,
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.decelerate);
-                          },
-                          child: Icon(
-                            Icons.arrow_upward,
-                            color: Colors.white,
-                          ),
-                        )
-                      : null,
-              bgColor: Colors.transparent,
-              brightness: Brightness.light,
-              appBar: Stack(
-                children: [
-                  LunboWidget(
-                          imgs,
-                          value: 'img',
-                          aspectRatio: 75 / 31,
-                          loop: false,
-                          fun: (v) {},
-                        )
-                      ,
-                  Positioned(
-                    left: 0,
-                    top: 0,
-                    bottom: 0,
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF39A638), Colors.white],
+          ),
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          floatingActionButton: _showBackTop
+              ? FloatingActionButton(
+                  backgroundColor: Colors.grey[300],
+                  onPressed: () {
+                    _scrollController.animateTo(0.0,
+                        duration: Duration(milliseconds: 500),
+                        curve: Curves.decelerate);
+                  },
+                  child: Icon(
+                    Icons.arrow_upward,
+                    color: Colors.white,
+                  ),
+                )
+              : null,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(200),
+            child: Stack(
+              children: [
+                LunboWidget(
+                  imgs,
+                  value: 'img',
+                  aspectRatio: 75 / 31,
+                  loop: false,
+                  fun: (v) {},
+                ),
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: SafeArea(
                     child: IconButton(
-                      // splashColor: bwColor,
                       icon: Icon(
                         Icons.arrow_back_ios,
                         color: Colors.white,
@@ -117,27 +126,69 @@ class _MIniPageState extends State<InspectGoodsPage>{
                       },
                     ),
                   ),
-                ],
-              ),
-              body: AnimatedSwitchBuilder(
-                value: tabDm,
-                errorOnTap: () => this.getTabData(),
-                initialState: buildLoad(color: Colours.app_main),
-                listBuilder: (list, _, __) {
-                  var tabList = list
-                      .map<String>((m) => (m! as Map)['name'])
-                      .toList();
-                  return TabWidget(
-                    tabList: tabList,
-                    indicatorColor: Colors.white,
-                    tabPage: List.generate(tabList.length, (i) {
-                      return TopChild(_scrollController, list[i] as Map);
-                    }),
-                  );
-                },
-              )),
-        ],
+                ),
+              ],
+            ),
+          ),
+          body: _buildBody(),
+        ),
       ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_tabLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colours.app_main),
+        ),
+      );
+    }
+
+    if (_tabError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red, size: 64),
+            SizedBox(height: 16),
+            Text(
+              '加载失败',
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: getTabData,
+              child: Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_tabList.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.inbox, color: Colors.grey, size: 64),
+            SizedBox(height: 16),
+            Text(
+              '暂无数据',
+              style: TextStyle(color: Colors.grey, fontSize: 16),
+            ),
+          ],
+        ),
+      );
+    }
+
+    var tabList = _tabList.map<String>((m) => m['name'] as String).toList();
+    return TabWidget(
+      tabList: tabList,
+      indicatorColor: Colors.white,
+      tabPage: List.generate(tabList.length, (i) {
+        return TopChild(_scrollController, _tabList[i]);
+      }),
     );
   }
 }
@@ -152,84 +203,285 @@ class TopChild extends StatefulWidget {
 }
 
 class _TopChildState extends State<TopChild> {
+  // 替换DataModel的状态管理
+  List<Map> _dataList = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+  String _errorMessage = '';
+  bool _hasNext = false;
+  int _currentPage = 1;
+  int _totalNum = 0;
+  bool _isLoadingMore = false;
+  
+  final ScrollController _listScrollController = ScrollController();
+  final GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey<RefreshIndicatorState>();
+
   @override
   void initState() {
-    initData();
     super.initState();
+    _listScrollController.addListener(_onScroll);
+    initData();
+  }
+
+  @override
+  void dispose() {
+    _listScrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_listScrollController.position.pixels >=
+        _listScrollController.position.maxScrollExtent - 200) {
+      if (_hasNext && !_isLoadingMore) {
+        _loadMore();
+      }
+    }
   }
 
   ///初始化函数
-  Future initData() async {
+  Future<void> initData() async {
     await getListData(isRef: true);
   }
 
   ///列表数据
-  var listDm = DataModel();
-  Future<int> getListData({int page = 1, bool isRef = false}) async {
-    var res = await BService.getGoodsList(page, inspectedGoods: 1, cid: widget.data['cid']).catchError((v) {
-      listDm.toError('网络异常');
-    });
-    if (res != null) {
-      var list = res['list'];
-      var totalNum = res['totalNum'];
-      listDm.addList(list, isRef, totalNum);
+  Future<void> getListData({int page = 1, bool isRef = false}) async {
+    try {
+      if (isRef) {
+        setState(() {
+          _isLoading = true;
+          _hasError = false;
+          _currentPage = 1;
+        });
+      }
+
+      var res = await BService.getGoodsList(page, inspectedGoods: 1, cid: widget.data['cid']);
+      
+      if (res.isNotEmpty) {
+        var list = List<Map>.from(res['list'] ?? []);
+        var totalNum = res['totalNum'] ?? 0;
+        
+        setState(() {
+          if (isRef) {
+            _dataList = list;
+          } else {
+            _dataList.addAll(list);
+          }
+          _totalNum = totalNum;
+          _hasNext = _dataList.length < _totalNum;
+          _currentPage = page;
+          _isLoading = false;
+          _isLoadingMore = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+          _isLoadingMore = false;
+          _hasError = true;
+          _errorMessage = '网络异常';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _isLoadingMore = false;
+        _hasError = true;
+        _errorMessage = '网络异常';
+      });
     }
-    setState(() {});
-    return listDm.flag;
   }
 
+  Future<void> _loadMore() async {
+    if (_isLoadingMore || !_hasNext) return;
+    
+    setState(() {
+      _isLoadingMore = true;
+    });
+    
+    await getListData(page: _currentPage + 1, isRef: false);
+  }
+
+  Future<void> _onRefresh() async {
+    await getListData(isRef: true);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitchBuilder(
-      value: listDm,
-      initialState: buildLoad(color: Color(0xff9cc8c)),
-      errorOnTap: () => this.getListData(isRef: true),
-      listBuilder: (list, p, h) {
-        return createContent();
-      },
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xff9cc8c)),
+        ),
+      );
+    }
+
+    if (_hasError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.error_outline, color: Colors.red, size: 64),
+            SizedBox(height: 16),
+            Text(
+              _errorMessage,
+              style: TextStyle(color: Colors.black, fontSize: 16),
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () => getListData(isRef: true),
+              child: Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return _buildContent();
+  }
+
+  Widget _buildContent() {
+    return RefreshIndicator(
+      key: _refreshKey,
+      onRefresh: _onRefresh,
+      child: GridView.builder(
+        controller: _listScrollController,
+        padding: EdgeInsets.all(16),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+          childAspectRatio: 0.75,
+        ),
+        itemCount: _dataList.length + (_hasNext ? 1 : 0),
+        itemBuilder: (context, index) {
+          if (index >= _dataList.length) {
+            return _buildLoadingItem();
+          }
+          
+          var item = _dataList[index];
+          return _buildGridItem(index, item);
+        },
+      ),
     );
   }
 
-  createContent() {
-    return MyCustomScroll(
-      isGengduo: listDm.hasNext,
-      isShuaxin: true,
-      onRefresh: () => this.getListData(isRef: true),
-      onLoading: (p) => this.getListData(page: p),
-      refHeader: buildClassicHeader(color: Colors.grey),
-      refFooter: buildCustomFooter(color: Colors.grey),
-      itemModel: listDm,
-      crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      itemPadding: EdgeInsets.all(16),
-      itemModelBuilder: (i, v) {
-        return PWidget.container(
-          Global.openFadeContainer(createItem(i, v), ProductDetails(v)),
-          [null, null, Colors.white],
-          {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 12)},
-        );
-      },
+  Widget _buildLoadingItem() {
+    return Container(
+      margin: EdgeInsets.only(top: _dataList.length % 2 == 1 ? 0 : 12),
+      child: Center(
+        child: _isLoadingMore
+            ? CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+              )
+            : SizedBox.shrink(),
+      ),
     );
   }
 
-  Widget createItem(i, v) {
-    var img = '${v['mainPic']}_310x310';
-    var sale = BService.formatNum(v['monthSales']);
-    int descMaxLine = i%3 + 2 ;
-    return PWidget.container(
-      PWidget.column([
-        PWidget.container(WrapperImage(url: '$img'), {'crr': 4}),
-        PWidget.text('${v['desc']}', [Colors.black.withOpacity(0.75), 14, true], {'isOf': false, 'pd': PFun.lg(4, 4),'max':descMaxLine}),
-        PWidget.boxh(8),
-        PWidget.row([
-          getPriceWidget('${v['actualPrice']}元', '${v['actualPrice']}元'),
-          PWidget.spacer(),
-          getSalesWidget(sale)
-        ]),
-      ]),
-      [null, null, Colors.white],
-      {'pd': 8, 'sd': PFun.sdLg(Colors.black12), 'br': 8, },
+  Widget _buildGridItem(int index, Map item) {
+    return GestureDetector(
+       onTap: () {
+         Global.openFadeContainer(
+           _createItemContent(index, item),
+           ProductDetails(item),
+         );
+       },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: _createItemContent(index, item),
+      ),
+    );
+  }
+
+  Widget _createItemContent(int index, Map item) {
+    var img = '${item['mainPic']}_310x310';
+    var sale = BService.formatNum(item['monthSales']);
+    int descMaxLine = index % 3 + 2;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          flex: 3,
+          child: Container(
+            width: double.infinity,
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+              child: Image.network(
+                img,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[300],
+                    child: Center(
+                      child: Icon(
+                        Icons.image,
+                        color: Colors.grey,
+                        size: 48,
+                      ),
+                    ),
+                  );
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    color: Colors.grey[200],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${item['desc']}',
+                    style: TextStyle(
+                      color: Colors.black.withValues(alpha: 0.75),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: descMaxLine,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: getPriceWidget('${item['actualPrice']}元', '${item['actualPrice']}元'),
+                    ),
+                    getSalesWidget(sale),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

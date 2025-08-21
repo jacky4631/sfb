@@ -517,7 +517,7 @@ class Global {
     );
     //如果用户已经正常登录 设置别名为用户id
     if (Global.userinfo != null && Global.userinfo?.uid != 0) {
-      jpush.setAlias('uid${Global.userinfo!.uid.toString()}').then((map) {
+      jpush.setAlias('uid${Global.userinfo?.uid.toString()}').then((map) {
         print("设置别名成功");
       });
     }

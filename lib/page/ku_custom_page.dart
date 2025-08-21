@@ -5,18 +5,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/mylistview.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/page/product_details.dart';
 import 'package:sufenbao/service.dart';
 
-import '../util/colors.dart';
-import '../util/paixs_fun.dart';
 import '../widget/lunbo_widget.dart';
 import '../widget/tab_widget.dart';
 
@@ -33,6 +25,12 @@ class _MIniPageState extends State<KuCustomPage> {
   ScrollController _scrollController = ScrollController();
   var _showBackTop = false;
 
+  // Tab data state management
+  List _tabData = [];
+  bool _isTabLoading = true;
+  bool _hasTabError = false;
+  String _tabErrorMessage = '';
+
   @override
   void initState() {
     super.initState();
@@ -47,22 +45,38 @@ class _MIniPageState extends State<KuCustomPage> {
   }
 
   ///tab数据
-  var tabDm = DataModel();
   Future<int> getTabData() async {
-    var res = await BService.kuCustomCate(widget.data['link']).catchError((v) {
-      tabDm.toError('网络异常');
+    setState(() {
+      _isTabLoading = true;
+      _hasTabError = false;
     });
-    if (res != null) {
-      List content = res['content'];
-      tabDm.addList(
-          content.where((element) => element['type'] == 'list').toList(),
-          true,
-          0);
-      tabDm.value = content;
+
+    try {
+       var res = await BService.kuCustomCate(widget.data['link']);
+       if (res.isNotEmpty) {
+         List content = res['content'];
+         setState(() {
+           _tabData = content.where((element) => element['type'] == 'list').toList();
+           _isTabLoading = false;
+           _hasTabError = false;
+         });
+         return 1;
+       } else {
+        setState(() {
+          _isTabLoading = false;
+          _hasTabError = true;
+          _tabErrorMessage = '数据加载失败';
+        });
+        return 0;
+      }
+    } catch (e) {
+      setState(() {
+        _isTabLoading = false;
+        _hasTabError = true;
+        _tabErrorMessage = '网络异常';
+      });
+      return 0;
     }
-    ;
-    setState(() {});
-    return tabDm.flag;
   }
 
   @override
@@ -76,10 +90,10 @@ class _MIniPageState extends State<KuCustomPage> {
   Widget build(BuildContext context) {
     List imgs = [];
     Color bg = Colors.white;
-    if (tabDm.value.isNotEmpty) {
-      if (tabDm.value[0] is Map) {
-        String imgUrl = tabDm.value[0]['_attr']['appUrl'];
-        String bgColor = tabDm.value[0]['_attr']['backgroundColor'];
+    if (_tabData.isNotEmpty) {
+      if (_tabData[0] is Map) {
+        String imgUrl = _tabData[0]['_attr']['appUrl'];
+        String bgColor = _tabData[0]['_attr']['backgroundColor'];
         if (!Global.isEmpty(bgColor)) {
           bg = Global.theColor(bgColor);
         }
@@ -89,38 +103,46 @@ class _MIniPageState extends State<KuCustomPage> {
         imgs.add({'img': imgUrl});
       }
     }
-    // if(bg == Colors.white) {
-    //   bg = Color(0xfff9cc8c);
-    // }
-    return ScaffoldWidget(
+
+    return Scaffold(
       body: Stack(
         children: [
-          PWidget.container(null, [double.infinity, double.infinity],
-              {'gd': PFun.tbGd(bg, bg)}),
-          ScaffoldWidget(
-              floatingActionButton:
-                  _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
-                      ? FloatingActionButton(
-                          backgroundColor: Colours.app_main,
-                          mini: true,
-                          onPressed: () {
-                            // scrollController 通过 animateTo 方法滚动到某个具体高度
-                            // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
-                            _scrollController.animateTo(0.0,
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.decelerate);
-                          },
-                          child: Icon(
-                            Icons.arrow_upward,
-                            color: Colors.white,
-                          ),
-                        )
-                      : null,
-              bgColor: Colors.transparent,
-              brightness: Brightness.light,
-              appBar: Stack(
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [bg, bg],
+              ),
+            ),
+          ),
+          Scaffold(
+            floatingActionButton:
+                _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
+                    ? FloatingActionButton(
+                        backgroundColor: const Color(0xFFFF6B35),
+                        mini: true,
+                        onPressed: () {
+                          // scrollController 通过 animateTo 方法滚动到某个具体高度
+                          // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
+                          _scrollController.animateTo(0.0,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.decelerate);
+                        },
+                        child: const Icon(
+                          Icons.arrow_upward,
+                          color: Colors.white,
+                        ),
+                      )
+                    : null,
+            backgroundColor: Colors.transparent,
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(200),
+              child: Stack(
                 children: [
-                  tabDm.value.isNotEmpty
+                  _tabData.isNotEmpty
                       ? LunboWidget(
                           imgs,
                           value: 'img',
@@ -128,14 +150,13 @@ class _MIniPageState extends State<KuCustomPage> {
                           loop: false,
                           fun: (v) {},
                         )
-                      : SizedBox(),
+                      : const SizedBox(),
                   Positioned(
                     left: 0,
                     top: 0,
                     bottom: 0,
                     child: IconButton(
-                      // splashColor: bwColor,
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_back_ios,
                         color: Colors.white,
                       ),
@@ -146,32 +167,96 @@ class _MIniPageState extends State<KuCustomPage> {
                   ),
                 ],
               ),
-              body: AnimatedSwitchBuilder(
-                value: tabDm,
-                errorOnTap: () => this.getTabData(),
-                initialState: buildLoad(color: Colours.app_main),
-                listBuilder: (list, _, __) {
-                  var tabList = list.map<String>((m) {
-                    String name = (m! as Map)['_attr']['appName'];
-                    if (Global.isEmpty(name)) {
-                      name = (m! as Map)['_attr']['name'];
-                    }
-                    return name;
-                  }).toList();
-                  return TabWidget(
-                    tabList: tabList,
-                    indicatorColor: Colors.white.withOpacity(0),
-                    tabPage: List.generate(tabList.length, (i) {
-                      return Padding(
-                          padding: EdgeInsets.only(
-                              top: 10, left: 20, right: 20, bottom: 10),
-                          child: TopChild(_scrollController, list[i] as Map));
-                    }),
-                  );
-                },
-              )),
+            ),
+            body: _buildBody(),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_isTabLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6B35)),
+        ),
+      );
+    }
+
+    if (_hasTabError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _tabErrorMessage,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: getTabData,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF6B35),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_tabData.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.inbox_outlined,
+              size: 64,
+              color: Colors.grey,
+            ),
+            SizedBox(height: 16),
+            Text(
+              '暂无数据',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    var tabList = _tabData.map<String>((m) {
+      String name = (m! as Map)['_attr']['appName'];
+      if (Global.isEmpty(name)) {
+        name = (m! as Map)['_attr']['name'];
+      }
+      return name;
+    }).toList();
+
+    return TabWidget(
+      tabList: tabList,
+      indicatorColor: Colors.white.withValues(alpha: 0),
+      tabPage: List.generate(tabList.length, (i) {
+        return Padding(
+          padding: const EdgeInsets.only(
+              top: 10, left: 20, right: 20, bottom: 10),
+          child: TopChild(_scrollController, _tabData[i] as Map),
+        );
+      }),
     );
   }
 }
@@ -186,6 +271,14 @@ class TopChild extends StatefulWidget {
 }
 
 class _TopChildState extends State<TopChild> {
+  // List data state management
+  List _listData = [];
+  bool _isListLoading = true;
+  bool _hasListError = false;
+  String _listErrorMessage = '';
+  bool _hasMore = true;
+  int _currentPage = 1;
+
   @override
   void initState() {
     initData();
@@ -198,54 +291,169 @@ class _TopChildState extends State<TopChild> {
   }
 
   ///列表数据
-  var listDm = DataModel();
   Future<int> getListData({int page = 1, bool isRef = false}) async {
-    Map param = widget.data['_attr']['auto_form'];
-    List list = widget.data['_attr']['goodsList'];
-    List<String> ids = list.map((e) => e['id'].toString()).toList();
-    param['item'] = Global.listToString(ids);
-    var res = await BService.kuCustomList(param).catchError((v) {
-      listDm.toError('网络异常');
-    });
-    if (res != null) {
-      listDm.addList(res, isRef, 0);
+    if (isRef) {
+      setState(() {
+        _isListLoading = true;
+        _hasListError = false;
+        _currentPage = 1;
+      });
     }
-    setState(() {});
-    return listDm.flag;
+
+    try {
+      Map param = widget.data['_attr']['auto_form'];
+      List list = widget.data['_attr']['goodsList'];
+      List<String> ids = list.map((e) => e['id'].toString()).toList();
+      param['item'] = Global.listToString(ids);
+      
+      var res = await BService.kuCustomList(param);
+       if (res.isNotEmpty) {
+         setState(() {
+           if (isRef) {
+             _listData = res;
+           } else {
+             _listData.addAll(res);
+           }
+           _isListLoading = false;
+           _hasListError = false;
+           _hasMore = res.length >= 20; // 假设每页20条数据
+           if (!isRef) {
+             _currentPage++;
+           }
+         });
+         return 1;
+       } else {
+        setState(() {
+          _isListLoading = false;
+          _hasListError = true;
+          _listErrorMessage = '数据加载失败';
+        });
+        return 0;
+      }
+    } catch (e) {
+      setState(() {
+        _isListLoading = false;
+        _hasListError = true;
+        _listErrorMessage = '网络异常';
+      });
+      return 0;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitchBuilder(
-      value: listDm,
-      initialState: buildLoad(color: Color(0xff9cc8c)),
-      errorOnTap: () => this.getListData(isRef: true),
-      listBuilder: (list, p, h) {
-        return MyListView(
-          isShuaxin: true,
-          isGengduo: h,
-          controller: widget.scrollController,
-          header: buildClassicHeader(color: Colors.white),
-          footer: buildCustomFooter(color: Colors.grey),
-          onRefresh: () => this.getListData(isRef: true),
-          onLoading: () => this.getListData(page: p),
-          itemCount: list.length,
-          listViewType: ListViewType.Separated,
-          item: (i) {
-            var data = list[i] as Map;
-            // return createItem(data);
-            return PWidget.column(
-              [
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(15), //设置圆角
-                    child: Global.openFadeContainer(
-                        createItem(data), ProductDetails(data))),
-                PWidget.boxh(15)
-              ],
-            );
-          },
-        );
-      },
+    if (_isListLoading && _listData.isEmpty) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xff9cc8c)),
+        ),
+      );
+    }
+
+    if (_hasListError && _listData.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.grey,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _listErrorMessage,
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => getListData(isRef: true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFF6B35),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_listData.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.inbox_outlined,
+              size: 64,
+              color: Colors.grey,
+            ),
+            SizedBox(height: 16),
+            Text(
+              '暂无商品',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => getListData(isRef: true),
+      child: ListView.separated(
+        controller: widget.scrollController,
+        itemCount: _listData.length + (_hasMore ? 1 : 0),
+        separatorBuilder: (context, index) => const SizedBox(height: 15),
+        itemBuilder: (context, index) {
+          if (index == _listData.length) {
+            // 加载更多指示器
+            if (_hasMore) {
+              // 自动加载更多
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!_isListLoading) {
+                  getListData(page: _currentPage);
+                }
+              });
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                  ),
+                ),
+              );
+            } else {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    '没有更多数据了',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              );
+            }
+          }
+
+          var data = _listData[index] as Map;
+          return ClipRRect(
+             borderRadius: BorderRadius.circular(15),
+             child: GestureDetector(
+               onTap: () {
+                 Global.openFadeContainer(createItem(data), ProductDetails(data));
+               },
+               child: createItem(data),
+             ),
+           );
+        },
+      ),
     );
   }
 
@@ -256,57 +464,113 @@ class _TopChildState extends State<TopChild> {
     var priceD = double.parse(price);
     List<Widget> labels = getLabel(data);
 
-    return PWidget.container(
-      PWidget.row(
-        [
-          PWidget.wrapperImage(data['itempic'], [114, 114], {'br': 8}),
-          PWidget.boxw(8),
-          PWidget.column([
-            PWidget.text(data['itemshorttitle'],
-                [Colors.black.withOpacity(0.75), 14], {'exp': true}),
-            PWidget.boxh(8),
-            ClipRRect(
-                borderRadius: BorderRadius.circular(12), //设置圆角
-                child: PWidget.container(
-                  PWidget.row([
-                    PWidget.image('assets/images/mall/mini.png', [12, 12]),
-                    PWidget.boxw(4),
-                    PWidget.text('', [], {}, [
-                      PWidget.textIs(
-                          '${data['shopname']}', [Color(0xfffd4040), 12]),
-                    ])
-                  ]),
-                  [double.infinity, 32, Colours.bg_light],
-                  {'pd': PFun.lg(0, 0, 8, 8), 'ali': PFun.lg(-1, 0)},
-                )),
-            PWidget.boxh(8),
-            PWidget.row(labels),
-            PWidget.spacer(),
-            Stack(alignment: Alignment.centerRight, children: [
-              PWidget.container(
-                PWidget.text('', [], {}, [
-                  PWidget.textIs('¥$endPriceD', [Color(0xFFFD471F), 18, true]),
-                  PWidget.textIs('¥$priceD', [Colors.black45, 12],
-                      {'td': TextDecoration.lineThrough}),
-                ]),
-                {
-                  'pd': PFun.lg(0, 0, 8, 8),
-                  'mg': PFun.lg(0, 0, 0, 15),
-                  'ali': PFun.lg(-1, 0)
-                },
-              ),
-            ]),
-          ], {
-            'exp': 1,
-          }),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: Colors.white,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              data['itempic'],
+              width: 114,
+              height: 114,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 114,
+                  height: 114,
+                  color: Colors.grey[200],
+                  child: const Icon(
+                    Icons.image_not_supported,
+                    color: Colors.grey,
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data['itemshorttitle'],
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 14,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: double.infinity,
+                    height: 32,
+                    color: const Color(0xFFF5F5F5),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/mall/mini.png',
+                          width: 12,
+                          height: 12,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            data['shopname'],
+                            style: const TextStyle(
+                              color: Color(0xfffd4040),
+                              fontSize: 12,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 2,
+                  children: labels,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '¥$endPriceD',
+                            style: const TextStyle(
+                              color: Color(0xFFFD471F),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: ' ¥$priceD',
+                            style: const TextStyle(
+                              color: Colors.black45,
+                              fontSize: 12,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ],
-        '001',
-        {'fill': true},
       ),
-      [null, null, Colors.white],
-      {
-        'pd': 12,
-      },
     );
   }
 
@@ -318,17 +582,16 @@ class _TopChildState extends State<TopChild> {
       if (newLabel.isNotEmpty) {
         for (int i = 0; i < newLabel.length; i++) {
           Map newL = newLabel[i];
-          if(Global.isEmpty(newL['name'].trim())) {
+          if (Global.isEmpty(newL['name'].trim())) {
             continue;
           }
           labels.add(getLabelElement(newL['name']));
-          labels.add(PWidget.boxw(2));
           length += newL['name'].length;
           if (length >= 8) {
             break;
           }
         }
-        if(labels.isEmpty) {
+        if (labels.isEmpty) {
           initOldLabel(data, labels, length);
         }
       }
@@ -343,7 +606,6 @@ class _TopChildState extends State<TopChild> {
     for (int i = 0; i < labelsStr.length; i++) {
       String lbl = labelsStr[i];
       labels.add(getLabelElement(lbl));
-      labels.add(PWidget.boxw(2));
       length += lbl.length;
       if (length >= 9) {
         break;
@@ -352,17 +614,22 @@ class _TopChildState extends State<TopChild> {
   }
 
   Widget getLabelElement(String label, {exp = false}) {
-    return PWidget.container(
-      PWidget.text(
-        label,
-        [Color(0xfff3a731), 12],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color(0xFFFFCA7E),
+          width: 0.5,
+        ),
+        borderRadius: BorderRadius.circular(4),
       ),
-      {
-        'bd': PFun.bdAllLg(Color(0xFFFFCA7E), 0.5),
-        'pd': PFun.lg(1, 1, 4, 4),
-        'br': PFun.lg(4, 0, 4, 0),
-        'exp': exp
-      },
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Color(0xfff3a731),
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_alibc/flutter_alibc.dart';
+import 'package:flutter_base/utils/logger_util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluwx/fluwx.dart';
@@ -271,7 +272,7 @@ class _FirstPageState extends ConsumerState<FirstPage> {
       // if (searchDm.list.isNotEmpty) EveryoneWidget(searchDm),
 
       ///卡片
-      if (cardDm.list.isNotEmpty) CardWidget(cardDm),
+      if (cardDm.value.isNotEmpty) CardWidget(cardDm),
 
       //品牌特卖
       if (brandListDm.list.isNotEmpty) BrandWidget(brandListDm),
