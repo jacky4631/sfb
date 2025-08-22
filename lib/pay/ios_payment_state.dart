@@ -10,13 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 import 'package:in_app_purchase_storekit/store_kit_wrappers.dart';
-import 'package:maixs_utils/util/utils.dart';
 import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/service.dart';
 
 import 'consumable_store.dart';
-
 
 // Auto-consume must be true on iOS.
 // To try without auto-consume on another platform, change `true` to `false` here.
@@ -36,15 +34,15 @@ class IOSPaymentState extends State {
 
   @override
   void initState() {
-    if(Global.isIOS()) {
+    if (Global.isIOS()) {
       final Stream<List<PurchaseDetails>> purchaseUpdated = _inAppPurchase.purchaseStream;
       _subscription = purchaseUpdated.listen((List<PurchaseDetails> purchaseDetailsList) {
-            _listenToPurchaseUpdated(purchaseDetailsList);
-          }, onDone: () {
-            _subscription.cancel();
-          }, onError: (Object error) {
-            // handle error here.
-          });
+        _listenToPurchaseUpdated(purchaseDetailsList);
+      }, onDone: () {
+        _subscription.cancel();
+      }, onError: (Object error) {
+        // handle error here.
+      });
 
       initStoreInfo(Global.iosProductIds);
     }
@@ -72,7 +70,8 @@ class IOSPaymentState extends State {
       transactions.forEach((skPaymentTransactionWrapper) {
         SKPaymentQueueWrapper().finishTransaction(skPaymentTransactionWrapper);
       });
-      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition = _inAppPurchase.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+      final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
+          _inAppPurchase.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await iosPlatformAddition.setDelegate(ExamplePaymentQueueDelegate());
     }
     // 加载待售产品
@@ -120,8 +119,7 @@ class IOSPaymentState extends State {
   void dispose() {
     if (Platform.isIOS) {
       final InAppPurchaseStoreKitPlatformAddition iosPlatformAddition =
-      _inAppPurchase
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+          _inAppPurchase.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       iosPlatformAddition.setDelegate(null);
       _subscription.cancel();
     }
@@ -179,11 +177,8 @@ class IOSPaymentState extends State {
     }
     final Widget storeHeader = ListTile(
       leading: Icon(_isAvailable ? Icons.check : Icons.block,
-          color: _isAvailable
-              ? Colors.green
-              : ThemeData.light().colorScheme.error),
-      title:
-      Text('The store is ${_isAvailable ? 'available' : 'unavailable'}.'),
+          color: _isAvailable ? Colors.green : ThemeData.light().colorScheme.error),
+      title: Text('The store is ${_isAvailable ? 'available' : 'unavailable'}.'),
     );
     final List<Widget> children = <Widget>[storeHeader];
 
@@ -191,8 +186,7 @@ class IOSPaymentState extends State {
       children.addAll(<Widget>[
         const Divider(),
         ListTile(
-          title: Text('Not connected',
-              style: TextStyle(color: ThemeData.light().colorScheme.error)),
+          title: Text('Not connected', style: TextStyle(color: ThemeData.light().colorScheme.error)),
           subtitle: const Text(
               'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.'),
         ),
@@ -203,10 +197,7 @@ class IOSPaymentState extends State {
 
   Card _buildProductList() {
     if (_loading) {
-      return const Card(
-          child: ListTile(
-              leading: CircularProgressIndicator(),
-              title: Text('Fetching products...')));
+      return const Card(child: ListTile(leading: CircularProgressIndicator(), title: Text('Fetching products...')));
     }
     if (!_isAvailable) {
       return const Card();
@@ -224,15 +215,15 @@ class IOSPaymentState extends State {
     // This loading previous purchases code is just a demo. Please do not use this as it is.
     // In your app you should always verify the purchase data using the `verificationData` inside the [PurchaseDetails] object before trusting it.
     // We recommend that you use your own server to verify the purchase data.
-    final Map<String, PurchaseDetails> purchases = Map<String, PurchaseDetails>.fromEntries(
-        _purchases.map((PurchaseDetails purchase) {
-          if (purchase.pendingCompletePurchase) {
-            _inAppPurchase.completePurchase(purchase);
-          }
-          return MapEntry<String, PurchaseDetails>(purchase.productID, purchase);
-        }));
+    final Map<String, PurchaseDetails> purchases =
+        Map<String, PurchaseDetails>.fromEntries(_purchases.map((PurchaseDetails purchase) {
+      if (purchase.pendingCompletePurchase) {
+        _inAppPurchase.completePurchase(purchase);
+      }
+      return MapEntry<String, PurchaseDetails>(purchase.productID, purchase);
+    }));
     productList.addAll(products.map(
-          (ProductDetails productDetails) {
+      (ProductDetails productDetails) {
         final PurchaseDetails? previousPurchase = purchases[productDetails.id];
         return ListTile(
           title: Text(
@@ -242,54 +233,40 @@ class IOSPaymentState extends State {
             productDetails.description,
           ),
           trailing: previousPurchase != null
-              ? IconButton(
-              onPressed: () => confirmPriceChange(context),
-              icon: const Icon(Icons.upgrade))
+              ? IconButton(onPressed: () => confirmPriceChange(context), icon: const Icon(Icons.upgrade))
               : TextButton(
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white, backgroundColor: Colors.green[800],
-            ),
-            onPressed: () {
-              //todo 调用接口预创建订单 返回orderId
-              payIOS('222', productDetails).catchError((err) {
-                ToastUtils.showToast('当前商品您有未完成的交易，请等待iOS系统核验后再次发起购买。');
-              });
-            },
-            child: Text(productDetails.price),
-          ),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green[800],
+                  ),
+                  onPressed: () {
+                    //todo 调用接口预创建订单 返回orderId
+                    payIOS('222', productDetails).catchError((err) {
+                      ToastUtils.showToast('当前商品您有未完成的交易，请等待iOS系统核验后再次发起购买。');
+                    });
+                  },
+                  child: Text(productDetails.price),
+                ),
         );
       },
     ));
 
-    return Card(
-        child: Column(
-            children: <Widget>[productHeader, const Divider()] + productList));
+    return Card(child: Column(children: <Widget>[productHeader, const Divider()] + productList));
   }
 
-  Future payIOS(String orderId, ProductDetails productDetails) async{
-
-    PurchaseParam purchaseParam = PurchaseParam(
-        productDetails: productDetails,
-        applicationUserName : orderId
-    );
-      _inAppPurchase.buyConsumable(
-          purchaseParam: purchaseParam,
-          autoConsume: _kAutoConsume);
-
+  Future payIOS(String orderId, ProductDetails productDetails) async {
+    PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails, applicationUserName: orderId);
+    _inAppPurchase.buyConsumable(purchaseParam: purchaseParam, autoConsume: _kAutoConsume);
   }
 
   Card _buildConsumableBox() {
     if (_loading) {
-      return const Card(
-          child: ListTile(
-              leading: CircularProgressIndicator(),
-              title: Text('Fetching consumables...')));
+      return const Card(child: ListTile(leading: CircularProgressIndicator(), title: Text('Fetching consumables...')));
     }
     if (!_isAvailable) {
       return const Card();
     }
-    const ListTile consumableHeader =
-    ListTile(title: Text('Purchased consumables'));
+    const ListTile consumableHeader = ListTile(title: Text('Purchased consumables'));
     final List<Widget> tokens = _consumables.map((String id) {
       return GridTile(
         child: IconButton(
@@ -305,15 +282,15 @@ class IOSPaymentState extends State {
     }).toList();
     return Card(
         child: Column(children: <Widget>[
-          consumableHeader,
-          const Divider(),
-          GridView.count(
-            crossAxisCount: 5,
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(16.0),
-            children: tokens,
-          )
-        ]));
+      consumableHeader,
+      const Divider(),
+      GridView.count(
+        crossAxisCount: 5,
+        shrinkWrap: true,
+        padding: const EdgeInsets.all(16.0),
+        children: tokens,
+      )
+    ]));
   }
 
   Widget _buildRestoreButton() {
@@ -328,7 +305,8 @@ class IOSPaymentState extends State {
         children: <Widget>[
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: Colors.white, backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.white,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
             onPressed: () => _inAppPurchase.restorePurchases(),
             child: const Text('Restore purchases'),
@@ -388,8 +366,7 @@ class IOSPaymentState extends State {
     });
   }
 
-  Future<void> _listenToPurchaseUpdated(
-      List<PurchaseDetails> purchaseDetailsList) async {
+  Future<void> _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) async {
     for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
       if (purchaseDetails.status == PurchaseStatus.pending) {
         //开始支付 调用接口保存订单信息
@@ -406,7 +383,6 @@ class IOSPaymentState extends State {
             // return;
           }
         } else if (purchaseDetails.status == PurchaseStatus.restored) {
-
         } else if (purchaseDetails.status == PurchaseStatus.canceled) {
           setState(() {
             purchasePending = false;
@@ -422,8 +398,7 @@ class IOSPaymentState extends State {
   Future<void> confirmPriceChange(BuildContext context) async {
     if (Platform.isIOS) {
       final InAppPurchaseStoreKitPlatformAddition iapStoreKitPlatformAddition =
-      _inAppPurchase
-          .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+          _inAppPurchase.getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
       await iapStoreKitPlatformAddition.showPriceConsentIfNeeded();
     }
   }
@@ -436,8 +411,7 @@ class IOSPaymentState extends State {
 /// needed to complete transactions.
 class ExamplePaymentQueueDelegate implements SKPaymentQueueDelegateWrapper {
   @override
-  bool shouldContinueTransaction(
-      SKPaymentTransactionWrapper transaction, SKStorefrontWrapper storefront) {
+  bool shouldContinueTransaction(SKPaymentTransactionWrapper transaction, SKStorefrontWrapper storefront) {
     return true;
   }
 

@@ -3,18 +3,12 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/tao/tb_index_first_page.dart';
 import 'package:sufenbao/tao/tb_index_other_page.dart';
 import 'package:sufenbao/widget/tab_widget.dart';
 
 import '../util/colors.dart';
-import '../util/paixs_fun.dart';
 
 class TbIndexPage extends StatefulWidget {
   @override
@@ -22,8 +16,14 @@ class TbIndexPage extends StatefulWidget {
 }
 
 class _TbIndexPageState extends State<TbIndexPage> {
-
   FocusNode _searchFocus = FocusNode();
+  
+  // 状态管理
+  List<Map<String, dynamic>> _tabList = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+  String _errorMessage = '';
+
   @override
   void initState() {
     initData();
@@ -35,20 +35,27 @@ class _TbIndexPageState extends State<TbIndexPage> {
     await getTabData();
   }
 
-  ///tab数据
-  var tabDm = DataModel();
-
-  Future<int> getTabData() async {
-    var res = await BService.goodsCategory().catchError((v) {
-      tabDm.toError('网络异常');
-    });
-    if (res != null) {
-      tabDm.addList(res, true, 0);
-      tabDm.list.insert(
+  Future<void> getTabData() async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _hasError = false;
+      });
+      
+      var res = await BService.goodsCategory();
+      _tabList = List<Map<String, dynamic>>.from(res);
+      _tabList.insert(
           0, {"cid": 0, "cname": "精选", "cpic": "", "subcategories": []});
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+        _errorMessage = '网络异常';
+      });
     }
-    setState(() {});
-    return tabDm.flag;
   }
 
   @override
@@ -57,60 +64,143 @@ class _TbIndexPageState extends State<TbIndexPage> {
   }
 
   _page() {
-    return ScaffoldWidget(
-        body: Stack(children: [
-      PWidget.container(null, [double.infinity, double.infinity],
-          {'gd': PFun.tbGd(Colours.pdd_main, Colors.white)}),
-      ScaffoldWidget(
-        // appBar: buildTitle(context, title: APP_NAME),
-        // bottomSheet: BottomNav(0),
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          title: PWidget.row([
-            buildTextField2(
-                keyboardType: TextInputType.none,
-                focusNode: _searchFocus,
-                hint: '搜索商品或粘贴宝贝标题',
-                bgColor: Colors.white,
-                height: 36,
-
-                onTap: () => {
-                  navigatorToSearchPage()
-                })
-          ]),
-        ),
-        bgColor: Colors.transparent,
-        brightness: Brightness.light,
-        body: PWidget.container(
-          AnimatedSwitchBuilder(
-            value: tabDm,
-            errorOnTap: () => this.getTabData(),
-            // initialState: buildLoad(color: Colors.grey),
-            initialState: PWidget.container(null, [double.infinity]),
-            listBuilder: (list, _, __) {
-              var tabList = list.map<String>((m) => (m! as Map)['cname']).toList();
-              return TabWidget(
-                tabList: tabList,
-                color: Colors.black,
-                indicatorColor: Colours.pdd_main,
-                fontSize: 14,
-                indicatorWeight: 2,
-                tabPage: List.generate(tabList.length, (i) {
-                  return i == 0 ? TbIndexFirstPage() : TbIndexOtherPage(list[i] as Map);
-                }),
-              );
-            },
+    return Scaffold(
+      body: Stack(
+        children: [
+          // 背景渐变
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colours.pdd_main, Colors.white],
+              ),
+            ),
           ),
-          [null, null, Color(0xffF6F6F6)],
-          {'crr': PFun.lg(16, 16)},
-        ),
-      )
-    ]));
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              title: Row(
+                children: [
+                  Expanded(
+                    child: _buildSearchField(),
+                  ),
+                ],
+              ),
+            ),
+            body: Container(
+              decoration: BoxDecoration(
+                color: Color(0xffF6F6F6),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+              child: _buildBody(),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
-  navigatorToSearchPage(){
+  Widget _buildSearchField() {
+    return GestureDetector(
+      onTap: () => navigatorToSearchPage(),
+      child: Container(
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          children: [
+            SizedBox(width: 16),
+            Icon(
+              Icons.search,
+              color: Colors.grey,
+              size: 20,
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '搜索商品或粘贴宝贝标题',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            SizedBox(width: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (_isLoading) {
+      return Container(
+        width: double.infinity,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    
+    if (_hasError) {
+      return Container(
+        width: double.infinity,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.grey),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => getTabData(),
+                child: Text('重试'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
+    if (_tabList.isEmpty) {
+      return Container(
+        width: double.infinity,
+        child: Center(
+          child: Text(
+            '暂无数据',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
+    var tabNames = _tabList.map<String>((m) => m['cname']).toList();
+    return TabWidget(
+      tabList: tabNames,
+      color: Colors.black,
+      indicatorColor: Colours.pdd_main,
+      fontSize: 14,
+      indicatorWeight: 2,
+      tabPage: List.generate(tabNames.length, (i) {
+        return i == 0 ? TbIndexFirstPage() : TbIndexOtherPage(_tabList[i]);
+      }),
+    );
+  }
+
+  navigatorToSearchPage() {
     _searchFocus.unfocus();
     Navigator.pushNamed(context, '/search', arguments: {'showArrowBack': true});
   }

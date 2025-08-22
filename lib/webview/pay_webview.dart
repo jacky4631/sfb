@@ -4,9 +4,6 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/global.dart';
 
@@ -41,7 +38,7 @@ class _PayWebViewState extends State<PayWebView> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     pullToRefreshController = PullToRefreshController(
-      options: PullToRefreshOptions(
+      settings: PullToRefreshSettings(
         color: Colours.app_main,
       ),
       onRefresh: () async {
@@ -91,8 +88,7 @@ class _PayWebViewState extends State<PayWebView> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     bool refresh = widget.data['refresh'] == null || widget.data['refresh'];
-    return ScaffoldWidget(
-        brightness: Brightness.dark,
+    return Scaffold(
         appBar: widget.data['appBar'] ??
             AppBar(
               title: Text(widget.data['title']),
@@ -100,28 +96,30 @@ class _PayWebViewState extends State<PayWebView> with WidgetsBindingObserver {
                   ? widget.data['color']
                   : Colours.app_main,
             ),
-        body: PWidget.container(PWidget.column(
-              [
-                Expanded(
-                  child: Stack(
-                    children: [
-                      createWebview(refresh),
-                      progress < 1.0
-                          ? LinearProgressIndicator(
-                              value: progress,
-                              backgroundColor: Colors.blue,
-                              minHeight: 1,
-                            )
-                          : SizedBox(),
-                      // loading ? Global.showLoading2() : SizedBox()
-                    ],
-                  ),
+        body: Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).padding.bottom,
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    createWebview(refresh),
+                    progress < 1.0
+                        ? LinearProgressIndicator(
+                            value: progress,
+                            backgroundColor: Colors.blue,
+                            minHeight: 1,
+                          )
+                        : SizedBox(),
+                    // loading ? Global.showLoading2() : SizedBox()
+                  ],
                 ),
-              ],
-            ),
-            {
-              'pd': [0, MediaQuery.of(context).padding.bottom, 0, 0],
-            }));
+              ),
+            ],
+          ),
+        ));
   }
 
   Widget createWebview(refresh) {
@@ -144,10 +142,10 @@ class _PayWebViewState extends State<PayWebView> with WidgetsBindingObserver {
           this.url = url.toString();
         });
       },
-      androidOnPermissionRequest: (controller, origin, resources) async {
-        return PermissionRequestResponse(
-            resources: resources,
-            action: PermissionRequestResponseAction.GRANT);
+      onPermissionRequest: (controller, request) async {
+        return PermissionResponse(
+            resources: request.resources,
+            action: PermissionResponseAction.GRANT);
       },
       shouldOverrideUrlLoading: (controller, navigationAction) async {
         return NavigationActionPolicy.ALLOW;
@@ -159,7 +157,7 @@ class _PayWebViewState extends State<PayWebView> with WidgetsBindingObserver {
           loading = false;
         });
       },
-      onLoadError: (controller, url, code, message) {
+      onReceivedError: (controller, request, error) {
         pullToRefreshController.endRefreshing();
         setState(() {
           loading = false;

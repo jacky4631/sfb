@@ -2,13 +2,11 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/flutter_base.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:sufenbao/search/provider.dart';
 
 import '../service.dart';
 import '../util/custom.dart';
 import '../util/global.dart';
-import '../util/paixs_fun.dart';
 import '../widget/CustomWidgetPage.dart';
 import 'model/search_param.dart';
 
@@ -38,15 +36,24 @@ class _ListWidgetPageState extends ConsumerState<ListWidgetPage> {
                   padding: EdgeInsets.only(top: 0),
                   itemBuilder: (BuildContext c, int i) {
                     final v = data[i];
-                    return PWidget.container(
-                      Global.openFadeContainer(createItem(v, i), searchParam.jump2Detail(context, widget.tabIndex, v)),
-                      [null, null, Colors.white],
-                      {
-                        'sd': PFun.sdLg(Colors.black12),
-                        'br': 8,
-                        'mg': PFun.lg(0, 6),
-                        'crr': [5, 5, 5, 5]
-                      },
+                    return Container(
+                      margin: EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Global.openFadeContainer(
+                            createItem(v, i), searchParam.jump2Detail(context, widget.tabIndex, v)),
+                      ),
                     );
                   },
                   itemCount: data.length,
@@ -55,8 +62,6 @@ class _ListWidgetPageState extends ConsumerState<ListWidgetPage> {
             loading: () => LoadingState());
       },
     );
-
-    ;
   }
 
   Widget createItem(v, i) {
@@ -122,49 +127,84 @@ class _ListWidgetPageState extends ConsumerState<ListWidgetPage> {
       shopName = data['storeInfo']['storeName'];
       platform = VIP;
     }
-    return PWidget.container(
-        PWidget.row(
-          [
-            PWidget.wrapperImage(img, [124, 124], {'br': 8}),
-            PWidget.boxw(8),
-            PWidget.column([
-              PWidget.row([
-                getTitleWidget(title, max: 2),
-                // PWidget.text('${data['title']}', {'max': 2, 'exp': true}),
-              ], [
-                '0',
-                '1',
-                '1'
-              ]),
-              PWidget.boxh(8),
-              PWidget.row(
-                [
-                  getPriceWidget(endPrice, startPrice),
-                ],
-              ),
-              PWidget.boxh(8),
-              getMoneyWidget(context, fee, platform),
-              PWidget.spacer(),
-              PWidget.row([
-                jdOwner == 'g'
-                    ? PWidget.container(
-                        PWidget.text('自营', [Colors.white, 9]),
-                        [null, null, Colors.red],
-                        {'bd': PFun.bdAllLg(Colors.red, 0.5), 'pd': PFun.lg(1, 1, 4, 4), 'br': PFun.lg(4, 4, 4, 4)},
-                      )
-                    : SizedBox(),
-                jdOwner == 'g' ? PWidget.boxw(4) : SizedBox(),
-                PWidget.text(shopName, [Colors.black54, 12], {'exp': true}),
-                widget.tabIndex == 4 ? SizedBox() : PWidget.text('已售$sale', [Colors.black54, 12]),
-              ])
-            ], {
-              'exp': 1,
-            }),
-          ],
-          '001',
-          {'fill': true},
-        ),
-        [null, null, Colors.white],
-        {'pd': 8});
+    Log.e(data);
+    return Container(
+      padding: EdgeInsets.all(8),
+      color: Colors.white,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              img,
+              width: 124,
+              height: 124,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: 124,
+                  height: 124,
+                  color: Colors.grey[200],
+                  child: Icon(Icons.image_not_supported, color: Colors.grey),
+                );
+              },
+            ),
+          ),
+          SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(child: getTitleWidget(title, max: 2)),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    getPriceWidget(endPrice, startPrice),
+                  ],
+                ),
+                SizedBox(height: 8),
+                getMoneyWidget(context, fee, platform),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    if (jdOwner == 'g')
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          border: Border.all(color: Colors.red, width: 0.5),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          '自营',
+                          style: TextStyle(color: Colors.white, fontSize: 9),
+                        ),
+                      ),
+                    if (jdOwner == 'g') SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        shopName,
+                        style: TextStyle(color: Colors.black54, fontSize: 12),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (widget.tabIndex != 4)
+                      Text(
+                        '已售$sale',
+                        style: TextStyle(color: Colors.black54, fontSize: 12),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

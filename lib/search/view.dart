@@ -4,43 +4,40 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:maixs_utils/widget/widget_tap.dart';
 
 ///构建文本框
-Widget buildTFView(
-  BuildContext context, {
-  bool isExp = false,
-  TextInputType keyboardType = TextInputType.text,
-  bool obscureText = false,
-  required String hintText,
-  void Function(String)? onChanged,
-  void Function()?  onTap,
-  void Function(String)? onSubmitted,
-  TextStyle? textStyle,
-  TextStyle? hintStyle,
-  FocusNode? focusNode,
-  TextInputAction? textInputAction,
-  double hintSize = 14,
-  Color? hintColor,
-  double textSize = 14,
-  Color? textColor,
-  EdgeInsetsGeometry? padding,
-  TextEditingController? con,
-  TextAlign? textAlign,
-  bool isInt = false,
-  bool isDouble = false,
-  bool isAz = false,
-  bool isEdit = true,
-  bool autofocus = false,
-  int maxLines = 1,
-  double height = 20,
-  int? maxLength,
-  int doubleCount = 10000,
-      bool readOnly = false
-}) {
+Widget buildTFView(BuildContext context,
+    {bool isExp = false,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
+    required String hintText,
+    void Function(String)? onChanged,
+    void Function()? onTap,
+    void Function(String)? onSubmitted,
+    TextStyle? textStyle,
+    TextStyle? hintStyle,
+    FocusNode? focusNode,
+    TextInputAction? textInputAction,
+    double hintSize = 14,
+    Color? hintColor,
+    double textSize = 14,
+    Color? textColor,
+    EdgeInsetsGeometry? padding,
+    TextEditingController? con,
+    TextAlign? textAlign,
+    bool isInt = false,
+    bool isDouble = false,
+    bool isAz = false,
+    bool isEdit = true,
+    bool autofocus = false,
+    int maxLines = 1,
+    double height = 20,
+    int? maxLength,
+    int doubleCount = 10000,
+    bool readOnly = false}) {
   return [
     Expanded(
-      child: WidgetTap(
+      child: InkWell(
         onTap: onTap,
         child: Container(
           padding: padding ?? EdgeInsets.zero,
@@ -82,7 +79,7 @@ Widget buildTFView(
         ),
       ),
     ),
-    WidgetTap(
+    InkWell(
       onTap: onTap,
       child: Container(
         padding: padding ?? EdgeInsets.zero,
@@ -130,7 +127,6 @@ Widget buildTFView(
     )
   ][isExp ? 0 : 1];
 }
-
 
 class PrecisionLimitFormatter extends TextInputFormatter {
   int _scale;

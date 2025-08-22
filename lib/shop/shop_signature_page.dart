@@ -7,15 +7,10 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:signature/signature.dart';
-import 'dart:typed_data';
 
 import '../service.dart';
 import '../util/global.dart';
-import '../util/paixs_fun.dart';
 import '../util/toast_utils.dart';
 import '../widget/loading.dart';
 
@@ -91,12 +86,18 @@ class _HomeState extends State<ShopSignaturePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      appBar: buildTitle(context,
-          title: '签字',
-          height: Global.isAndroid()? 28 : 56,
-          widgetColor: Colors.black,
-          leftIcon: Icon(Icons.arrow_back_ios)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('签字', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        toolbarHeight: Global.isAndroid() ? 28 : 56,
+      ),
       body: ListView(
         children: <Widget>[
           //SIGNATURE CANVAS
@@ -104,68 +105,72 @@ class _HomeState extends State<ShopSignaturePage> {
             key: const Key('signature'),
             controller: _controller,
             height: 1024,
-            backgroundColor: Colors.white!,
+            backgroundColor: Colors.white,
           ),
           //OK AND CLEAR BUTTONS
         ],
       ),
       bottomSheet: BottomAppBar(
-        child: PWidget.container(
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                //SHOW EXPORTED IMAGE IN NEW ROUTE
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: PWidget.container(
-                      Text(
-                        '取消',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      {
-                        'bd': PFun.bdAllLg(Colors.black, 0.5),
-                        'pd': [8, 8, 12, 12],
-                        'br': 8
-                      },
-                    )),
-                TextButton(
-                    onPressed: () {
-                      setState(() => _controller.clear());
-                    },
-                    child: PWidget.container(
-                      Text(
-                        '重写',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      {
-                        'bd': PFun.bdAllLg(Colors.black, 0.5),
-                        'pd': [8, 8, 12, 12],
-                        'br': 8
-                      },
-                    )),
-                TextButton(
-                    onPressed: () {
-                      exportImage(context);
-                    },
-                    child: PWidget.container(
-                      Text(
-                        '确认',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      {
-                        'bd': PFun.bdAllLg(Colors.black, 0.5),
-                        'pd': [8, 8, 12, 12],
-                        'br': 8
-                      },
-                    )),
-              ],
-            ),
-            {
-              'pd': [0, MediaQuery.of(context).padding.bottom + 4, 0, 0]
-            }),
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 0,
+            bottom: MediaQuery.of(context).padding.bottom + 4,
+            left: 0,
+            right: 0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              //SHOW EXPORTED IMAGE IN NEW ROUTE
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      '取消',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )),
+              TextButton(
+                  onPressed: () {
+                    setState(() => _controller.clear());
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      '重写',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )),
+              TextButton(
+                  onPressed: () {
+                    exportImage(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Text(
+                      '确认',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )),
+            ],
+          ),
+        ),
       ),
     );
   }

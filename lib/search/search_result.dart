@@ -6,12 +6,10 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
 
 import 'package:sufenbao/search/model/search_param.dart';
 import 'package:sufenbao/search/provider.dart';
 
-import '../util/paixs_fun.dart';
 import '../widget/tabIndicator.dart';
 import 'list.dart';
 
@@ -71,18 +69,46 @@ class _SearchResultPageState extends ConsumerState<SearchResultPage> with Ticker
                 .asMap()
                 .entries
                 .map(
-                  (e) => PWidget.container(
-                    PWidget.row([
-                      PWidget.container(PWidget.image(e.value['img'], [14, 14]), {'crr': 14}),
-                      PWidget.boxw(4),
-                      PWidget.text(
-                          e.value['name'], [tabController.index == e.key ? Colors.red : Colors.black, 12, true]),
-                    ]),
-                    {
-                      // 'mg': mg,
-                      'pd': PFun.lg(8, 8, 12, 12),
-                      'br': 56
-                    },
+                  (e) => Container(
+                    padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(56),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14),
+                            child: Image.asset(
+                              e.value['img']!,
+                              width: 14,
+                              height: 14,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 14,
+                                  height: 14,
+                                  color: Colors.grey[300],
+                                  child: Icon(Icons.image, size: 8, color: Colors.grey[600]),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          e.value['name']!,
+                          style: TextStyle(
+                            color: tabController.index == e.key ? Colors.red : Colors.black,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 )
                 .toList(),

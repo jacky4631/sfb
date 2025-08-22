@@ -9,13 +9,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ali_face_verify/flutter_ali_face_verify.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
-import 'package:maixs_utils/widget/widget_tap.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sufenbao/service.dart';
@@ -24,10 +17,12 @@ import 'package:sufenbao/util/pic_helper.dart';
 
 import '../util/colors.dart';
 import '../util/global.dart';
-import '../util/paixs_fun.dart';
 import '../util/toast_utils.dart';
 import '../widget/loading.dart';
 import '../widget/pic_bottom_sheet.dart';
+
+// Global variable for seen status
+bool Seen = false;
 
 ///首页
 class ShopAuthSecPage extends StatefulWidget {
@@ -63,8 +58,6 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
     super.dispose();
   }
 
-  var listDm = DataModel();
-
   ///初始化函数
   Future initData() async {
     Map<String, dynamic> json = await BService.userinfo(baseInfo: true);
@@ -73,12 +66,12 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
     setState(() {
       loading = false;
       _mobileController.text = json['phone'];
-      cardFPath = card['cardFPath']??'';
-      cardBPath = card['cardBPath']??'';
-      facePath = card['facePath']??'';
-      contractPath = card['contractPath']??'';
-      _cardNoController.text = card['cardNo']??'';
-      _cardNameController.text = card['cardName']??'';
+      cardFPath = card['cardFPath'] ?? '';
+      cardBPath = card['cardBPath'] ?? '';
+      facePath = card['facePath'] ?? '';
+      contractPath = card['contractPath'] ?? '';
+      _cardNoController.text = card['cardNo'] ?? '';
+      _cardNameController.text = card['cardName'] ?? '';
     });
     checkCardStatus();
     checkFaceStatus();
@@ -110,266 +103,448 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
 
   checkContractStatus() {
     setState(() {
-      if (cardComplete &&
-          faceComplete &&
-          contractPath != null &&
-          contractPath.isNotEmpty) {
+      if (cardComplete && faceComplete && contractPath != null && contractPath.isNotEmpty) {
         contractComplete = true;
       }
     });
   }
 
+  Widget buildTextField2({
+    required TextEditingController con,
+    String hint = '',
+    bool showSearch = true,
+    double height = 50,
+    Color bgColor = Colors.white,
+    TextInputType keyboardType = TextInputType.text,
+    InputBorder? border,
+  }) {
+    return Expanded(
+      child: Container(
+        height: height,
+        child: TextField(
+          controller: con,
+          keyboardType: keyboardType,
+          decoration: InputDecoration(
+            hintText: hint,
+            border: border ?? InputBorder.none,
+            filled: true,
+            fillColor: bgColor,
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-        bgColor: Color(0xffF4F5F6),
-        body: Stack(children: [
-          MyCustomScroll(
-            isGengduo: false,
-            isShuaxin: false,
-            refHeader: buildClassicHeader(color: Colors.grey),
-            refFooter: buildCustomFooter(color: Colors.grey),
-            headers: headers(context),
-            itemPadding: EdgeInsets.all(8),
-            crossAxisCount: 2,
-            crossAxisSpacing: 6,
-            itemModel: listDm,
-            itemModelBuilder: (i, v) {
-              return PWidget.boxh(1);
-            },
+    return Scaffold(
+      backgroundColor: Color(0xffF4F5F6),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate(headers(context)),
+              ),
+            ],
           ),
           btmBarView(context)
-        ]));
+        ],
+      ),
+    );
   }
 
   List<Widget> headers(context) {
     if (loading) {
       return [
-        PWidget.container(Global.showLoading2(), [null, 500])
+        Container(
+          height: 500,
+          child: Global.showLoading2(),
+        )
       ];
     }
     return [
-      PWidget.container(
-        PWidget.column([
-          PWidget.boxh(10),
-          PWidget.row([
-            PWidget.text('1.身份认证', [Colors.black, 18, true]),
-            PWidget.icon(
-                Icons.gpp_good_rounded, [cardComplete ? Colors.green : null])
-          ]),
-          PWidget.boxh(20),
-          PWidget.row([
-            Flexible(
-              flex: 5,
-              child: PWidget.column([
-                WidgetTap(
-                  child: PWidget.stack([
-                    if (cardFPath == null || cardFPath == '')
-                      PWidget.image('assets/images/mall/card1.png', [180, 120]),
-                    if (cardFPath != null && cardFPath != '')
-                      PWidget.wrapperImage(cardFPath, [180, 120]),
-                    SvgPicture.asset(
-                      'assets/svg/camera.svg',
-                      width: 32,
-                      height: 32,
-                      color: Colors.grey,
-                    ),
-                  ], [
-                    0,
-                    0
-                  ]),
-                  onTap: () {
-                    _showPicSheet(context, 1);
-                  },
+      Container(
+        margin: EdgeInsets.fromLTRB(6, 6, 6, 6),
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '1.身份认证',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                PWidget.boxh(5),
-                PWidget.text('上传身份证人像面', {'ct': true})
-              ], "221"),
-            ),
-            Flexible(
-              flex: 5,
-              child: PWidget.column([
-                WidgetTap(
-                    child: PWidget.stack([
-                      if (cardBPath == null || cardBPath == '')
-                        PWidget.image(
-                            'assets/images/mall/card2.png', [180, 120]),
-                      if (cardBPath != null && cardBPath != '')
-                        PWidget.wrapperImage(cardBPath, [180, 120]),
-                      SvgPicture.asset(
-                        'assets/svg/camera.svg',
-                        width: 32,
-                        height: 32,
-                        color: Colors.grey,
-                      ),
-                    ], [
-                      0,
-                      0
-                    ]),
-                    onTap: () {
-                      _showPicSheet(context, 2);
-                    }),
-                PWidget.boxh(5),
-                PWidget.text('上传身份证国徽面', {'ct': true})
-              ], "221"),
-            )
-          ]),
-          PWidget.boxh(20),
-          PWidget.row([
-            PWidget.text('姓名          ', [Colors.black.withOpacity(0.75), 16]),
-            buildTextField2(
-                hint: '',
-                con: _cardNameController,
-                showSearch: false,
-                height: 40,
-                bgColor: Colors.white,
-                border: new UnderlineInputBorder(
-                  // 焦点集中的时候颜色
-                  borderSide: BorderSide(
-                    color: Color(0x19000000),
-                  ),
-                ))
-          ]),
-          PWidget.boxh(10),
-          PWidget.row([
-            PWidget.text('身份证号码', [Colors.black.withOpacity(0.75), 16]),
-            buildTextField2(
-                hint: '',
-                con: _cardNoController,
-                showSearch: false,
-                height: 40,
-                bgColor: Colors.white,
-                border: new UnderlineInputBorder(
-                  // 焦点集中的时候颜色
-                  borderSide: BorderSide(
-                    color: Color(0x19000000),
-                  ),
-                ))
-          ]),
-          PWidget.boxh(10),
-          PWidget.row([
-            PWidget.text('手机号码    ', [Colors.black.withOpacity(0.75), 16]),
-            buildTextField2(
-                con: _mobileController,
-                hint: '',
-                showSearch: false,
-                bgColor: Colors.white,
-                keyboardType: TextInputType.number,
-                border: new UnderlineInputBorder(
-                  // 焦点集中的时候颜色
-                  borderSide: BorderSide(
-                    color: Color(0x19000000),
-                  ),
-                ))
-          ]),
-        ]),
-        [null, 380, Colors.white],
-        {
-          'br': 8,
-          'pd': [8, 8, 8, 8],
-          'mg': PFun.lg(6, 6, 6, 6)
-        },
-      ),
-      PWidget.container(
-        PWidget.column([
-          PWidget.boxh(10),
-          PWidget.row([
-            PWidget.text('2.签署协议', [Colors.black, 18, true]),
-            PWidget.icon(Icons.gpp_good_rounded,
-                [contractComplete||checkboxSelected ? Colors.green : null])
-          ]),
-          PWidget.boxh(20),
-          if(contractPath !=null && contractPath.isNotEmpty)
-            PWidget.row([
-              PWidget.spacer(),
-              PWidget.text('查看', [Colors.black, 14]),
-              PWidget.text('《电子协议${contractPath.substring(contractPath.lastIndexOf('/')+1, contractPath.lastIndexOf('.'))}》', [
-                Colors.blue,
-                14
-              ], {
-                'fun': () {
-                  Navigator.pushNamed(context, '/shopContractPage', arguments: {'url': contractPath,
-                    'title':contractPath.substring(contractPath.lastIndexOf('/')+1, contractPath.lastIndexOf('.'))});
-                }
-              }),
-              PWidget.spacer(),
-            ]),
-          if(contractPath == null ||contractPath.isEmpty)
-            createContractWidget(),
-          PWidget.boxh(20),
-        ]),
-        [null, null, Colors.white],
-        {
-          'br': 8,
-          'pd': [8, 8, 8, 8],
-          'mg': PFun.lg(6, 6, 6, 6)
-        },
-      ),
-      PWidget.container(
-        PWidget.column([
-          PWidget.boxh(10),
-          PWidget.row([
-            PWidget.text('3.', [Colors.black, 18, true]),
-            PWidget.image('assets/images/share/alipay.png', [18, 18]),
-            PWidget.text('人脸核验', [Colors.black, 18, true]),
-            PWidget.icon(
-                Icons.gpp_good_rounded, [faceComplete ? Colors.green : null])
-          ]),
-          PWidget.boxh(20),
-          PWidget.column(
-              [
-                SvgPicture.asset(
-                  'assets/svg/face.svg',
-                  width: 72,
-                  height: 72,
-                  color: faceComplete ? Colors.green : Colors.grey,
-                ),
-                // PWidget.image('assets/images/mall/kuang.png', [150, 100]),
-                PWidget.boxh(10),
-                PWidget.text(faceComplete ? '已核验' : '点击识别',
-                    [faceComplete ? Colors.green : Colors.black], {'ct': true}),
+                Icon(
+                  Icons.gpp_good_rounded,
+                  color: cardComplete ? Colors.green : Colors.grey,
+                )
               ],
-              "221",
-              {'fun': faceVerify}),
-          PWidget.boxh(5),
-          PWidget.textNormal('1.将眼镜摘下，卸妆后再进行人脸核验',
-              [Colors.blue, 13], {'ct': true}),
-          PWidget.textNormal('2.移动到光线充足的地方进行人脸核验',
-              [Colors.blue, 13], {'ct': true}),
-        ]),
-        [null, 340, Colors.white],
-        {
-          'br': 8,
-          'pd': [8, MediaQuery.of(context).padding.bottom + 100, 8, 8],
-          'mg': PFun.lg(6, 6, 6, 6)
-        },
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: 5,
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _showPicSheet(context, 1);
+                        },
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            if (cardFPath.isEmpty)
+                              Image.asset(
+                                'assets/images/mall/card1.png',
+                                width: 180,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
+                            if (cardFPath.isNotEmpty)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  cardFPath,
+                                  width: 180,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: 180,
+                                      height: 120,
+                                      color: Colors.grey[300],
+                                      child: Icon(Icons.error),
+                                    );
+                                  },
+                                ),
+                              ),
+                            SvgPicture.asset(
+                              'assets/svg/camera.svg',
+                              width: 32,
+                              height: 32,
+                              colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        '上传身份证人像面',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12),
+                      )
+                    ],
+                  ),
+                ),
+                Flexible(
+                  flex: 5,
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          _showPicSheet(context, 2);
+                        },
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            if (cardBPath.isEmpty)
+                              Image.asset(
+                                'assets/images/mall/card2.png',
+                                width: 180,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
+                            if (cardBPath.isNotEmpty)
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  cardBPath,
+                                  width: 180,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      width: 180,
+                                      height: 120,
+                                      color: Colors.grey[300],
+                                      child: Icon(Icons.error),
+                                    );
+                                  },
+                                ),
+                              ),
+                            SvgPicture.asset(
+                              'assets/svg/camera.svg',
+                              width: 32,
+                              height: 32,
+                              colorFilter: ColorFilter.mode(Colors.grey, BlendMode.srcIn),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        '上传身份证国徽面',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Text(
+                  '姓名          ',
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 16,
+                  ),
+                ),
+                buildTextField2(
+                  hint: '',
+                  con: _cardNameController,
+                  showSearch: false,
+                  height: 40,
+                  bgColor: Colors.white,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0x19000000),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  '身份证号码',
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 16,
+                  ),
+                ),
+                buildTextField2(
+                  hint: '',
+                  con: _cardNoController,
+                  showSearch: false,
+                  height: 40,
+                  bgColor: Colors.white,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0x19000000),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  '手机号码    ',
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 16,
+                  ),
+                ),
+                buildTextField2(
+                  con: _mobileController,
+                  hint: '',
+                  showSearch: false,
+                  bgColor: Colors.white,
+                  keyboardType: TextInputType.number,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0x19000000),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
-
+      Container(
+        margin: EdgeInsets.fromLTRB(6, 6, 6, 6),
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  '2.签署协议',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Icon(
+                  Icons.gpp_good_rounded,
+                  color: contractComplete || checkboxSelected ? Colors.green : Colors.grey,
+                )
+              ],
+            ),
+            SizedBox(height: 20),
+            if (contractPath.isNotEmpty)
+              Row(
+                children: [
+                  Spacer(),
+                  Text(
+                    '查看',
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/shopContractPage', arguments: {
+                        'url': contractPath,
+                        'title':
+                            contractPath.substring(contractPath.lastIndexOf('/') + 1, contractPath.lastIndexOf('.'))
+                      });
+                    },
+                    child: Text(
+                      '《电子协议${contractPath.substring(contractPath.lastIndexOf('/') + 1, contractPath.lastIndexOf('.'))}》',
+                      style: TextStyle(color: Colors.blue, fontSize: 14),
+                    ),
+                  ),
+                  Spacer(),
+                ],
+              ),
+            if (contractPath.isEmpty) createContractWidget(),
+            SizedBox(height: 20),
+          ],
+        ),
+      ),
+      Container(
+        margin: EdgeInsets.fromLTRB(6, 6, 6, MediaQuery.of(context).padding.bottom + 100),
+        padding: EdgeInsets.all(8),
+        height: 250,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  '3.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Image.asset(
+                  'assets/images/share/alipay.png',
+                  width: 18,
+                  height: 18,
+                ),
+                Text(
+                  '人脸核验',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Icon(
+                  Icons.gpp_good_rounded,
+                  color: faceComplete ? Colors.green : Colors.grey,
+                )
+              ],
+            ),
+            SizedBox(height: 20),
+            GestureDetector(
+              onTap: faceVerify,
+              child: Column(
+                children: [
+                  SvgPicture.asset(
+                    'assets/svg/face.svg',
+                    width: 72,
+                    height: 72,
+                    colorFilter: ColorFilter.mode(
+                      faceComplete ? Colors.green : Colors.grey,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    faceComplete ? '已核验' : '点击识别',
+                    style: TextStyle(
+                      color: faceComplete ? Colors.green : Colors.black,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 5),
+            Text(
+              '1.将眼镜摘下，卸妆后再进行人脸核验',
+              style: TextStyle(color: Colors.blue, fontSize: 13),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              '2.移动到光线充足的地方进行人脸核验',
+              style: TextStyle(color: Colors.blue, fontSize: 13),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     ];
   }
 
   ///底部操作栏
   Widget btmBarView(BuildContext context) {
     Color? bg;
-    if(cardComplete&&contractComplete&&checkboxSelected&&faceComplete){
-      bg = Colours.app_main;;
-      setState(() {
-      });
-    }else{
+    if (cardComplete && contractComplete && checkboxSelected && faceComplete) {
+      bg = Colours.app_main;
+      setState(() {});
+    } else {
       bg = Colors.grey[300];
     }
-    return PWidget.positioned(
-      SafeArea(
-          child: Column(
-        children: [
-          RawMaterialButton(
+    return Positioned(
+      bottom: 10,
+      left: 20,
+      right: 20,
+      child: SafeArea(
+        child: Column(
+          children: [
+            RawMaterialButton(
               constraints: BoxConstraints(minHeight: 44),
               fillColor: bg,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
               ),
               onPressed: () {
-                if(!cardComplete) {
+                if (!cardComplete) {
                   ToastUtils.showToast('请先完成身份认证');
                   return;
                 }
@@ -377,7 +552,7 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
                   ToastUtils.showToast('请先阅读并同意《加盟服务合同》');
                   return;
                 }
-                if(!faceComplete) {
+                if (!faceComplete) {
                   ToastUtils.showToast('请先完成人脸核验');
                   return;
                 }
@@ -398,105 +573,103 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
                     ),
                   ],
                 ),
-              )),
-        ],
-      )),
-      [null, 10, 20, 20],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget createContractWidget() {
-    return PWidget.row([
-      Checkbox(
-        value: checkboxSelected,
-        onChanged: (value) {
-          if(!Seen){
-            ToastUtils.showToast('请先阅读《加盟服务合同》');
-            return;
-          }
-          checkboxSelected = !checkboxSelected;
-          setState(() {});
-        },
-        shape: CircleBorder(),
-        activeColor: Colors.blue,
-      ),
-      PWidget.text('我已阅读并同意', [Colors.black, 14]),
-      PWidget.text('《加盟服务合同》', [
-        Colors.blue,
-        14
-      ], {
-        'fun': () {
-          Navigator.pushNamed(context, '/shopContractPage').then((value) {
-            if(value == true)
-            checkboxSelected = true;
-            setState(() {
-
+    return Row(
+      children: [
+        Checkbox(
+          value: checkboxSelected,
+          onChanged: (value) {
+            if (!Seen) {
+              ToastUtils.showToast('请先阅读《加盟服务合同》');
+              return;
+            }
+            checkboxSelected = !checkboxSelected;
+            setState(() {});
+          },
+          shape: CircleBorder(),
+          activeColor: Colors.blue,
+        ),
+        Text(
+          '我已阅读并同意',
+          style: TextStyle(color: Colors.black, fontSize: 14),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, '/shopContractPage').then((value) {
+              if (value == true) checkboxSelected = true;
+              setState(() {});
             });
-          });
-        }
-      }),
-    ]);
+          },
+          child: Text(
+            '《加盟服务合同》',
+            style: TextStyle(color: Colors.blue, fontSize: 14),
+          ),
+        ),
+      ],
+    );
   }
 
-
   void _showPicSheet(context, type) async {
-    if(contractPath != null && contractPath.isNotEmpty) {
+    if (contractPath.isNotEmpty) {
       ToastUtils.showToast('合同签署成功，不允许更改');
       return;
     }
-    PicBottomSheet.showText(context, dataArr: ['拍照', '相册'], title: '请选择',
-        clickCallback: (index, str) async {
-      if(await Global.isHuawei()) {
-          if (index == 1) {
-            var isGrantedCamera = await Permission.camera.isGranted;
-            if (!isGrantedCamera) {
-              Global.showCameraDialog((){
-                PicHelper.openCamera(context, cameraQuarterTurns: 0,
-                    callback: (File file) async {
-                      uploadPic(file, type, index);
-                    });
+    PicBottomSheet.showText(context, dataArr: ['拍照', '相册'], title: '请选择', clickCallback: (index, str) async {
+      if (await Global.isHuawei()) {
+        if (index == 1) {
+          var isGrantedCamera = await Permission.camera.isGranted;
+          if (!isGrantedCamera) {
+            Global.showCameraDialog(() {
+              PicHelper.openCamera(context, cameraQuarterTurns: 0, callback: (File file) async {
+                uploadPic(file, type, index);
               });
-            } else {
-              PicHelper.openCamera(context, cameraQuarterTurns: 0,
-                  callback: (File file) async {
-                    uploadPic(file, type, index);
-                  });
-            }
-          } else if (index == 2) {
-            int version = await Global.getAndroidVersion();
-            bool isGrantedPhoto;
-            if(version>= 33) {
-              PermissionStatus status = await Permission.photos.status;
-              isGrantedPhoto = status == PermissionStatus.granted;
-            } else {
-              PermissionStatus status = await Permission.storage.status;
-              isGrantedPhoto = status == PermissionStatus.granted;
-            }
-            if (!isGrantedPhoto) {
-              Global.showPhotoDialog((){
-                PicHelper.selectPic(context, (File file) async {
-                  uploadPic(file, type, index);
-                });
-              });
-            } else {
+            });
+          } else {
+            PicHelper.openCamera(context, cameraQuarterTurns: 0, callback: (File file) async {
+              uploadPic(file, type, index);
+            });
+          }
+        } else if (index == 2) {
+          int version = await Global.getAndroidVersion();
+          bool isGrantedPhoto;
+          if (version >= 33) {
+            PermissionStatus status = await Permission.photos.status;
+            isGrantedPhoto = status == PermissionStatus.granted;
+          } else {
+            PermissionStatus status = await Permission.storage.status;
+            isGrantedPhoto = status == PermissionStatus.granted;
+          }
+          if (!isGrantedPhoto) {
+            Global.showPhotoDialog(() {
               PicHelper.selectPic(context, (File file) async {
                 uploadPic(file, type, index);
               });
-            }
+            });
+          } else {
+            PicHelper.selectPic(context, (File file) async {
+              uploadPic(file, type, index);
+            });
           }
+        }
       } else {
         if (index == 1) {
-          PicHelper.openCamera(context, cameraQuarterTurns: 0,
-              callback: (File file) async {
-                uploadPic(file, type, index);
-              });
-        }else if (index == 2) {
+          PicHelper.openCamera(context, cameraQuarterTurns: 0, callback: (File file) async {
+            uploadPic(file, type, index);
+          });
+        } else if (index == 2) {
           PicHelper.selectPic(context, (File file) async {
             uploadPic(file, type, index);
           });
         }
       }
-
     });
   }
 
@@ -505,8 +678,7 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
     var formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(file.path),
     });
-    Map data =
-        await BService.uploadCard(formData, type, angle: index == 1 ? 270 : 0);
+    Map data = await BService.uploadCard(formData, type, angle: index == 1 ? 270 : 0);
     Loading.hide(context);
     if (!data['success']) {
       ToastUtils.showToast(data['msg']);
@@ -526,7 +698,7 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
   }
 
   faceVerify() async {
-    if(contractPath != null && contractPath.isNotEmpty) {
+    if (contractPath.isNotEmpty) {
       ToastUtils.showToast('合同签署成功，不允许更改');
       return;
     }
@@ -544,9 +716,8 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
     }
     Loading.show(context);
     //获取人脸识别流水号
-    Map data = await BService.getAliFaceTicket(_cardNameController.text,
-        _cardNoController.text, _mobileController.text);
-    flog(data);
+    Map data =
+        await BService.getAliFaceTicket(_cardNameController.text, _cardNoController.text, _mobileController.text);
     if (data['code'] != '10000') {
       ToastUtils.showToast('身份认证失败，请查看信息是否有误');
       Loading.hide(context);
@@ -556,15 +727,13 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
     //打开支付宝人脸识别框
     var result = await startFaceService(certifyId, data['page_url']);
     if (result is AndroidAliFaceVerifyResult) {
-      AndroidAliFaceVerifyResult aResult = result as AndroidAliFaceVerifyResult;
-      if (!aResult.isSuccess) {
+      if (!result.isSuccess) {
         ToastUtils.showToast("人脸核验失败");
         Loading.hide(context);
         return;
       }
     } else if (result is IosAliFaceVerifyResult) {
-      IosAliFaceVerifyResult iResult = result as IosAliFaceVerifyResult;
-      if (!iResult.isSuccess) {
+      if (!result.isSuccess) {
         ToastUtils.showToast("人脸核验失败");
         Loading.hide(context);
         return;
@@ -585,7 +754,7 @@ class _ShopAuthSecPageState extends State<ShopAuthSecPage> {
   Future<void> readSeenData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Seen = await prefs.getBool('SeenStatus') ?? false;
-    if(Seen){
+    if (Seen) {
       checkboxSelected = true;
     }
   }

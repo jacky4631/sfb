@@ -3,56 +3,60 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
-
-import '../../util/paixs_fun.dart';
 
 ///菜单组件
 class PddMenuWidget extends StatefulWidget {
-  final DataModel dataModel;
-  final Function? fun;
+  final List<Map<String, dynamic>> data;
+  final Function? onRefresh;
   final int count;
-  final Function(Map)? onTap;
-  const PddMenuWidget(this.dataModel, {Key? key, this.count = 10, this.fun, this.onTap}) : super(key: key);
+  final Function(Map<String, dynamic>)? onTap;
+
+  const PddMenuWidget(
+    this.data, {
+    Key? key,
+    this.count = 10,
+    this.onRefresh,
+    this.onTap,
+  }) : super(key: key);
+
   @override
-  _PddMenuWidgetState createState() => _PddMenuWidgetState();
+  State<PddMenuWidget> createState() => _PddMenuWidgetState();
 }
 
 class _PddMenuWidgetState extends State<PddMenuWidget> {
-  int page = 0;
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitchBuilder(
-      value: widget.dataModel,
-      errorOnTap: () => widget.fun!(),
-      noDataView: PWidget.boxh(0),
-      errorView: PWidget.boxh(0),
-      initialState: PWidget.container(null, [double.infinity]),
-      isAnimatedSize: false,
-      listBuilder: (list, p, h) {
-            return PWidget.container(
-              Wrap(
-                children: List.generate(list.length, (i) {
-                  var wh = (pmSize.width - 16) / 5;
-                  var icon = list[i] as Map;
-                  return PWidget.container(
-                    PWidget.ccolumn([
-                      PWidget.image('${icon['img']}', [56, 56]),
-                      PWidget.spacer(),
-                      PWidget.text('${icon['title']}'),
-                      PWidget.spacer(),
-                    ]),
-                    [wh, 80],
-                    {'fun': () => widget.onTap!(icon)},
-                  );
-                }),
+    if (widget.data.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 0, right: 0, top: 8, bottom: 8),
+      child: Wrap(
+        children: widget.data.map((icon) {
+          final width = (MediaQuery.of(context).size.width - 16) / 5;
+          return GestureDetector(
+            onTap: () => widget.onTap?.call(icon),
+            child: SizedBox(
+              width: width,
+              height: 80,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.network(
+                    icon['img'] ?? '',
+                    width: 56,
+                    height: 56,
+                    errorBuilder: (_, __, ___) => const Icon(Icons.error),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(icon['title'] ?? ''),
+                ],
               ),
-              {'pd': PFun.lg(0, 0, 8, 8)},
-            );
-      },
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }

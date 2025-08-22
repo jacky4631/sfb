@@ -1,15 +1,8 @@
-/**
- *  Copyright (C) 2018-2024
- *  All rights reserved, Designed By www.mailvor.com
- */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
-import 'package:sufenbao/service.dart';
-
+import '../service.dart';
 import '../widget/CustomWidgetPage.dart';
+import '../page/product_details.dart';
+import '../util/global.dart';
 
 ///首页
 class TbIndexFirstPage extends StatefulWidget {
@@ -18,10 +11,33 @@ class TbIndexFirstPage extends StatefulWidget {
 }
 
 class _TbIndexFirstPageState extends State<TbIndexFirstPage> {
+  List<Map> _goodsList = [];
+  bool _isLoading = false;
+  bool _hasError = false;
+  String _errorMessage = '';
+  bool _hasNext = true;
+  int _currentPage = 1;
+  ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
-    initData();
     super.initState();
+    _scrollController.addListener(_onScroll);
+    initData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (_hasNext && !_isLoading) {
+        getListData(page: _currentPage + 1);
+      }
+    }
   }
 
   ///初始化函数
@@ -30,44 +46,138 @@ class _TbIndexFirstPageState extends State<TbIndexFirstPage> {
   }
 
   ///列表数据
-  var listDm = DataModel();
   Future<int> getListData({int page = 1, bool isRef = false}) async {
-    var res = await BService.getGoodsList(page,)
-        .catchError((v) {
-      listDm.toError('网络异常');
+    if (_isLoading) return 0;
+
+    setState(() {
+      _isLoading = true;
+      _hasError = false;
+      if (isRef) {
+        _goodsList.clear();
+        _currentPage = 1;
+      }
     });
-    if (res != null) {
-      listDm.addList(res['list'], isRef, res['totalNum']);
+
+    try {
+      var res = await BService.getGoodsList(page);
+      List<Map> newList = List<Map>.from(res['list'] ?? []);
+      int totalNum = res['totalNum'] ?? 0;
+
+      if (isRef) {
+        _goodsList = newList;
+      } else {
+        _goodsList.addAll(newList);
+      }
+
+      _currentPage = page;
+      _hasNext = _goodsList.length < totalNum;
+      _hasError = false;
+    } catch (e) {
+      _hasError = true;
+      _errorMessage = '网络异常';
     }
-    setState(() {});
-    return listDm.flag;
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    return _hasError ? -1 : 1;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      bgColor: Color(0xffF4F5F6),
-      body: MyCustomScroll(
-        isGengduo: listDm.hasNext,
-        isShuaxin: true,
-        onRefresh: () => this.getListData(isRef: true),
-        onLoading: (p) => this.getListData(page: p),
-        refHeader: buildClassicHeader(color: Colors.grey),
-        refFooter: buildCustomFooter(color: Colors.grey),
-        headers: headers,
-        itemPadding: EdgeInsets.all(8),
-        crossAxisCount: 2,
-        crossAxisSpacing: 8,
-        itemModel: listDm,
-        itemModelBuilder: (i, v) {
-          return createTbFadeContainer(context, i, v);
-        },
+  Widget _buildTbFadeContainer(BuildContext context, int index, Map data) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      margin: EdgeInsets.only(
+        left: index % 2 == 0 ? 0 : 8,
+        right: index % 2 == 1 ? 0 : 8,
+      ),
+      child: Global.openFadeContainer(
+        createTbItem(context, index, data),
+        ProductDetails(data),
       ),
     );
   }
 
+  Widget _buildBody() {
+    if (_hasError && _goodsList.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(_errorMessage, style: TextStyle(color: Colors.grey[600])),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => getListData(isRef: true),
+              child: Text('重试'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (_goodsList.isEmpty && _isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (_goodsList.isEmpty) {
+      return Center(
+        child: Text('暂无数据', style: TextStyle(color: Colors.grey[600])),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => getListData(isRef: true),
+      child: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          ...headers.map((widget) => SliverToBoxAdapter(child: widget)),
+          SliverPadding(
+            padding: EdgeInsets.all(8),
+            sliver: SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: 0.58,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  if (index < _goodsList.length) {
+                    return _buildTbFadeContainer(context, index, _goodsList[index]);
+                  } else {
+                    return Center(
+                      child: _isLoading ? CircularProgressIndicator() : (_hasNext ? Text('加载更多...') : Text('没有更多了')),
+                    );
+                  }
+                },
+                childCount: _goodsList.length + (_hasNext ? 1 : 0),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xffF4F5F6),
+      body: _buildBody(),
+    );
+  }
+
   List<Widget> get headers {
-    return [
-    ];
+    return [];
   }
 }

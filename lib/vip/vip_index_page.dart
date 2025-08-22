@@ -73,30 +73,28 @@ class _MIniPageState extends State<VipIndexPage> {
       {'img': 'https://sr.ffquan.cn/cms_pic/20220427/c9kabkv92a41b8dv6jug0.png'}
     ];
 
-    return ScaffoldWidget(
+    return Scaffold(
       body: Stack(
         children: [
-          PWidget.container(null, [double.infinity, double.infinity],
-              {'gd': PFun.tbGd(Color(0xffff3295), Color(0xffff3295))}),
+          PWidget.container(
+              null, [double.infinity, double.infinity], {'gd': PFun.tbGd(Color(0xffff3295), Color(0xffff3295))}),
           ScaffoldWidget(
-              floatingActionButton:
-                  _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
-                      ? FloatingActionButton(
-                          backgroundColor: Colours.vip_main,
-                          mini: true,
-                          onPressed: () {
-                            // scrollController 通过 animateTo 方法滚动到某个具体高度
-                            // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
-                            _scrollController.animateTo(0.0,
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.decelerate);
-                          },
-                          child: Icon(
-                            Icons.arrow_upward,
-                            color: Colors.white,
-                          ),
-                        )
-                      : null,
+              floatingActionButton: _showBackTop // 当需要显示的时候展示按钮，不需要的时候隐藏，设置 null
+                  ? FloatingActionButton(
+                      backgroundColor: Colours.vip_main,
+                      mini: true,
+                      onPressed: () {
+                        // scrollController 通过 animateTo 方法滚动到某个具体高度
+                        // duration 表示动画的时长，curve 表示动画的运行方式，flutter 在 Curves 提供了许多方式
+                        _scrollController.animateTo(0.0,
+                            duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+                      },
+                      child: Icon(
+                        Icons.arrow_upward,
+                        color: Colors.white,
+                      ),
+                    )
+                  : null,
               bgColor: Colors.transparent,
               brightness: Brightness.light,
               appBar: Stack(
@@ -132,15 +130,13 @@ class _MIniPageState extends State<VipIndexPage> {
                 errorOnTap: () => this.getTabData(),
                 initialState: buildLoad(color: Colours.app_main),
                 listBuilder: (list, _, __) {
-                  var tabList =
-                      list.map<String>((m) => (m! as Map)['name']).toList();
+                  var tabList = list.map<String>((m) => (m! as Map)['name']).toList();
                   return TabWidget(
                     tabList: tabList,
                     indicatorColor: Colors.white.withOpacity(0),
                     tabPage: List.generate(tabList.length, (i) {
                       return Padding(
-                          padding: EdgeInsets.only(
-                              top: 10, left: 20, right: 20, bottom: 10),
+                          padding: EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 10),
                           child: TopChild(_scrollController, list[i] as Map));
                     }),
                   );
@@ -156,8 +152,7 @@ class TopChild extends StatefulWidget {
   final ScrollController scrollController;
   final Map data;
 
-  const TopChild(this.scrollController, this.data, {Key? key})
-      : super(key: key);
+  const TopChild(this.scrollController, this.data, {Key? key}) : super(key: key);
   @override
   _TopChildState createState() => _TopChildState();
 }
@@ -179,8 +174,7 @@ class _TopChildState extends State<TopChild> {
   ///列表数据
   var listDm = DataModel();
   Future<int> getListData({int page = 1, bool isRef = false}) async {
-    var res = await BService.vipList(page, keyword: widget.data['name'])
-        .catchError((v) {
+    var res = await BService.vipList(page, keyword: widget.data['name']).catchError((v) {
       listDm.toError('网络异常');
     });
     if (res != null) {
@@ -219,5 +213,4 @@ class _TopChildState extends State<TopChild> {
             },
           );
   }
-
 }

@@ -3,9 +3,7 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -60,31 +58,36 @@ class _AlipayWebViewState extends State<AlipayWebView> {
   @override
   Widget build(BuildContext context) {
     bool refresh = widget.data['refresh'] == null || widget.data['refresh'];
-    return ScaffoldWidget(
-            brightness: Brightness.dark,
-            body: PWidget.container(
-                PWidget.column(
-                  [
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          createWebview(refresh),
-                          progress < 1.0
-                              ? LinearProgressIndicator(
-                                  value: progress,
-                                  backgroundColor: Colors.blue,
-                                  minHeight: 1,
-                                )
-                              : SizedBox(),
-                          // loading ? Global.showLoading2() : SizedBox()
-                        ],
-                      ),
-                    ),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Container(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top,
+            bottom: MediaQuery.of(context).padding.bottom,
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    createWebview(refresh),
+                    progress < 1.0
+                        ? LinearProgressIndicator(
+                            value: progress,
+                            backgroundColor: Colors.blue,
+                            minHeight: 1,
+                          )
+                        : SizedBox(),
+                    // loading ? Global.showLoading2() : SizedBox()
                   ],
                 ),
-                {
-                  'pd': [MediaQuery.of(context).padding.top, MediaQuery.of(context).padding.bottom, 0, 0],
-                }));
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget createWebview(refresh) {

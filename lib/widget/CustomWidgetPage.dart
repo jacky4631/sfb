@@ -123,7 +123,7 @@ getSalesWidget(sales) {
     PWidget.icon(Icons.local_fire_department_outlined, [Colors.black45, 12]),
     PWidget.text(
       '$sales',
-      [Colors.black45, 12],
+      [Colors.black45, 10],
       {'ali': 0},
     ),
   ]);
@@ -187,7 +187,7 @@ Widget createTbItem(context, i, v) {
       PWidget.container(
         PWidget.column([
           PWidget.row([
-            getTitleWidget(v['title'], max: max),
+            Expanded(child: getTitleWidget(v['title'], max: max)),
           ]),
           PWidget.boxh(8),
           PWidget.row([getPriceWidget(v['actualPrice'], v['originalPrice']), PWidget.spacer(), getSalesWidget(sales)]),
@@ -286,7 +286,7 @@ Widget createPddItem(context, i, v) {
               'pd': [3, 0, 0, 0]
             }),
             PWidget.boxw(4),
-            getTitleWidget(v['goodsName']),
+            Expanded(child: getTitleWidget(v['goodsName'])),
           ]),
           // PWidget.text('${v['dtitle']}'),
           PWidget.boxh(8),

@@ -8,7 +8,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,7 +39,7 @@ class _MyAppState extends State<ShopContractPage> {
     Completer<File> completer = Completer();
     print("Start download file from internet!");
     try {
-      String signContractUrl = widget.data == null ? "" : widget.data['url']??'';
+      String signContractUrl = widget.data['url']??'';
       final url = signContractUrl.isNotEmpty ? signContractUrl : Global.appInfo.contractPreviewUrl??'';
       final filename = url.substring(url.lastIndexOf("/") + 1);
       var request = await HttpClient().getUrl(Uri.parse(url));
@@ -60,7 +60,7 @@ class _MyAppState extends State<ShopContractPage> {
 
   @override
   Widget build(BuildContext context) {
-    String title = widget.data == null || widget.data['title'] == null ? "加盟服务合同" : '电子协议${widget.data['title']}';
+    String title = widget.data['title'] == null ? "加盟服务合同" : '电子协议${widget.data['title']}';
 
     if(remotePDFpath == '') {
       return Scaffold(
@@ -114,9 +114,7 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
   }
   @override
   void dispose() {
-    if(_timer!=null){
-      _timer.cancel();
-    }
+    _timer.cancel();
     super.dispose();
   }
   @override
@@ -219,8 +217,11 @@ Widget btmBarView(BuildContext context) {
     bg = Colors.grey[300];
     btnText = '阅读完成(${(curentTimer / 1000).toInt()})';
   }
-  return PWidget.positioned(
-    SafeArea(
+  return Positioned(
+    top: 10,
+    right: 100,
+    bottom: 100,
+    child: SafeArea(
         child: Column(
           children: [
             RawMaterialButton(
@@ -254,7 +255,6 @@ Widget btmBarView(BuildContext context) {
                 )),
           ],
         )),
-    [null, 10, 100, 100],
   );
 }
 Future<void> SaveData() async {
