@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -15,10 +16,7 @@ import 'package:sufenbao/me/my_center.dart' as _i1;
 /// [_i1.SettingPage]
 class SettingRoute extends _i2.PageRouteInfo<void> {
   const SettingRoute({List<_i2.PageRouteInfo>? children})
-      : super(
-          SettingRoute.name,
-          initialChildren: children,
-        );
+      : super(SettingRoute.name, initialChildren: children);
 
   static const String name = 'SettingRoute';
 
