@@ -65,6 +65,7 @@ class _DyIndexFirstPageState extends State<DyIndexFirstPage> {
       listDm.toError('网络异常');
       return null;
     });
+
     if (res != null) {
       listDm.addList(res['products'], isRef, ValueUtil.toInt(res['total']));
     }
@@ -110,10 +111,7 @@ class _DyIndexFirstPageState extends State<DyIndexFirstPage> {
               padding: EdgeInsets.all(8),
               sliver: SliverGrid(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
+                    crossAxisCount: 2, crossAxisSpacing: 8, mainAxisSpacing: 8, childAspectRatio: 0.55),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     if (index < listDm.list.length) {

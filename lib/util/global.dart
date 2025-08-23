@@ -19,14 +19,13 @@ import 'package:fluwx/fluwx.dart';
 import 'package:jpush_flutter/jpush_flutter.dart';
 import 'package:jpush_flutter/jpush_interface.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:maixs_utils/util/utils.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/dialog/simple_text_dialog.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/swipe_to_dismiss_wrap.dart';
 
+import '../Util/colors.dart';
 import '../dialog/channel_auth_dialog.dart';
 import '../dialog/contet_parse_dialog.dart';
 import '../dialog/huodong_dialog.dart';
@@ -74,6 +73,12 @@ const PREFS_GOODS_CODE = 'goodsCode';
 
 const int EXPIRED_LEVEL = 99;
 Fluwx fluwx = new Fluwx();
+
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+BuildContext context = navigatorKey.currentState!.overlay!.context;
+
+final GlobalKey<NavigatorState> navigatorKey1 = new GlobalKey<NavigatorState>();
+var context1 = navigatorKey.currentState?.overlay!.context;
 
 // 所有Widget继承的抽象类
 class Global {
@@ -147,13 +152,10 @@ class Global {
     Navigator.pushNamed(context, '/webview', arguments: {
       'url': url,
       'refresh': false,
-      'appBar': buildTitle(context,
-          title: title,
-          widgetColor: Colors.black,
-          leftIcon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ))
+      'appBar': AppBar(
+        title: Text(title),
+        backgroundColor: Colours.app_main,
+      )
     });
   }
 

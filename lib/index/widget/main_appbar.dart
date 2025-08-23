@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:maixs_utils/model/data_model.dart';
 
 import '../provider/provider.dart';
 
@@ -27,7 +26,8 @@ AppBar mainAppBar(
         splashColor: Colors.transparent, // 设置水波纹颜色为透明
         highlightColor: Colors.transparent, // 设置高亮颜色为透明
         onTap: () {
-          Navigator.pushNamed(context, '/search', arguments: {'showArrowBack': true});
+          Navigator.pushNamed(context, '/search',
+              arguments: {'showArrowBack': true});
         },
         child: const AppBarTitle()),
     actions: [
@@ -67,7 +67,7 @@ class AppBarTitle extends StatelessWidget implements PreferredSizeWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
-            color: Colors.grey.withAlpha(30),
+            color: Colors.grey.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(20),
           ),
           height: defaultActionBarHeight.toDouble(),

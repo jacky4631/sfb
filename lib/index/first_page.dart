@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_alibc/flutter_alibc.dart';
-import 'package:flutter_base/utils/logger_util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluwx/fluwx.dart';
@@ -265,7 +264,6 @@ class _FirstPageState extends ConsumerState<FirstPage> {
       ///菜单
       const MenuWidget(),
       //圆形轮播图
-
       if (tilesDm.list.isNotEmpty) TilesWidget(tilesDm),
 
       ///大家都在领

@@ -48,7 +48,7 @@ class _TopPageState extends State<TopPage> with AutomaticKeepAliveClientMixin {
       _isLoading = true;
       _hasError = false;
     });
-    
+
     try {
       var res = await BService.rankingCate();
       if (res != null) {
@@ -67,7 +67,8 @@ class _TopPageState extends State<TopPage> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  AppBar buildTitle(BuildContext context, {
+  AppBar buildTitle(
+    BuildContext context, {
     required Color color,
     required String title,
     required Color widgetColor,
@@ -93,21 +94,24 @@ class _TopPageState extends State<TopPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    bool showArrowBack = (widget.data == null ||
-         widget.data?['showArrowBack'] == null ||
-        widget.data?['showArrowBack']);
+    bool showArrowBack =
+        (widget.data == null || widget.data?['showArrowBack'] == null || widget.data?['showArrowBack']);
     var leftIcon = showArrowBack
         ? Icon(
             Icons.arrow_back_ios,
             color: Colors.white,
           )
         : SizedBox();
-    var leftCallback = showArrowBack?()=>Navigator.pop(context):(){};
-    
+    var leftCallback = showArrowBack ? () => Navigator.pop(context) : () {};
+
     return Scaffold(
       backgroundColor: Color(0xffF4F5F6),
-      appBar: buildTitle(context,color:Colours.app_main,
-          title: '实时榜单', widgetColor: Colors.white, leftIcon: leftIcon, leftCallback: leftCallback),
+      appBar: buildTitle(context,
+          color: Colours.app_main,
+          title: '实时榜单',
+          widgetColor: Colors.white,
+          leftIcon: leftIcon,
+          leftCallback: leftCallback),
       body: _buildBody(),
     );
   }
@@ -121,7 +125,7 @@ class _TopPageState extends State<TopPage> with AutomaticKeepAliveClientMixin {
         ),
       );
     }
-    
+
     if (_hasError) {
       return Center(
         child: Column(
@@ -137,11 +141,11 @@ class _TopPageState extends State<TopPage> with AutomaticKeepAliveClientMixin {
         ),
       );
     }
-    
+
     if (_tabList.isEmpty) {
       return Center(child: Text('暂无数据'));
     }
-    
+
     var tabList = _tabList.map<String>((m) => m['title'] as String).toList();
     return TabWidget(
       tabList: tabList,
@@ -193,14 +197,14 @@ class _TopChildState extends State<TopChild> {
         _currentPage = 1;
       });
     }
-    
+
     try {
       String title = widget.tabValue['title'];
       int rankType = 1;
       if (title == '全天榜') {
         rankType = 2;
       }
-      
+
       var res = await BService.rankingList(rankType, page, cid: widget.tabValue['id']);
       if (res != null) {
         setState(() {
@@ -234,7 +238,7 @@ class _TopChildState extends State<TopChild> {
         ),
       );
     }
-    
+
     if (_hasError && _dataList.isEmpty) {
       return Center(
         child: Column(
@@ -250,7 +254,7 @@ class _TopChildState extends State<TopChild> {
         ),
       );
     }
-    
+
     return RefreshIndicator(
       onRefresh: () => getListData(isRef: true),
       child: ListView.separated(
@@ -270,21 +274,15 @@ class _TopChildState extends State<TopChild> {
             }
             return SizedBox();
           }
-          
+
           var data = _dataList[index];
-          return GestureDetector(
-            onTap: () => Global.openFadeContainer(
-              createItem(index, data), 
-              ProductDetails(data)
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: EdgeInsets.all(10),
-              child: createItem(index, data),
-            ),
+            padding: EdgeInsets.all(10),
+            child: Global.openFadeContainer(createItem(index, data), ProductDetails(data)),
           );
         },
       ),
@@ -292,10 +290,10 @@ class _TopChildState extends State<TopChild> {
   }
 
   Widget createItem(int i, Map data) {
-    num fee = data['actualPrice']*data['commissionRate']/100;
-    String shopType = data['shopType']==1?'天猫':'淘宝';
+    num fee = data['actualPrice'] * data['commissionRate'] / 100;
+    String shopType = data['shopType'] == 1 ? '天猫' : '淘宝';
     String shopName = data['shopName'];
-    
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

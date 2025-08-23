@@ -6,9 +6,6 @@
  * @discripe: 登录弹窗弹窗
  */
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:maixs_utils/util/utils.dart';
-
 
 class CardSignDialog extends Dialog {
   String title;
@@ -17,7 +14,13 @@ class CardSignDialog extends Dialog {
   String? cancelTxt;
   bool forceUpdate = false;
   Function? fun;
-  CardSignDialog(this.title, this.desc, {Key? key, this.okTxt, this.cancelTxt,this.forceUpdate=false, this.fun}) : super(key: key);
+  CardSignDialog(this.title, this.desc,
+      {Key? key,
+      this.okTxt,
+      this.cancelTxt,
+      this.forceUpdate = false,
+      this.fun})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +44,9 @@ class CardSignDialog extends Dialog {
           Padding(padding: EdgeInsets.only(top: 10)),
           Row(
             children: [
-              if(!forceUpdate)
-                Expanded(child: _createButton(false)),
-              if(!forceUpdate)
-                SizedBox(height: 5),
-              Expanded(child: _createButton(true)),
+              if (!forceUpdate) Expanded(child: _createButton(context, false)),
+              if (!forceUpdate) SizedBox(height: 5),
+              Expanded(child: _createButton(context, true)),
             ],
           )
         ],
@@ -53,7 +54,7 @@ class CardSignDialog extends Dialog {
     );
   }
 
-  _createButton(bool agree) {
+  _createButton(BuildContext context, bool agree) {
     return TextButton(
         style: TextButton.styleFrom(
           shape: RoundedRectangleBorder(
@@ -62,14 +63,14 @@ class CardSignDialog extends Dialog {
           backgroundColor: agree ? Color(0xFFFB040F) : Colors.white,
         ),
         onPressed: () {
-          if(!forceUpdate) {
+          if (!forceUpdate) {
             if (agree) {
               Navigator.pop(context, true);
             } else {
               Navigator.pop(context, false);
             }
           } else {
-            if(fun!= null) {
+            if (fun != null) {
               fun!();
             }
           }
@@ -85,7 +86,7 @@ class CardSignDialog extends Dialog {
                       padding: EdgeInsets.only(left: 5),
                     ),
                     Text(
-                      okTxt??'去认证',
+                      okTxt ?? '去认证',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -94,7 +95,7 @@ class CardSignDialog extends Dialog {
                   ]
                 : [
                     Text(
-                      cancelTxt??'取消',
+                      cancelTxt ?? '取消',
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 14,

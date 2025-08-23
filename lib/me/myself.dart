@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_base/utils/util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluwx/fluwx.dart';
-import 'package:maixs_utils/widget/views.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sufenbao/me/fans/fans_search_notifier.dart';
 import 'package:sufenbao/me/provider.dart';
@@ -35,7 +34,8 @@ class MySelfPage extends ConsumerStatefulWidget {
   _MySelfPageState createState() => _MySelfPageState();
 }
 
-class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _MySelfPageState extends ConsumerState<MySelfPage>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   bool showCode = false;
   bool showKefu = false;
   bool isShuaxin = true;
@@ -91,11 +91,16 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
 
   List<Widget> createMeWidget() {
     final userinfo = ref.watch(userProvider);
-    final userFee = ref.watch(userFeeProvider).when(data: (data) => data, error: (o, s) => Map(), loading: () => Map());
+    final userFee = ref.watch(userFeeProvider).when(
+        data: (data) => data, error: (o, s) => Map(), loading: () => Map());
 
     List<Widget> widgets = <Widget>[
       Padding(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, left: 16, right: 16, bottom: 8),
+          padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top,
+              left: 16,
+              right: 16,
+              bottom: 8),
           child: Row(children: [
             Global.login ? _createUserInfo() : _createUnLogin(),
             Spacer(),
@@ -112,7 +117,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(children: [
-            Text("关闭通知会收不到现金到账提醒", style: TextStyle(color: Colors.grey, fontSize: 14)),
+            Text("关闭通知会收不到现金到账提醒",
+                style: TextStyle(color: Colors.grey, fontSize: 14)),
             Expanded(child: Text("")),
             TextButton(
                 onPressed: () {
@@ -120,7 +126,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                   Notice = false;
                   setState(() {});
                 },
-                child: Text("立即开启", style: TextStyle(color: Colors.red, fontSize: 14))),
+                child: Text("立即开启",
+                    style: TextStyle(color: Colors.red, fontSize: 14))),
             IconButton(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
@@ -148,13 +155,24 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                   style: TextStyle(color: Colors.white),
                 ),
                 !Global.login
-                    ? Text('****', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20))
+                    ? Text('****',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20))
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text((userinfo.nowMoney + userinfo.unlockMoney).toStringAsFixed(2),
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
-                          Text('元', style: TextStyle(color: Colors.white, fontSize: 14)),
+                          Text(
+                              (userinfo.nowMoney + userinfo.unlockMoney)
+                                  .toStringAsFixed(2),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20)),
+                          Text('元',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 14)),
                         ],
                       ),
                 Spacer(),
@@ -179,19 +197,25 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                 )
               ]),
               SizedBox(height: 10),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-                Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                  createTodayFee(context, userFee),
-                  SizedBox(height: 5),
-                  Text("今日预估", style: TextStyles.textWhite14)
-                ]),
-                Container(color: Color(0x50FFFFFF), width: 1, height: 23),
-                Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-                  createMonthFee(context, userFee),
-                  SizedBox(height: 5),
-                  Text("本月预估", style: TextStyles.textWhite14)
-                ])
-              ])
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          createTodayFee(context, userFee),
+                          SizedBox(height: 5),
+                          Text("今日预估", style: TextStyles.textWhite14)
+                        ]),
+                    Container(color: Color(0x50FFFFFF), width: 1, height: 23),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          createMonthFee(context, userFee),
+                          SizedBox(height: 5),
+                          Text("本月预估", style: TextStyles.textWhite14)
+                        ])
+                  ])
             ],
           ),
           padding: EdgeInsets.fromLTRB(16, 8, 8, 8),
@@ -215,18 +239,27 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                     alignment: Alignment.topCenter,
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: <Color>[Color(0xFFFDECC3), Color(0xFFF7CD7C)]),
+                      gradient: LinearGradient(colors: <Color>[
+                        Color(0xFFFDECC3),
+                        Color(0xFFF7CD7C)
+                      ]),
                       borderRadius: BorderRadius.all(Radius.circular(14.0)),
                     ),
                     child: InkWell(
                         child: Row(children: <Widget>[
-                          Image.asset("assets/images/me/vip.png", width: 18, height: 18),
+                          Image.asset("assets/images/me/vip.png",
+                              width: 18, height: 18),
                           SizedBox(width: 5),
-                          Text("五大平台加盟", style: TextStyle(color: Color(0xFF85682F), fontSize: 14)),
+                          Text("五大平台加盟",
+                              style: TextStyle(
+                                  color: Color(0xFF85682F), fontSize: 14)),
                           Spacer(),
-                          Text("星选会员", style: TextStyle(color: Color(0xFF85682F), fontSize: 14)),
+                          Text("星选会员",
+                              style: TextStyle(
+                                  color: Color(0xFF85682F), fontSize: 14)),
                           SizedBox(width: 5),
-                          Icon(Icons.keyboard_arrow_right, size: 16, color: Color(0xFF85682F))
+                          Icon(Icons.keyboard_arrow_right,
+                              size: 16, color: Color(0xFF85682F))
                         ]),
                         onTap: () {
                           personalNotifier.value = false;
@@ -250,7 +283,9 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                       return data
                           ? shimmerWidget(
                               Text('有红包可拆',
-                                  textAlign: TextAlign.end, style: TextStyle(color: Colors.red, fontSize: 14)),
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                      color: Colors.red, fontSize: 14)),
                               color: Colors.red)
                           : null;
                     },
@@ -286,7 +321,9 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                 title: '分享App',
                 content: '邀请好友领现金',
                 contentWidget: shimmerWidget(
-                    Text('邀请好友领现金', textAlign: TextAlign.end, style: TextStyle(color: Colors.red, fontSize: 14)),
+                    Text('邀请好友领现金',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(color: Colors.red, fontSize: 14)),
                     color: Colors.red),
                 onTap: () {
                   personalNotifier.value = false;
@@ -306,7 +343,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                   content: '积分当钱花',
                   onTap: () {
                     personalNotifier.value = false;
-                    onTapLogin(context, '/pointsMall', args: {'integral': userinfo.integral});
+                    onTapLogin(context, '/pointsMall',
+                        args: {'integral': userinfo.integral});
                   },
                   leading: Icon(BaoIcons.shop, size: 20, color: Colors.black)),
             ])),
@@ -346,26 +384,36 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     if (Global.isWeb()) {
       launchUrl(Uri.parse(Global.qiyeWechatServiceWebUrl));
     } else {
-      fluwx.open(target: CustomerServiceChat(url: Global.qiyeWechatServiceUrl, corpId: Global.qiyeWechatServiceCropId));
+      fluwx.open(
+          target: CustomerServiceChat(
+              url: Global.qiyeWechatServiceUrl,
+              corpId: Global.qiyeWechatServiceCropId));
     }
   }
 
-  Widget buildTabBar() {
+  PreferredSizeWidget buildTabBar() {
     final userinfo = ref.watch(userProvider);
 
-    return buildTitle(context,
-        title: Global.login ? userinfo.showName() : '我的',
-        widgetColor: Colors.black,
-        color: Colors.white,
-        isNoShowLeft: true,
-        leftIcon: null,
-        rightWidget: Global.login
-            ? Container(
-                padding: EdgeInsets.only(right: 20),
-                child: _createSettingIcon(),
-              )
-            : SizedBox(),
-        notSplit: true);
+    return AppBar(
+      title: Text(
+        Global.login ? userinfo.showName() : '我的',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      backgroundColor: Colors.white,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      actions: [
+        if (Global.login)
+          Container(
+            padding: EdgeInsets.only(right: 20),
+            child: _createSettingIcon(),
+          ),
+      ],
+    );
   }
 
   Widget _createSettingIcon() {
@@ -395,7 +443,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   _createUserInfo() {
     double headSize = 64;
     List<Widget> levelWidgets = [];
-    final vipinfo = ref.watch(vipinfoProvider).when(data: (data) => data, error: (o, s) => Map(), loading: () => Map());
+    final vipinfo = ref.watch(vipinfoProvider).when(
+        data: (data) => data, error: (o, s) => Map(), loading: () => Map());
 
     num level = ValueUtil.toNum(vipinfo['level']);
 
@@ -408,7 +457,10 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
     }
 
     if (vipinfo['level'] != null && vipinfo['level'] > 1) {
-      if (vipinfo['levelJd'] > 1 || vipinfo['levelPdd'] > 1 || vipinfo['levelDy'] > 1 || vipinfo['levelVip'] > 1) {
+      if (vipinfo['levelJd'] > 1 ||
+          vipinfo['levelPdd'] > 1 ||
+          vipinfo['levelDy'] > 1 ||
+          vipinfo['levelVip'] > 1) {
         if (vipinfo['level'] > 4) {
           levelWidgets.add(getLevelWidget(vipinfo['level'], 'tb'));
           levelWidgets.add(SizedBox(width: 1));
@@ -432,7 +484,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
       } else {
         levelWidgets = [
           Image.asset(levelImage, width: 16, height: 16),
-          Text('$levelName', style: TextStyle(color: Colours.vip_white, fontSize: 14))
+          Text('$levelName',
+              style: TextStyle(color: Colours.vip_white, fontSize: 14))
         ];
       }
     }
@@ -466,7 +519,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                       },
                       child: Text(
                         userinfo.showName(),
-                        style: TextStyle(color: Colors.black, fontSize: Dimens.font_sp20),
+                        style: TextStyle(
+                            color: Colors.black, fontSize: Dimens.font_sp20),
                       ),
                     ),
                     SizedBox(width: 5),
@@ -475,7 +529,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                         : GestureDetector(
                             onTap: () {
                               personalNotifier.value = false;
-                              onTapLogin(context, '/tabVip', args: {'index': 0});
+                              onTapLogin(context, '/tabVip',
+                                  args: {'index': 0});
                             },
                             child: Container(
                               padding: EdgeInsets.fromLTRB(1, 1, 4, 4),
@@ -490,7 +545,8 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                 ),
               ]),
               Row(children: [
-                Text('邀请口令：${showCode ? userinfo.code : '******'}', style: TextStyles.textBlack),
+                Text('邀请口令：${showCode ? userinfo.code : '******'}',
+                    style: TextStyles.textBlack),
                 SizedBox(width: 5),
                 GestureDetector(
                   onTap: () {
@@ -501,12 +557,15 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                     }
                     setState(() {});
                   },
-                  child: Icon(Icons.remove_red_eye_outlined, color: Colors.black, size: 18),
+                  child: Icon(Icons.remove_red_eye_outlined,
+                      color: Colors.black, size: 18),
                 ),
                 SizedBox(width: 10),
                 GestureDetector(
-                  onTap: () =>
-                      {FlutterClipboard.copy('${userinfo.code}').then((value) => ToastUtils.showToast('复制成功'))},
+                  onTap: () => {
+                    FlutterClipboard.copy('${userinfo.code}')
+                        .then((value) => ToastUtils.showToast('复制成功'))
+                  },
                   child: Text(
                     '复制',
                     style: TextStyle(
@@ -558,11 +617,13 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                         ),
                         padding: EdgeInsets.all(2),
                         child: Row(children: [
-                          rainbowText("热度:${(userEnergy['totalEnergy'] as num).toStringAsFixed(1)}", fontSize: 10.0,
-                              onTap: () {
+                          rainbowText(
+                              "热度:${(userEnergy['totalEnergy'] as num).toStringAsFixed(1)}",
+                              fontSize: 10.0, onTap: () {
                             _createEnergyPop(userEnergy);
                           }),
-                          Icon(Icons.arrow_drop_down, color: Colors.white, size: 12)
+                          Icon(Icons.arrow_drop_down,
+                              color: Colors.white, size: 12)
                         ]),
                       );
                     },
@@ -710,9 +771,12 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
   void _createEnergyPop(Map<dynamic, dynamic> userEnergy) {
     showMenu(
         // color: Colors.grey[350],
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10), side: BorderSide(color: Colors.grey)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(color: Colors.grey)),
         context: context,
-        position: RelativeRect.fromSize(Rect.fromLTRB(150, 130, 0, 0), Size(48, 0)),
+        position:
+            RelativeRect.fromSize(Rect.fromLTRB(150, 130, 0, 0), Size(48, 0)),
         elevation: 10,
         items: <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
@@ -721,9 +785,14 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
               child: Row(children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset('assets/images/mall/tb.png', width: 16, height: 16),
+                  child: Image.asset('assets/images/mall/tb.png',
+                      width: 16, height: 16),
                 ),
-                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text('热度：',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
                 SizedBox(width: 2),
                 Text('${userEnergy['tbEnergy'] + userEnergy['tbTuiEnergy']}',
                     style: TextStyle(color: Colors.black, fontSize: 11)),
@@ -737,9 +806,14 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
               child: Row(children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset('assets/images/mall/jd.png', width: 16, height: 16),
+                  child: Image.asset('assets/images/mall/jd.png',
+                      width: 16, height: 16),
                 ),
-                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text('热度：',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
                 SizedBox(width: 2),
                 Text('${userEnergy['jdEnergy'] + userEnergy['jdTuiEnergy']}',
                     style: TextStyle(color: Colors.black, fontSize: 11)),
@@ -753,9 +827,14 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
               child: Row(children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset('assets/images/mall/pdd.png', width: 16, height: 16),
+                  child: Image.asset('assets/images/mall/pdd.png',
+                      width: 16, height: 16),
                 ),
-                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text('热度：',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
                 SizedBox(width: 2),
                 Text('${userEnergy['pddEnergy'] + userEnergy['pddTuiEnergy']}',
                     style: TextStyle(color: Colors.black, fontSize: 11)),
@@ -769,9 +848,14 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
               child: Row(children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset('assets/images/mall/dy.png', width: 16, height: 16),
+                  child: Image.asset('assets/images/mall/dy.png',
+                      width: 16, height: 16),
                 ),
-                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text('热度：',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
                 SizedBox(width: 2),
                 Text('${userEnergy['dyEnergy'] + userEnergy['dyTuiEnergy']}',
                     style: TextStyle(color: Colors.black, fontSize: 11)),
@@ -785,9 +869,14 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
               child: Row(children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.asset('assets/images/mall/vip.png', width: 16, height: 16),
+                  child: Image.asset('assets/images/mall/vip.png',
+                      width: 16, height: 16),
                 ),
-                Text('热度：', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+                Text('热度：',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold)),
                 SizedBox(width: 2),
                 Text('${userEnergy['vipEnergy'] + userEnergy['vipTuiEnergy']}',
                     style: TextStyle(color: Colors.black, fontSize: 11)),
@@ -802,7 +891,9 @@ class _MySelfPageState extends ConsumerState<MySelfPage> with TickerProviderStat
                 onTap: () {
                   Navigator.pushNamed(context, '/energyPage');
                 },
-                child: Row(children: [Text('查看详情>', style: TextStyle(color: Colors.blue))]),
+                child: Row(children: [
+                  Text('查看详情>', style: TextStyle(color: Colors.blue))
+                ]),
               ))
         ]).then((value) {
       if (null == value) {

@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/custom_scroll_physics.dart';
-import 'package:maixs_utils/widget/my_bouncing_scroll_physics.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
 import '../../util/global.dart';
-import '../../util/launchApp.dart';
-import '../../util/paixs_fun.dart';
 import 'menu_data.dart';
 
 ///菜单组件
@@ -26,6 +18,9 @@ class MenuWidget extends StatefulWidget {
 
 class _MenuWidgetState extends State<MenuWidget> {
   int page = 0;
+  bool _isLoading = false;
+  String? _error;
+
   @override
   Widget build(BuildContext context) {
     List data = menuData;
@@ -34,118 +29,183 @@ class _MenuWidgetState extends State<MenuWidget> {
     //     return element['title'] == '美团外卖' || element['title'] == '饿了么';
     //   });
     // }
-    DataModel menuModel = DataModel(value: data);
-    menuModel.addList([{}], true, 0);
-    return AnimatedSwitchBuilder(
-      value: menuModel,
-      errorOnTap: () => widget.fun!(),
-      noDataView: PWidget.boxh(0),
-      errorView: PWidget.boxh(0),
-      initialState: PWidget.container(null, [double.infinity]),
-      isAnimatedSize: false,
-      valueBuilder: (v) {
-        var count = (v.last.length / widget.count).ceil();
-        return PWidget.column([
-          Builder(builder: (context) {
-            var icons = v.first as List;
-            return PWidget.container(
-              Wrap(
-                children: List.generate(icons.length, (i) {
-                  var wh = (pmSize.width - 16) / 5;
-                  var icon = icons[i] as Map;
+
+    if (_isLoading) {
+      return Container(
+        width: double.infinity,
+        height: 200,
+        child: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_error != null) {
+      return GestureDetector(
+        onTap: () => widget.fun?.call(),
+        child: Container(
+          width: double.infinity,
+          height: 200,
+          child: Center(child: Text('Error: $_error')),
+        ),
+      );
+    }
+
+    if (data.isEmpty || data.length < 2) {
+      return const SizedBox.shrink();
+    }
+
+    List topIcons = data[0] as List;
+    List bottomIcons = data[1] as List;
+    var count = (bottomIcons.length / widget.count).ceil();
+
+    return Column(
+      children: [
+        // Top icons section
+        if (topIcons.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
+            child: Wrap(
+              children: List.generate(topIcons.length, (i) {
+                var wh = (MediaQuery.of(context).size.width - 16) / 5;
+                var icon = topIcons[i] as Map;
+                return createItem(icon, wh);
+              }),
+            ),
+          ),
+        // Bottom icons PageView section
+        Container(
+          height: 160,
+          padding: const EdgeInsets.only(left: 8, right: 8, top: 0, bottom: 0),
+          child: PageView.builder(
+            itemCount: count,
+            physics: const BouncingScrollPhysics(),
+            onPageChanged: (i) => setState(() => page = i),
+            itemBuilder: (_, i) {
+              var isToEnd = (bottomIcons.length > ((i + 1) * widget.count));
+              List sublist = bottomIcons.sublist(i * widget.count, isToEnd ? (i + 1) * widget.count : null);
+              return Wrap(
+                children: List.generate(sublist.length, (i) {
+                  var wh = (MediaQuery.of(context).size.width - 16) / (widget.count / 2);
+                  var icon = sublist[i];
                   return createItem(icon, wh);
                 }),
-              ),
-              {'pd': PFun.lg(0, 0, 8, 8)},
-            );
-          }),
-          PWidget.container(
-            PageView.builder(
-              itemCount: count,
-              physics: PagePhysics(parent: MyBouncingScrollPhysics()),
-              onPageChanged: (i) => setState(() => page = i),
-              itemBuilder: (_, i) {
-                var isToEnd = (v.last.length > ((i + 1) * widget.count));
-                // List sublist = widget.list.sublist(10 * i, (widget.list.length > ((i + 1) * 10)) ? 10 : null);
-                List sublist = v.last.sublist(
-                    i * widget.count, isToEnd ? (i + 1) * widget.count : null);
-                return Wrap(
-                  children: List.generate(sublist.length, (i) {
-                    var wh = (pmSize.width - 16) / (widget.count / 2);
-                    var icon = sublist[i];
-                    return createItem(icon, wh);
-                  }),
-                );
-              },
-            ),
-            [null, 160],
-            {'pd': PFun.lg(0, 0, 8, 8)},
+              );
+            },
           ),
-          if(count > 1)
-            PWidget.boxh(8),
-          if(count > 1)
-            PWidget.row(
-              List.generate(
-                  count,
-                  (i) => PWidget.container(
-                      null,
-                      [16, 4, Colors.red.withOpacity(page == i ? 1 : 0.1)],
-                      {'br': 8, 'mg': 2})),
-              '221'),
-        ]);
-      },
+        ),
+        // Page indicators
+        if (count > 1) const SizedBox(height: 8),
+        if (count > 1)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              count,
+              (i) => Container(
+                width: 16,
+                height: 4,
+                margin: const EdgeInsets.symmetric(horizontal: 2),
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: page == i ? 1 : 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
-  Widget createItem(icon, wh) {
+  Widget createItem(Map icon, double wh) {
     return Stack(
       children: [
-        PWidget.container(
-          PWidget.ccolumn([
-            getImages(icon),
-            PWidget.spacer(),
-            PWidget.textNormal('${icon['title']}', [Colors.black, 13]),
-            PWidget.spacer(),
-          ]),
-          [wh, 80],
-          {'fun': () => onTap(icon)},
-        ),
-        if(icon['arrow'] != null)
-        PWidget.positioned(
-            PWidget.container(
-              PWidget.textNormal(icon['arrow'], [Colors.white, 9]),
-              [null, null, Colors.red],
-              {'bd': PFun.bdAllLg(Colors.red, 0.5),'pd':PFun.lg(1, 1, 2, 2), 'br': PFun.lg(8, 8, 1, 8)},
+        GestureDetector(
+          onTap: () => onTap(icon),
+          child: Container(
+            width: wh,
+            height: 80,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                getImages(icon),
+                const Spacer(),
+                Text(
+                  '${icon['title']}',
+                  style: const TextStyle(color: Colors.black, fontSize: 13),
+                ),
+                const Spacer(),
+              ],
             ),
-            [2, null, null, 2])
+          ),
+        ),
+        if (icon['arrow'] != null)
+          Positioned(
+            top: 2,
+            right: 2,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                border: Border.all(color: Colors.red, width: 0.5),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                  bottomLeft: Radius.circular(1),
+                  bottomRight: Radius.circular(8),
+                ),
+              ),
+              child: Text(
+                icon['arrow'],
+                style: const TextStyle(color: Colors.white, fontSize: 9),
+              ),
+            ),
+          ),
       ],
     );
   }
 
   Widget getImages(Map data) {
-    String path = data['path'];
+    String? path = data['path'];
     Widget image;
     if (path != null) {
       if (path.endsWith('.svg')) {
-        image = PWidget.container(
-            SvgPicture.asset(
-              path,
-              width: 48,
-              height: 48,
-              color: data['color'],
-            ),
-            {'pd': 4});
-        ;
+        image = Container(
+          padding: const EdgeInsets.all(4),
+          child: SvgPicture.asset(
+            path,
+            width: 48,
+            height: 48,
+            colorFilter: data['color'] != null ? ColorFilter.mode(data['color'], BlendMode.srcIn) : null,
+          ),
+        );
       } else {
-        image = PWidget.container(PWidget.image(path, [48, 48]), {'pd': 4});
+        image = Container(
+          padding: const EdgeInsets.all(4),
+          child: Image.asset(
+            path,
+            width: 48,
+            height: 48,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.error, size: 48);
+            },
+          ),
+        );
       }
     } else {
-      image = PWidget.wrapperImage(data['img'], [56, 56], {'pd': 4});
+      image = Container(
+        padding: const EdgeInsets.all(4),
+        child: Image.network(
+          data['img'] ?? '',
+          width: 56,
+          height: 56,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(Icons.error, size: 56);
+          },
+        ),
+      );
     }
     return image;
   }
 
-  onTap(v) {
+  void onTap(Map v) {
     if (v['type'] == '1') {
       Navigator.pushNamed(context, v['url']);
     } else {

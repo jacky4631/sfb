@@ -23,8 +23,8 @@ class _FirstPageState extends State<TilesWidget> {
       value: 'img',
       radius: 8,
       margin: 16,
-      padding: [16, 8, 8, 8],
-      aspectRatio: 710 / (170 + 30),
+      padding: [0, 8, 0, 8],
+      aspectRatio: 3.1,
       fun: (v) {
         ///点击事件
         Global.kuParse(context, v);

@@ -5,26 +5,21 @@
 import 'dart:async';
 
 import 'package:clipboard/clipboard.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/anima_switch_widget.dart';
-import 'package:maixs_utils/widget/my_custom_scroll.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
-import 'package:maixs_utils/widget/scaffold_widget.dart';
-import 'package:maixs_utils/widget/views.dart';
+import 'package:flutter/services.dart';
+import 'package:sufenbao/models/data_model.dart';
 import 'package:sufenbao/util/custom.dart';
 import 'package:sufenbao/util/launchApp.dart';
 import 'package:sufenbao/util/tao_util.dart';
 import 'package:sufenbao/widget/auth_tip.dart';
 import 'package:sufenbao/widget/product_info_img_widget.dart';
 import 'package:sufenbao/service.dart';
+import 'package:waterfall_flow/waterfall_flow.dart';
 
 import '../util/colors.dart';
 import '../util/global.dart';
 import '../util/login_util.dart';
 import '../util/toast_utils.dart';
-import '../util/paixs_fun.dart';
 import '../listener/detail_value_change.dart';
 import '../widget/CustomWidgetPage.dart';
 import '../widget/aspect_ratio_image.dart';
@@ -41,7 +36,7 @@ class ProductDetails extends StatefulWidget {
   _ProductDetailsState createState() => _ProductDetailsState();
 }
 
-class _ProductDetailsState extends State<ProductDetails> with AuthTip{
+class _ProductDetailsState extends State<ProductDetails> with AuthTip {
   ScrollController controller = ScrollController();
 
   List tabList = ['商品', '详情', '同款'];
@@ -68,7 +63,7 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
     listMainPic = getTbMainPic(widget.data);
     goodsId = getGoodsId();
     List goodsIdSplit = goodsId.split('-');
-    if(goodsIdSplit.length > 1) {
+    if (goodsIdSplit.length > 1) {
       suffixGoodsId = goodsIdSplit[1];
     } else {
       suffixGoodsId = goodsId;
@@ -81,12 +76,9 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
 
     valueChange.changeTabIndex(0);
     this.controllerListener();
-    super.initChannelId(callback: (){
-      setState(() {
-
-      });
+    super.initChannelId(callback: () {
+      setState(() {});
     });
-
   }
 
   @override
@@ -101,15 +93,15 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
       valueChange.changeValue(controller.offset);
       var key1H = 0.0;
       var key2H = 0.0;
-      if(key1.currentContext != null) {
+      if (key1.currentContext != null) {
         key1H = (key1.currentContext?.size?.height) ?? 0.0;
       }
-      if(key2.currentContext != null) {
+      if (key2.currentContext != null) {
         key2H = (key2.currentContext?.size?.height) ?? 0.0;
       }
-      if (controller.offset > key1H + key2H - 56 - pmPadd.top) {
+      if (controller.offset > key1H + key2H - 56 - MediaQuery.of(context).padding.top) {
         valueChange.changeTabIndex(2);
-      } else if (controller.offset > key1H - 56 - pmPadd.top) {
+      } else if (controller.offset > key1H - 56 - MediaQuery.of(context).padding.top) {
         valueChange.changeTabIndex(1);
       } else {
         valueChange.changeTabIndex(0);
@@ -118,26 +110,25 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
   }
 
   ///详情数据
-  var detailDm = DataModel<Map>(object: {'actualPrice': ''});
+  var detailDm = DataModel(object: {'actualPrice': ''});
   var res;
   Future<int> getDetailData() async {
-    if(goodsId == null) {
+    if (goodsId.isEmpty) {
       ToastUtils.showToast('商品已下架');
       Navigator.pop(context);
     }
-     res = await BService.getGoodsDetail(goodsId)
-        .catchError((v) {
+    res = await BService.getGoodsDetail(goodsId).catchError((v) {
       detailDm.toError('网络异常');
     });
     if (res.isNotEmpty) {
       sellerId = res['sellerId'];
       shopName = res['shopName'];
-      if(listMainPic.isEmpty) {
+      if (listMainPic.isEmpty) {
         listMainPic = res['mainPic'];
       }
       startPrice = res['originalPrice'].toString();
       endPrice = res['actualPrice'].toString();
-      title = res['dtitle']==''? res['title']: res['dtitle'];
+      title = res['dtitle'] == '' ? res['title'] : res['dtitle'];
       detailDm.addObject(res);
 
       setState(() {
@@ -155,7 +146,7 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
   getGoodsId() {
     //wtf 返回那么乱
     var goodsId = widget.data['goodsSign'];
-    if(Global.isEmpty(goodsId)) {
+    if (Global.isEmpty(goodsId)) {
       goodsId = widget.data['goodsId'];
     }
     if (Global.isEmpty(goodsId)) {
@@ -167,33 +158,34 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
     if (Global.isEmpty(goodsId)) {
       goodsId = widget.data['itemid'].toString();
     }
-    if(Global.isEmpty(goodsId)) {
+    if (Global.isEmpty(goodsId)) {
       goodsId = widget.data['item_id'];
     }
-    if(Global.isEmpty(goodsId)) {
+    if (Global.isEmpty(goodsId)) {
       goodsId = widget.data['originalProductId'];
     }
     return goodsId.toString();
   }
 
-  var klDm = DataModel<Map>();
+  var klDm = DataModel();
   Future<int> getKlData() async {
-    var res = await BService.getGoodsWord(goodsId, uid: widget.data['uid']??0);
+    var res = await BService.getGoodsWord(goodsId, uid: widget.data['uid'] ?? 0);
     if (res != null) klDm.addObject(res);
     return klDm.flag;
   }
+
   Future getCollect() async {
     collect = await BService.collect(suffixGoodsId);
-    setState(() {
-    });
+    setState(() {});
   }
-  var shopDm = DataModel<Map>();
+
+  var shopDm = DataModel();
   Future<int> getShopData() async {
-    if(Global.isEmpty(sellerId)) {
-      sellerId = widget.data['sellerId']??widget.data['seller_id'];
+    if (Global.isEmpty(sellerId)) {
+      sellerId = widget.data['sellerId'] ?? widget.data['seller_id'];
     }
-    if(Global.isEmpty(shopName)) {
-      shopName = widget.data['shopName']??widget.data['ship_title'];
+    if (Global.isEmpty(shopName)) {
+      shopName = widget.data['shopName'] ?? widget.data['ship_title'];
     }
     var res = await BService.shopConvert(sellerId, shopName);
     if (res != null) shopDm.addObject(res);
@@ -215,144 +207,334 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldWidget(
-      // brightness: Brightness.light,
-      bgColor: Color(0xffF3F3F3),
-      body: Stack(children: [
-        loading ? Global.showLoading2() : MyCustomScroll(
-          isGengduo: false,
-          isShuaxin: false,
-          headers: headers,
-          crossAxisCount: 2,
-          crossAxisSpacing: 10,
-          controller: controller,
-          itemPadding: EdgeInsets.all(16).copyWith(bottom: MediaQuery.of(context).padding.bottom + 70),
-          itemModel: listSimilarGoodsByOpenDm,
-          itemModelBuilder: (i, v) {
-            return PWidget.container(
-              Global.openFadeContainer(createSimilarItem(i, v), ProductDetails(v)),
-              [null, null, Colors.white],
-              {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 10)},
-            );
-          },
-        ),
-        titleBarView(),
-        btmBarView(),
-        if(showChannelWidget)
-          createChannelAuthWidget('tb.png'),
-
-      ]),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarIconBrightness: Brightness.dark,
+        statusBarColor: Colors.transparent,
+        statusBarBrightness: Brightness.light,
+      ),
+      child: Scaffold(
+        backgroundColor: Color(0xffF3F3F3),
+        body: Stack(children: [
+          loading
+              ? Global.showLoading2()
+              : CustomScrollView(
+                  controller: controller,
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildListDelegate(headers),
+                    ),
+                    if (listSimilarGoodsByOpenDm.list.isNotEmpty)
+                      SliverWaterfallFlow(
+                        gridDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, i) {
+                            var v = listSimilarGoodsByOpenDm.list[i];
+                            return _buildSimilarItemContainer(i, v);
+                          },
+                          childCount: listSimilarGoodsByOpenDm.list.length,
+                        ),
+                      ),
+                    SliverPadding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).padding.bottom + 70,
+                        left: 16,
+                        right: 16,
+                        top: 16,
+                      ),
+                    ),
+                  ],
+                ),
+          titleBarView(),
+          btmBarView(),
+          if (showChannelWidget) createChannelAuthWidget(context, 'tb.png'),
+        ]),
+      ),
     );
   }
-  tipClick(){
+
+  Widget _buildDetailLunboWidget() {
+    if (detailDm.object == null) {
+      return Container(
+        width: double.infinity,
+        height: 200,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return DetailLunboWidget(getBannerImages());
+  }
+
+  Widget _buildSimilarItemContainer(int i, dynamic v) {
+    return Container(
+      margin: EdgeInsets.only(
+        top: [0, 1].contains(i) ? 0 : 10,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Global.openFadeContainer(createSimilarItem(i, v), ProductDetails(v)),
+    );
+  }
+
+  tipClick() {
     Global.showChannelAuthDialog(() async {
       Navigator.pop(context);
-      await Future.delayed(Duration(seconds: 2), );
+      await Future.delayed(
+        Duration(seconds: 2),
+      );
       await initChannelId();
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
   Widget createSimilarItem(i, v) {
     String sale = BService.formatNum(v['monthSales']);
-    return PWidget.container(
-      PWidget.column([
-        PWidget.wrapperImage(getTbMainPic(v), {'ar': 1 / 1}),
-        PWidget.container(
-          PWidget.column([
-            PWidget.text(v['dtitle'],
-                [Colors.black.withOpacity(0.75)], {}),
-            PWidget.boxh(8),
-            PWidget.text('', [], {}, [
-              PWidget.textIs('¥', [Colours.app_main, 12, true]),
-              PWidget.textIs(
-                  '${v['actualPrice']} ', [Colours.app_main, 16, true]),
-              PWidget.textIs('¥${v['originalPrice']}', [Colors.black45, 12],
-                  {'td': TextDecoration.lineThrough})
-            ]),
-            PWidget.boxh(8),
-            PWidget.text(v['shopName'], [Colors.black45, 12]),
-            PWidget.boxh(8),
-            PWidget.text('', [], {}, [
-              PWidget.textIs('已售', [Colors.black45, 12]),
-              PWidget.textIs(
-                  sale, [Colors.black45, 12]),
-              PWidget.textIs('+', [Colors.black45, 12]),
-            ]),
-          ]),
-          {'pd': 8},
-        ),
-      ]),
-      [null, null, Colors.white],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+      ),
+      child: Column(
+        children: [
+          AspectRatio(
+            aspectRatio: 1.0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.network(
+                getTbMainPic(v),
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[200],
+                    child: Icon(Icons.image_not_supported, color: Colors.grey),
+                  );
+                },
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  v['dtitle'],
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 14,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 8),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '¥',
+                        style: TextStyle(
+                          color: Colours.app_main,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${v['actualPrice']} ',
+                        style: TextStyle(
+                          color: Colours.app_main,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '¥${v['originalPrice']}',
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontSize: 12,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  v['shopName'],
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 12,
+                  ),
+                ),
+                SizedBox(height: 8),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '已售',
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontSize: 12,
+                        ),
+                      ),
+                      TextSpan(
+                        text: sale,
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontSize: 12,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '+',
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
+
   ///底部操作栏
   Widget btmBarView() {
-    return PWidget.positioned(
-      PWidget.container(
-        PWidget.row([
-          PWidget.boxw(4),
-          createBottomBackArrow(context),
-          PWidget.boxw(8),
-          btmBtnView('收藏', Icons.star_rate_rounded, () {
-            BService.collectProduct(context, collect, suffixGoodsId,
-                'tb', listMainPic, title, startPrice, endPrice, originalId: goodsId).then((value){
+    return Positioned(
+      bottom: detailDm.object!.isEmpty ? -64 : 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        padding: EdgeInsets.fromLTRB(
+          8,
+          8,
+          8,
+          MediaQuery.of(context).padding.bottom + 8,
+        ),
+        child: Row(
+          children: [
+            SizedBox(width: 4),
+            createBottomBackArrow(context),
+            SizedBox(width: 8),
+            btmBtnView('收藏', Icons.star_rate_rounded, () {
+              BService.collectProduct(context, collect, suffixGoodsId, 'tb', listMainPic, title, startPrice, endPrice,
+                      originalId: goodsId)
+                  .then((value) {
                 getCollect();
-            });
-          },collect),
-          PWidget.boxw(24),
-          PWidget.container(
-            PWidget.row([
-              if(showShareBuy)
-              PWidget.container(
-                PWidget.textNormal('转卖', [Colours.app_main, 14, true], {'ct': true}),
-                [null, null, Colours.share_bg],
-                {
-                  'exp': true,
-                  'fun': () {
-                    onTapDialogLogin(context, fun: (){
-                      res['klUrl'] = klDm.object?['longTpwd'];
-                      Navigator.pushNamed(context, '/sellPage', arguments: {'res':res,'platType':'TB'});
-
-                    });
-                  }
-                },
+              });
+            }, collect),
+            SizedBox(width: 24),
+            Expanded(
+              child: Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(56),
+                ),
+                child: Row(
+                  children: [
+                    if (showShareBuy)
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            onTapDialogLogin(context, fun: () {
+                              res['klUrl'] = klDm.object?['longTpwd'];
+                              Navigator.pushNamed(context, '/sellPage', arguments: {'res': res, 'platType': 'TB'});
+                            });
+                          },
+                          child: Container(
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: Colours.share_bg,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(56),
+                                bottomLeft: Radius.circular(56),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '转卖',
+                                style: TextStyle(
+                                  color: Colours.app_main,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (showShareBuy)
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            FlutterClipboard.copy(klDm.object?['longTpwd'])
+                                .then((value) => ToastUtils.showToast('复制成功，打开【淘宝】领券购买'));
+                          },
+                          child: Container(
+                            height: 45,
+                            decoration: BoxDecoration(
+                              color: Colours.hb_bg,
+                            ),
+                            child: Center(
+                              child: Text(
+                                '口令购买',
+                                style: TextStyle(
+                                  color: Colours.app_main,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          onTapDialogLogin(context, fun: launchTb);
+                        },
+                        child: Container(
+                          height: 45,
+                          decoration: BoxDecoration(
+                            color: Colours.app_main,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(56),
+                              bottomRight: Radius.circular(56),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '领券购买',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              if(showShareBuy)
-              PWidget.container(
-                PWidget.textNormal('口令购买', [Colours.app_main, 14, true], {'ct': true}),
-                [null, null, Colours.hb_bg],
-                {
-                  'exp': true,
-                  'fun': () => {
-                    FlutterClipboard.copy(klDm.object?['longTpwd']).then(
-                            (value) =>
-                            ToastUtils.showToast('复制成功，打开【淘宝】领券购买'))
-                  }
-                },
-              ),
-              PWidget.container(
-                PWidget.textNormal('领券购买', [Colors.white, 14,true], {'ct': true}),
-                [null, null, Colours.app_main],
-                {
-                  'exp': true,
-                  'fun': () {
-                    onTapDialogLogin(context, fun: launchTb);
-                  }
-
-                },
-              ),
-            ]),
-            [null, 45],
-            {'crr': 56, 'exp': true},
-          ),
-        ]),
-        [null, null, Colors.white],
-        {'pd': [8,MediaQuery.of(context).padding.bottom+8,8,8],},
+            ),
+          ],
+        ),
       ),
-      [null, detailDm.object!.isEmpty ? -64 : 0, 0, 0],
     );
   }
 
@@ -367,274 +549,493 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
       valueListenable: valueChange,
       builder: (_, __, ___) {
         var isGo = valueChange.value >= 100;
-        return PWidget.container(
-          PWidget.row([
-            //todo 隐藏截图
-            PWidget.container(
-              PWidget.icon(Icons.keyboard_arrow_left_rounded,
-                  [isGo ? Colors.black : Colors.white]),
-              [32, 32, if (!isGo) Colors.black26],
-              {'br': 56, 'fun': () => Navigator.pop(context)},
-            ),
-            if (isGo) PWidget.spacer(),
-            if (isGo)
-              PWidget.row(
-                List.generate(tabList.length, (i) {
-                  if (i == 1 && ['', null].contains(getDetailImages())) {
-                    return PWidget.boxh(0);
-                  }
-                  return PWidget.container(
-                    PWidget.column([
-                      PWidget.text(tabList[i]),
-                      PWidget.boxh(4),
-                      PWidget.container(null, [
-                        24,
-                        2,
-                        Colours.app_main
-                            .withOpacity((valueChange.tabIndex == i) ? 1 : 0)
-                      ]),
-                    ], '221'),
-                    {
-                      'pd': PFun.lg(0, 0, 16, 16),
-                      'fun': () {
+        return Container(
+          height: 56 + MediaQuery.of(context).padding.top,
+          decoration: BoxDecoration(
+            color: isGo ? Colors.white : null,
+          ),
+          padding: EdgeInsets.fromLTRB(
+            16,
+            MediaQuery.of(context).padding.top + 8,
+            16,
+            8,
+          ),
+          child: Row(
+            children: [
+              //todo 隐藏截图
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: isGo ? null : Colors.black26,
+                    borderRadius: BorderRadius.circular(56),
+                  ),
+                  child: Icon(
+                    Icons.keyboard_arrow_left_rounded,
+                    color: isGo ? Colors.black : Colors.white,
+                  ),
+                ),
+              ),
+              if (isGo) Spacer(),
+              if (isGo)
+                Row(
+                  children: List.generate(tabList.length, (i) {
+                    if (i == 1 && ['', null].contains(getDetailImages())) {
+                      return SizedBox.shrink();
+                    }
+                    return GestureDetector(
+                      onTap: () {
                         valueChange.changeTabIndex(i);
                         switch (tabList[i]) {
                           case '商品':
-                            this.animateTo(0.0);
+                            animateTo(0.0);
                             break;
                           case '详情':
-                            this.animateTo(
-                                (key1.currentContext?.size?.height ?? 0.0) -
-                                    48 -
-                                    pmPadd.top);
+                            animateTo(
+                                (key1.currentContext?.size?.height ?? 0.0) - 48 - MediaQuery.of(context).padding.top);
                             break;
                           case '同款':
-                            var key1H =
-                            (key1.currentContext?.size?.height ?? 0.0);
-                            var key2H =
-                            (key2.currentContext?.size?.height ?? 0.0);
-                            this.animateTo((key1H + key2H) - 48 - pmPadd.top);
+                            var key1H = (key1.currentContext?.size?.height ?? 0.0);
+                            var key2H = (key2.currentContext?.size?.height ?? 0.0);
+                            animateTo((key1H + key2H) - 48 - MediaQuery.of(context).padding.top);
                             break;
                         }
                       },
-                    },
-                  );
-                }),
-              ),
-            if (isGo) PWidget.spacer(),
-            if (isGo) PWidget.container(null, [32, 32]),
-          ]),
-          [null, 56 + pmPadd.top, if (isGo) Colors.white],
-          {
-            'pd': PFun.lg(pmPadd.top + 8, 8, 16, 16),
-          },
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(0, 0, 16, 0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(tabList[i]),
+                            SizedBox(height: 4),
+                            Container(
+                              width: 24,
+                              height: 2,
+                              decoration: BoxDecoration(
+                                color: Colours.app_main.withValues(alpha: (valueChange.tabIndex == i) ? 1 : 0),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+              if (isGo) Spacer(),
+              if (isGo) Container(width: 32, height: 32),
+            ],
+          ),
         );
       },
     );
   }
 
   List<Widget> get headers {
-    var shopLogo =
-    detailDm.object != null ? '${detailDm.object?['shopLogo']}' : '';
-    if(!Global.isEmpty(shopLogo)) {
+    var shopLogo = detailDm.object != null ? '${detailDm.object?['shopLogo']}' : '';
+    if (!Global.isEmpty(shopLogo)) {
       //部分logo包含重复的地址，图片打不开
-      if(!Global.isBlank(shopLogo)
-          && shopLogo.contains('https://gw.alicdn.com')
-          && shopLogo.contains('https://img.alicdn.com')) {
+      if (!Global.isBlank(shopLogo) &&
+          shopLogo.contains('https://gw.alicdn.com') &&
+          shopLogo.contains('https://img.alicdn.com')) {
         shopLogo = shopLogo.replaceAll('https://img.alicdn.com', '');
       }
-      if(shopLogo == 'https://gw.alicdn.com') {
-        shopLogo = 'https://img.alicdn.com/imgextra/i1/O1CN01t0gpBw1rDvwz5VXgK_!!6000000005598-2-tps-120-99.png_160x160Q50s50.jpg_.webp';
+      if (shopLogo == 'https://gw.alicdn.com') {
+        shopLogo =
+            'https://img.alicdn.com/imgextra/i1/O1CN01t0gpBw1rDvwz5VXgK_!!6000000005598-2-tps-120-99.png_160x160Q50s50.jpg_.webp';
       }
       shopLogo = BService.formatUrl(shopLogo);
     }
     String sale = BService.formatNum(detailDm.object?['monthSales']);
     double fee = detailDm.object?['commissionRate'] * detailDm.object?['actualPrice'] / 100;
     num divi = detailDm.object?['subdivisionRank'];
-    if(divi == null || divi == 0) {
+    if (divi == null || divi == 0) {
       divi = 1;
     }
-    var shopType = detailDm.object?['shopType']??0;
+    var shopType = detailDm.object?['shopType'] ?? 0;
     num couponPrice = detailDm.object?['couponPrice'];
     String couponStartTime = '';
     String couponEndTime = '';
-    if(couponPrice > 0) {
+    if (couponPrice > 0) {
       couponStartTime = detailDm.object?['couponStartTime'];
       couponEndTime = detailDm.object?['couponEndTime'];
-      if(!Global.isEmpty(couponStartTime)) {
+      if (!Global.isEmpty(couponStartTime)) {
         couponStartTime = couponStartTime.split(' ')[0];
       }
-      if(!Global.isEmpty(couponEndTime)) {
+      if (!Global.isEmpty(couponEndTime)) {
         couponEndTime = couponEndTime.split(' ')[0];
       }
     }
     return [
-      PWidget.column([
-        Stack(children: [
-          AnimatedSwitchBuilder(
-            value: detailDm,
-            errorOnTap: () => this.getDetailData(),
-            isAnimatedSize: false,
-            initialState: PWidget.container(null, [double.infinity, 200]),
-            objectBuilder: (v) {
-              return DetailLunboWidget(getBannerImages());
-            },
+      Column(
+        key: key1,
+        children: [
+          Stack(
+            children: [
+              _buildDetailLunboWidget(),
+              //todo 隐藏截图
+              GoodsBuyHistoryWidget(),
+            ],
           ),
-          //todo 隐藏截图
-          GoodsBuyHistoryWidget(),
-        ]),
-        PWidget.container(
-          PWidget.column([
-            PWidget.container(
-              PWidget.row([
-                PWidget.image('assets/images/mall/fqb.png', [162 / 3, 54 / 3]),
-                PWidget.boxw(8),
-                PWidget.text('', [], {}, [
-                  PWidget.textIs(
-                      '${detailDm.object?['subdivisionName'] ?? ''}热销排行榜第',
-                      [Color(0xffB08E55), 12]),
-                  PWidget.textIs(
-                      ' ${divi} ',
-                      [Colours.app_main, 12, true]),
-                  PWidget.textIs('名', [Color(0xffB08E55), 12]),
-                ]),
-                PWidget.spacer(),
-                PWidget.container(
-                  PWidget.row([
-                    PWidget.text(
-                        '查看', [Color(0xffB08E55), 10], {'pd': PFun.lg(0.5)}),
-                    PWidget.icon(
-                        Icons.chevron_right_rounded, [Color(0xffB08E55), 16]),
-                  ]),
-                  {
-                    'pd': PFun.lg(0, 0, 8, 0),
-                    'br': 56,
-                    'bd': PFun.bdAllLg(Color(0xffB08E55), 1)
-                  },
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            padding: EdgeInsets.only(bottom: 8),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Color(0xffF7F3DB),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: GestureDetector(
+                    onTap: () => Navigator.pushNamed(context, '/top'),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/mall/fqb.png',
+                          width: 162 / 3,
+                          height: 54 / 3,
+                        ),
+                        SizedBox(width: 8),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '${detailDm.object?['subdivisionName'] ?? ''}热销排行榜第',
+                                style: TextStyle(
+                                  color: Color(0xffB08E55),
+                                  fontSize: 12,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' $divi ',
+                                style: TextStyle(
+                                  color: Colours.app_main,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '名',
+                                style: TextStyle(
+                                  color: Color(0xffB08E55),
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Spacer(),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(0, 0, 8, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(56),
+                            border: Border.all(
+                              color: Color(0xffB08E55),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 0.5),
+                                child: Text(
+                                  '查看',
+                                  style: TextStyle(
+                                    color: Color(0xffB08E55),
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                color: Color(0xffB08E55),
+                                size: 16,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ]),
-              [null, null, Color(0xffF7F3DB)],
-              {
-                'pd': 12,
-                'br': 8,
-                'mg': [8,8,8,0],
-                'fun': () => {Navigator.pushNamed(context, '/top')}
-              },
-            ),
-            PWidget.container(
-              PWidget.row([
-                PWidget.image('assets/images/mall/${shopType == 1 ? 'tm' : 'tb'}.png', [14, 14],{'pd':[4,0,0,0]}),
-                PWidget.boxw(4),
-                getTitleWidget(title, size: 16)
-              ]),
-              {'pd': [8,8,12,0]},
-            ),
-            PWidget.container(
-              PWidget.row([
-                getPriceWidget(endPrice, startPrice, endTextSize: 24, startPrefix: '原价 ',
-                endPrefixSize: 16),
-                PWidget.spacer(),
-                PWidget.text('已售$sale件', [Colors.black45, 12], {},),
-              ]),
-              {'pd': [8,8,12,0]},
-            ),
-            PWidget.container(PWidget.row([
-              getMoneyWidget(context, fee, TB, column: false),
-            ]),
-              {'pd': [8,0,12,8]},
-            ),
-          ]),
-          [null, null, Colors.white],
-          {'pd': [0,0,0,8]},
-        ),
-        detailDm.object?['desc'] == '' ? SizedBox() :
-        PWidget.container(
-          PWidget.row([
-            PWidget.textNormal(detailDm.object?['desc'], {'isOf': false,'exp':true})
-          ]),
-          [null, null, Colors.white],
-          {'pd': 16,},
-        ),
-        if(detailDm.object?['couponPrice'] > 0)
-          PWidget.container(
-            PWidget.container(PWidget.row([
-            PWidget.boxw(10),
-            PWidget.text('', [], {}, [
-              PWidget.textIsNormal('¥', [Colours.app_main, 16, true]),
-              PWidget.textIsNormal('$couponPrice\t',
-                  [Colours.app_main, 24, true]),
-            ]),
-            PWidget.boxw(10),
-            PWidget.column([
-              PWidget.textNormal('优惠券使用期限', [Colours.app_main, 14, true], {'ct': true}),
-              PWidget.boxh(4),
-              PWidget.textNormal('$couponStartTime至$couponEndTime', [Colours.app_main]),
-            ], {
-              'exp': 1
-            }),
-            PWidget.textNormal('立即领券', [Colours.app_main, 14, true], {'pd': 24}),
-          ]),
-          [null, null, Colours.hb_bg],
-          {
-            'mg': 8,
-            'br': 8,
-            'fun': () => launchTb()
-          },
-        ),
-          [null, null, Colors.white],
-        ),
-        PWidget.container(
-          PWidget.row([
-            Global.isEmpty(shopLogo)
-                ? SizedBox()
-                :     AspectRatioImage.network(shopLogo,  builder: (context, snapshot, url){
-              return PWidget.wrapperImage(shopLogo, [56, 56], {'br': 8}
-              );
-            }),
-            PWidget.boxw(8),
-            PWidget.column([
-              PWidget.row([
-                PWidget.text(detailDm.object?['shopName'], [Colors.black, 14, true],
-                    {'exp': true}),
-                PWidget.container(
-                  PWidget.textNormal('全部商品', [Colours.dark_text_color]),
-                  [null, null, Colours.yellow_bg],
-                  {'pd': PFun.lg(6, 7, 12, 12), 'br': 16,'fun':(){
-                    LaunchApp.launchTb(context, shopDm.object?['shopLinks']);
-                  }},
+                Container(
+                  padding: EdgeInsets.fromLTRB(8, 8, 8, 12),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Image.asset(
+                          'assets/images/mall/${shopType == 1 ? 'tm' : 'tb'}.png',
+                          width: 14,
+                          height: 14,
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Expanded(
+                        child: getTitleWidget(title, size: 16),
+                      ),
+                    ],
+                  ),
                 ),
-              ]),
-              PWidget.boxh(8),
-              Builder(builder: (context) {
-                var data = detailDm.object!;
-                var descScore = data['descScore'];
-                if(descScore == null || Global.isEmpty(descScore.toString()) || descScore.toString().length == 5) {
-                  descScore = 4.8;
-                }
-                var shipScore = data['shipScore'];
-                if(shipScore == null || shipScore == 0 || Global.isEmpty(shipScore.toString())) {
-                  shipScore = 4.8;
-                }
-                var serviceScore = data['serviceScore'];
-                if(serviceScore == null || serviceScore == 0  || Global.isEmpty(serviceScore.toString())) {
-                  serviceScore = 4.8;
-                }
-                return PWidget.textNormal(
-                    '描述：$descScore   卖家：$serviceScore   物流：$shipScore', [Colors.black54, 12]);
-              }),
-            ], {
-              'exp': 1,
-            }),
-          ]),
-          [null, null, Colors.white],
-          {'pd': 16},
-        ),
-      ], null, null, key1),
-      ProductInfoImgWidget({'isExpand':false, 'imgs': getDetailImages()}, key: key2),
+                Container(
+                  padding: EdgeInsets.fromLTRB(8, 8, 8, 12),
+                  child: Row(
+                    children: [
+                      getPriceWidget(
+                        endPrice,
+                        startPrice,
+                        endTextSize: 24,
+                        startPrefix: '原价 ',
+                        endPrefixSize: 16,
+                      ),
+                      Spacer(),
+                      Text(
+                        '已售${sale}件',
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(8, 0, 8, 12),
+                  child: Row(
+                    children: [
+                      getMoneyWidget(context, fee, TB, column: false),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (detailDm.object?['desc'] != '')
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              padding: EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      detailDm.object?['desc'] ?? '',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          if (detailDm.object?['couponPrice'] > 0)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Container(
+                margin: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colours.hb_bg,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: GestureDetector(
+                  onTap: () => launchTb(),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: '¥',
+                              style: TextStyle(
+                                color: Colours.app_main,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: '$couponPrice\t',
+                              style: TextStyle(
+                                color: Colours.app_main,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              '优惠券使用期限',
+                              style: TextStyle(
+                                color: Colours.app_main,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '$couponStartTime至$couponEndTime',
+                              style: TextStyle(
+                                color: Colours.app_main,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          '立即领券',
+                          style: TextStyle(
+                            color: Colours.app_main,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+            ),
+            padding: EdgeInsets.all(16),
+            child: Row(
+              children: [
+                if (!Global.isEmpty(shopLogo))
+                  AspectRatioImage.network(
+                    shopLogo,
+                    builder: (context, snapshot, url) {
+                      return Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            shopLogo,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[200],
+                                child: Icon(Icons.image_not_supported, color: Colors.grey),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              detailDm.object?['shopName'] ?? '',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              LaunchApp.launchTb(context, shopDm.object?['shopLinks']);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(12, 6, 12, 7),
+                              decoration: BoxDecoration(
+                                color: Colours.yellow_bg,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Text(
+                                '全部商品',
+                                style: TextStyle(
+                                  color: Colours.dark_text_color,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Builder(
+                        builder: (context) {
+                          var data = detailDm.object!;
+                          var descScore = data['descScore'];
+                          if (descScore == null ||
+                              Global.isEmpty(descScore.toString()) ||
+                              descScore.toString().length == 5) {
+                            descScore = 4.8;
+                          }
+                          var shipScore = data['shipScore'];
+                          if (shipScore == null || shipScore == 0 || Global.isEmpty(shipScore.toString())) {
+                            shipScore = 4.8;
+                          }
+                          var serviceScore = data['serviceScore'];
+                          if (serviceScore == null || serviceScore == 0 || Global.isEmpty(serviceScore.toString())) {
+                            serviceScore = 4.8;
+                          }
+                          return Text(
+                            '描述：$descScore   卖家：$serviceScore   物流：$shipScore',
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 12,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      ProductInfoImgWidget({'isExpand': false, 'imgs': getDetailImages()}, key: key2),
       listSimilarGoodsByOpenDm.list.length == 0
           ? SizedBox()
-          : PWidget.text('热销同款', [Colors.black.withOpacity(0.75), 16, true],
-          {'ct': true, 'pd': PFun.lg(8)}),
+          : Container(
+              padding: EdgeInsets.all(8),
+              child: Center(
+                child: Text(
+                  '热销同款',
+                  style: TextStyle(
+                    color: Colors.black.withValues(alpha: 0.75),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
     ];
   }
 
@@ -651,9 +1052,10 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
     }
     return detailDm.object?['detailPics'];
   }
+
   Future launchTb() async {
     var clickUrl = klDm.object?['couponClickUrl'];
-    if(clickUrl == '') {
+    if (clickUrl == '') {
       clickUrl = klDm.object?['itemUrl'];
     }
     //百川官方sdk 会显示返回按钮
@@ -662,6 +1064,5 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
     //     backUrl: 'alisdk://');
     //
     LaunchApp.launch(context, clickUrl, LaunchApp.taobao, color: Color(0XFFFF5E00));
-
   }
 }

@@ -3,12 +3,46 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/widget/custom_scroll_physics.dart';
-import 'package:maixs_utils/widget/my_bouncing_scroll_physics.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
 
-import '../util/paixs_fun.dart';
 import 'CustomWidgetPage.dart';
+
+class CustomPagePhysics extends ScrollPhysics {
+  const CustomPagePhysics({ScrollPhysics? parent}) : super(parent: parent);
+
+  @override
+  CustomPagePhysics applyTo(ScrollPhysics? ancestor) {
+    return CustomPagePhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+        mass: 80,
+        stiffness: 100,
+        damping: 1,
+      );
+}
+
+class CustomBouncingScrollPhysics extends ScrollPhysics {
+  const CustomBouncingScrollPhysics({ScrollPhysics? parent}) : super(parent: parent);
+
+  @override
+  CustomBouncingScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return CustomBouncingScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+        mass: 0.5,
+        stiffness: 100,
+        damping: 0.8,
+      );
+
+  @override
+  double get minFlingVelocity => 100.0;
+
+  @override
+  double get maxFlingVelocity => 4000.0;
+}
 
 class OrderTabWidget extends StatefulWidget {
   final List<Map> tabList;
@@ -26,11 +60,23 @@ class OrderTabWidget extends StatefulWidget {
   final Color? labelBgColor;
   final EdgeInsetsGeometry? padding;
 
-  const OrderTabWidget({Key? key, required this.tabList, required this.tabPage,
-    this.isScrollable, this.pagePhysics, this.page = 0, this.color,
-    this.unselectedColor, this.fontWeight,
-    this.fontSize, this.indicatorWeight, this.indicatorColor, this.tabCon,
-    this.labelBgColor, this.padding}) : super(key: key);
+  const OrderTabWidget(
+      {Key? key,
+      required this.tabList,
+      required this.tabPage,
+      this.isScrollable,
+      this.pagePhysics,
+      this.page = 0,
+      this.color,
+      this.unselectedColor,
+      this.fontWeight,
+      this.fontSize,
+      this.indicatorWeight,
+      this.indicatorColor,
+      this.tabCon,
+      this.labelBgColor,
+      this.padding})
+      : super(key: key);
   @override
   _OrderTabWidgetState createState() => _OrderTabWidgetState();
 }
@@ -46,13 +92,12 @@ class _OrderTabWidgetState extends State<OrderTabWidget> with TickerProviderStat
 
   ///初始化函数
   Future initData() async {
-    tabCon = widget.tabCon ??
-        TabController(vsync: this, length: widget.tabList.length, initialIndex: widget.page??1);
+    tabCon = widget.tabCon ?? TabController(vsync: this, length: widget.tabList.length, initialIndex: widget.page ?? 1);
   }
 
   @override
   void dispose() {
-    if(tabCon != null) {
+    if (widget.tabCon == null) {
       tabCon.dispose();
     }
     super.dispose();
@@ -65,7 +110,7 @@ class _OrderTabWidgetState extends State<OrderTabWidget> with TickerProviderStat
         Padding(
           padding: const EdgeInsets.only(top: 40),
           child: TabBarView(
-            physics: widget.pagePhysics ?? const PagePhysics(parent: MyBouncingScrollPhysics()),
+            physics: widget.pagePhysics ?? const CustomPagePhysics(parent: CustomBouncingScrollPhysics()),
             controller: tabCon,
             children: widget.tabPage,
           ),
@@ -78,48 +123,66 @@ class _OrderTabWidgetState extends State<OrderTabWidget> with TickerProviderStat
             dividerHeight: 0,
             tabAlignment: TabAlignment.start,
             controller: tabCon,
-            physics: MyBouncingScrollPhysics(),
+            physics: CustomBouncingScrollPhysics(),
             indicatorSize: TabBarIndicatorSize.label,
             padding: widget.padding,
             // indicatorPadding: EdgeInsets.symmetric(horizontal: 8),
             isScrollable: widget.isScrollable ?? true,
             indicatorWeight: widget.indicatorWeight ?? 4,
             indicatorColor: (widget.indicatorColor ?? Colors.white),
-            unselectedLabelColor: widget.unselectedColor ?? (widget.color ?? Colors.white).withOpacity(0.5),
-            unselectedLabelStyle: TextStyle(fontSize: widget.fontSize ?? 16, fontWeight: widget.fontWeight??FontWeight.bold),
-            labelStyle: TextStyle(fontSize: widget.fontSize ?? 16, fontWeight: widget.fontWeight??FontWeight.bold),
+            unselectedLabelColor: widget.unselectedColor ?? (widget.color ?? Colors.white).withValues(alpha: 0.5),
+            unselectedLabelStyle:
+                TextStyle(fontSize: widget.fontSize ?? 16, fontWeight: widget.fontWeight ?? FontWeight.bold),
+            labelStyle: TextStyle(fontSize: widget.fontSize ?? 16, fontWeight: widget.fontWeight ?? FontWeight.bold),
             labelColor: (widget.color ?? Colors.white),
             tabs: widget.tabList.map((m) {
-              var txtShimmerWidget = shimmerWidget(Text(m['title'],
-                  textAlign: TextAlign.end,
-                  style: TextStyle(
-                      color: Colors.red, fontSize: 14)));
-              if(m['hasHb'] != null && m['hasHb']) {
+              var txtShimmerWidget = shimmerWidget(
+                  Text(m['title'], textAlign: TextAlign.end, style: TextStyle(color: Colors.red, fontSize: 14)));
+              if (m['hasHb'] != null && m['hasHb']) {
                 Widget titleWidget;
-                if(isSimOrder(m['title'])) {
+                if (isSimOrder(m['title'])) {
                   titleWidget = txtShimmerWidget;
                 } else {
                   titleWidget = Tab(text: m['title']);
                 }
-                return Stack(children: [
-                  titleWidget,
-                  PWidget.positioned(
-                      PWidget.container(
-                        // PWidget.text('红包', [Colors.white, 8]),
-                        shimmerWidget(PWidget.text('红包',[Colors.white, 7],{'pd':[0,0,4,4]}),
-                            color: Colors.white),
-                        [null, null, Colors.red],
-                        {'bd': PFun.bdAllLg(Colors.red, 0.5),'pd':PFun.lg(1, 1, 2, 1), 'br': PFun.lg(8, 8, 1, 8)},
+                return Stack(
+                  children: [
+                    titleWidget,
+                    Positioned(
+                      top: 2,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          border: Border.all(color: Colors.red, width: 0.5),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            topRight: Radius.circular(8),
+                            bottomLeft: Radius.circular(1),
+                            bottomRight: Radius.circular(8),
+                          ),
+                        ),
+                        padding: EdgeInsets.fromLTRB(2, 1, 1, 1),
+                        child: shimmerWidget(
+                          Text(
+                            '红包',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 7,
+                            ),
+                          ),
+                          color: Colors.white,
+                        ),
                       ),
-                      [2, null, null, 0])
-                ],);
+                    ),
+                  ],
+                );
               }
-              if(isSimOrder(m['title'])) {
+              if (isSimOrder(m['title'])) {
                 return txtShimmerWidget;
               } else {
                 return Tab(text: m['title']);
               }
-
             }).toList(),
           ),
         ),
@@ -128,6 +191,6 @@ class _OrderTabWidgetState extends State<OrderTabWidget> with TickerProviderStat
   }
 
   bool isSimOrder(title) {
-    return title=='热度订单';
+    return title == '热度订单';
   }
 }

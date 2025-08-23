@@ -22,7 +22,7 @@ class TabVip extends StatefulWidget {
 class _TabVipState extends State<TabVip> {
   int showMulti = 0;
   Map map = {};
-  
+
   // Simple data model replacement
   _DataModel tabDm = _DataModel();
   @override
@@ -36,9 +36,7 @@ class _TabVipState extends State<TabVip> {
     await getTabData();
   }
 
-
   Future<int> getTabData() async {
-
     var res = await BService.userGrade().catchError((v) {
       tabDm.toError('网络异常');
       return <String, dynamic>{};
@@ -47,7 +45,9 @@ class _TabVipState extends State<TabVip> {
       List multiList = res['multiList'];
       showMulti = 2;
       List products = [];
-      multiList.forEach((element) {products.addAll(element['list']);});
+      multiList.forEach((element) {
+        products.addAll(element['list']);
+      });
       List newList = multiList.map((m) {
         Map sepMap = {};
         sepMap['data'] = widget.data;
@@ -58,7 +58,6 @@ class _TabVipState extends State<TabVip> {
       }).toList();
 
       tabDm.addList(newList, true, 0);
-
     }
     setState(() {});
     return tabDm.flag;
@@ -66,10 +65,8 @@ class _TabVipState extends State<TabVip> {
 
   @override
   Widget build(BuildContext context) {
-    if(showMulti == 0) {
-      return Scaffold(
-          backgroundColor: Colours.vip_white,
-          body: SizedBox());
+    if (showMulti == 0) {
+      return Scaffold(backgroundColor: Colours.vip_white, body: SizedBox());
     }
     return Scaffold(
       backgroundColor: Colours.vip_white,
@@ -130,10 +127,9 @@ class _TabVipState extends State<TabVip> {
         }),
       );
     }
-   }
- }
+  }
+}
 
-// Simple data model replacement for maixs_utils DataModel
 class _DataModel {
   int flag = 0; // 0: loading, 1: success, -1: error
   List list = [];

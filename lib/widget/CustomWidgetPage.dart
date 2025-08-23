@@ -7,7 +7,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_base/utils/value_util.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
+
 import 'package:shimmer/shimmer.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/util/custom.dart';
@@ -22,7 +22,7 @@ import '../service.dart';
 import '../util/colors.dart';
 import '../hb/red_packet.dart';
 import '../util/global.dart';
-import '../util/paixs_fun.dart';
+
 import '../vip/vip_detail_page.dart';
 
 getMoneyWidget(BuildContext context, num commission, String platform,
@@ -34,39 +34,76 @@ getMoneyWidget(BuildContext context, num commission, String platform,
     txtSize = 11,
     pd,
     br}) {
+  EdgeInsets padding;
+  BorderRadius borderRadius;
+
   if (pd == null) {
-    pd = PFun.lg(3, 3, 8, 8);
+    padding = EdgeInsets.fromLTRB(3, 3, 8, 8);
+  } else {
+    padding = pd;
   }
+
   if (br == null) {
-    br = PFun.lg(16, 0, 0, 16);
+    borderRadius = BorderRadius.only(
+      topLeft: Radius.circular(16),
+      bottomRight: Radius.circular(16),
+    );
+  } else {
+    borderRadius = br;
   }
+
   Map data = getHbData(commission, platform);
   String min = data['min'];
   String max = data['max'];
-  Widget hbWidget = PWidget.text('可拆', [
-    txtColor,
-    txtSize
-  ], {}, [
-    PWidget.textIs('$min元', [txtColor, txtSize]),
-    PWidget.textIs('-', [txtColor, txtSize]),
-    PWidget.textIs('$max元', [priceTxtColor, txtSize]),
-    PWidget.textIs('红包', [txtColor, txtSize]),
-  ]);
+
+  Widget hbWidget = RichText(
+    text: TextSpan(
+      style: TextStyle(color: txtColor, fontSize: txtSize.toDouble()),
+      children: [
+        TextSpan(text: '可拆'),
+        TextSpan(
+            text: '$min元',
+            style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
+        TextSpan(
+            text: '-',
+            style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
+        TextSpan(
+            text: '$max元',
+            style:
+                TextStyle(color: priceTxtColor, fontSize: txtSize.toDouble())),
+        TextSpan(
+            text: '红包',
+            style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
+      ],
+    ),
+  );
+
   List<Widget> widgets = [hbWidget];
-  return PWidget.container(column ? PWidget.column(widgets) : PWidget.row(widgets), [
-    null,
-    null,
-    bgColor
-  ], {
-    'fun': canClick
+
+  return GestureDetector(
+    onTap: canClick
         ? () {
             showRed(context, commission, platform);
           }
         : null,
-    'bd': PFun.bdAllLg(bgColor),
-    'pd': pd,
-    'br': br
-  });
+    child: Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: bgColor,
+        border: Border.all(color: bgColor),
+        borderRadius: borderRadius,
+      ),
+      child: column
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: widgets,
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: widgets,
+            ),
+    ),
+  );
 }
 
 Future showRed(context, commission, platform) async {
@@ -83,20 +120,63 @@ getPriceWidget(endPrice, startPrice,
     startPrefix = '',
     endTextColor = Colours.app_main,
     endPrefixSize = 12}) {
-  return PWidget.text('', [], {}, [
-    PWidget.textIs(endPrefix, [endPrefixColor, endPrefixSize, true]),
-    PWidget.textIs('¥', [Colours.app_main, endPrefixSize, true]),
-    PWidget.textIs('$endPrice ', [endTextColor, endTextSize, true]),
-    if (startPrice != endPrice)
-      PWidget.textIs('$startPrefix¥$startPrice', [Colors.black45, 12], {'td': TextDecoration.lineThrough}),
-  ]);
+  return RichText(
+    text: TextSpan(
+      children: [
+        if (endPrefix.isNotEmpty)
+          TextSpan(
+            text: endPrefix,
+            style: TextStyle(
+              color: endPrefixColor,
+              fontSize: endPrefixSize.toDouble(),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        TextSpan(
+          text: '¥',
+          style: TextStyle(
+            color: Colours.app_main,
+            fontSize: endPrefixSize.toDouble(),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        TextSpan(
+          text: '$endPrice ',
+          style: TextStyle(
+            color: endTextColor,
+            fontSize: endTextSize.toDouble(),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        if (startPrice != endPrice)
+          TextSpan(
+            text: '$startPrefix¥$startPrice',
+            style: TextStyle(
+              color: Colors.black45,
+              fontSize: 12,
+              decoration: TextDecoration.lineThrough,
+            ),
+          ),
+      ],
+    ),
+  );
 }
 
 getLabelWidget(label, {textSize = 12}) {
-  return PWidget.container(
-    PWidget.text(label, [Colors.black45, textSize]),
-    [null, null, Colors.grey[100]],
-    {'bd': PFun.bdAllLg(Colors.grey[100], 0.5), 'pd': PFun.lg(1, 1, 4, 4), 'br': PFun.lg(4, 4, 4, 4)},
+  return Container(
+    padding: EdgeInsets.fromLTRB(1, 1, 4, 4),
+    decoration: BoxDecoration(
+      color: Colors.grey[100],
+      border: Border.all(color: Colors.grey[100]!, width: 0.5),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    child: Text(
+      label,
+      style: TextStyle(
+        color: Colors.black45,
+        fontSize: textSize.toDouble(),
+      ),
+    ),
   );
 }
 
@@ -119,17 +199,28 @@ Widget getTitleWidget(
 }
 
 getSalesWidget(sales) {
-  return PWidget.row([
-    PWidget.icon(Icons.local_fire_department_outlined, [Colors.black45, 12]),
-    PWidget.text(
-      '$sales',
-      [Colors.black45, 10],
-      {'ali': 0},
-    ),
-  ]);
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(
+        Icons.local_fire_department_outlined,
+        color: Colors.black45,
+        size: 12,
+      ),
+      Text(
+        '$sales',
+        style: TextStyle(
+          color: Colors.black45,
+          fontSize: 10,
+        ),
+        textAlign: TextAlign.start,
+      ),
+    ],
+  );
 }
 
-Widget rainbowText(String text, {onTap, colors, fontSize = 14.0, fontWeight = FontWeight.bold}) {
+Widget rainbowText(String text,
+    {onTap, colors, fontSize = 14.0, fontWeight = FontWeight.bold}) {
   var colorizeColors = colors ??
       [
         Colors.blue,
@@ -164,7 +255,8 @@ Widget rainbowText(String text, {onTap, colors, fontSize = 14.0, fontWeight = Fo
       ));
 }
 
-Widget shimmerWidget(Widget child, {color = Colors.red, highlightColor = Colors.yellow}) {
+Widget shimmerWidget(Widget child,
+    {color = Colors.red, highlightColor = Colors.yellow}) {
   return Shimmer.fromColors(
     baseColor: color,
     highlightColor: highlightColor,
@@ -181,25 +273,60 @@ Widget createTbItem(context, i, v) {
   String shopType = v['shopType'] == 1 ? '天猫' : '淘宝';
 
   String sales = BService.formatNum(v['monthSales']);
-  return PWidget.container(
-    PWidget.column([
-      PWidget.wrapperImage(getTbMainPic(v), {'ar': 1 / 1}),
-      PWidget.container(
-        PWidget.column([
-          PWidget.row([
-            Expanded(child: getTitleWidget(v['title'], max: max)),
-          ]),
-          PWidget.boxh(8),
-          PWidget.row([getPriceWidget(v['actualPrice'], v['originalPrice']), PWidget.spacer(), getSalesWidget(sales)]),
-          fee == 0 ? SizedBox() : PWidget.boxh(8),
-          fee == 0 ? SizedBox() : getMoneyWidget(context, fee, TB),
-          PWidget.boxh(8),
-          PWidget.text('$shopType | ${v['shopName']}', [Colors.black45, 12]),
-        ]),
-        {'pd': 8},
-      ),
-    ]),
-    [null, null, Colors.white],
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+    ),
+    child: Column(
+      children: [
+        AspectRatio(
+          aspectRatio: 1.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(0),
+            child: Image.network(
+              getTbMainPic(v),
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: Icon(Icons.image_not_supported, color: Colors.grey),
+                );
+              },
+            ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(child: getTitleWidget(v['title'], max: max)),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  getPriceWidget(v['actualPrice'], v['originalPrice']),
+                  Spacer(),
+                  getSalesWidget(sales)
+                ],
+              ),
+              if (fee > 0) SizedBox(height: 8),
+              if (fee > 0) getMoneyWidget(context, fee, TB),
+              SizedBox(height: 8),
+              Text(
+                '$shopType | ${v['shopName']}',
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
   );
 }
 
@@ -211,61 +338,102 @@ Widget createJdItem(context, i, v) {
   if (i % 3 == 0) {
     max = 2;
   }
-  num actPrice = v['actualPrice'];
-  if (actPrice == null) {
-    actPrice = v['lowestCouponPrice'];
-  }
-  num startPrice = v['originPrice'] != null ? v['originPrice'] : v['price'];
+  num? actPrice = v['actualPrice'];
+  actPrice ??= v['lowestCouponPrice'];
+  num? startPrice = v['originPrice'] ?? v['price'];
   num fee = v['commissionShare'] * actPrice / 100;
-  List labels = v['promotionLabelList'];
-  bool showLabel = labels != null && labels.isNotEmpty;
+  List? labels = v['promotionLabelList'];
+  bool showLabel = labels?.isNotEmpty ?? false;
   String label = '';
-  if (showLabel) {
+  if (showLabel && labels != null) {
     label = labels[0]['promotionLabel'];
   }
-  String pic = v['picMain'] != null ? v['picMain'] : v['whiteImage'];
-  return PWidget.container(
-    PWidget.column([
-      PWidget.wrapperImage(pic, {'ar': 1 / 1, 'br': 8}),
-      PWidget.boxh(8),
-      PWidget.container(
-        PWidget.column([
-          PWidget.row([
-            v['isOwner'] == 1
-                ? PWidget.container(
-                    PWidget.text('自营', [Colors.white, 11]),
-                    [null, null, Colours.jd_main],
-                    {'bd': PFun.bdAllLg(Colours.jd_main, 0.5), 'pd': PFun.lg(1, 1, 4, 4), 'br': PFun.lg(4, 4, 4, 4)},
-                  )
-                : SizedBox(),
-            PWidget.boxw(2),
-            getTitleWidget(v['skuName'], max: max),
-          ], [
-            '0',
-            '1',
-            '1'
-          ]),
-          PWidget.boxh(8),
-          PWidget.row([
-            getPriceWidget(actPrice, startPrice, endTextColor: Colours.jd_main),
-            PWidget.spacer(),
-            getSalesWidget(xiaoliangStr)
-          ]),
-          if (showLabel) PWidget.boxh(8),
-          if (showLabel) getLabelWidget(label),
-          fee == 0 ? SizedBox() : PWidget.boxh(8),
-          fee == 0 ? SizedBox() : getMoneyWidget(context, fee, JD),
-          PWidget.boxh(8),
-          PWidget.text(v['shopName'], [Colors.black45, 12]),
-        ]),
-      ),
-    ]),
-    [null, null, Colors.white],
-    {
-      'pd': 8,
-      'sd': PFun.sdLg(Colors.black12),
-      'br': 8,
-    },
+  String pic = v['picMain'] ?? v['whiteImage'];
+
+  return Container(
+    padding: EdgeInsets.all(8),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 2,
+          spreadRadius: 1,
+        ),
+      ],
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Column(
+      children: [
+        AspectRatio(
+          aspectRatio: 1.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              pic,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: Icon(Icons.image_not_supported, color: Colors.grey),
+                );
+              },
+            ),
+          ),
+        ),
+        SizedBox(height: 8),
+        Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (v['isOwner'] == 1)
+                  Container(
+                    padding: EdgeInsets.fromLTRB(1, 1, 4, 4),
+                    decoration: BoxDecoration(
+                      color: Colours.jd_main,
+                      border: Border.all(color: Colours.jd_main, width: 0.5),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      '自营',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                if (v['isOwner'] == 1) SizedBox(width: 2),
+                Expanded(
+                  child: getTitleWidget(v['skuName'], max: max),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Row(
+              children: [
+                getPriceWidget(actPrice, startPrice,
+                    endTextColor: Colours.jd_main),
+                Spacer(),
+                getSalesWidget(xiaoliangStr)
+              ],
+            ),
+            if (showLabel) SizedBox(height: 8),
+            if (showLabel) getLabelWidget(label),
+            if (fee > 0) SizedBox(height: 8),
+            if (fee > 0) getMoneyWidget(context, fee, JD),
+            SizedBox(height: 8),
+            Text(
+              v['shopName'],
+              style: TextStyle(
+                color: Colors.black45,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
   );
 }
 
@@ -273,82 +441,155 @@ Widget createPddItem(context, i, v) {
   //todo 详情页积分和列表不一致 暂时关闭
   num fee = v['promotionRate'] * v['minGroupPrice'] / 100;
 
-  return PWidget.container(
-    PWidget.column([
-      PWidget.wrapperImage('${v['goodsImageUrl']}', {'ar': 1 / 1}),
-      PWidget.container(
-        PWidget.column([
-          PWidget.row([
-            PWidget.image('assets/images/mall/pdd.png', [
-              14,
-              14
-            ], {
-              'pd': [3, 0, 0, 0]
-            }),
-            PWidget.boxw(4),
-            Expanded(child: getTitleWidget(v['goodsName'])),
-          ]),
-          // PWidget.text('${v['dtitle']}'),
-          PWidget.boxh(8),
-          getPriceWidget(v['minGroupPrice'], v['minNormalPrice'],
-              endTextColor: Colours.pdd_main, endPrefix: '抢购价 ', endPrefixColor: Colors.black54),
-          fee == 0 ? SizedBox() : PWidget.boxh(8),
-          fee == 0 ? SizedBox() : getMoneyWidget(context, fee, PDD, priceTxtColor: Colours.pdd_main),
-          PWidget.boxh(8),
-          PWidget.text(v['mallName'], [Colors.black45, 12]),
-          PWidget.boxh(8),
-          getSalesWidget(v['salesTip'])
-        ]),
-        {'pd': 8},
-      ),
-    ]),
-    [null, null, Colors.white],
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+    ),
+    child: Column(
+      children: [
+        AspectRatio(
+          aspectRatio: 1.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(0),
+            child: Image.network(
+              '${v['goodsImageUrl']}',
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: Icon(Icons.image_not_supported, color: Colors.grey),
+                );
+              },
+            ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Image.asset(
+                    'assets/images/mall/pdd.png',
+                    width: 14,
+                    height: 14,
+                  ),
+                  SizedBox(width: 4),
+                  Expanded(child: getTitleWidget(v['goodsName'])),
+                ],
+              ),
+              // Text('${v['dtitle']}'),
+              SizedBox(height: 8),
+              getPriceWidget(v['minGroupPrice'], v['minNormalPrice'],
+                  endTextColor: Colours.pdd_main,
+                  endPrefix: '抢购价 ',
+                  endPrefixColor: Colors.black54),
+              if (fee > 0) SizedBox(height: 8),
+              if (fee > 0)
+                getMoneyWidget(context, fee, PDD,
+                    priceTxtColor: Colours.pdd_main),
+              SizedBox(height: 8),
+              Text(
+                v['mallName'],
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 12,
+                ),
+              ),
+              SizedBox(height: 8),
+              getSalesWidget(v['salesTip'])
+            ],
+          ),
+        ),
+      ],
+    ),
   );
 }
 
 Widget createDyItem(context, i, v) {
   String sale = BService.formatNum(ValueUtil.toInt(v['sales']));
-  num startPrice;
-  num endPrice;
-  String shopName;
-  num fee = ValueUtil.toNum(v['cos_fee']);
-  if (fee == null) {
-    fee = v['cosFee'];
-    startPrice = v['price'];
-    shopName = v['shopName'];
-    endPrice = v['couponPrice'] > 0 ? v['couponPrice'] : startPrice;
-  } else {
-    fee = fee / 100;
-    startPrice = ValueUtil.toNum(v['price']) / 100;
-    shopName = v['shop_name'];
-    endPrice = v['coupon_price'] != null && v['coupon_price'] > 0 ? v['coupon_price'] / 100 : startPrice;
-  }
-  return PWidget.container(
-    PWidget.column([
-      PWidget.wrapperImage('${v['cover']}', {'ar': 1 / 1}),
-      PWidget.container(
-        PWidget.column([
-          PWidget.row([
-            getTitleWidget(
-              v['title'],
-            ),
-          ]),
-          // PWidget.text('${v['dtitle']}'),
-          PWidget.boxh(8),
+  num startPrice = 0;
+  num endPrice = 0;
+  String shopName = '';
+  num fee = 0;
 
-          getPriceWidget(endPrice, startPrice,
-              endTextColor: Colours.dy_main, endPrefix: '抢购价 ', endPrefixColor: Colors.black54),
-          fee == 0 ? SizedBox() : PWidget.boxh(8),
-          fee == 0 ? SizedBox() : getMoneyWidget(context, fee, DY, priceTxtColor: Colours.dy_main),
-          PWidget.boxh(8),
-          PWidget.text(shopName, [Colors.black45, 12]),
-          PWidget.boxh(8),
-          getSalesWidget(sale)
-        ]),
-        {'pd': 8},
-      ),
-    ]),
-    [null, null, Colors.white],
+  var feeTemp = v['cos_fee'];
+  if (feeTemp != null) {
+    fee = ValueUtil.toNum(feeTemp) / 100;
+    startPrice = ValueUtil.toNum(v['price']) / 100;
+    shopName = v['shop_name'] ?? '';
+    var couponPriceTemp = v['coupon_price'];
+    endPrice = couponPriceTemp != null && couponPriceTemp > 0
+        ? couponPriceTemp / 100
+        : startPrice;
+  } else {
+    fee = v['cosFee'] ?? 0;
+    startPrice = v['price'] ?? 0;
+    shopName = v['shopName'] ?? '';
+    var couponPrice = v['couponPrice'] ?? 0;
+    endPrice = couponPrice > 0 ? couponPrice : startPrice;
+  }
+
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+    ),
+    child: Column(
+      children: [
+        AspectRatio(
+          aspectRatio: 1.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(0),
+            child: Image.network(
+              '${v['item_pic']}',
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: Icon(Icons.image_not_supported, color: Colors.grey),
+                );
+              },
+            ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: getTitleWidget(
+                      ValueUtil.toStr(v['title']),
+                    ),
+                  ),
+                ],
+              ),
+              // Text('${v['dtitle']}'),
+              SizedBox(height: 8),
+              getPriceWidget(endPrice, startPrice,
+                  endTextColor: Colours.dy_main,
+                  endPrefix: '抢购价 ',
+                  endPrefixColor: Colors.black54),
+              if (fee > 0) SizedBox(height: 8),
+              if (fee > 0)
+                getMoneyWidget(context, fee, DY,
+                    priceTxtColor: Colours.dy_main),
+              SizedBox(height: 8),
+              Text(
+                shopName,
+                style: TextStyle(
+                  color: Colors.black45,
+                  fontSize: 12,
+                ),
+              ),
+              SizedBox(height: 8),
+              getSalesWidget(sale)
+            ],
+          ),
+        ),
+      ],
+    ),
   );
 }
 
@@ -356,94 +597,147 @@ Widget createVipItem(context, data) {
   var endPrice = double.parse(data['vipPrice']).toStringAsFixed(0);
   var price = double.parse(data['marketPrice']).toStringAsFixed(0);
   double fee = double.parse(data['commission']);
-  return PWidget.container(
-    PWidget.row(
-      [
-        PWidget.wrapperImage(data['goodsMainPicture'], [134, 134], {'br': 8}),
-        PWidget.boxw(8),
-        PWidget.column([
-          getTitleWidget(data['goodsName']),
-          PWidget.boxh(8),
-          ClipRRect(
-              borderRadius: BorderRadius.circular(12), //设置圆角
-              child: PWidget.container(
-                PWidget.row([
-                  PWidget.image('assets/images/mall/mini.png', [12, 12]),
-                  PWidget.boxw(4),
-                  PWidget.text('', [], {}, [
-                    PWidget.textIs('${data['storeInfo']['storeName']}', [Colours.vip_main, 12]),
-                  ])
-                ]),
-                [double.infinity, 32, Colours.bg_light],
-                {'pd': PFun.lg(0, 0, 8, 8), 'ali': PFun.lg(-1, 0)},
-              )),
-          PWidget.boxh(8),
-          Stack(alignment: Alignment.centerRight, children: [
-            PWidget.container(
-              getPriceWidget(
-                endPrice,
-                price,
-                endTextColor: Colours.vip_main,
+
+  return Container(
+    color: Colors.white,
+    padding: EdgeInsets.all(12),
+    child: Row(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.network(
+            data['goodsMainPicture'],
+            width: 134,
+            height: 134,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                width: 134,
+                height: 134,
+                color: Colors.grey[200],
+                child: Icon(Icons.image_not_supported, color: Colors.grey),
+              );
+            },
+          ),
+        ),
+        SizedBox(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              getTitleWidget(data['goodsName']),
+              SizedBox(height: 8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  height: 32,
+                  color: Colours.bg_light,
+                  padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/mall/mini.png',
+                        width: 12,
+                        height: 12,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        '${data['storeInfo']['storeName']}',
+                        style: TextStyle(
+                          color: Colours.vip_main,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              {'pd': PFun.lg(0, 0, 8, 8), 'mg': PFun.lg(0, 0, 0, 15), 'ali': PFun.lg(-1, 0)},
-            ),
-          ]),
-          PWidget.boxh(8),
-          getMoneyWidget(context, fee, VIP, priceTxtColor: Colours.vip_main),
-        ], {
-          'exp': 1,
-        }),
+              SizedBox(height: 8),
+              Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
+                    alignment: Alignment.centerLeft,
+                    child: getPriceWidget(
+                      endPrice,
+                      price,
+                      endTextColor: Colours.vip_main,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              getMoneyWidget(context, fee, VIP,
+                  priceTxtColor: Colours.vip_main),
+            ],
+          ),
+        ),
       ],
-      '001',
-      {'fill': true},
     ),
-    [null, null, Colors.white],
-    {
-      'pd': 12,
-    },
   );
 }
 
 Widget createTbFadeContainer(context, i, v) {
-  return PWidget.container(
-    Global.openFadeContainer(createTbItem(context, i, v), ProductDetails(v)),
-    [null, null, Colors.white],
-    {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 8)},
+  return Container(
+    margin: EdgeInsets.all([0, 1].contains(i) ? 0 : 8),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Global.openFadeContainer(
+        createTbItem(context, i, v), ProductDetails(v)),
   );
 }
 
 Widget createJdFadeContainer(context, i, v) {
-  return PWidget.container(
-    Global.openFadeContainer(createJdItem(context, i, v), JDDetailsPage(v)),
-    [null, null, Colors.white],
-    {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 8)},
+  return Container(
+    margin: EdgeInsets.all([0, 1].contains(i) ? 0 : 8),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child:
+        Global.openFadeContainer(createJdItem(context, i, v), JDDetailsPage(v)),
   );
 }
 
 Widget createPddFadeContainer(context, i, v) {
-  return PWidget.container(
-    Global.openFadeContainer(createPddItem(context, i, v), PddDetailPage(v)),
-    [null, null, Colors.white],
-    {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 8)},
+  return Container(
+    margin: EdgeInsets.all([0, 1].contains(i) ? 0 : 8),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Global.openFadeContainer(
+        createPddItem(context, i, v), PddDetailPage(v)),
   );
 }
 
 Widget createDyFadeContainer(context, i, v) {
-  return PWidget.container(
-    Global.openFadeContainer(createDyItem(context, i, v), DyDetailPage(v)),
-    [null, null, Colors.white],
-    {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 10)},
+  return Container(
+    margin: EdgeInsets.all([0, 1].contains(i) ? 0 : 10),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child:
+        Global.openFadeContainer(createDyItem(context, i, v), DyDetailPage(v)),
   );
 }
 
 Widget createVipFadeContainer(context, data) {
-  return PWidget.column(
-    [
+  return Column(
+    children: [
       ClipRRect(
-        borderRadius: BorderRadius.circular(15), //设置圆角
-        child: Global.openFadeContainer(createVipItem(context, data), VipDetailPage(data)),
+        borderRadius: BorderRadius.circular(15),
+        child: Global.openFadeContainer(
+            createVipItem(context, data), VipDetailPage(data)),
       ),
-      PWidget.boxh(15)
+      SizedBox(height: 15)
     ],
   );
 }
@@ -457,12 +751,17 @@ const List<Map> SHOP_TABS = [
 ];
 
 showSignDialog(context, fun,
-    {title = '实名认证', desc = '需要实名认证签署合同后方可加盟', okTxt = '去认证', cancelTxt = '取消', forceUpdate = false}) {
+    {title = '实名认证',
+    desc = '需要实名认证签署合同后方可加盟',
+    okTxt = '去认证',
+    cancelTxt = '取消',
+    forceUpdate = false}) {
   AwesomeDialog(
     context: context,
     dismissOnTouchOutside: !forceUpdate,
     dialogType: DialogType.noHeader,
-    body: CardSignDialog(title, desc, okTxt: okTxt, cancelTxt: cancelTxt, forceUpdate: forceUpdate, fun: fun),
+    body: CardSignDialog(title, desc,
+        okTxt: okTxt, cancelTxt: cancelTxt, forceUpdate: forceUpdate, fun: fun),
   )..show().then((value) {
       if (value && fun != null) {
         fun();
@@ -471,10 +770,22 @@ showSignDialog(context, fun,
 }
 
 Widget getLevelWidget(level, platform) {
-  return PWidget.stack([
-    PWidget.image(getVipBgImage(level), [18, 12]),
-    PWidget.image('assets/images/mall/$platform.png', [8, 8]),
-  ]);
+  return Stack(
+    children: [
+      Image.asset(
+        getVipBgImage(level),
+        width: 18,
+        height: 12,
+        fit: BoxFit.cover,
+      ),
+      Image.asset(
+        'assets/images/mall/$platform.png',
+        width: 8,
+        height: 8,
+        fit: BoxFit.cover,
+      ),
+    ],
+  );
 }
 
 getVipBgImage(level) {
@@ -482,58 +793,82 @@ getVipBgImage(level) {
 }
 
 Widget createBottomBackArrow(context) {
-  return PWidget.container(
-    PWidget.icon(Icons.arrow_back_ios, [Colors.black45, 24]),
-    [32, 32],
-    {'br': 56, 'fun': () => Navigator.pop(context)},
+  return GestureDetector(
+    onTap: () => Navigator.pop(context),
+    child: Container(
+      width: 32,
+      height: 32,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(56),
+      ),
+      child: Icon(
+        Icons.arrow_back_ios,
+        color: Colors.black45,
+        size: 24,
+      ),
+    ),
   );
 }
 
 Widget getBuyTipWidget({color = Colors.red}) {
-  return PWidget.container(
-    PWidget.row([
-      PWidget.icon(CupertinoIcons.exclamationmark_circle, [color]),
-      PWidget.boxw(5),
-      Column(
-        children: [
-          Text(
-            '购买前需移除购物车商品',
-            style: TextStyle(
-              color: color,
-              fontSize: 11,
+  return Container(
+    padding: EdgeInsets.fromLTRB(8, 12, 12, 8),
+    child: Row(
+      children: [
+        Icon(
+          CupertinoIcons.exclamationmark_circle,
+          color: color,
+        ),
+        SizedBox(width: 5),
+        Column(
+          children: [
+            Text(
+              '购买前需移除购物车商品',
+              style: TextStyle(
+                color: color,
+                fontSize: 11,
+              ),
             ),
-          ),
-          Text(
-            '可多个商品加购同时购买',
-            style: TextStyle(
-              color: color,
-              fontSize: 11,
+            Text(
+              '可多个商品加购同时购买',
+              style: TextStyle(
+                color: color,
+                fontSize: 11,
+              ),
             ),
-          ),
-          Text(
-            '支付时不要使用活动红包',
-            style: TextStyle(
-              color: color,
-              fontSize: 11,
-            ),
-          )
-        ],
-      )
-    ]),
-    {
-      'pd': [8, 12, 12, 8]
-    },
+            Text(
+              '支付时不要使用活动红包',
+              style: TextStyle(
+                color: color,
+                fontSize: 11,
+              ),
+            )
+          ],
+        )
+      ],
+    ),
   );
 }
 
 Widget btmBtnView(name, icon, fun, collect) {
-  return PWidget.column(
-    [
-      PWidget.icon(icon ?? Icons.star_rate_rounded, PFun.lg1(Colours.getCollectColor(name, collect))),
-      PWidget.boxh(4),
-      PWidget.textNormal(name ?? '收藏', [Colors.black45, 12])
-    ],
-    '220',
-    {'fun': fun},
+  return GestureDetector(
+    onTap: fun,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          icon ?? Icons.star_rate_rounded,
+          color: Colours.getCollectColor(name, collect),
+        ),
+        SizedBox(height: 4),
+        Text(
+          name ?? '收藏',
+          style: TextStyle(
+            color: Colors.black45,
+            fontSize: 12,
+          ),
+        )
+      ],
+    ),
   );
 }

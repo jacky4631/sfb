@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:maixs_utils/util/utils.dart';
 import 'package:sufenbao/bindCard/addCard.dart';
 import 'package:sufenbao/dy/dy_detail_page.dart';
 import 'package:sufenbao/index/Index.dart';

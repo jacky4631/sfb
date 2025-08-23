@@ -3,7 +3,6 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-// Removed maixs_utils imports - replaced with standard Flutter components
 import 'package:pinput/pinput.dart';
 import 'package:sufenbao/service.dart';
 
@@ -11,7 +10,10 @@ import '../../util/toast_utils.dart';
 
 class PhoneCodePage extends StatefulWidget {
   final Map data;
-  const PhoneCodePage(this.data, {Key? key,}) : super(key: key);
+  const PhoneCodePage(
+    this.data, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   _LoginThirdState createState() => _LoginThirdState();
@@ -28,8 +30,7 @@ class _LoginThirdState extends State<PhoneCodePage> {
   }
 
   ///初始化函数
-  Future initData() async {
-  }
+  Future initData() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,6 @@ class _LoginThirdState extends State<PhoneCodePage> {
               Padding(padding: EdgeInsets.only(top: 30)),
               _createCodeRow(context),
               Padding(padding: EdgeInsets.only(top: 30)),
-
             ],
           )),
     );
@@ -89,8 +89,7 @@ class _LoginThirdState extends State<PhoneCodePage> {
         onChanged: (pin) => {},
         onCompleted: (pin) => {
           //如果选中就不弹出直接登录
-            _login(pin)
-
+          _login(pin)
         },
       ),
     );

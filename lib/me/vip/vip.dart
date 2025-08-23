@@ -24,7 +24,6 @@ import '../listener/WxPayNotifier.dart';
 
 const marginSide = 14.0;
 
-// Simple DataModel replacement for maixs_utils
 class DataModel {
   List<dynamic> list = [];
 

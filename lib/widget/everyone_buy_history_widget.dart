@@ -6,9 +6,26 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:maixs_utils/model/data_model.dart';
-import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:http/http.dart' as http;
+
+class SimpleDataModel {
+  List<dynamic> list = [];
+  int flag = 0;
+  String error = '';
+
+  void addList(List<dynamic> data, bool clear, int total) {
+    if (clear) {
+      list.clear();
+    }
+    list.addAll(data);
+    flag = 1;
+  }
+
+  void toError(String errorMsg) {
+    error = errorMsg;
+    flag = -1;
+  }
+}
 
 ///商品购买历史小部件
 class EveryoneBuyHistoryWidget extends StatefulWidget {
@@ -36,7 +53,7 @@ class _EveryoneBuyHistoryWidgetState extends State<EveryoneBuyHistoryWidget> {
     await this.goodsBuyHistory();
     timer = Timer.periodic(Duration(seconds: 5), (t) {
       pageCon.animateToPage(
-        pageCon.page?.toInt() == goodsBuyHistoryDm.list.length - 1 ? 0 : (pageCon.page?.toInt()??0) + 1,
+        pageCon.page?.toInt() == goodsBuyHistoryDm.list.length - 1 ? 0 : (pageCon.page?.toInt() ?? 0) + 1,
         duration: Duration(milliseconds: 500),
         curve: Curves.easeOutCubic,
       );
@@ -50,23 +67,34 @@ class _EveryoneBuyHistoryWidgetState extends State<EveryoneBuyHistoryWidget> {
   }
 
   ///商品购买历史记录
-  var goodsBuyHistoryDm = DataModel();
+  var goodsBuyHistoryDm = SimpleDataModel();
   Future<int> goodsBuyHistory() async {
     var url = 'https://cmscg.dataoke.com/cms-v2/goods-buy-history';
-    var res = await http.get(Uri.parse(url)).catchError((v) {
+    try {
+      var res = await http.get(Uri.parse(url));
+      if (res.statusCode == 200) {
+        goodsBuyHistoryDm.addList(jsonDecode(res.body)['data'], true, 0);
+      } else {
+        goodsBuyHistoryDm.toError('网络异常');
+      }
+    } catch (e) {
       goodsBuyHistoryDm.toError('网络异常');
-    });
-    if (res != null) goodsBuyHistoryDm.addList(jsonDecode(res.body)['data'], true, 0);
-    // flog(goodsBuyHistoryDm.toJson());
+    }
     setState(() {});
     return goodsBuyHistoryDm.flag;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (goodsBuyHistoryDm.list.isEmpty) return PWidget.boxh(35);
-    return PWidget.container(
-      PageView.builder(
+    if (goodsBuyHistoryDm.list.isEmpty) return SizedBox(height: 35);
+    return Container(
+      height: 32,
+      decoration: BoxDecoration(
+        color: widget.bgColor ?? Colors.black54,
+        borderRadius: BorderRadius.circular(56),
+      ),
+      padding: EdgeInsets.all(4),
+      child: PageView.builder(
         controller: pageCon,
         scrollDirection: Axis.vertical,
         physics: NeverScrollableScrollPhysics(),
@@ -78,15 +106,39 @@ class _EveryoneBuyHistoryWidgetState extends State<EveryoneBuyHistoryWidget> {
           var nickName = goodsBuyHistory['taobao_user_nick'].toString();
           var nickName1 = nickName.substring(0, 2);
           var nickName2 = nickName.substring(nickName.length - 2);
-          return PWidget.row([
-            PWidget.wrapperImage(userHead, [24, 24], {'br': 24}),
-            PWidget.boxw(8),
-            PWidget.text('$nickName1***$nickName2 $str', [widget.textColor ?? Colors.white, 12], {'exp': true}),
-          ]);
+          return Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.network(
+                  userHead,
+                  width: 24,
+                  height: 24,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: 24,
+                      height: 24,
+                      color: Colors.grey[200],
+                      child: Icon(Icons.person, size: 16, color: Colors.grey),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '$nickName1***$nickName2 $str',
+                  style: TextStyle(
+                    color: widget.textColor ?? Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          );
         },
       ),
-      [null, 32, widget.bgColor ?? Colors.black54],
-      {'crr': 56, 'pd': 4},
     );
   }
 }

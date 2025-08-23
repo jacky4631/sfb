@@ -86,10 +86,7 @@ class _DyIndexOtherPageState extends State<DyIndexOtherPage> {
               padding: EdgeInsets.all(8),
               sliver: SliverGrid(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
+                    crossAxisCount: 2, crossAxisSpacing: 8, mainAxisSpacing: 8, childAspectRatio: 0.55),
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
                     if (index < listDm.list.length) {

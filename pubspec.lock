@@ -849,14 +849,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.7.0"
-  flutter_styled_toast:
-    dependency: transitive
-    description:
-      name: flutter_styled_toast
-      sha256: e667f13a665820eb0fa8506547e47eacbcddf1948d6d3036cfd3b089bd4b0516
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.2.1"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -1345,13 +1337,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.3.0"
-  maixs_utils:
-    dependency: "direct main"
-    description:
-      path: "package/maixs_utils"
-      relative: true
-    source: path
-    version: "0.0.1"
   maps_toolkit:
     dependency: transitive
     description:
@@ -1617,7 +1602,7 @@ packages:
     source: hosted
     version: "2.2.0"
   photo_view:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: photo_view
       sha256: "1fc3d970a91295fbd1364296575f854c9863f225505c28c46e0a03e48960c75e"
@@ -1697,7 +1682,7 @@ packages:
     source: hosted
     version: "1.5.0"
   pull_to_refresh:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pull_to_refresh
       sha256: bbadd5a931837b57739cf08736bea63167e284e71fb23b218c8c9a6e042aad12
@@ -2389,7 +2374,7 @@ packages:
     source: hosted
     version: "1.1.2"
   waterfall_flow:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: waterfall_flow
       sha256: e7ab5728fe536e53cf4b8ea97128112ad18c7f1d797d91f073bf396fa6910181
