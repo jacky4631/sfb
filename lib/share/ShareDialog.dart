@@ -163,15 +163,17 @@ class ShareDialog {
   _buttonWidget(
       BuildContext context,String filePath, String title, String imageName, int index) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+        //图片需要做压缩 不然超过微信限制无法分享
+        var shareData = await compressImageFromFile(filePath);
         switch (index) {
           case 0: //微信好友
-            fluwx.share(WeChatShareImageModel(WeChatImage.file(File(filePath)),
+            fluwx.share(WeChatShareImageModel(WeChatImageToShare(uint8List: shareData),
                   scene: WeChatScene.session));
             _dismiss(context);
             break;
           case 1: //朋友圈
-            fluwx.share(WeChatShareImageModel(WeChatImage.file(File(filePath)),
+            fluwx.share(WeChatShareImageModel(WeChatImageToShare(uint8List: shareData),
                 scene: WeChatScene.timeline));
             _dismiss(context);
             break;

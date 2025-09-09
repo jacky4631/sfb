@@ -24,6 +24,7 @@ class LaunchApp {
   static const ele = 'me.ele';
   static const vip = 'com.achievo.vipshop';
   static const wechat = 'com.tencent.mm';
+  static final appCheck = AppCheck();
 
   static Future launchTb(context, url, ) async{
     launch(context, url, LaunchApp.taobao, color: Color(0XFFFF5E00));
@@ -173,11 +174,11 @@ class LaunchApp {
   static Future<AppInfo?> checkPackage(package) async {
     try{
       if (Global.isAndroid()) {
-        return await AppCheck.checkAvailability(package);
+        return await appCheck.checkAvailability(package);
 
       } else if (Global.isIOS()) {
 
-        return await AppCheck.checkAvailability("calshow://");
+        return await appCheck.checkAvailability("calshow://");
       }
     }catch(e) {
       return null;

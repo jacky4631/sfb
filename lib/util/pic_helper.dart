@@ -65,11 +65,13 @@ class PicHelper{
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: DottedBorder(
-                      dashPattern: [8, 4],
-                      strokeWidth: 4,
-                      color: Colors.grey,
-                      padding: EdgeInsets.all(8),
-                      borderPadding: EdgeInsets.all(4),
+                      options: RectDottedBorderOptions(
+                        dashPattern: [8, 4],
+                        strokeWidth: 4,
+                        color: Colors.grey,
+                        padding: EdgeInsets.all(8),
+                        borderPadding: EdgeInsets.all(4),
+                      ),
                       child: Container(
                         width: 280,
                         height: 450,

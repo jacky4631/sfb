@@ -282,17 +282,18 @@ class _MaskForCameraViewState extends State<MaskForCameraView> {
             right: 0.0,
             child: Center(
               child: DottedBorder(
-                borderType: BorderType.RRect,
-                strokeWidth:
-                    widget.borderType == MaskForCameraViewBorderType.dotted
-                        ? widget.boxBorderWidth
-                        : 0.0,
-                color: widget.borderType == MaskForCameraViewBorderType.dotted
-                    ? widget.boxBorderColor
-                    : Colors.transparent,
-                dashPattern: const [4, 3],
-                radius: Radius.circular(
-                  widget.boxBorderRadius,
+                options: RoundedRectDottedBorderOptions(
+                  strokeWidth:
+                  widget.borderType == MaskForCameraViewBorderType.dotted
+                      ? widget.boxBorderWidth
+                      : 0.0,
+                  color: widget.borderType == MaskForCameraViewBorderType.dotted
+                      ? widget.boxBorderColor
+                      : Colors.transparent,
+                  dashPattern: const [4, 3],
+                  radius: Radius.circular(
+                    widget.boxBorderRadius,
+                  ),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
