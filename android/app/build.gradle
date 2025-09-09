@@ -23,14 +23,14 @@ if (flutterVersionName == null) {
 }
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 36
     useLibrary 'org.apache.http.legacy'
-    ndkVersion "25.1.8937393"
+    ndkVersion "26.1.10909125"
     defaultConfig {
         applicationId "com.mailvor.sufenbao"
 
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
