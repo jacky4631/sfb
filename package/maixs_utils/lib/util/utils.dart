@@ -1,19 +1,14 @@
-import 'dart:convert';
 import 'dart:developer' as f;
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http_parser/http_parser.dart';
-import '../config/net/Config.dart';
 import '../config/net/pgyer_api.dart';
 import '../widget/custom_route.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:crypto/crypto.dart';
 
 ///上传file
 Future<String?> uploadFile(PickedFile file) async {
@@ -26,35 +21,6 @@ Future<String?> uploadFile(PickedFile file) async {
   FormData formData = FormData.fromMap({"file": multipartFile});
   var response = await http.post<String>('/app/common/addImage', data: formData);
   return response.data;
-}
-
-///上传un8
-Future<String?> uploadUn8(Uint8List img) async {
-  MultipartFile multipartFile = MultipartFile.fromBytes(
-    img,
-    filename: img.length.toString(),
-    contentType: MediaType("image", "jpeg"),
-  );
-  FormData formData = FormData.fromMap({"file": multipartFile});
-  var response = await http.post<String>('/resources/upload/', data: formData);
-  return response.data;
-}
-
-///上传图片
-Future<String> uploadImage(path) async {
-  // var path;
-  var filename = path.substring(path.lastIndexOf("/") + 1);
-  flog(path, 'path');
-  var formData = FormData.fromMap({
-    'file': await MultipartFile.fromFile(path, filename: filename, contentType: MediaType("image", "jpeg")),
-  });
-  var response = await http.post('/oss/imageUpload', data: formData);
-  flog(response.data);
-  var data = response.data['data']['url'];
-  if (data.contains('localhost')) {
-    data = data.replaceAll('localhost:8080', Config.Host);
-  }
-  return data;
 }
 
 ///ios风格-路由跳转
@@ -222,11 +188,6 @@ bool handleGlowNotification(OverscrollIndicatorNotification notification) {
     return true;
   }
   return false;
-}
-
-// md5 加密
-String generateMd5(String data) {
-  return md5.convert(utf8.encode(data)).toString();
 }
 
 List getTextCon(int count) {
