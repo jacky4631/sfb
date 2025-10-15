@@ -19,9 +19,7 @@
 ### 🎬 系统演示
 [演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
 
-[演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
-
-[演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
+[演示APP（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
 
 ---
 ### 💟 UI界面
