@@ -15,6 +15,7 @@
 * APP端【Flutter】：[github（查看）](https://github.com/jacky4631/sfb) [gitee（查看）](https://gitee.com/jacky4631/sfb)
 * 服务端【Java + SpringBoot)】：[github（查看）](https://github.com/jacky4631/sfb_server) [gitee（查看）](https://gitee.com/jacky4631/sfb_server)
 * 管理端【Vue2 + element-ui】：[github（查看）](https://github.com/jacky4631/sfb_server_admin) [gitee（查看）](https://gitee.com/jacky4631/sfb_server_admin)
+* [SQL文件（获取）](https://docs-sfb.mailvor.com/docs/develop/db-get.html)
 
 ### 🎬 系统演示
 [演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
@@ -48,7 +49,7 @@
 ---
 
 
-### ⭐️ 功能描述
+### ⭐️ 系统功能
 
 |  | 功能     | 描述                                                       |
 |--|--------|----------------------------------------------------------|
