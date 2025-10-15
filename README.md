@@ -96,21 +96,20 @@
 
 ### 💻 开源版运行环境及框架：
 ~~~
-1.移动 端 Flutter3.32.7 Dart3.8.1
-2.WEB PC 管理后台使用Vue2 + Element UI 开发
-3.后台服务 Java SpringBoot2 + Mysql + redis
-4.运行环境 linux, 需要Java环境和对应的数据库 redis
-5.运行条件 Java 8 Mysql5.7
+移动端 Flutter3.32.7 Dart3.8.1
+管理端 Vue2 + Element UI + nodejs 14
+服务端 Java1.8 SpringBoot2.6.7
+数据库 Mysql5.7
 ~~~
 ---
 
 ### 💻 商业版运行环境及框架：
 ~~~
-1.移动 端 Flutter3.32.5 Dart3.8.1
-2.WEB PC 管理后台使用Vue3 + Element UI 开发
-3.后台服务 Java SpringBoot3 + Mybatis-plus + Mysql + redis
-4.运行环境 linux, 需要Java环境和对应的数据库 redis
-5.运行条件 Java 17+ Mysql5.7+
+移动端 Flutter3.32.5 Dart3.8.1
+管理端 Vue3 + Element UI + nodejs 18
+服务端 Java17 SpringBoot3.4.1
+数据库 Mysql5.7+
+小程序 uniapp
 ~~~
 ---
 
