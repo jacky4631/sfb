@@ -30,9 +30,9 @@
 * [SQL文件（获取）](https://docs-sfb.mailvor.com/docs/develop/db-get.html)
 
 ### 🎬 系统演示
-[演示后台（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
+[演示后台（查看）](https://www.mailvor.com/01.%E4%BB%8B%E7%BB%8D/20.demo.html)
 
-[演示APP（查看）](https://docs-sfb.mailvor.com/docs/demo/demo.html)
+[演示APP（查看）](https://www.mailvor.com/01.%E4%BB%8B%E7%BB%8D/20.demo.html)
 
 ---
 ### 💟 UI界面
