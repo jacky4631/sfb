@@ -147,8 +147,6 @@ dependencies:
   pull_to_refresh: ^2.0.0
   photo_view: ^0.15.0
 
-
-
   # 模型处理
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
