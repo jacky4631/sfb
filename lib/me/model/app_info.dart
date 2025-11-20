@@ -1,6 +1,6 @@
-import 'package:flutter_base/flutter_base.dart';
 import 'package:sufenbao/me/model/activity_info.dart';
 import 'package:sufenbao/me/points_mall_details.dart';
+import 'package:sufenbao/util/value_util.dart';
 
 /**
  *  Copyright (C) 2018-2024

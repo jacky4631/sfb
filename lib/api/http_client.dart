@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_base/utils/logger_util.dart';
 
 class HttpClient {
   static final HttpClient _instance = HttpClient._internal();
@@ -108,8 +107,6 @@ class HttpClient {
 
   // 获取商品列表示例方法
   Future<dynamic> getGoodsList({String keyWords = '', int sort = 0, String pageId = '1', int pageSize = 20}) async {
-    Log.e(keyWords);
-
     return await get('/goods/get-dtk-search-goods', params: {
       'keyWords': keyWords,
       'sort': sort,

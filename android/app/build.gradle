@@ -8,8 +8,8 @@ plugins {
 android {
     compileSdkVersion 36
     useLibrary 'org.apache.http.legacy'
-//    flutter.ndkVersion
-    ndkVersion "29.0.13846066"
+    flutter.ndkVersion
+//    ndkVersion "29.0.13846066"
     defaultConfig {
         applicationId "com.cmxc.sqxq"
 

@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_base/utils/logger_util.dart';
 
 import 'package:shanyan/shanYanResult.dart';
 import 'package:shanyan/shanYanUIConfig.dart';
@@ -48,7 +47,7 @@ class LoginShanyan {
     //闪验SDK 初始化
     ShanYanResult shanYanResult = await oneKeyLoginManager.init(appId: appId);
     bool initSuc = 1000 == shanYanResult.code;
-    Log.e("-----闪验SDK 初始化---${shanYanResult.toJson()}");
+    debugPrint("-----闪验SDK 初始化---${shanYanResult.toJson()}");
 
     if (initSuc) {
       //初始化成功
@@ -72,7 +71,7 @@ class LoginShanyan {
   Future<bool> _getPhoneInfoPlatformState() async {
     //闪验SDK 预取号
     ShanYanResult shanYanResult = await oneKeyLoginManager.getPhoneInfo();
-    Log.e("-----/闪验SDK 预取号---${shanYanResult.toJson()}");
+    debugPrint("-----/闪验SDK 预取号---${shanYanResult.toJson()}");
 
     return 1000 == shanYanResult.code;
   }
@@ -293,7 +292,7 @@ class LoginShanyan {
     shanYanUIConfig.androidPortrait.setActivityTranslateAnim = ["activity_anim_bottom_in", "activity_anim_bottom_out"];
     //oneKeyLoginManager.setAuthThemeConfig(uiConfig: shanYanUIConfig);
     oneKeyLoginManager.addClikWidgetEventListener((eventId) {
-      Log.e(eventId);
+      debugPrint(eventId);
       if (btnOtherLogin == eventId) {
         Navigator.pushNamed(context, '/login');
       } else if ('weixin' == eventId) {
@@ -352,7 +351,7 @@ class LoginShanyan {
 
     ///闪验SDK 拉起授权页
     oneKeyLoginManager.openLoginAuth().then((ShanYanResult shanYanResult) {
-      Log.e(shanYanResult.toJson());
+      debugPrint(shanYanResult.toString());
       if (1000 == shanYanResult.code) {
         //拉起授权页成功
       } else {

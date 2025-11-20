@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_base/flutter_base.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sufenbao/service.dart';
 import 'package:http/http.dart' as http;
+import 'package:sufenbao/util/value_util.dart';
 
 import '../api/http_client.dart';
 import '../models/data_model.dart';

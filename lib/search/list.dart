@@ -1,8 +1,9 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_base/flutter_base.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sufenbao/search/provider.dart';
+import 'package:sufenbao/util/value_util.dart';
+import 'package:sufenbao/widget/loading.dart';
 
 import '../service.dart';
 import '../util/custom.dart';
@@ -127,7 +128,7 @@ class _ListWidgetPageState extends ConsumerState<ListWidgetPage> {
       shopName = data['storeInfo']['storeName'];
       platform = VIP;
     }
-    Log.e(data);
+    debugPrint(data.toString());
     return Container(
       padding: EdgeInsets.all(8),
       color: Colors.white,

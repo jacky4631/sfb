@@ -3,10 +3,9 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:flutter_base/flutter_base.dart';
-import 'package:flutter_base/utils/logger_util.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sufenbao/jd/jd_details_page.dart';
+import 'package:sufenbao/util/value_util.dart';
 import 'package:sufenbao/widget/tab_widget.dart';
 import 'package:sufenbao/service.dart';
 import '../util/colors.dart';
@@ -117,8 +116,7 @@ class _JdIndexPageState extends State<JdIndexPage> {
       );
     }
 
-    List<String> tabList =
-        tabDm.list.map((e) => e['title'].toString()).toList();
+    List<String> tabList = tabDm.list.map((e) => e['title'].toString()).toList();
     return TabWidget(
       tabList: tabList,
       indicatorColor: Colors.white.withValues(alpha: 0),
@@ -130,8 +128,7 @@ class _JdIndexPageState extends State<JdIndexPage> {
 
   ///9.9精选数据
   var goodsNineTopDm = DataModel<Map>();
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   Future<int> getGoodsNineTop() async {
     var res = await BService.nineTop();
@@ -165,8 +162,7 @@ class JdListView extends StatefulWidget {
 
 class _JdListViewState extends State<JdListView> {
   var goodsNineTopDm = DataModel<Map>();
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -335,7 +331,6 @@ class _JdListViewState extends State<JdListView> {
   }
 
   Widget createHeaderItem(data) {
-    Log.e(data);
     String img = ValueUtil.toStr(data['pic']);
     return Container(
       width: 115,
@@ -399,8 +394,7 @@ class _JdListViewState extends State<JdListView> {
             ],
           ),
           Spacer(),
-          getPriceWidget(
-              ValueUtil.toStr(data['jiage']), ValueUtil.toStr(data['yuanjia']))
+          getPriceWidget(ValueUtil.toStr(data['jiage']), ValueUtil.toStr(data['yuanjia']))
         ],
       ),
     );

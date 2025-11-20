@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_base/utils/logger_util.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -69,8 +68,6 @@ Future<DataModel> homeCardHot(Ref ref) async {
     cardDm.toError('网络异常');
   });
   if (res2.isNotEmpty) cardDm.addObject(res2);
-
-  Log.e(cardDm.list);
 
   return cardDm;
 }

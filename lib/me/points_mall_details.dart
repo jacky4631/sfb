@@ -5,12 +5,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_base/flutter_base.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/me/points_detail_img_widget.dart';
 import 'package:sufenbao/service.dart';
+import 'package:sufenbao/util/value_util.dart';
 
 import '../util/colors.dart';
 import '../util/global.dart';

@@ -1,5 +1,5 @@
 import 'package:easy_refresh/easy_refresh.dart';
-import 'package:flutter_base/utils/util.dart';
+import 'package:flutter/widgets.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../service.dart';
 
@@ -24,7 +24,7 @@ class VipList extends _$VipList {
     });
 
     var res = await BService.vipList(page, keyword: keyword).catchError((v) {
-      Log.e('网络异常');
+      debugPrint('网络异常');
     });
     if (res != null) {
       return res['goodsInfoList'];

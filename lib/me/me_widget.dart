@@ -3,9 +3,9 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:flutter_base/flutter_base.dart';
 
 import 'package:sufenbao/me/styles.dart';
+import 'package:sufenbao/util/value_util.dart';
 
 import '../util/global.dart';
 import '../widget/rise_number_text.dart';

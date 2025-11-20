@@ -3,7 +3,6 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:flutter_base/utils/logger_util.dart';
 import 'package:sufenbao/util/global.dart';
 import 'package:sufenbao/page/product_details.dart';
 import 'package:sufenbao/service.dart';
@@ -103,7 +102,6 @@ class _PickLeakPageState extends State<PickLeakPage> with TickerProviderStateMix
         });
       }
 
-      Log.e(index);
       var cateId = tabData.isNotEmpty ? "${tabData[index]['id']}" : 0;
       var res = await BService.pickList(page, cateId);
       if (res.isNotEmpty) {

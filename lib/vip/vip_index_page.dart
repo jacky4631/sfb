@@ -4,10 +4,11 @@
  */
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_base/flutter_base.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sufenbao/util/scroll_controller_ext.dart';
 import 'package:sufenbao/vip/provider.dart';
+import 'package:sufenbao/widget/loading.dart';
+import 'package:sufenbao/widget/tab_bar_indicator.dart';
 
 import '../util/colors.dart';
 import '../widget/CustomWidgetPage.dart';
@@ -259,7 +260,7 @@ class _MIniPageState extends State<VipIndexPage> with SingleTickerProviderStateM
   Widget buildHeader() {
     return InkWell(
       onTap: () {
-        Log.d("待办事项");
+        debugPrint("待办事项");
       },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10),

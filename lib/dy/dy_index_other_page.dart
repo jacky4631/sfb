@@ -3,7 +3,7 @@
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:flutter/material.dart';
-import 'package:flutter_base/flutter_base.dart';
+import 'package:sufenbao/util/value_util.dart';
 
 import '../service.dart';
 import '../widget/CustomWidgetPage.dart';

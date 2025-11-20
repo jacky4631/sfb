@@ -1,6 +1,5 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_base/utils/logger_util.dart';
 
 class TabPageViewDemo extends StatefulWidget {
   const TabPageViewDemo({Key? key}) : super(key: key);
@@ -72,7 +71,6 @@ class _TabPageViewDemoState extends State<TabPageViewDemo> with SingleTickerProv
           ),
         ],
       ),
-
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         color: Colors.grey.shade100,
@@ -122,12 +120,8 @@ class _TabPageViewDemoState extends State<TabPageViewDemo> with SingleTickerProv
           context: context,
           removeTop: true,
           child: EasyRefresh(
-            onRefresh: () {
-              Log.d("onRefresh");
-            },
-            onLoad: () {
-              Log.d("onLoad");
-            },
+            onRefresh: () {},
+            onLoad: () {},
             child: ListView.separated(
               padding: const EdgeInsets.all(16),
               itemBuilder: (_, listIndex) {

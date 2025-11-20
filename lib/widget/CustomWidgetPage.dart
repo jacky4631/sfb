@@ -6,12 +6,12 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_base/utils/value_util.dart';
 
 import 'package:shimmer/shimmer.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/util/custom.dart';
 import 'package:sufenbao/util/tao_util.dart';
+import 'package:sufenbao/util/value_util.dart';
 
 import '../dialog/card_sign_dialog.dart';
 import '../dy/dy_detail_page.dart';
@@ -61,19 +61,10 @@ getMoneyWidget(BuildContext context, num commission, String platform,
       style: TextStyle(color: txtColor, fontSize: txtSize.toDouble()),
       children: [
         TextSpan(text: '可拆'),
-        TextSpan(
-            text: '$min元',
-            style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
-        TextSpan(
-            text: '-',
-            style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
-        TextSpan(
-            text: '$max元',
-            style:
-                TextStyle(color: priceTxtColor, fontSize: txtSize.toDouble())),
-        TextSpan(
-            text: '红包',
-            style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
+        TextSpan(text: '$min元', style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
+        TextSpan(text: '-', style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
+        TextSpan(text: '$max元', style: TextStyle(color: priceTxtColor, fontSize: txtSize.toDouble())),
+        TextSpan(text: '红包', style: TextStyle(color: txtColor, fontSize: txtSize.toDouble())),
       ],
     ),
   );
@@ -219,8 +210,7 @@ getSalesWidget(sales) {
   );
 }
 
-Widget rainbowText(String text,
-    {onTap, colors, fontSize = 14.0, fontWeight = FontWeight.bold}) {
+Widget rainbowText(String text, {onTap, colors, fontSize = 14.0, fontWeight = FontWeight.bold}) {
   var colorizeColors = colors ??
       [
         Colors.blue,
@@ -255,8 +245,7 @@ Widget rainbowText(String text,
       ));
 }
 
-Widget shimmerWidget(Widget child,
-    {color = Colors.red, highlightColor = Colors.yellow}) {
+Widget shimmerWidget(Widget child, {color = Colors.red, highlightColor = Colors.yellow}) {
   return Shimmer.fromColors(
     baseColor: color,
     highlightColor: highlightColor,
@@ -306,11 +295,7 @@ Widget createTbItem(context, i, v) {
               ),
               SizedBox(height: 8),
               Row(
-                children: [
-                  getPriceWidget(v['actualPrice'], v['originalPrice']),
-                  Spacer(),
-                  getSalesWidget(sales)
-                ],
+                children: [getPriceWidget(v['actualPrice'], v['originalPrice']), Spacer(), getSalesWidget(sales)],
               ),
               if (fee > 0) SizedBox(height: 8),
               if (fee > 0) getMoneyWidget(context, fee, TB),
@@ -412,8 +397,7 @@ Widget createJdItem(context, i, v) {
             SizedBox(height: 8),
             Row(
               children: [
-                getPriceWidget(actPrice, startPrice,
-                    endTextColor: Colours.jd_main),
+                getPriceWidget(actPrice, startPrice, endTextColor: Colours.jd_main),
                 Spacer(),
                 getSalesWidget(xiaoliangStr)
               ],
@@ -481,13 +465,9 @@ Widget createPddItem(context, i, v) {
               // Text('${v['dtitle']}'),
               SizedBox(height: 8),
               getPriceWidget(v['minGroupPrice'], v['minNormalPrice'],
-                  endTextColor: Colours.pdd_main,
-                  endPrefix: '抢购价 ',
-                  endPrefixColor: Colors.black54),
+                  endTextColor: Colours.pdd_main, endPrefix: '抢购价 ', endPrefixColor: Colors.black54),
               if (fee > 0) SizedBox(height: 8),
-              if (fee > 0)
-                getMoneyWidget(context, fee, PDD,
-                    priceTxtColor: Colours.pdd_main),
+              if (fee > 0) getMoneyWidget(context, fee, PDD, priceTxtColor: Colours.pdd_main),
               SizedBox(height: 8),
               Text(
                 v['mallName'],
@@ -519,9 +499,7 @@ Widget createDyItem(context, i, v) {
     startPrice = ValueUtil.toNum(v['price']) / 100;
     shopName = v['shop_name'] ?? '';
     var couponPriceTemp = v['coupon_price'];
-    endPrice = couponPriceTemp != null && couponPriceTemp > 0
-        ? couponPriceTemp / 100
-        : startPrice;
+    endPrice = couponPriceTemp != null && couponPriceTemp > 0 ? couponPriceTemp / 100 : startPrice;
   } else {
     fee = v['cosFee'] ?? 0;
     startPrice = v['price'] ?? 0;
@@ -568,13 +546,9 @@ Widget createDyItem(context, i, v) {
               // Text('${v['dtitle']}'),
               SizedBox(height: 8),
               getPriceWidget(endPrice, startPrice,
-                  endTextColor: Colours.dy_main,
-                  endPrefix: '抢购价 ',
-                  endPrefixColor: Colors.black54),
+                  endTextColor: Colours.dy_main, endPrefix: '抢购价 ', endPrefixColor: Colors.black54),
               if (fee > 0) SizedBox(height: 8),
-              if (fee > 0)
-                getMoneyWidget(context, fee, DY,
-                    priceTxtColor: Colours.dy_main),
+              if (fee > 0) getMoneyWidget(context, fee, DY, priceTxtColor: Colours.dy_main),
               SizedBox(height: 8),
               Text(
                 shopName,
@@ -671,8 +645,7 @@ Widget createVipItem(context, data) {
                 ],
               ),
               SizedBox(height: 8),
-              getMoneyWidget(context, fee, VIP,
-                  priceTxtColor: Colours.vip_main),
+              getMoneyWidget(context, fee, VIP, priceTxtColor: Colours.vip_main),
             ],
           ),
         ),
@@ -688,8 +661,7 @@ Widget createTbFadeContainer(context, i, v) {
       color: Colors.white,
       borderRadius: BorderRadius.circular(8),
     ),
-    child: Global.openFadeContainer(
-        createTbItem(context, i, v), ProductDetails(v)),
+    child: Global.openFadeContainer(createTbItem(context, i, v), ProductDetails(v)),
   );
 }
 
@@ -700,8 +672,7 @@ Widget createJdFadeContainer(context, i, v) {
       color: Colors.white,
       borderRadius: BorderRadius.circular(8),
     ),
-    child:
-        Global.openFadeContainer(createJdItem(context, i, v), JDDetailsPage(v)),
+    child: Global.openFadeContainer(createJdItem(context, i, v), JDDetailsPage(v)),
   );
 }
 
@@ -712,8 +683,7 @@ Widget createPddFadeContainer(context, i, v) {
       color: Colors.white,
       borderRadius: BorderRadius.circular(8),
     ),
-    child: Global.openFadeContainer(
-        createPddItem(context, i, v), PddDetailPage(v)),
+    child: Global.openFadeContainer(createPddItem(context, i, v), PddDetailPage(v)),
   );
 }
 
@@ -724,8 +694,7 @@ Widget createDyFadeContainer(context, i, v) {
       color: Colors.white,
       borderRadius: BorderRadius.circular(8),
     ),
-    child:
-        Global.openFadeContainer(createDyItem(context, i, v), DyDetailPage(v)),
+    child: Global.openFadeContainer(createDyItem(context, i, v), DyDetailPage(v)),
   );
 }
 
@@ -734,8 +703,7 @@ Widget createVipFadeContainer(context, data) {
     children: [
       ClipRRect(
         borderRadius: BorderRadius.circular(15),
-        child: Global.openFadeContainer(
-            createVipItem(context, data), VipDetailPage(data)),
+        child: Global.openFadeContainer(createVipItem(context, data), VipDetailPage(data)),
       ),
       SizedBox(height: 15)
     ],
@@ -751,17 +719,12 @@ const List<Map> SHOP_TABS = [
 ];
 
 showSignDialog(context, fun,
-    {title = '实名认证',
-    desc = '需要实名认证签署合同后方可加盟',
-    okTxt = '去认证',
-    cancelTxt = '取消',
-    forceUpdate = false}) {
+    {title = '实名认证', desc = '需要实名认证签署合同后方可加盟', okTxt = '去认证', cancelTxt = '取消', forceUpdate = false}) {
   AwesomeDialog(
     context: context,
     dismissOnTouchOutside: !forceUpdate,
     dialogType: DialogType.noHeader,
-    body: CardSignDialog(title, desc,
-        okTxt: okTxt, cancelTxt: cancelTxt, forceUpdate: forceUpdate, fun: fun),
+    body: CardSignDialog(title, desc, okTxt: okTxt, cancelTxt: cancelTxt, forceUpdate: forceUpdate, fun: fun),
   )..show().then((value) {
       if (value && fun != null) {
         fun();

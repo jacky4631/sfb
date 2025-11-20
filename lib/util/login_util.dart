@@ -5,7 +5,6 @@
  */
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_base/utils/logger_util.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 import 'package:sufenbao/login/login_shanyan.dart';
 import 'package:sufenbao/util/global.dart';
