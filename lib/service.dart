@@ -182,7 +182,12 @@ abstract class BService {
         'materialUrl': materialUrl
       },
     );
-    return res.data['data'];
+    // 后端可能直接返回 String 链接，也可能返回 {link, pwd} 结构，统一取出链接
+    var data = res.data['data'];
+    if (data is Map) {
+      return (data['link'] ?? '').toString();
+    }
+    return data?.toString() ?? '';
   }
   static Future<Map> goodsDetailPDD(goodsSign) async {
     var res = await suClient.get(
