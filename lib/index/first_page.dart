@@ -74,7 +74,8 @@ class _FirstPageState extends State<FirstPage> {
     initData();
     // checkNet();
     _scrollController.addListener(() {
-      setState(() => _showBackTop = _scrollController.position.pixels >= 800);
+      final show = _scrollController.position.pixels >= 800;
+      if (show != _showBackTop) setState(() => _showBackTop = show);
     });
   }
 
