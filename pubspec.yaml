@@ -89,6 +89,7 @@ dependencies:
     #    path: ../flutter_ali_face_verify
     git:
       url: https://gitee.com/jacky4631/flutter_ali_face_verify.git
+      ref: 879a4b1030f4d83a6995602493be41699fe9cc0f
   shanyan:
     #    path: ../CLShanYan_Flutter/shanyan
     git:
