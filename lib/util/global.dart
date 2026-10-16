@@ -614,7 +614,7 @@ class Global {
         context: context,
         dialogType: DialogType.noHeader,
         showCloseIcon: true,
-        body: ContentParseDialog(data['code'], data['data']),
+        body: ContentParseDialog(data['code'] ?? -1, data['data'] ?? {}),
           onDismissCallback: (DismissType type){
             dialogShowing = false;
           }
