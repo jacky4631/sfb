@@ -17,6 +17,7 @@ xcuserdata
 Flutter/App.framework
 Flutter/Flutter.framework
 Flutter/Flutter.podspec
+Flutter/ephemeral/
 Flutter/Generated.xcconfig
 Flutter/app.flx
 Flutter/app.zip
