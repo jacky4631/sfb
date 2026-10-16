@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage>
     setState(() {
 
     });
-    parseContent();
     // 先加载导航分类，再发起非首屏必需的请求。
     await getTabData();
     if (!mounted) return;
@@ -53,6 +52,7 @@ class _HomePageState extends State<HomePage>
     await Global.initCommissionInfo();
     if (!mounted) return;
     await _initUser();
+    parseContent();
 
   }
   ///搜索排名列表
