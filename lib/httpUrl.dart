@@ -142,7 +142,6 @@ abstract class API {
 
 
   static const parseContent = '/tao/parse/content';
-  static const parseContent2 = '/tao/parse/content2';
   static const taoOrders = '/tao/orders';
   static const jdOrders = '/jd/orders';
   static const pddOrders = '/pdd/orders';

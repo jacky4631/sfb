@@ -152,7 +152,7 @@ abstract class BService {
   static Future<Map> parseContent(content, auth) async {
     await setAuthInfo();
     var res = await suClient.get(
-      API.parseContent2,
+      API.parseContent,
       queryParameters: {
         'content': content
       }, options: new Options(receiveTimeout: Duration(milliseconds: 10000))
