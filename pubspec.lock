@@ -539,7 +539,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ac0071fe34368a886bb6f15ecc4450cc438f9b67
+      resolved-ref: "879a4b1030f4d83a6995602493be41699fe9cc0f"
       url: "https://gitee.com/jacky4631/flutter_ali_face_verify.git"
     source: git
     version: "2.0.1"

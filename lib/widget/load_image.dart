@@ -1,5 +1,5 @@
 /**
- *  Copyright (C) 2018-2024
+ *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
 import 'package:cached_network_image/cached_network_image.dart';
