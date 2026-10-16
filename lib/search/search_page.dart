@@ -263,13 +263,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     true
                   ]),
                   PWidget.boxw(16),
-                  PWidget.wrapperImage('${data['pic']}_310x310', [56, 56], {'br': 8}),
-                  PWidget.boxw(8),
                   PWidget.column([
                     Wrap(children: [
-                      PWidget.text('${data['theme']}', {'isOf': false}),
-                      // PWidget.boxw(4),
-                      // PWidget.wrapperImage('${data['icon']}', [16, 16], {'pd': PFun.lg(2)}),
+                      PWidget.text('${data['words']}', {'isOf': false}),
                     ]),
                     PWidget.boxh(4),
                     PWidget.text('${data['hotValue']}人已搜索', [Colors.black38, 12]),

@@ -91,9 +91,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                   var data = widget.dataModel.list[i];
                   return PWidget.container(
                     Row(children: [
-                      PWidget.wrapperImage('${data['pic']}_100x100', [18, 18], {'br': 8}),
-                      PWidget.boxw(2),
-                      PWidget.text(data['theme'], [Colors.grey],{'exp':true}),
+                      PWidget.text(data['words'], [Colors.grey],{'exp':true}),
                     ],),
                     {'ali': PFun.lg(-1, 0), 'pd': PFun.lg(0, 0, 8, 8)},
                   );
