@@ -15,7 +15,7 @@ mixin class BBase {
   //通用链接 打包会自动使用线上链接
   static final baseHost = kDebugMode ? 'http://192.168.1.15:8008' : 'https://demo.admin.mailvor.com';
   //调试用
-  // static final baseHost = 'http://192.168.0.108:8008';
+  // static final baseHost = 'http://192.168.1.15:8008';
   //线上地址
   // static final baseHost = 'http://demo.admin.mailvor.com';
 

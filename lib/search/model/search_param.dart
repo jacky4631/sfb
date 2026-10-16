@@ -16,15 +16,15 @@ class SearchParam {
   getTaoSortKey(sort) {
     switch(sort) {
       case 0:
-        return '';
+        return '0';
       case 2:
-        return 'total_sales_des';
+        return '2';
       case 4:
-        return 'price_asc';
+        return '6';
       case 5:
-        return 'price_des';
+        return '5';
       default:
-        return '';
+        return '0';
     }
   }
 

@@ -71,13 +71,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
   var superSearchDm = DataModel();
   Future<int> superSearch({int page = 1, bool isRef = false}) async {
     if (tabIndex == 0) {
-      var res = await BService.goodsSearch(page, keyword,
+      Map res = await BService.goodsSearch(page, keyword,
               sort: searchParam.getTaoSortKey(sort))
           .catchError((v) {
         superSearchDm.toError('网络异常');
       });
       if (res != null) {
-        superSearchDm.addList(res, isRef, 1000);
+        superSearchDm.addList(res['list']??[], isRef, res['totalNum']??0);
       }
       setState(() {
         loading = false;
@@ -103,16 +103,16 @@ class _SearchResultPageState extends State<SearchResultPage> {
       superSearchDm.toError('网络异常');
     });
     if (res != null) {
-      num totalCount = res['totalCount'];
+      num totalCount = res['total'] ?? 0;
       if(totalCount > 0) {
         listId = res['listId'];
         //破接口返回数据不一致 做特殊处理
-        if(res['goodsList'][0]['goodsName'] == null) {
+        if(res['list'][0]['dtitle'] == null) {
           totalCount = 0;
-          res['goodsList'] = [];
+          res['list'] = [];
         }
       }
-      superSearchDm.addList(res['goodsList'], isRef, totalCount);
+      superSearchDm.addList(res['list'], isRef, totalCount);
     }
     setState(() {
       loading = false;
@@ -300,26 +300,22 @@ class _SearchResultPageState extends State<SearchResultPage> {
       String platform = TB;
       if (tabIndex == 0) {
         title = data['title'];
-        img = data['white_image'] == ''
-            ? data['pict_url']
-            : data['white_image'];
-        img = '${img}_310x310';
-        sale = BService.formatNum(data['volume']);
-        startPrice = data['zk_final_price'];
-        double actualPrice = double.parse(startPrice) -
-            (Global.isEmpty(data['coupon_amount']) ? 0 : double.parse(data['coupon_amount']));
-        fee = data['commission_rate'] * actualPrice / 100;
+        img = '${data['mainPic']}_310x310';
+        sale = BService.formatNum(data['monthSales']);
+        startPrice = '${data['originalPrice']}';
+        double actualPrice = (data['actualPrice'] as num?)?.toDouble() ?? 0;
+        fee = data['commissionRate'] * actualPrice / 100;
         endPrice = actualPrice.toStringAsFixed(2);
-        shopName = data['shop_title'];
+        shopName = data['shopName'];
         platform = TB;
       } else if (tabIndex == 1) {
-        title = data['goodsName'];
-        img = data['goodsImageUrl'];
-        sale = data['salesTip'];
-        fee = data['promotionRate'] * data['minGroupPrice'] / 100;
-        endPrice = data['minGroupPrice'].toString();
-        startPrice = data['minNormalPrice'].toString();
-        shopName = data['mallName'];
+        title = data['dtitle'];
+        img = data['img'];
+        sale = data['sales'];
+        fee = data['feeRatio'] * data['endPrice'] / 100;
+        endPrice = data['endPrice'].toString();
+        startPrice = data['startPrice'].toString();
+        shopName = data['shopName'];
         platform = PDD;
       } else if (tabIndex == 2) {
         title = data['skuName'];

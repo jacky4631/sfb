@@ -56,11 +56,11 @@ abstract class BService {
 
     return res.data['data'];
   }
-  static Future<List> goodsSearch(page, keywords, {sort}) async {
+  static Future<Map> goodsSearch(pageId, keywords, {sort}) async {
     var res = await suClient.get(
       API.goodsSearch,
       queryParameters: {
-        'pageNo': page,
+        'pageId': pageId,
         'keyWords': keywords,
         'sort': sort,
       },
