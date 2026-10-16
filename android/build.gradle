@@ -1,7 +1,7 @@
 allprojects {
     repositories {
          google()
-         jcenter()
+         mavenCentral()
         maven {
             url "https://mvn.cloud.alipay.com/nexus/content/repositories/open/"
         }

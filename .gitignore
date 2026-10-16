@@ -30,6 +30,7 @@
 .pub-cache/
 .pub/
 /build/
+ios/Podfile.lock
 
 # Web related
 

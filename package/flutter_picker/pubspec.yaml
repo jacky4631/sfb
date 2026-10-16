@@ -3,8 +3,8 @@ description: Flutter plugin picker. Include NumberPicker, DateTimePicker, ArrayP
 version: 2.1.1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=2.18.0 <4.0.0"
+  flutter: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:

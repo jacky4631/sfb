@@ -23,14 +23,21 @@ if (flutterVersionName == null) {
 }
 
 android {
-    compileSdkVersion 36
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    compileSdkVersion 37
     useLibrary 'org.apache.http.legacy'
-    ndkVersion "26.1.10909125"
+    ndkVersion "28.2.13676358"
     defaultConfig {
         applicationId "com.mailvor.sufenbao"
 
-        minSdkVersion 21
-        targetSdkVersion 36
+        minSdkVersion 24
+        targetSdkVersion 37
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -43,7 +50,7 @@ android {
                 JPUSH_PKGNAME : applicationId,
                 JPUSH_APPKEY : "f4b96adeec4eb2a41d831551", // NOTE: JPush 上注册的包名对应的 Appkey.
                 JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-                applicationName : "io.flutter.app.FlutterApplication"
+                applicationName : "android.app.Application"
         ]
     }
 
@@ -94,7 +101,7 @@ configurations {
     all*.exclude group:"com.alipay.android.phone.thirdparty", module: "utdid-build"
 }
 dependencies {
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

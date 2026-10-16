@@ -3,8 +3,8 @@ description: sufenbao
 version: 3.2.0+102
 
 environment:
-  sdk: ">=3.0.0"
-  flutter: ">=3.0.0 <4.0.0"
+  sdk: ">=3.12.0 <4.0.0"
+  flutter: ">=3.44.0 <4.0.0"
 
 dependencies:
   #  flutter_qq_ads: ^2.5.0
@@ -15,79 +15,76 @@ dependencies:
       url: https://gitee.com/jacky4631/flutter_z_location.git
   qr_flutter: ^4.1.0
   #  image_gallery_saver: '^2.0.3'
-  image_gallery_saver:
-    #    path: ../image_gallery_saver
-    git:
-      url: https://gitee.com/jacky4631/image_gallery_saver.git
+  image_gallery_saver_plus: ^5.1.1
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  fluttertoast: ^8.2.12
-  dio: ^5.8.0+1
-  shared_preferences: ^2.5.3
+  fluttertoast: ^10.0.0
+  dio: ^5.11.1
+  shared_preferences: ^2.5.6
   cached_network_image: ^3.4.1
-  json_serializable: ^6.7.1
+  json_serializable: ^6.9.5
   maixs_utils:
     path: package/maixs_utils
-  settings_ui: ^2.0.2
-  pinput: ^5.0.2
-  awesome_dialog: ^3.2.1
+  settings_ui: ^3.0.1
+  pinput: ^6.0.2
+  awesome_dialog: 3.3.0
   google_nav_bar: ^5.0.7
   clipboard: ^2.0.2
-  flutter_native_splash: ^2.4.6
+  flutter_native_splash: ^2.4.8
   flutter_picker:
     path: package/flutter_picker
   #  flutter_swiper: ^1.1.6
   flutter_swiper:
     path: package/flutter_swiper
   common_utils: 2.1.0
-  keyboard_actions: ^4.2.0
+  keyboard_actions: ^5.0.2
   sticky_headers: ^0.3.0+2
-  animations: ^2.0.11
+  animations: ^2.2.0
   flutter_switch: ^0.3.2
-  flutter_slidable: ^4.0.0
-  in_app_purchase: ^3.2.3
-  flutter_svg: ^2.2.0
-  permission_handler: ^12.0.1
+  flutter_slidable: ^4.0.3
+  in_app_purchase: ^3.3.0
+  flutter_svg: ^2.3.0
+  permission_handler: ^13.0.1
   shake_animation_widget: ^3.0.4
   dotted_border: ^3.1.0
-  flutter_pdfview: ^1.4.1+1
+  flutter_pdfview: ^1.4.5
   #屏幕适配
   flutter_screenutil: ^5.9.3
-  animated_text_kit: ^4.2.3
-  tobias: ^5.1.2
+  animated_text_kit: ^4.3.0
+  tobias: ^5.3.4
 #  tobias:
 #    git:
 #      url: https://gitee.com/jacky4631/tobias.git
   flutter_alibc:
 #    path: ../flutter_alibc_kit
     git:
-      url: https://gitee.com/jacky4631/flutter_alibc_kit.git
-  decimal: ^3.2.4
-  chewie: ^1.12.1
+      url: https://gitee.com/jacky4631/flutter_alibc.git
+  decimal: ^3.2.6
+  chewie: ^1.14.1
   shimmer: ^3.0.0
-  data_table_2: 2.6.0
-  signature: ^6.3.0
+  data_table_2: 2.7.2
+  signature: ^6.4.0
   encrypt: ^5.0.3
-  connectivity_plus: ^6.1.5
+  connectivity_plus: ^7.3.1
   webview_flutter: ^4.13.0
-  device_info_plus: ^11.5.0
+  device_info_plus: ^13.3.0
   url_strategy: ^0.3.0
-  image_picker: ^1.2.0
-  url_launcher: ^6.3.2
-  appcheck: 1.5.4+1
-  wechat_assets_picker: ^9.8.0
-  wechat_camera_picker: ^4.3.7
+  image_picker: ^1.2.4
+  url_launcher: ^6.3.3
+  appcheck: ^1.8.0
+  wechat_assets_picker: ^10.1.3
+  wechat_camera_picker: ^4.6.0
   #  flutter_swiper: ^1.1.6
-  fluwx: ^5.7.2
-  flutter_inappwebview: ^6.1.5
-  image_cropper: 9.1.0
-  package_info_plus: ^8.3.1
-  jpush_flutter: ^3.3.6
-  sign_in_with_apple: ^7.0.1
+  fluwx: ^5.7.5
+  flutter_inappwebview: ^6.2.0-beta.3
+  image_cropper: ^12.2.1
+  package_info_plus: ^10.2.1
+  jpush_flutter: ^3.5.7
+  sign_in_with_apple: ^8.1.0
   pay_ios: ^1.1.0
-  photo_manager: ^3.7.1
+  photo_manager: ^3.12.0
   flutter_ali_face_verify:
     #    path: ../flutter_ali_face_verify
     git:
@@ -97,16 +94,16 @@ dependencies:
     git:
       url: https://gitee.com/chuanglan253/CLShanYan_Flutter.git
       path: shanyan
-      ref: v2.3.4.7
-  flutter_plugin_android_lifecycle: 2.0.30
-  geolocator: 14.0.2
-  sqflite: ^2.4.2
+      ref: v2.3.5.0.1
+  flutter_plugin_android_lifecycle: ^2.0.35
+  geolocator: ^14.0.3
+  sqflite: ^2.4.4+1
 dev_dependencies:
   mockito: ^5.4.0
   flutter_test:
     sdk: flutter
   build_runner: ^2.3.2
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.4
 flutter_icons:
   android: "launcher_icon"
   ios: true

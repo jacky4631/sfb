@@ -14,7 +14,7 @@ import 'package:permission_handler/permission_handler.dart';
 /// 图片缓存管理
 import 'package:cached_network_image/cached_network_image.dart';
 /// 保存文件或图片到本地
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:image_gallery_saver_plus/image_gallery_saver_plus.dart';
 import 'package:sufenbao/Util/toast_utils.dart';
 
 class saveNetWorkImages {
@@ -52,7 +52,7 @@ class saveNetWorkImages {
       }
 
       /// 保存图片
-      final result = await ImageGallerySaver.saveImage(imageBytes);
+      final result = await ImageGallerySaverPlus.saveImage(imageBytes);
 
       if (result == null || result == '') throw '图片保存失败';
 

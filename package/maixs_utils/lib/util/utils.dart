@@ -147,6 +147,9 @@ error(e, Function(dynamic, int, int) callback) {
     case DioExceptionType.sendTimeout:
       callback('发送超时', 4, 200);
       break;
+    case DioExceptionType.transformTimeout:
+      callback('数据处理超时', 5, 200);
+      break;
     case DioExceptionType.receiveTimeout:
       callback('接收超时', 5, 200);
       break;
