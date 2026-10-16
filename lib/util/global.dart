@@ -5,6 +5,7 @@
 library base;
 
 import 'dart:core';
+import 'single_flight.dart';
 import 'dart:io';
 
 import 'package:animations/animations.dart';
@@ -76,6 +77,7 @@ const int EXPIRED_LEVEL = 99;
 Fluwx fluwx = new Fluwx();
 // 所有Widget继承的抽象类
 class Global {
+  static final _initializers = SingleFlight();
   //ios产品id
   static List<String> iosProductIds = ['00005','10005','20005','30005','40005','00003'];
 
@@ -114,15 +116,16 @@ class Global {
     }
   }
     //初始化全局信息，会在APP启动时执行
-  static Future init() async {
-    String token = await getToken();
-    if (token.isNotEmpty) {
-      login = true;
+  static Future<void> init() => _initializers.run<void>('appInfo', () async {
+    try {
+      final token = await getToken();
+      login = token.isNotEmpty;
+      final data = await BService.homeUrl();
+      appInfo = AppInfo.fromJson(data);
+    } catch (error) {
+      debugPrint('应用配置加载失败：$error');
     }
-    Map<String, dynamic> data = await BService.homeUrl();
-
-    appInfo = AppInfo.fromJson(data);
-  }
+  });
 
   static getDynamicCommission(num commission) {
     double minTimes = 0.1;
@@ -621,7 +624,7 @@ class Global {
     });
   }
 
-  static Future initCommissionInfo() async {
+  static Future<void> initCommissionInfo() => _initializers.run<void>('commissionInfo', () async {
     try {
       final json = await BService.commissionInfo();
       if (json.isEmpty) return;
@@ -629,7 +632,7 @@ class Global {
     } catch (error) {
       debugPrint('佣金配置加载失败：$error');
     }
-  }
+  });
 
   static Future showChannelAuthDialog(callback) async {
       if(dialogShowing) {

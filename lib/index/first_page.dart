@@ -30,6 +30,7 @@ import '../page/product_details.dart';
 import '../shop/ali_face.dart';
 import '../util/colors.dart';
 import '../util/global.dart';
+import '../util/single_flight.dart';
 import '../util/paixs_fun.dart';
 import '../util/tao_util.dart';
 import 'widget/brand_widget.dart';
@@ -60,6 +61,7 @@ class _FirstPageState extends State<FirstPage> {
   bool showHuodong = true;
   StreamSubscription? subscription;
   bool init = false;
+  final _loads = SingleFlight();
   bool agree = false;
   ScrollController _scrollController = ScrollController();
   var _showBackTop = false;
@@ -77,13 +79,14 @@ class _FirstPageState extends State<FirstPage> {
   }
 
   ///初始化函数
-  Future<int> initData() async {
+  Future<int> initData() => _loads.run<int>('home', () async {
     huodongNotify.changeIsShowTabbar(false);
     agree = await Global.getAgree();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    Global.init();
+    if (!mounted) return 0;
     await getBannerData();
     await getTilesData();
+    await Global.init();
     await getSearchData(isRef: true);
     await getCardData();
     await getBrandList(isRef: true);
@@ -93,10 +96,10 @@ class _FirstPageState extends State<FirstPage> {
     await Global.update(packageInfo);
     initThird(packageInfo);
     return 0;
-  }
+  });
 
   Future initThird(PackageInfo packageInfo) async {
-    if (!agree) {
+    if (!agree || init) {
       return;
     }
     if(!Global.isWeb()) {
@@ -162,12 +165,19 @@ class _FirstPageState extends State<FirstPage> {
     }
   }
 
+  Future<T?> _loadSection<T>(Future<T> request, DataModel model) async {
+    try {
+      return await request;
+    } catch (error) {
+      model.toError('网络异常');
+      return null;
+    }
+  }
+
   ///顶部banner
   var bannerDm = DataModel(value: [[], []]);
   Future<int> getBannerData() async {
-    var res = await BService.banners().catchError((v) {
-      bannerDm.toError('网络异常');
-    });
+    var res = await _loadSection(BService.banners(), bannerDm);
     if (res != null) {
       //移除网络链接link_type=3 保留小样种草 移除抖音
       res.removeWhere((element) {
@@ -180,23 +190,21 @@ class _FirstPageState extends State<FirstPage> {
       // res.insertAll(0, tbHbData);
       bannerDm.addList(res, true, 0);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return bannerDm.flag;
   }
 
   ///顶部banner
   var tilesDm = DataModel(value: [{}]);
   Future<int> getTilesData() async {
-    var res = await BService.tiles().catchError((v) {
-      tilesDm.toError('网络异常');
-    });
+    var res = await _loadSection(BService.tiles(), tilesDm);
     if (res != null) {
       res.removeWhere((element) {
         return element['link_type'] == 3;
       });
       tilesDm.addList(res, true, 0);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return tilesDm.flag;
   }
 
@@ -204,44 +212,36 @@ class _FirstPageState extends State<FirstPage> {
   var cardDm = DataModel<Map>(object: {});
   Future<int> getCardData() async {
     ///热销榜url
-    List res1 = await BService.homeCardHot().catchError((v) {
-      cardDm.toError('网络异常');
-    });
+    final res1 = await _loadSection(BService.homeCardHot(), cardDm);
     if (res1 != null) {
       cardDm.value = res1;
       cardDm.setTime();
     }
 
     ///限时秒杀url
-    var res2 = await BService.homeCardDDQ().catchError((v) {
-      cardDm.toError('网络异常');
-    });
+    var res2 = await _loadSection(BService.homeCardDDQ(), cardDm);
     if (res2 != null) cardDm.addObject(res2);
-    setState(() {});
+    if (mounted) setState(() {});
     return cardDm.flag;
   }
 
   ///列表数据
   var listDm = DataModel();
   Future<int> getListData({int page = 1, bool isRef = false}) async {
-    var res = await BService.getGoodsList(page).catchError((v) {
-      listDm.toError('网络异常');
-    });
+    var res = await _loadSection(BService.getGoodsList(page), listDm);
     if (res != null) {
       var list = res['list'];
       var totalNum = res['totalNum'];
       listDm.addList(list, isRef, totalNum);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return listDm.flag;
   }
   ///大家都在领
   var searchDm = DataModel();
   Future<int> getSearchData({int page = 1, bool isRef = false}) async {
     var res =
-        await http.get(Uri.parse(BService.getEveryBuyUrl())).catchError((v) {
-      searchDm.toError('网络异常');
-    });
+        await _loadSection(http.get(Uri.parse(BService.getEveryBuyUrl())).timeout(const Duration(seconds: 20)), searchDm);
     if (res != null) {
       var json = jsonDecode(res.body);
       if(json['success'] != null && json['success']) {
@@ -250,21 +250,19 @@ class _FirstPageState extends State<FirstPage> {
         searchDm.addList(list, isRef, totalNum);
       }
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return searchDm.flag;
   }
 
   ///品牌特卖
   var brandListDm = DataModel();
   Future<int> getBrandList({int page = 1, bool isRef = false}) async {
-    var res = await http.get(Uri.parse(BService.getBrandUrl())).catchError((v) {
-      brandListDm.toError('网络异常');
-    });
+    var res = await _loadSection(http.get(Uri.parse(BService.getBrandUrl())).timeout(const Duration(seconds: 20)), brandListDm);
     if (res != null) {
       var json = jsonDecode(res.body);
       brandListDm.addList(json, true, 10);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return brandListDm.flag;
   }
 

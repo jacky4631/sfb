@@ -217,12 +217,12 @@ abstract class API {
 final suClient = Dio(BaseOptions(
   baseUrl: BBase.suUrl,
   responseType: ResponseType.json,
-  connectTimeout: Duration(milliseconds: 6000),
-  receiveTimeout: Duration(milliseconds: 6000),
+  connectTimeout: Duration(seconds: 10),
+  receiveTimeout: Duration(seconds: 20),
 ));
 
 final defaultClient = Dio(BaseOptions(
   responseType: ResponseType.json,
-  connectTimeout: Duration(milliseconds: 6000),
-  receiveTimeout: Duration(milliseconds: 6000),
+  connectTimeout: Duration(seconds: 10),
+  receiveTimeout: Duration(seconds: 20),
 ));

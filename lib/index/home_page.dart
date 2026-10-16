@@ -45,11 +45,14 @@ class _HomePageState extends State<HomePage>
     setState(() {
 
     });
-    Global.initCommissionInfo();
     parseContent();
-    searchRankingList();
+    // 先加载导航分类，再发起非首屏必需的请求。
     await getTabData();
-    _initUser();
+    if (!mounted) return;
+    await searchRankingList();
+    await Global.initCommissionInfo();
+    if (!mounted) return;
+    await _initUser();
 
   }
   ///搜索排名列表
@@ -64,7 +67,13 @@ class _HomePageState extends State<HomePage>
   }
   Future _initUser() async {
 
-    Map<String, dynamic> json = await BService.userinfo(baseInfo: true);
+    Map<String, dynamic> json;
+    try {
+      json = await BService.userinfo(baseInfo: true);
+    } catch (error) {
+      debugPrint('用户信息加载失败：$error');
+      return;
+    }
     if (json.isEmpty) {
       return;
     }
