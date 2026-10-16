@@ -150,6 +150,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				745A21888F607C851FDDC3CA /* [CP] Copy Pods Resources */,
+				AB1BC0000000000000000001 /* Copy Baichuan SDK Resources */,
 			);
 			buildRules = (
 			);
@@ -282,6 +283,21 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		AB1BC0000000000000000001 /* Copy Baichuan SDK Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Baichuan SDK Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\nsdk_resources=\"${BUILT_PRODUCTS_DIR}/flutter_alibc_flutter_alibc.bundle\"\napp_resources=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nfor name in AlibabaAuthSDK NBResource NebulaWK SmartLink WindVaneBasic; do\n  /usr/bin/ditto \"${sdk_resources}/${name}.bundle\" \"${app_resources}/${name}.bundle\"\ndone\n\n# These SDKs are static archives, already linked into the app executable.\n# Xcode creates empty dylib placeholders when embedding static frameworks.\n# Keep the SDK resource bundles above; do not ship those placeholders.\napp_frameworks=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nfor name in AlibabaAuthEntrance AlibabaAuthExt AlibabaAuthSDK AlibcLinkPartnerSDK AlibcTradeBiz AlibcTradeSDK MtopSDK SGIndieKit SGMain SGMiddleTier SGNoCaptcha SGSecurityBody SecurityGuardSDK UTDID UTMini WindVane WindVaneBasic WindVaneCore mtopcoreopen mtopext; do\n  /bin/rm -rf \"${app_frameworks}/${name}.framework\"\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
