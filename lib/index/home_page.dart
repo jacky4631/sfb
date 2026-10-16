@@ -77,18 +77,18 @@ class _HomePageState extends State<HomePage>
   var tabDm = DataModel();
 
   Future<int> getTabData() async {
-    var res = await BService.goodsCategory().catchError((v) {
-      tabDm.toError('网络异常');
-    });
-    if (res != null) {
+    try {
+      final res = await BService.goodsCategory();
       res.sort((e1, e2) {
         return e1['cid'] > e2['cid'] ? 1 : 0;
       });
       tabDm.addList(res, true, 0);
       tabDm.list.insert(
           0, {"cid": 0, "cname": "精选", "cpic": "", "subcategories": []});
+    } catch (error) {
+      tabDm.toError('网络异常');
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return tabDm.flag;
   }
 

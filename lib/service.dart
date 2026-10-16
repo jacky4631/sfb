@@ -358,7 +358,8 @@ abstract class BService {
     var res = await suClient.get(
       API.commissionInfo,
     );
-    return res.data['data'];
+    final data = res.data['data'];
+    return data is Map ? Map<String, dynamic>.from(data) : <String, dynamic>{};
   }
   static Future<Map> userDelete() async {
     await setAuthInfo();

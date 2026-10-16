@@ -622,14 +622,13 @@ class Global {
   }
 
   static Future initCommissionInfo() async {
-
-    Map<String, dynamic> json = await BService.commissionInfo();
-    if (json.isEmpty) {
-      return;
+    try {
+      final json = await BService.commissionInfo();
+      if (json.isEmpty) return;
+      Global.commissionInfo = CommissionInfo.fromJson(json);
+    } catch (error) {
+      debugPrint('佣金配置加载失败：$error');
     }
-    CommissionInfo commissionInfo = CommissionInfo.fromJson(json);
-    Global.commissionInfo = commissionInfo;
-
   }
 
   static Future showChannelAuthDialog(callback) async {
