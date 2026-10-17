@@ -133,6 +133,9 @@ class Global {
     }
     String min = (commission* minTimes).toStringAsFixed(2);
     double maxD = commission* maxTimes;
+    if(maxD == 0) {
+      maxD = 0.1;
+    }
     //0.0-0.5元， 直接给到1元-1.5元之间
     // if(maxD <= 0.5) {
     //   maxD = 1.5;
