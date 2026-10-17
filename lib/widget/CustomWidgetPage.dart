@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import '../vip/vip_goods.dart';
 import '../pdd/pdd_goods.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -307,16 +308,16 @@ Widget createDyItem(context, i, v) {
 
 
 Widget createVipItem(context, data) {
-  var endPrice = double.parse(data['vipPrice']).toStringAsFixed(0);
-  var price = double.parse(data['marketPrice']).toStringAsFixed(0);
-  double fee = double.parse(data['commission']);
+  var endPrice = VipGoods.money(VipGoods.price(data));
+  var price = VipGoods.money(VipGoods.number(data['startPrice']));
+  num fee = VipGoods.fee(data);
   return PWidget.container(
     PWidget.row(
       [
-        PWidget.wrapperImage(data['goodsMainPicture'], [134, 134], {'br': 8}),
+        PWidget.wrapperImage(data['img'] ?? '', [134, 134], {'br': 8}),
         PWidget.boxw(8),
         PWidget.column([
-          getTitleWidget(data['goodsName']),
+          getTitleWidget(VipGoods.title(data)),
           PWidget.boxh(8),
           ClipRRect(
               borderRadius: BorderRadius.circular(12), //设置圆角
@@ -325,7 +326,7 @@ Widget createVipItem(context, data) {
                   PWidget.image('assets/images/mall/mini.png', [12, 12]),
                   PWidget.boxw(4),
                   PWidget.text('', [], {}, [
-                    PWidget.textIs('${data['storeInfo']['storeName']}',
+                    PWidget.textIs('${VipGoods.shop(data)}',
                         [Colours.vip_main, 12]),
                   ])
                 ]),

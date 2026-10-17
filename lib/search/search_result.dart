@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import '../vip/vip_goods.dart';
 import '../pdd/pdd_goods.dart';
 import 'dart:async';
 
@@ -163,7 +164,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
       superSearchDm.toError('网络异常');
     });
     if (res != null && (res['returnCode'] == null || res['returnCode'] != '1009')) {
-      superSearchDm.addList(res['goodsInfoList'], isRef, res['total']);
+      superSearchDm.addList(res['list'] ?? [], isRef, res['total'] ?? 0);
     }
     setState(() {
       loading = false;
@@ -327,17 +328,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
         shopName = data['shopName'];
         platform = DY;
       }else if (tabIndex == 4) {
-        title = data['goodsName'];
-        img = data['white_image'] == null
-            ? data['goodsMainPicture']
-            : data['white_image'];
-        if(!Global.isEmpty(data['sales'])) {
-          sale = BService.formatNum(data['sales']);
-        }
-        fee = double.parse(data['commission']);
-        endPrice = data['vipPrice'].toString();
-        startPrice = data['marketPrice'].toString();
-        shopName = data['storeInfo']['storeName'];
+        title = VipGoods.title(data);
+        img = data['img'] ?? '';
+        sale = '${data['sales'] ?? 0}';
+        fee = VipGoods.fee(data);
+        endPrice = VipGoods.money(VipGoods.price(data));
+        startPrice = VipGoods.money(VipGoods.number(data['startPrice']));
+        shopName = VipGoods.shop(data);
         platform = VIP;
       }
       return PWidget.container(PWidget.row(

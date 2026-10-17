@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import 'vip_goods.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluwx/fluwx.dart';
@@ -26,7 +27,6 @@ import '../util/toast_utils.dart';
 import '../widget/CustomWidgetPage.dart';
 import '../widget/goods_buy_history_widget.dart';
 import '../widget/detail_lunbo_widget.dart';
-import '../widget/loading.dart';
 
 DetailValueChange valueChange = DetailValueChange();
 
@@ -62,13 +62,19 @@ class _VipDetailPageState extends State<VipDetailPage> {
     valueChange.changeTabIndex(0);
     this.controllerListener();
     await this.getDetailData();
+    if (!mounted || res == null || res.isEmpty) return;
     await this.getCollect();
     await this.listSimilarGoodsByOpen();
   }
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   Future getCollect() async {
     collect = await BService.collect(goodsId);
-    setState(() {
-    });
+    if (mounted) setState(() {});
   }
   ///监听列表滚动
   void controllerListener() {
@@ -96,43 +102,33 @@ class _VipDetailPageState extends State<VipDetailPage> {
   ///详情数据
   var detailDm = DataModel<Map>();
   Future<int> getDetailData() async {
-    if(widget.data['category'] == 'vip') {
-      //说明是从收藏进入详情
-      //从订单跳转
-      if(widget.data['detailList'] != null && (widget.data['detailList'] as List).isNotEmpty ) {
-        goodsId = widget.data['detailList'][0]['goodsId']??'';
-      } else {
-        goodsId = widget.data['productId']??widget.data['itemId']??'';
-      }
-      if(goodsId.isEmpty) {
-        ToastUtils.showToast('商品已下架');
+    goodsId = VipGoods.id(widget.data);
+    if (goodsId.isEmpty) {
+      ToastUtils.showToast('商品已下架');
+      Navigator.pop(context);
+      return detailDm.flag;
+    }
+    try {
+      res = await BService.vipGoodsDetail(goodsId);
+    } catch (_) {
+      if (mounted) {
+        ToastUtils.showToast('商品加载失败，请稍后重试');
         Navigator.pop(context);
       }
-
-      res = await BService.vipGoodsDetail(goodsId);
-      if (res != null) {
-        detailDm.addObject(res);
-        img = res['goodsMainPicture'];
-        title = res['goodsName'];
-        endPrice = res['marketPrice'];
-        startPrice = res['vipPrice'];
-
-        setState(() {});
-        klMap = await BService.goodsWordVIP(res['destUrl'], res['adCode'], uid: widget.data['uid']);
-      };
-    } else {
-      detailDm.addObject(widget.data);
-
-      setState(() {});
-      goodsId = widget.data['goodsId'];
-      img = widget.data['goodsMainPicture'];
-      title = widget.data['goodsName'];
-      startPrice = widget.data['marketPrice'];
-      endPrice = widget.data['vipPrice'];
-
-      klMap = await BService.goodsWordVIP(widget.data['destUrl'], widget.data['adCode']);
+      return detailDm.flag;
     }
-
+    if (!mounted) return detailDm.flag;
+    if (res.isEmpty) {
+      ToastUtils.showToast('商品已下架');
+      Navigator.pop(context);
+      return detailDm.flag;
+    }
+    detailDm.addObject(res);
+    img = res['img'] ?? '';
+    title = VipGoods.title(res);
+    endPrice = VipGoods.money(VipGoods.price(res));
+    startPrice = VipGoods.money(VipGoods.number(res['startPrice']));
+    if (mounted) setState(() {});
     return detailDm.flag;
   }
 
@@ -143,9 +139,9 @@ class _VipDetailPageState extends State<VipDetailPage> {
       listSimilarGoodsByOpenDm.toError('网络异常');
     });
     if (res != null) {
-      listSimilarGoodsByOpenDm.addList(res['goodsInfoList'], false, res['total']);
+      listSimilarGoodsByOpenDm.addList(res['list'] ?? [], false, res['total'] ?? 0);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return listSimilarGoodsByOpenDm.flag;
   }
   @override
@@ -177,7 +173,7 @@ class _VipDetailPageState extends State<VipDetailPage> {
     );
   }
   Widget createSimilarItem(i, v) {
-    String img = v['goodsThumbUrl'];
+    String img = v['img'] ?? '';
     return PWidget.container(
       PWidget.column([
         PWidget.wrapperImage(img, {'ar': 1 / 1}),
@@ -186,13 +182,13 @@ class _VipDetailPageState extends State<VipDetailPage> {
             PWidget.row([
               PWidget.image('assets/images/mall/vip.png', [14, 14]),
               PWidget.boxw(4),
-              PWidget.text(v['goodsName'], [Colors.black.withOpacity(0.75)], {'exp': true}),
+              PWidget.text(v['title'], [Colors.black.withOpacity(0.75)], {'exp': true}),
             ]),
             // PWidget.text('${v['dtitle']}'),
             PWidget.boxh(8),
             PWidget.text('', [], {}, [
               PWidget.textIs('¥', [Colours.vip_main, 12, true]),
-              PWidget.textIs('${v['vipPrice']}', [Colours.vip_main, 20, true]),
+              PWidget.textIs('${VipGoods.money(VipGoods.price(v))}', [Colours.vip_main, 20, true]),
             ]),
           ]),
           {'pd': 8},
@@ -225,13 +221,15 @@ class _VipDetailPageState extends State<VipDetailPage> {
                 {
                   'exp': true,
                   'fun': () => {
-                    onTapDialogLogin(context, fun: (){
+                    onTapDialogLogin(context, fun: () async {
+                      if (!await loadPromotion() || !mounted) return;
                       Map data = res??widget.data;
                       //为了配合后端查券接口
                       data['klUrl'] = Uri.encodeComponent('mst.vip.com?goodsId=$goodsId');
+                      data['shortUrl'] = klMap['url'];
                       Navigator.pushNamed(context, '/sellPage', arguments: {'res':data,'platType':'VIP'});
                       // shareGoods(context,
-                      //     detailDm.object!['goodsName'],
+                      //     detailDm.object!['title'],
                       //     detailDm.object!['marketPrice'],
                       //     detailDm.object!['vipPrice'],
                       //     klMap['url'])
@@ -260,32 +258,31 @@ class _VipDetailPageState extends State<VipDetailPage> {
     );
   }
 
-  Future launchVip(showLoading) async {
-    if(klMap['deeplinkUrl'] == null) {
-      if(!showLoading) {
-        Loading.show(context);
+  Future<bool> loadPromotion() async {
+    try {
+      if (klMap.isEmpty) klMap = await BService.goodsWordVIP(res['destUrl'], res['adCode']);
+      if ((klMap['link'] ?? klMap['longLink'] ?? '').toString().isEmpty) {
+        throw StateError('empty promotion link');
       }
-      await Future.delayed(Duration(milliseconds: 300));
-      launchVip(true);
-    } else {
-      if(showLoading) {
-        Loading.hide(context);
-      }
-      LaunchApp.launchVip(context, klMap['deeplinkUrl'], klMap['longUrl'], fun: () async {
-          //唤起微信小程序
-          bool installed = await fluwx.isWeChatInstalled;
-          if(installed) {
-            fluwx.open(target: MiniProgram(
-              username: 'gh_8ed2afad9972',
-              path: klMap['vipWxUrl'],
-            ));
-          } else {
-            LaunchApp.launchWebView(context, klMap['longUrl'], color: Colours.vip_main);
-          }
-
-      });
+      return true;
+    } catch (_) {
+      klMap = {};
+      if (mounted) ToastUtils.showToast('转链失败，请稍后重试');
+      return false;
     }
+  }
 
+  Future launchVip(showLoading) async {
+    if (!await loadPromotion() || !mounted) return;
+    final webUrl = klMap['longLink'] ?? klMap['link'];
+    await LaunchApp.launchVip(context, klMap['link'] ?? webUrl, webUrl, fun: () async {
+      final path = klMap['wechatPath']?.toString() ?? '';
+      if (path.isNotEmpty && await fluwx.isWeChatInstalled) {
+        await fluwx.open(target: MiniProgram(username: 'gh_8ed2afad9972', path: path));
+      } else if (mounted) {
+        LaunchApp.launchWebView(context, webUrl, color: Colours.vip_main);
+      }
+    });
   }
 
   void animateTo(offset) {
@@ -311,7 +308,7 @@ class _VipDetailPageState extends State<VipDetailPage> {
               PWidget.row(
                 List.generate(tabList.length, (i) {
                   if (i == 1 &&
-                      ['', null].contains(detailDm.object?['goodsDetailPictures'])) {
+                      ['', null].contains(detailDm.object?['details'])) {
                     return PWidget.boxh(0);
                   }
                   return PWidget.container(
@@ -365,13 +362,9 @@ class _VipDetailPageState extends State<VipDetailPage> {
   }
 
   List<Widget> get headers {
-    List imageList = detailDm.object?['goodsDetailPictures']??[];
-    Map storeInfo = detailDm.object?['storeInfo']??{};
-    String storeName = '';
-    if(storeInfo != null) {
-      storeName = storeInfo['storeName'];
-    }
-    double fee = double.parse(detailDm.object?['commission']);
+    List imageList = detailDm.object?['details']??[];
+    String storeName = VipGoods.shop(detailDm.object ?? {});
+    num fee = VipGoods.fee(detailDm.object ?? {});
     var divi = detailDm.object?['subdivisionRank'];
     if(divi == null || divi == 0) {
       divi = 1;
@@ -385,7 +378,7 @@ class _VipDetailPageState extends State<VipDetailPage> {
             isAnimatedSize: false,
             initialState: PWidget.container(null, [double.infinity, 200]),
             objectBuilder: (v) {
-              var imgs = detailDm.object?['goodsCarouselPictures'];
+              var imgs = detailDm.object?['banners'] ?? [];
               return DetailLunboWidget(imgs);
             },
           ),
@@ -433,14 +426,13 @@ class _VipDetailPageState extends State<VipDetailPage> {
               PWidget.row([
                 PWidget.image('assets/images/mall/vip.png', [14, 14],{'pd':[6,0,0,0]}),
                 PWidget.boxw(4),
-                getTitleWidget(detailDm.object?['goodsName'], size: 16, max: 2)
+                getTitleWidget(detailDm.object?['title'], size: 16, max: 2)
               ], '001',),
               {'pd': [8,8,12,8]},
             ),
             PWidget.container(
               PWidget.row([
-                getPriceWidget(detailDm.object?['vipPrice']??''
-                    , detailDm.object?['marketPrice']??'', endTextSize: 24, endPrefix: '折扣价 ',
+                getPriceWidget(endPrice, startPrice, endTextSize: 24, endPrefix: '折扣价 ',
                     endPrefixSize: 16, startPrefix: '原价',endPrefixColor: Colours.vip_main
                     ,endTextColor: Colours.vip_main),
               ]),
@@ -456,11 +448,11 @@ class _VipDetailPageState extends State<VipDetailPage> {
         ),
         PWidget.container(
           PWidget.row([
-            detailDm.object?['brandLogoFull'] == null ? SizedBox() :
+            detailDm.object?['shopLogo'] == null ? SizedBox() :
             PWidget.wrapperImage(
-                detailDm.object?['brandLogoFull'], [80, 40], {'br': 8, 'fix':BoxFit.fitWidth,
+                detailDm.object?['shopLogo'], [80, 40], {'br': 8, 'fix':BoxFit.fitWidth,
             'pd':[2,2,4,4]}),
-            detailDm.object?['brandLogoFull'] == null ? SizedBox() : PWidget.boxw(8),
+            detailDm.object?['shopLogo'] == null ? SizedBox() : PWidget.boxw(8),
             PWidget.column([
               PWidget.row([
                 PWidget.text(storeName,

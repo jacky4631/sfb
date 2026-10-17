@@ -777,7 +777,7 @@ abstract class BService {
         'goodsId': goodsId
       },
     );
-    return res.data['data'][0];
+    return res.data['data'] ?? {};
   }
 
   static Future<Map> goodsBigList(pageId, params, {pageSize}) async {
@@ -939,7 +939,7 @@ abstract class BService {
     return res.data['data'];
   }
 
-  static Future vipList(page, {keyword, fieldName='SALES', order=1}) async {
+  static Future vipList(page, {keyword = '美妆', fieldName='SALES', order=1}) async {
     await setAuthInfo();
     var res = await suClient.get(
         API.goodsListVIP,
@@ -953,23 +953,13 @@ abstract class BService {
     return res.data['data'];
   }
 
-  static Future<Map> goodsWordVIP(itemUrl, adCode, {uid}) async {
-    var selUid;
-    if(uid != null) {
-      selUid = uid;
-    } else {
-      selUid = await Global.getUid();
-    }
+  static Future<Map> goodsWordVIP(itemUrl, adCode) async {
     await setAuthInfo();
-    var res = await suClient.get(
-      API.goodsWordVIP,
-      queryParameters: {
-        'itemUrl': itemUrl,
-        'statParam': selUid,
-        'adCode': adCode
-      },
-    );
-    return res.data['data']['urlInfoList'][0];
+    final res = await suClient.get(API.goodsWordVIP, queryParameters: {
+      'goodsId': itemUrl,
+      'adCode': adCode,
+    });
+    return res.data['data'] ?? {};
   }
   static Future pddSearch(page, {catId, keyword, sortType = 0, listId}) async {
     var res = await suClient.get(
@@ -1032,9 +1022,9 @@ abstract class BService {
 
   static Future vipSearch(page, {keyword, fieldName, order}) async {
     await setAuthInfo();
-    var res = await suClient.get(
+    var res = await suClient.post(
         API.vipSearch,
-        queryParameters: {
+        data: {
           'page': page,
           'keyword': keyword,
           'fieldName': fieldName,

@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import '../vip/vip_goods.dart';
 import '../pdd/pdd_goods.dart';
 import 'dart:convert';
 
@@ -325,12 +326,12 @@ class _SellPageState extends State<SellPage> {
         sale = BService.formatNum(data['sales']);
         break;
       case 'VIP':
-        fee = double.parse(detailDm.object?['commission']);
-        pic = data['goodsMainPicture'];
-        title = data['goodsName'];
-        startPrice = data['marketPrice'];
-        endPrice = data['vipPrice'];
-        sale = data['productSales'];
+        fee = VipGoods.fee(data);
+        pic = data['img'] ?? '';
+        title = VipGoods.title(data);
+        startPrice = VipGoods.money(VipGoods.number(data['startPrice']));
+        endPrice = VipGoods.money(VipGoods.price(data));
+        sale = '${data['sales'] ?? 0}';
         break;
     }
   }

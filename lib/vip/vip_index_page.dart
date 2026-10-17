@@ -184,7 +184,7 @@ class _TopChildState extends State<TopChild> {
       listDm.toError('网络异常');
     });
     if (res != null) {
-      listDm.addList(res['goodsInfoList'], isRef, res['total']);
+      listDm.addList(res['list'] ?? [], isRef, res['total'] ?? 0);
     }
     setState(() {
       loading = false;
