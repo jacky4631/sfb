@@ -16,8 +16,7 @@ import 'package:sufenbao/service.dart';
 import 'package:sufenbao/widget/tab_widget.dart';
 
 import '../util/colors.dart';
-import '../util/paixs_fun.dart';
-import '../widget/CustomWidgetPage.dart';
+import '../widget/top_rank_item.dart';
 
 ///实时疯抢榜
 class TopPage extends StatefulWidget {
@@ -159,7 +158,7 @@ class _TopChildState extends State<TopChild> {
             return PWidget.container(
               Global.openFadeContainer(createItem(i, data), ProductDetails(data)),
               [null, null, Colors.white],
-              {'crr': 8, 'mg': [0,8,0,0]},
+              {'crr': 16, 'mg': [0, 8, 0, 0]},
             );
           },
         );
@@ -168,63 +167,13 @@ class _TopChildState extends State<TopChild> {
   }
 
   Widget createItem(int i, Map data) {
-    num fee = data['actualPrice']*data['commissionRate']/100;
-
-    String shopType = data['shopType']==1?'天猫':'淘宝';
-    String shopName = data['shopName'];
-    return PWidget.container(
-      PWidget.row(
-        [
-            PWidget.wrapperImage(
-                data['mainPic'] + '_300x300', [144, 144], {'br': 8}),
-
-          PWidget.boxw(6),
-          PWidget.column([
-            getTitleWidget(data['title'], max: 2,size: 15),
-            PWidget.boxh(4),
-            PWidget.row([
-              PWidget.container(
-                Text('爆卖', style: TextStyle(fontSize: 13, color: Colors.white, fontStyle: FontStyle.italic),),
-                [null, null, Colours.app_main],
-                {
-                  'pd': PFun.lg(1, 1, 16, 16), 'br': PFun.lg(16, 0, 16, 0)},
-              ),
-              PWidget.container(
-                PWidget.textNormal('已售${data['twoHoursSales']}件', [Colours.app_main, 12], {}),
-                [null, null, Colours.light_app_main],
-                {
-                  'pd': PFun.lg(1, 1, 16, 16),
-                  'mg': PFun.lg(0, 0, 0, 0),
-                  'ali': PFun.lg(-1, 0),
-                  'br': PFun.lg(0, 16, 0, 16),
-                  'exp': true
-                },
-              ),
-            ]),
-
-            PWidget.boxh(6),
-            PWidget.row([
-              getPriceWidget(data['actualPrice'], data['originalPrice'], endPrefix: '券后 '),
-            ]),
-            PWidget.boxh(6),
-            getMoneyWidget(context, fee, TB),
-            PWidget.boxh(6),
-            PWidget.row([
-              PWidget.textNormal('$shopType | $shopName', [Colors.black45, 12]),
-            ])
-
-
-          ], {
-            'exp': 1,
-          }),
-        ],
-        '001',
-        {'fill': true},
-      ),
-      [null, null, Colors.white],
-      {
-        'pd': 10,
-      },
+    final price = num.tryParse('${data['actualPrice']}') ?? 0;
+    final rate = num.tryParse('${data['commissionRate']}') ?? 0;
+    final reward = getHbData(price * rate / 100, TB);
+    return TopRankItem(
+      rank: i + 1,
+      data: data,
+      rewardText: '可拆${reward['min']}～${reward['max']}元',
     );
   }
 }
