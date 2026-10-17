@@ -52,9 +52,9 @@ abstract class API {
   static const pddNav = '/ku/pdd/nav';
   static const pddCate = '/ku/pdd/cate';
 
-  static const dyList = '/ku/dy/list';
+  static const dyList = '/ku/dy/goods/list';
   static const dyNav = '/ku/dy/nav';
-  static const dyCate = '/ku/dy/cate';
+  static const dyCate = '/ku/dy/goods/cate';
   static const pickCate = '/ku/pick/cate';
   static const pickList = '/ku/pick/list';
 
@@ -79,8 +79,8 @@ abstract class API {
   static const mtActivityList = '/mt/activity/list';
   static const mtActivityWord = '/mt/activity/code';
 
-  static const dyGoodsDetail = '/dy/goods/detail';
-  static const dyWord = '/dy/word';
+  static const dyGoodsDetail = '/ku/dy/goods/detail';
+  static const dyWord = '/ku/dy/goods/word';
   static const dyGoodsSearch = '/dy/goods/search';
 
 

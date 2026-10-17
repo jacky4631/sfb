@@ -37,18 +37,34 @@ class _DyIndexPageState extends State<DyIndexPage>{
 
   ///tab数据
   var tabDm = DataModel();
+  String? categoryError;
+  bool categoryLoading = false;
 
   Future<int> getTabData() async {
-    var res = await BService.dyCate().catchError((v) {
-      tabDm.toError('网络异常');
-    });
-    if (res != null) {
-      tabDm.addList(res['category'], true, 0);
-      tabDm.list.insert(
-          0, {"id": 0, "name": "精选"});
+    if (categoryLoading) return tabDm.flag;
+    categoryLoading = true;
+    List<Map> categories = [];
+    try {
+      categories = await BService.dyCate();
+      categoryError = null;
+    } catch (_) {
+      categoryError = '分类加载失败，当前显示精选商品';
+    } finally {
+      categoryLoading = false;
     }
+    if (!mounted) return tabDm.flag;
+    tabDm.addList([
+      {'cid': 0, 'title': '精选'},
+      ...categories.where((item) => '${item['cid']}' != '0'),
+    ], true, 0);
     setState(() {});
     return tabDm.flag;
+  }
+
+  @override
+  void dispose() {
+    _searchFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -90,8 +106,9 @@ class _DyIndexPageState extends State<DyIndexPage>{
             // initialState: buildLoad(color: Colors.grey),
             initialState: PWidget.container(null, [double.infinity]),
             listBuilder: (list, _, __) {
-              var tabList = list.map<String>((m) => (m! as Map)['name']).toList();
-              return TabWidget(
+              var tabList = list.map<String>((m) => (m! as Map)['title']).toList();
+              final tabs = TabWidget(
+                key: ValueKey(list.map((item) => item['cid']).join(',')),
                 tabList: tabList,
                 color: Colors.black,
                 indicatorColor: Colours.dy_main,
@@ -101,6 +118,17 @@ class _DyIndexPageState extends State<DyIndexPage>{
                   return i == 0 ? DyIndexFirstPage() : DyIndexOtherPage(list[i] as Map);
                 }),
               );
+              return Column(children: [
+                if (categoryError != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(children: [
+                      Expanded(child: Text(categoryError!, style: const TextStyle(fontSize: 12, color: Colours.text_gray))),
+                      TextButton(onPressed: getTabData, child: const Text('重试')),
+                    ]),
+                  ),
+                Expanded(child: tabs),
+              ]);
             },
           ),
           [null, null, Color(0xffF6F6F6)],

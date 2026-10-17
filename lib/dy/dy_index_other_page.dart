@@ -34,13 +34,13 @@ class _DyIndexOtherPageState extends State<DyIndexOtherPage>{
   }
   var listDm = DataModel();
   Future<int> getListData({int? sort, int page = 1, bool isRef = false}) async {
-    var res = await BService.dyList(widget.data['id'], page).catchError((v) {
+    var res = await BService.dyList(widget.data['cid'], page).catchError((v) {
       listDm.toError('网络异常');
     });
     if (res != null) {
-      listDm.addList(res['products'], isRef, res['total']);
+      BService.addDyList(listDm, res, page, isRef);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return listDm.flag;
   }
 

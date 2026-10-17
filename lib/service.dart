@@ -724,31 +724,45 @@ abstract class BService {
   }
 
 
-  static Future dyList(cateId,pageId,{pageSize = 20, searchType = 4, sortType = 1, firstCid}) async {
-    var res = await suClient.get(
-        API.dyList,
-        queryParameters: {
-          'cateId': cateId,
-          'pageId': pageId,
-          'pageSize': pageSize,
-          'searchType': searchType,
-          'sortType': 1,
-          'firstCid' : firstCid
-        }
-    );
-    return res.data['data'];
+  static dynamic _dyResponseData(dynamic body) {
+    if (body is! Map || body['success'] == false ||
+        (body['status'] != null && body['status'] != 200) ||
+        (body['code'] != null && body['code'] != 0 && body['code'] != 200)) {
+      throw StateError(body is Map ? '${body['msg'] ?? body['message'] ?? '抖音服务暂不可用'}' : '抖音响应格式异常');
+    }
+    return body['data'];
   }
+
+  static Future dyList(cateId, pageId, {pageSize = 20, sortType = 0, keyword}) async {
+    final res = await suClient.get(API.dyList, queryParameters: {
+      'cateId': cateId ?? 0, 'pageId': pageId, 'pageSize': pageSize,
+      'sort': sortType, 'keyword': keyword,
+    });
+    final data = _dyResponseData(res.data);
+    if (data is! Map || data['list'] is! List) throw StateError('抖音商品列表格式异常');
+    return data;
+  }
+
+  static void addDyList(DataModel model, Map data, int page, bool isRef) {
+    final items = data['list'] as List? ?? [];
+    model.addList(items, isRef, 0);
+    final next = int.tryParse('${data['minId']}');
+    model.hasNext = items.isNotEmpty && next != null && next > page;
+    model.page = model.hasNext ? next! : page;
+  }
+
   static Future dyNav() async {
     var res = await suClient.get(
       API.dyNav,
     );
     return res.data['data'];
   }
-  static Future dyCate() async {
-    var res = await suClient.get(
-      API.dyCate,
-    );
-    return res.data['data'];
+  static Future<List<Map>> dyCate() async {
+    final res = await suClient.get(API.dyCate);
+    final data = _dyResponseData(res.data);
+    if (data is! List) throw StateError('抖音分类响应格式异常');
+    return data.whereType<Map>().where((item) => item['cid'] != null &&
+        '${item['title'] ?? ''}'.trim().isNotEmpty).toList();
   }
   static Future<Map> dyGoodsDetail(goodsId) async {
     var res = await suClient.get(
@@ -757,17 +771,12 @@ abstract class BService {
         'goodsId': goodsId
       },
     );
-    return res.data['data']??{};
+    return _dyResponseData(res.data) ?? {};
   }
-  static Future<Map> dyWord(productUrl, {uid}) async {
-    var res = await suClient.get(
-      API.dyWord,
-      queryParameters: {
-        'productUrl': productUrl,
-        'uid': uid
-      },
-    );
-    return res.data['data']??{};
+  static Future<Map> dyWord(goodsId) async {
+    await setAuthInfo();
+    final res = await suClient.get(API.dyWord, queryParameters: {'goodsId': goodsId});
+    return _dyResponseData(res.data) ?? {};
   }
   static Future<Map> vipGoodsDetail(goodsId) async {
     await setAuthInfo();
@@ -1007,18 +1016,8 @@ abstract class BService {
     }
     return {};
   }
-  static Future dySearch(page, {keyword, sortType, searchType}) async {
-    var res = await suClient.get(
-        API.dyGoodsSearch,
-        queryParameters: {
-          'page': page,
-          'title': keyword,
-          'sortType': sortType,
-          'searchType': searchType,
-        }
-    );
-    return res.data['data'];
-  }
+  static Future dySearch(page, {keyword, sortType = 0}) =>
+      dyList(0, page, keyword: keyword, sortType: sortType);
 
   static Future vipSearch(page, {keyword, fieldName, order}) async {
     await setAuthInfo();

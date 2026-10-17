@@ -57,17 +57,11 @@ class SearchParam {
     }
   }
   getDySortKey(sort) {
-    switch(sort) {
-      case 0:
-        return 0;
-      case 2:
-        return 1;
-      case 4:
-        return 2;
-      case 5:
-        return 2;
-      default:
-        return 0;
+    switch (sort) {
+      case 2: return 1;
+      case 4: return 4;
+      case 5: return 3;
+      default: return 0;
     }
   }
 

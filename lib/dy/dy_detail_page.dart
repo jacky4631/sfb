@@ -2,8 +2,8 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
-import 'dart:math';
 
+import 'dy_goods.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,6 @@ import '../listener/detail_value_change.dart';
 import '../widget/CustomWidgetPage.dart';
 import '../widget/goods_buy_history_widget.dart';
 import '../widget/detail_lunbo_widget.dart';
-import '../widget/loading.dart';
 
 DetailValueChange valueChange = DetailValueChange();
 
@@ -61,6 +60,7 @@ class _DyDetailPageState extends State<DyDetailPage> {
   Future initData() async {
 
     await this.getDetailData();
+    if (!mounted || res == null || res.isEmpty) return;
     await this.listSimilarGoodsByOpen();
     await this.getCollect();
     valueChange.changeTabIndex(0);
@@ -90,60 +90,73 @@ class _DyDetailPageState extends State<DyDetailPage> {
   }
   var res;
   ///详情数据
-  var detailDm = DataModel<Map>(object: {'price': '', 'sales': 0, 'shopTotalScore':{'productScore': {}, 'serviceScore':{}, 'logisticsScore':{}}});
+  var detailDm = DataModel<Map>(object: {});
   Future<int> getDetailData() async {
-     res = await BService.dyGoodsDetail(getGoodsId()).catchError((v) {
-      detailDm.toError('网络异常');
-    });
-    if (res.isNotEmpty) {
-      Map detail = res['list'][0];
-      detailDm.addObject(detail);
-      await this.getKlData();
-      setState(() {
-        loading =false;
-      });
-      img = detail['cover'];
-      title = detail['title'];
-      endPrice = detail['couponPrice'] > 0 ? detail['couponPrice'].toString() : detail['price'].toString();
-      startPrice = detail['price'].toString();
-    }else {
+    goodsId = DyGoods.id(widget.data);
+    try {
+      res = await BService.dyGoodsDetail(goodsId);
+    } catch (_) {
+      if (mounted) {
+        ToastUtils.showToast('商品加载失败，请稍后重试');
+        Navigator.pop(context);
+      }
+      return detailDm.flag;
+    }
+    if (!mounted) return detailDm.flag;
+    if (res.isEmpty) {
       ToastUtils.showToast('商品已下架');
       Navigator.pop(context);
+      return detailDm.flag;
     }
-
+    detailDm.addObject(res);
+    img = res['img'] ?? '';
+    title = DyGoods.title(res);
+    endPrice = DyGoods.money(DyGoods.price(res));
+    startPrice = '${res['startPrice'] ?? 0}';
+    setState(() { loading = false; });
     return detailDm.flag;
   }
-  Future getCollect() async {
-    collect = await BService.collect(goodsId);
-    setState(() {
-    });
-  }
-  getGoodsId() {
-    goodsId = widget.data['product_id']??widget.data['productId']??widget.data['itemId']??widget.data['item_id'];
-    return goodsId;
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
+  Future getCollect() async {
+    collect = await BService.collect(goodsId);
+    if (mounted) setState(() {});
+  }
   var klDm = DataModel<Map>();
-  Future<int> getKlData() async {
-    var res = await BService.dyWord(detailDm.object?['detailUrl'], uid: widget.data['uid']??0);
-    if (res != null) klDm.addObject(res);
-    return klDm.flag;
+  Future<bool> loadPromotion() async {
+    try {
+      if (klDm.object == null || klDm.object!.isEmpty) {
+        final word = await BService.dyWord(goodsId);
+        if ((word['link'] ?? word['longLink'] ?? '').toString().isEmpty) {
+          throw StateError('empty promotion link');
+        }
+        klDm.addObject(word);
+      }
+      return true;
+    } catch (_) {
+      if (mounted) ToastUtils.showToast('转链失败，请稍后重试');
+      return false;
+    }
   }
 
   ///类似商品
   var listSimilarGoodsByOpenDm = DataModel();
   Future<int> listSimilarGoodsByOpen() async {
-    Random random = Random.secure();
-    //获取指定范围内的 int 类型随机数
-    //这里是 0~100
-    int randomInt = random.nextInt(60);
-    var res = await BService.dyList(0, randomInt, firstCid: detailDm.object?['firstCid'], pageSize: 10, searchType: 1).catchError((v) {
+    var result = await BService.dyList(widget.data['cateId'] ?? 0, 1,
+        pageSize: 10, keyword: goodsId).catchError((v) {
       listSimilarGoodsByOpenDm.toError('网络异常');
     });
-    if (res != null) {
-      listSimilarGoodsByOpenDm.addList(res['products'], true, 0);
+    if (result != null) {
+      final items = List.from(result['list'] ?? []);
+      items.removeWhere((item) => DyGoods.id(item) == goodsId);
+      listSimilarGoodsByOpenDm.addList(items, true, 0);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return listSimilarGoodsByOpenDm.flag;
   }
 
@@ -164,7 +177,7 @@ class _DyDetailPageState extends State<DyDetailPage> {
           itemModel: listSimilarGoodsByOpenDm,
           itemModelBuilder: (i, v) {
             return PWidget.container(
-              Global.openFadeContainer(createSimilarItem(i, v), DyDetailPage(v)),
+              Global.openFadeContainer(createDyItem(context, i, v), DyDetailPage(v)),
               [null, null, Colors.white],
               {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 10)},
             );
@@ -173,43 +186,6 @@ class _DyDetailPageState extends State<DyDetailPage> {
         titleBarView(),
         btmBarView(),
       ]),
-    );
-  }
-  Widget createSimilarItem(i, v) {
-    String sales = BService.formatNum(v['sales']);
-    double price = v['price']/100;
-    return PWidget.container(
-      PWidget.column([
-        PWidget.wrapperImage('${v['cover']}', {'ar': 1 / 1}),
-        PWidget.container(
-          PWidget.column([
-            PWidget.row([
-              PWidget.image('assets/images/mall/dy.png', [14, 14],{'pd':[4,0,0,0]}),
-              PWidget.boxw(4),
-              PWidget.text(v['title'], [Colors.black.withOpacity(0.75)],
-                  {'exp': true}),
-            ]),
-            // PWidget.text('${v['dtitle']}'),
-            PWidget.boxh(8),
-            PWidget.text('', [], {}, [
-              PWidget.textIs(' 抢购价 ', [Colours.app_main, 12]),
-              PWidget.textIs('¥', [Colours.dy_main, 12, true]),
-              PWidget.textIs(
-                  '$price', [Colours.dy_main, 20, true]),
-            ]),
-            PWidget.boxh(8),
-            PWidget.text('', [], {}, [
-              PWidget.textIs('已售', [Colors.black45, 12]),
-              PWidget.textIs(sales, [Colors.black45, 12]),
-              PWidget.textIs('+', [Colors.black45, 12]),
-            ]),
-            PWidget.boxh(8),
-            PWidget.text(v['shop_name'], [Colors.black45, 12]),
-          ]),
-          {'pd': 8},
-        ),
-      ]),
-      [null, null, Colors.white],
     );
   }
   ///底部操作栏
@@ -235,9 +211,11 @@ class _DyDetailPageState extends State<DyDetailPage> {
                 {
                   'exp': true,
                   'fun': () => {
-                    onTapDialogLogin(context, fun: (){
-                      res['list'][0]['klUrl'] = klDm.object?['dyPassword'];
-                      Navigator.pushNamed(context, '/sellPage', arguments: {'res':res['list'][0],'platType':'DY'});
+                    onTapDialogLogin(context, fun: () async {
+                      if (!await loadPromotion() || !mounted) return;
+                      res['klUrl'] = klDm.object?['tpwd'] ?? klDm.object?['link'];
+                      res['shortUrl'] = klDm.object?['link'];
+                      Navigator.pushNamed(context, '/sellPage', arguments: {'res':res,'platType':'DY'});
                     })
                   }
                 },
@@ -249,10 +227,11 @@ class _DyDetailPageState extends State<DyDetailPage> {
                 [null, null, Colours.dy_main.withOpacity(0.75)],
                 {
                   'exp': true,
-                  'fun': () => {
-                        FlutterClipboard.copy(klDm.object?['dyPassword']).then(
-                            (value) => ToastUtils.showToast('复制成功，请打开【抖音app】下单'))
-                      }
+                  'fun': () => onTapDialogLogin(context, fun: () async {
+                        if (!await loadPromotion() || !mounted) return;
+                        await FlutterClipboard.copy(klDm.object?['tpwd'] ?? klDm.object?['link'] ?? '');
+                        ToastUtils.showToast('复制成功，请打开【抖音app】下单');
+                      })
                 },
               ),
               PWidget.container(
@@ -280,23 +259,9 @@ class _DyDetailPageState extends State<DyDetailPage> {
     );
   }
 
-  Future launch(showLoading) async{
-    if(klDm.object == null) {
-      if(!showLoading) {
-        Loading.show(context);
-      }
-      await Future.delayed(Duration(milliseconds: 300));
-      launch(true);
-    } else {
-      if(klDm.object!.isEmpty) {
-        ToastUtils.showToast('该商品暂不支持购买');
-        return;
-      }
-      if(showLoading) {
-        Loading.hide(context);
-      }
-      LaunchApp.launchDy(context, klDm.object?['dyDeeplink'], klDm.object?['dyZlink']);
-    }
+  Future launch(showLoading) async {
+    if (!await loadPromotion() || !mounted) return;
+    await LaunchApp.launchDy(context, klDm.object?['longLink'] ?? klDm.object?['link'], klDm.object?['link']);
   }
 
   void animateTo(offset) {
@@ -376,9 +341,9 @@ class _DyDetailPageState extends State<DyDetailPage> {
   }
 
   List<Widget> get headers {
-    String sales = BService.formatNum(detailDm.object?['sales']);
+    String sales = '${detailDm.object?['sales'] ?? 0}';
 
-    num fee = detailDm.object?['cosFee'];
+    num fee = DyGoods.fee(detailDm.object ?? {});
     var divi = detailDm.object?['subdivisionRank'];
     if(divi == null || divi == 0) {
       divi = 1;
@@ -481,7 +446,7 @@ class _DyDetailPageState extends State<DyDetailPage> {
                 }),
               PWidget.boxh(16),
               PWidget.textNormal(
-                  detailDm.object?['logisticsInfo'],[Colors.black54,12], {'isOf': false}),
+                  detailDm.object?['logisticsInfo'] ?? '',[Colors.black54,12], {'isOf': false}),
             ], {
               'exp': 1,
             }),
@@ -503,22 +468,12 @@ class _DyDetailPageState extends State<DyDetailPage> {
   }
 
   getScoreText() {
-    if(detailDm.object?['shopTotalScore'] == null) {
-      return '';
-    }
-    var data = detailDm.object?['shopTotalScore'];
-    var pScore = data['productScore'];
-    var serviceScore = data['serviceScore'];
-    var logisticsScore = data['logisticsScore'];
-
-    return '描述：${pScore['score']??''}   卖家：${serviceScore['score']??''}   物流：${logisticsScore['score']??''}';
+    final data = detailDm.object ?? {};
+    final scores = data['shopTotalScore'] as Map? ?? {};
+    String score(String field, String raw) => '${data[field] ?? scores[raw]?['score'] ?? ''}';
+    return '商品：${score('descScore', 'product_score')}分   商家：${score('serviceScore', 'service_score')}分   物流：${score('shipScore', 'logistics_score')}分';
   }
 
-  getBannerImages() {
-    return detailDm.object?['imgs'];
-  }
-
-  getDetailImages() {
-    return detailDm.object?['imgs'];
-  }
+  getBannerImages() => DyGoods.images(detailDm.object ?? {});
+  getDetailImages() => DyGoods.images(detailDm.object ?? {}, detail: true);
 }

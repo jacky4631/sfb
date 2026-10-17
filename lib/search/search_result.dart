@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import '../dy/dy_goods.dart';
 import '../vip/vip_goods.dart';
 import '../pdd/pdd_goods.dart';
 import 'dart:async';
@@ -134,17 +135,12 @@ class _SearchResultPageState extends State<SearchResultPage> {
   }
   Future<int> dySearch({int page = 1, bool isRef = false}) async {
     var sortKey = searchParam.getDySortKey(sort);
-    var sortType = 1;
-    if (sort == 4) {
-      sortType = 0;
-    }
-    var res = await BService.dySearch(page,
-            keyword: keyword, searchType: sortKey, sortType: sortType)
+    var res = await BService.dySearch(page, keyword: keyword, sortType: sortKey)
         .catchError((v) {
       superSearchDm.toError('网络异常');
     });
     if (res != null) {
-      superSearchDm.addList(res['list'], isRef, res['total']);
+      BService.addDyList(superSearchDm, res, page, isRef);
     }
     setState(() {
       loading = false;
@@ -319,13 +315,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
         jdOwner = '${data['owner'] ?? ''}';
         platform = JD;
       } else if (tabIndex == 3) {
-        title = data['title'];
-        img = data['cover'];
-        sale = BService.formatNum(data['sales']);
-        fee = data['cosFee'];
-        endPrice = data['price'].toString();
-        startPrice = data['price'].toString();
-        shopName = data['shopName'];
+        title = DyGoods.title(data);
+        img = data['img'] ?? '';
+        sale = '${data['sales'] ?? 0}';
+        fee = DyGoods.fee(data);
+        endPrice = DyGoods.money(DyGoods.price(data));
+        startPrice = '${data['startPrice'] ?? 0}';
+        shopName = data['shopName'] ?? '';
         platform = DY;
       }else if (tabIndex == 4) {
         title = VipGoods.title(data);

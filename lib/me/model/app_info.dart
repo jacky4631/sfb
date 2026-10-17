@@ -6,6 +6,26 @@ import 'package:sufenbao/me/model/activity_info.dart';
  */
 class AppInfo {
   String kuCid = '';
+  /// kuCid stores the complete CMS URL; callers extract only what they need.
+  Uri? get cmsUri {
+    final uri = Uri.tryParse(kuCid.trim());
+    return uri != null && ['http', 'https'].contains(uri.scheme) && uri.host.isNotEmpty
+        ? uri : null;
+  }
+
+  String get cmsCid => cmsUri?.queryParameters['cid'] ?? '';
+
+  String? cmsActivityUrl(String tag) {
+    final uri = cmsUri;
+    if (uri == null || cmsCid.isEmpty) return null;
+    return uri.replace(queryParameters: {
+      ...uri.queryParameters,
+      'tmp': tag,
+      'code': cmsCid,
+      'sp': '',
+    }, fragment: '/sp').toString();
+  }
+
   String share = '';
   String shareContent = '';
   String shareGoods = '';
@@ -21,7 +41,7 @@ class AppInfo {
   AppInfo();
 
   AppInfo.fromJson(Map<String, dynamic> json)
-      : kuCid = json['kuCid'],
+      : kuCid = json['kuCid'] ?? '',
         share = json['share']??'',
         shareContent = json['shareContent'],
         shareGoods = json['shareGoods'],

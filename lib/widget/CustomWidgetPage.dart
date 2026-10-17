@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import '../dy/dy_goods.dart';
 import '../vip/vip_goods.dart';
 import '../pdd/pdd_goods.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -263,29 +264,18 @@ Widget createPddItem(context, i, v) {
 }
 
 Widget createDyItem(context, i, v) {
-  String sale = BService.formatNum(v['sales']);
-  num startPrice;
-  num endPrice;
-  String shopName;
-  num fee = v['cos_fee'];
-  if(fee == null) {
-    fee = v['cosFee'];
-    startPrice = v['price'];
-    shopName = v['shopName'];
-    endPrice = v['couponPrice'] > 0 ? v['couponPrice'] : startPrice;
-  } else {
-    fee = fee/100;
-    startPrice = v['price']/100;
-    shopName = v['shop_name'];
-    endPrice = v['coupon_price'] != null && v['coupon_price'] > 0 ? v['coupon_price']/100 : startPrice;
-  }
+  final sale = '${v['sales'] ?? 0}';
+  final startPrice = v['startPrice'] ?? 0;
+  final endPrice = DyGoods.price(v);
+  final shopName = v['shopName'] ?? '';
+  final fee = DyGoods.fee(v);
   return PWidget.container(
     PWidget.column([
-      PWidget.wrapperImage('${v['cover']}', {'ar': 1 / 1}),
+      PWidget.wrapperImage('${v['img'] ?? ''}', {'ar': 1 / 1}),
       PWidget.container(
         PWidget.column([
           PWidget.row([
-            getTitleWidget(v['title'], ),
+            getTitleWidget(DyGoods.title(v)),
           ]),
           // PWidget.text('${v['dtitle']}'),
           PWidget.boxh(8),

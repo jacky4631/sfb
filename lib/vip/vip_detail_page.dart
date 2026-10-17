@@ -378,7 +378,15 @@ class _VipDetailPageState extends State<VipDetailPage> {
             isAnimatedSize: false,
             initialState: PWidget.container(null, [double.infinity, 200]),
             objectBuilder: (v) {
-              var imgs = detailDm.object?['banners'] ?? [];
+              final imgs = (detailDm.object?['banners'] as List? ?? [])
+                  .whereType<String>()
+                  .map((url) => url.trim())
+                  .where((url) => url.isNotEmpty)
+                  .toList();
+              // VIPShop may omit the gallery; TSQ falls back to the main image.
+              if (imgs.isEmpty && img.trim().isNotEmpty) {
+                imgs.add(img.trim());
+              }
               return DetailLunboWidget(imgs);
             },
           ),

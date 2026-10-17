@@ -51,9 +51,6 @@ const String SY_IOS_APP_ID = '';
 //todo 隐私协议地址 例如www.xxx.com
 const baseDomain = '';
 
-//todo 好单库cms的地址前半部分，生成地址https://user.cms.haodanku.com/record
-const BROWSER_BASE_URL = "https://xxx.xxx.com/?cid=";
-
 //订单隐私
 const bool isBlur = true;
 //隐藏积分商城
@@ -408,7 +405,11 @@ class Global {
           tag = "gather_new";
           break;
       }
-      String url = '$BROWSER_BASE_URL${Global.appInfo.kuCid}&tmp=$tag&code=${Global.appInfo.kuCid}&sp=#/sp';
+      final url = Global.appInfo.cmsActivityUrl(tag);
+      if (url == null) {
+        ToastUtils.showToast('请先配置好单库 CMS 完整地址');
+        return;
+      }
       Navigator.pushNamed(context, '/webview',
           arguments: {'url': url, 'title': v['title']});
     }

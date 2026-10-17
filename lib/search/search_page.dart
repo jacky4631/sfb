@@ -117,8 +117,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   ///联想词
   var associationalWordDm = DataModel();
   Future<int> associationalWord(keyword) async {
-    var url = 'https://api.cmspro.haodanku.com/search/associationalWord?keyword=$keyword&cid=${Global.appInfo.kuCid}';
-    var res = await http.get(Uri.parse(url)).catchError((v) {
+    final url = Uri.https('api.cmspro.haodanku.com', '/search/associationalWord', {
+      'keyword': keyword.toString(),
+      'cid': Global.appInfo.cmsCid,
+    });
+    var res = await http.get(url).catchError((v) {
       associationalWordDm.toError('网络异常');
     });
     if (res != null) associationalWordDm.addList(jsonDecode(res.body)['data'], true, 0);
