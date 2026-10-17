@@ -183,21 +183,27 @@ abstract class BService {
     var res = await suClient.get(
       API.goodsDetailPDD,
       queryParameters: {
-        'goodsSign': goodsSign
+        'goodsId': goodsSign
       },
     );
     return res.data['data']??{};
   }
-  static Future<Map> goodsWordPDD(goodsSign, {uid}) async {
+  static Future<Map> goodsWordPDD(goodsSign) async {
     await  setAuthInfo();
     var res = await suClient.get(
       API.pddGoodsWord,
       queryParameters: {
-        'goodsSign': goodsSign,
-        'uid': uid
+        'goodsId': goodsSign
       },
     );
-    return res.data['data'];
+    return res.data['data'] ?? {};
+  }
+  static Future<Map> pddSuperRedPackageLink({String? goodsSign}) async {
+    await setAuthInfo();
+    final res = await suClient.get('/pdd/super-red-package', queryParameters: {
+      if (goodsSign != null && goodsSign.isNotEmpty) 'goodsSign': goodsSign,
+    });
+    return res.data['data'] ?? {};
   }
   static Future<Map> orderSubmit(orderId) async {
     await  setAuthInfo();
@@ -1005,8 +1011,8 @@ abstract class BService {
     var res = await suClient.get(
       API.pddAuth,
     );
-    List list = res.data['data'];
-    if(list != null && list.isNotEmpty) {
+    List list = res.data['data'] ?? [];
+    if(list.isNotEmpty) {
       return list[0];
     }
     return {};

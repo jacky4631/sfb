@@ -2,9 +2,10 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import 'pdd_goods.dart';
+import 'pdd_promotion.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluwx/fluwx.dart';
 import 'package:maixs_utils/model/data_model.dart';
 import 'package:maixs_utils/widget/anima_switch_widget.dart';
 import 'package:maixs_utils/widget/my_custom_scroll.dart';
@@ -12,7 +13,6 @@ import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
 import 'package:sufenbao/util/custom.dart';
-import 'package:sufenbao/util/launchApp.dart';
 import 'package:sufenbao/widget/product_info_img_widget.dart';
 import 'package:sufenbao/service.dart';
 
@@ -26,7 +26,6 @@ import '../widget/CustomWidgetPage.dart';
 import '../widget/auth_tip.dart';
 import '../widget/goods_buy_history_widget.dart';
 import '../widget/detail_lunbo_widget.dart';
-import '../widget/loading.dart';
 
 DetailValueChange valueChange = DetailValueChange();
 
@@ -63,18 +62,16 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
     valueChange.changeTabIndex(0);
     this.controllerListener();
     await this.getDetailData();
+    if (!mounted || res == null || res.isEmpty) return;
     await this.getCollect();
     await this.listSimilarGoodsByOpen();
     super.initChannelId(callback: (){
-      setState(() {
-
-      });
+      if (mounted) setState(() {});
     });
   }
   Future getCollect() async {
     collect = await BService.collect(goodsId);
-    setState(() {
-    });
+    if (mounted) setState(() {});
   }
   Future isShowTip() async {
     int data = await BService.pddAuthQuery();
@@ -84,6 +81,7 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
   @override
   void dispose() {
     disposeTimer();
+    controller.dispose();
     super.dispose();
   }
 
@@ -109,37 +107,32 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
     });
   }
   initGoodsId() {
-    goodsId = widget.data['goods_sign']??widget.data['goodsSign']??widget.data['productId']??widget.data['itemId'];
+    goodsId = PddGoods.id(widget.data);
   }
   var res;
   //详情数据
   Map klMap = {};
-  var detailDm = DataModel<Map>(object: {'minGroupPrice': '', 'goodsName': '', 'mallName':''});
+  var detailDm = DataModel<Map>(object: {'endPrice': 0, 'title': '', 'shopName': ''});
   Future<int> getDetailData() async {
-     res = await BService.goodsDetailPDD(goodsId);
+    try {
+      res = await BService.goodsDetailPDD(goodsId);
+    } catch (_) {
+      if (mounted) {
+        ToastUtils.showToast('商品加载失败，请稍后重试');
+        Navigator.pop(context);
+      }
+      return detailDm.flag;
+    }
+    if (!mounted) return detailDm.flag;
     if (res.isNotEmpty) {
-      img = res['goodsThumbnailUrl'];
-      title = res['goodsName'];
-      List materialList = res['materialList'];
-      detailImgs = res['goodsGalleryUrls'] ?? [];
-      if(materialList != null && materialList.length > 0) {
-        var material = materialList.elementAt(0);
-        detailImgs = material['goodsGalleryUrls'];
-      }
+      img = res['img'] ?? '';
+      title = PddGoods.title(res);
+      detailImgs = res['details'] ?? [];
       detailDm.addObject(res);
-      int coupon = detailDm.object?['couponDiscount'];
-      if(coupon == 0) {
-        endPrice = detailDm.object!['minGroupPrice'].toString();
-      } else {
-        num endPriceD = detailDm.object?['minGroupPrice']-detailDm.object?['couponDiscount'];
-        endPrice = endPriceD.toStringAsFixed(2);
-      }
-
-      setState(() {
-        loading = false;
-      });
-      klMap = await BService.goodsWordPDD(goodsId, uid: widget.data['uid']);
-    }else {
+      endPrice = PddGoods.price(res).toStringAsFixed(2);
+      startPrice = '${res['startPrice'] ?? 0}';
+      setState(() { loading = false; });
+    } else {
       ToastUtils.showToast('商品已下架');
       Navigator.pop(context);
     }
@@ -152,9 +145,9 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
       listSimilarGoodsByOpenDm.toError('网络异常');
     });
     if (res != null) {
-      listSimilarGoodsByOpenDm.addList(res['goodsList'], false, res['totalCount']);
+      listSimilarGoodsByOpenDm.addList(res['list'] ?? [], false, res['total'] ?? 0);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return listSimilarGoodsByOpenDm.flag;
   }
   @override
@@ -174,7 +167,7 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
           itemModel: listSimilarGoodsByOpenDm,
           itemModelBuilder: (i, v) {
             return PWidget.container(
-              Global.openFadeContainer(createSimilarItem(i, v), PddDetailPage(v)),
+              Global.openFadeContainer(createPddItem(context, i, v), PddDetailPage(v)),
               [null, null, Colors.white],
               {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 10)},
             );
@@ -192,42 +185,12 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
   tipClick(){
     Global.showPddAuthDialog((){
       Navigator.pop(context);
-      // initChannelId();
-      // setState(() {});
+      klMap = {};
+      disposeTimer();
+      initChannelId(callback: () { if (mounted) setState(() {}); });
     });
   }
 
-  Widget createSimilarItem(i, v) {
-    String img = v['goodsThumbnailUrl'];
-    String sale = v['salesTip'] == '' ? '0' : v['salesTip'];
-    return PWidget.container(
-      PWidget.column([
-        PWidget.wrapperImage(img, {'ar': 1 / 1}),
-        PWidget.container(
-          PWidget.column([
-            PWidget.row([
-              PWidget.text(v['goodsName'], [Colors.black.withOpacity(0.75)], {'exp': true}),
-            ]),
-            // PWidget.text('${v['dtitle']}'),
-            PWidget.boxh(8),
-            PWidget.text('', [], {}, [
-              PWidget.textIs('¥', [Colors.red, 12, true]),
-              PWidget.textIs('${v['minGroupPrice']}', [Colors.red, 20, true]),
-            ]),
-            PWidget.boxh(8),
-            PWidget.text('', [], {}, [
-              PWidget.textIs('已售', [Colors.black45, 12]),
-              PWidget.textIs(sale, [Colors.black45, 12]),
-            ]),
-            PWidget.boxh(8),
-            PWidget.text(v['mallName'], [Colors.black45, 12]),
-          ]),
-          {'pd': 8},
-        ),
-      ]),
-      [null, null, Colors.white],
-    );
-  }
   ///底部操作栏
   Widget btmBarView() {
     return PWidget.positioned(
@@ -251,8 +214,9 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
                 {
                   'exp': true,
                   'fun': () {
-                    onTapDialogLogin(context, fun: (){
-                      res['klUrl'] = klMap['mobileShortUrl'];
+                    onTapDialogLogin(context, fun: () async {
+                      if (!await loadPromotion() || !mounted) return;
+                      res['klUrl'] = klMap['link'];
                       Navigator.pushNamed(context, '/sellPage', arguments: {'res':res,'platType':'PDD'});
                     });
                   }
@@ -282,28 +246,23 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
     );
   }
 
-  Future launch(showLoading) async {
-    if(klMap['mobileUrl'] == null) {
-      if(!showLoading) {
-        Loading.show(context);
+  Future<bool> loadPromotion() async {
+    try {
+      if (klMap.isEmpty) klMap = await BService.goodsWordPDD(goodsId);
+      if (klMap['link'] == null || klMap['link'].toString().isEmpty) {
+        throw StateError('empty link');
       }
-      await Future.delayed(Duration(milliseconds: 300));
-      launch(true);
-    } else {
-      if(showLoading) {
-        Loading.hide(context);
-      }
-      LaunchApp.launchPdd(context, klMap['mobileUrl'], klMap['mobileShortUrl'], fun: ()async
-      {
-        bool installed = await fluwx.isWeChatInstalled;
-        if(installed) {
-          fluwx.open(target: MiniProgram(
-            username: 'gh_0e7477744313',
-            path: klMap['weAppPagePath'],
-          ));
-        }
-      });
+      return true;
+    } catch (_) {
+      klMap = {};
+      if (mounted) ToastUtils.showToast('转链失败，请稍后重试');
+      return false;
     }
+  }
+
+  Future launch(showLoading) async {
+    if (!await loadPromotion() || !mounted) return;
+    await PddPromotion.open(context, klMap);
   }
 
   void animateTo(offset) {
@@ -372,7 +331,7 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
   }
 
   List<Widget> get headers {
-    double fee = detailDm.object?['promotionRate']*detailDm.object?['minGroupPrice']/100;
+    num fee = PddGoods.fee(detailDm.object ?? {});
     var divi = detailDm.object?['subdivisionRank'];
     if(divi == null || divi == 0) {
       divi = 1;
@@ -386,7 +345,7 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
             isAnimatedSize: false,
             initialState: PWidget.container(null, [double.infinity, 200]),
             objectBuilder: (v) {
-              var imgs = detailDm.object?['goodsGalleryUrls'] ?? [];
+              var imgs = List.from(detailDm.object?['banners'] ?? []);
               imgs.removeWhere((w) => w == '');
               return DetailLunboWidget(imgs);
             },
@@ -422,21 +381,20 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
               PWidget.row([
                 PWidget.image('assets/images/mall/pdd.png', [14, 14],{'pd':[6,0,0,0]}),
                 PWidget.boxw(4),
-                getTitleWidget(detailDm.object?['goodsName'], size: 16, max: 2)
+                getTitleWidget(title, size: 16, max: 2)
               ], '001',),
               {'pd': [8,8,12,8]},
             ),
 
             PWidget.container(
               PWidget.row([
-                getPriceWidget(detailDm.object?['minGroupPrice']??''
-                    , detailDm.object?['minNormalPrice']??'', endTextSize: 24, startPrefix: '原价 '
+                getPriceWidget(endPrice, startPrice, endTextSize: 24, startPrefix: '原价 '
                     ,endPrefixSize: 16
                   ,endTextColor: Colours.pdd_main),
                 PWidget.spacer(),
                 PWidget.text('', [], {}, [
                   PWidget.textIs('已售', [Colors.black45, 12]),
-                  PWidget.textIs('${detailDm.object?['salesTip']}', [Colours.pdd_main, 12]),
+                  PWidget.textIs('${detailDm.object?['sales']}', [Colours.pdd_main, 12]),
                 ]),
               ]),
               {'pd': [8,8,12,8]},
@@ -456,14 +414,14 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
               PWidget.row([
                 PWidget.image('assets/images/mall/pdd.png', [18, 18]),
                 PWidget.boxw(4),
-                PWidget.text(detailDm.object?['mallName'], [Colors.black, 14, true], {'exp': true}),
+                PWidget.text(detailDm.object?['shopName'], [Colors.black, 14, true], {'exp': true}),
               ]),
               PWidget.boxh(8),
               Builder(builder: (context) {
                 Map? data = detailDm.object;
-                var servTxt = data?['servTxt'];
-                var descTxt = data?['descTxt'];
-                var shipTxt = data?['lgstTxt'];
+                var servTxt = data?['serviceScore'];
+                var descTxt = data?['descScore'];
+                var shipTxt = data?['shipScore'];
                 return PWidget.textNormal('描述：$descTxt   服务：$servTxt   物流：$shipTxt',
                     [Colors.black54, 12]);
               }),

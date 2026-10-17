@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import '../pdd/pdd_goods.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -96,6 +97,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   var listId = '';
   Future<int> pddSearch({int page = 1, bool isRef = false}) async {
+    if (isRef) listId = '';
     var sortKey = searchParam.getPddSortKey(sort);
     var res = await BService.pddSearch(page,
             keyword: keyword, sortType: sortKey, listId: listId)
@@ -103,16 +105,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
       superSearchDm.toError('网络异常');
     });
     if (res != null) {
-      num totalCount = res['total'] ?? 0;
-      if(totalCount > 0) {
-        listId = res['listId'];
-        //破接口返回数据不一致 做特殊处理
-        if(res['list'][0]['dtitle'] == null) {
-          totalCount = 0;
-          res['list'] = [];
-        }
-      }
-      superSearchDm.addList(res['list'], isRef, totalCount);
+      listId = res['minId'] ?? res['listId'] ?? '';
+      superSearchDm.addList(res['list'] ?? [], isRef, res['total'] ?? 0);
     }
     setState(() {
       loading = false;
@@ -305,13 +299,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
         shopName = data['shopName'];
         platform = TB;
       } else if (tabIndex == 1) {
-        title = data['dtitle'];
-        img = data['img'];
-        sale = data['sales'];
-        fee = data['feeRatio'] * data['endPrice'] / 100;
-        endPrice = data['endPrice'].toString();
-        startPrice = data['startPrice'].toString();
-        shopName = data['shopName'];
+        title = PddGoods.title(data);
+        img = data['img'] ?? '';
+        sale = '${data['sales'] ?? 0}';
+        fee = PddGoods.fee(data);
+        endPrice = PddGoods.price(data).toString();
+        startPrice = '${data['startPrice'] ?? 0}';
+        shopName = data['shopName'] ?? '';
         platform = PDD;
       } else if (tabIndex == 2) {
         title = data['title'] ?? '';

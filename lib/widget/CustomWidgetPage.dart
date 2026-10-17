@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import '../pdd/pdd_goods.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -230,28 +231,28 @@ Widget createJdItem(context, i, v) {
 
 Widget createPddItem(context, i, v) {
   //todo 详情页积分和列表不一致 暂时关闭
-  num fee = v['promotionRate']*v['minGroupPrice']/100;
+  num fee = PddGoods.fee(v);
 
   return PWidget.container(
     PWidget.column([
-      PWidget.wrapperImage('${v['goodsImageUrl']}', {'ar': 1 / 1}),
+      PWidget.wrapperImage('${v['img']}', {'ar': 1 / 1}),
       PWidget.container(
         PWidget.column([
           PWidget.row([
             PWidget.image('assets/images/mall/pdd.png', [14, 14],{'pd':[3,0,0,0]}),
             PWidget.boxw(4),
-            getTitleWidget(v['goodsName']),
+            getTitleWidget(PddGoods.title(v)),
           ]),
           // PWidget.text('${v['dtitle']}'),
           PWidget.boxh(8),
-          getPriceWidget(v['minGroupPrice'], v['minNormalPrice'], endTextColor: Colours.pdd_main,
+          getPriceWidget(PddGoods.price(v), v['startPrice'] ?? 0, endTextColor: Colours.pdd_main,
               endPrefix: '抢购价 ', endPrefixColor: Colors.black54),
           fee == 0 ? SizedBox() : PWidget.boxh(8),
           fee == 0 ? SizedBox() : getMoneyWidget(context, fee, PDD,priceTxtColor: Colours.pdd_main),
           PWidget.boxh(8),
-          PWidget.text(v['mallName'], [Colors.black45, 12]),
+          PWidget.text(v['shopName'] ?? '', [Colors.black45, 12]),
           PWidget.boxh(8),
-          getSalesWidget(v['salesTip'])
+          getSalesWidget('${v['sales'] ?? 0}')
         ]),
         {'pd': 8},
       ),

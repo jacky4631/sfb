@@ -2,6 +2,7 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
+import '../pdd/pdd_goods.dart';
 import 'dart:convert';
 
 import 'package:clipboard/clipboard.dart';
@@ -306,14 +307,12 @@ class _SellPageState extends State<SellPage> {
         sale = BService.formatNum(int.tryParse('${data['sales']}') ?? 0);
         break;
       case 'PDD':
-        fee = detailDm.object?['promotionRate'] *
-            detailDm.object?['minGroupPrice'] /
-            100;
-        pic = data['goodsThumbnailUrl'];
-        title = data['goodsName'];
-        startPrice = detailDm.object!['minNormalPrice'].toString();
-        endPrice = detailDm.object!['minGroupPrice'].toString();
-        sale = data['salesTip'];
+        fee = PddGoods.fee(data);
+        pic = data['img'] ?? '';
+        title = PddGoods.title(data);
+        startPrice = '${data['startPrice'] ?? 0}';
+        endPrice = PddGoods.price(data).toString();
+        sale = '${data['sales'] ?? 0}';
         break;
       case 'DY':
         fee = detailDm.object?['cosFee'];

@@ -35,16 +35,17 @@ class _PddIndexOtherPageState extends State<PddIndexOtherPage> {
   var listDm = DataModel();
   var listId = '';
   Future<int> getListData({int? sort, int page = 1, bool isRef = false}) async {
+    if (isRef) listId = '';
     var res = await BService.pddSearch(page,
-        listId: listId,catId: widget.data['id'])
+        listId: listId,catId: widget.data['cid'])
         .catchError((v) {
       listDm.toError('网络异常');
     });
     if (res != null) {
-      listId = res['listId'];
-      listDm.addList(res['goodsList'], isRef, res['totalCount']);
+      listId = res['minId'] ?? res['listId'] ?? '';
+      listDm.addList(res['list'] ?? [], isRef, res['total'] ?? 0);
     }
-    setState(() {});
+    if (mounted) setState(() {});
     return listDm.flag;
   }
 

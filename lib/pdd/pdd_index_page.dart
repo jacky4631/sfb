@@ -45,7 +45,7 @@ class _PddIndexPageState extends State<PddIndexPage>{
     if (res != null) {
       tabDm.addList(res, true, 0);
       tabDm.list.insert(
-          0, {"id": 0, "name": "精选"});
+          0, {"cid": 0, "title": "精选"});
     }
     setState(() {});
     return tabDm.flag;
@@ -90,7 +90,7 @@ class _PddIndexPageState extends State<PddIndexPage>{
             // initialState: buildLoad(color: Colors.grey),
             initialState: PWidget.container(null, [double.infinity]),
             listBuilder: (list, _, __) {
-              var tabList = list.map<String>((m) => (m! as Map)['name']).toList();
+              var tabList = list.map<String>((m) => (m! as Map)['title']).toList();
               return TabWidget(
                 tabList: tabList,
                 color: Colors.black,
