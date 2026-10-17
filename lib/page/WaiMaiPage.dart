@@ -58,6 +58,7 @@ class _AliRedPageState extends State<WaiMaiPage> {
             bgColor: Colors.transparent,
             body: Stack(children: [
               ListView.builder(
+                padding: EdgeInsets.zero,
                 itemCount: data.length,
                 itemBuilder: (_, index) {
                   var activity = data[index];
