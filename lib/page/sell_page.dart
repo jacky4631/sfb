@@ -298,12 +298,12 @@ class _SellPageState extends State<SellPage> {
         pic = data['mainPic'];
         break;
       case 'JD':
-        fee = detailDm.object?['commission'];
-        pic = data['picMain'];
-        title = data['skuName'];
-        endPrice = data['actualPrice'].toString();
-        startPrice = data['originPrice'].toString();
-        sale = BService.formatNum(data?['inOrderCount30Days']);
+        fee = data['fee'] ?? 0;
+        pic = data['img'] ?? '';
+        title = data['title'] ?? '';
+        endPrice = '${data['endPrice'] ?? 0}';
+        startPrice = '${data['startPrice'] ?? 0}';
+        sale = BService.formatNum(int.tryParse('${data['sales']}') ?? 0);
         break;
       case 'PDD':
         fee = detailDm.object?['promotionRate'] *

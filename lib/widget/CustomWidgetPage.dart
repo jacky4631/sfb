@@ -173,26 +173,14 @@ Widget createTbItem(context, i, v) {
 
 
 Widget createJdItem(context, i, v) {
-  var xiaoliangStr = '';
-  var xiaoliang = v['inOrderCount30Days'] as int;
-  xiaoliangStr = BService.formatNum(xiaoliang);
-  int max = 1;
-  if(i%3 == 0) {
-    max =2;
-  }
-  num actPrice = v['actualPrice'];
-  if(actPrice == null) {
-    actPrice = v['lowestCouponPrice'];
-  }
-  num startPrice = v['originPrice'] != null ? v['originPrice'] : v['price'];
-  num fee = v['commissionShare']*actPrice/100;
-  List labels = v['promotionLabelList'];
-  bool showLabel = labels != null && labels.isNotEmpty;
-  String label = '';
-  if(showLabel) {
-    label = labels[0]['promotionLabel'];
-  }
-  String pic = v['picMain'] != null ? v['picMain'] : v['whiteImage'];
+  final xiaoliangStr = BService.formatNum(int.tryParse('${v['sales']}') ?? 0);
+  final max = i % 3 == 0 ? 2 : 1;
+  final num actPrice = v['endPrice'] ?? 0;
+  final num startPrice = v['startPrice'] ?? actPrice;
+  final num fee = v['fee'] ?? 0;
+  final bool showLabel = (v['coupon'] ?? 0) > 0;
+  final String label = '券${v['coupon']}元';
+  final String pic = v['img'] ?? '';
   return PWidget.container(
     PWidget.column([
       PWidget.wrapperImage(pic, {'ar': 1 / 1, 'br': 8}),
@@ -200,7 +188,7 @@ Widget createJdItem(context, i, v) {
       PWidget.container(
         PWidget.column([
           PWidget.row([
-            v['isOwner'] == 1
+            v['owner'].toString() == '1'
                 ? PWidget.container(
               PWidget.text('自营', [Colors.white, 11]),
               [null, null, Colours.jd_main],
@@ -212,7 +200,7 @@ Widget createJdItem(context, i, v) {
             ) : SizedBox(),
             PWidget.boxw(2),
 
-            getTitleWidget(v['skuName'], max: max),
+            getTitleWidget(v['title'], max: max),
           ],['0','1','1']),
           PWidget.boxh(8),
           PWidget.row([
@@ -227,7 +215,7 @@ Widget createJdItem(context, i, v) {
           fee == 0 ? SizedBox() : PWidget.boxh(8),
           fee == 0 ? SizedBox() : getMoneyWidget(context, fee, JD),
           PWidget.boxh(8),
-          PWidget.text(v['shopName'], [Colors.black45, 12]),
+          PWidget.text(v['shopName'] ?? '', [Colors.black45, 12]),
         ]),
       ),
     ]),

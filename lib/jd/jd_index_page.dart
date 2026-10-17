@@ -42,10 +42,12 @@ class _JdIndexPageState extends State<JdIndexPage> {
   var tabDm = DataModel();
 
   Future<int> getTabData() async {
+    final categories = await BService.jdRankCate();
+    if (!mounted) return tabDm.flag;
     tabDm.addList([
-      {'title': '精选', 'index': 1},
+      ...categories.map((item) => {'title': item['title'], 'index': 1, 'rankId': item['rankId']}),
       {'title': '大牌', 'index': 2},
-      {'title': '9.9', 'index': 3}
+      {'title': '9.9', 'index': 3},
     ], true, 0);
     setState(() {});
 
@@ -124,7 +126,7 @@ class _JdListViewState extends State<JdListView> {
     int tabIndex = widget.tabValue['index'] - 1;
     var res;
     if (tabIndex == 0) {
-      res = await BService.jdRankList(page);
+      res = await BService.jdRankList(page, rankId: widget.tabValue['rankId'] ?? 200000);
     } else if (tabIndex == 1) {
       res = await BService.jdBrandList(page);
     } else {
@@ -139,7 +141,7 @@ class _JdListViewState extends State<JdListView> {
       //     }
       //     return false;
       //   });
-      listDm.addList(res['list'], isRef, res['totalNum']);
+      BService.addJdList(listDm, res, page, isRef);
     } else {
       listDm.toError('网络异常');
     }
@@ -150,17 +152,10 @@ class _JdListViewState extends State<JdListView> {
   ///顶部数据
   var goodsNineTopDm = DataModel();
   Future<int> getGoodsNineTop() async {
-    int tabIndex = widget.tabValue['index'];
-    var res = await BService.jdList(tabIndex + 1);
+    var res = await BService.jdRankList(1, rankId: widget.tabValue['rankId'] ?? 200000);
     if (res != null) {
       List list = res['list'];
-      list.removeWhere((element) {
-        int inOrderCount30Days = element['inOrderCount30Days'];
-        if (inOrderCount30Days == 0) {
-          return true;
-        }
-        return false;
-      });
+
       goodsNineTopDm.addList(list, true, 0);
     } else {
       goodsNineTopDm.toError('网络异常');
@@ -246,14 +241,12 @@ class _JdListViewState extends State<JdListView> {
   }
 
   Widget createHeaderItem(data) {
-    String img = data['whiteImage'] == ''
-        ? data['imageUrlList'][0]
-        : data['whiteImage'];
+    String img = data['img'] ?? '';
     return PWidget.container(
         PWidget.ccolumn([
           PWidget.wrapperImage(img, {'ar': 1 / 1, 'br': 8}),
           PWidget.container(
-            PWidget.text('疯抢${data['inOrderCount30Days']}件',
+            PWidget.text('疯抢${data['sales'] ?? 0}件',
                 [Colors.black45, 12]),
             {
               'pd': PFun.lg(2, 1, 8, 8),
@@ -277,11 +270,11 @@ class _JdListViewState extends State<JdListView> {
             )
                 : SizedBox(),
             data['owner'] == 'g' ? PWidget.boxw(4) : SizedBox(),
-            PWidget.text('${data['skuName']}',
+            PWidget.text('${data['title']}',
                 [Colors.black, 12], {'exp': true}),
           ]),
           PWidget.spacer(),
-          getPriceWidget(data['lowestPrice'], data['lowestPrice'])
+          getPriceWidget(data['endPrice'] ?? 0, data['startPrice'] ?? 0)
         ],),
         [
           115

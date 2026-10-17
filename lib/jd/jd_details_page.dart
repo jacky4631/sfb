@@ -21,11 +21,9 @@ import '../util/colors.dart';
 import '../util/global.dart';
 import '../util/paixs_fun.dart';
 import '../listener/detail_value_change.dart';
-import '../page/product_details.dart';
 import '../widget/CustomWidgetPage.dart';
 import '../widget/goods_buy_history_widget.dart';
 import '../widget/detail_lunbo_widget.dart';
-import '../widget/loading.dart';
 
 DetailValueChange valueChange = DetailValueChange();
 
@@ -43,6 +41,7 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
   GlobalKey key1 = GlobalKey();
   GlobalKey key2 = GlobalKey();
   String? couponUrl;
+  Map? jdWord;
   late String goodsIdStr = '';
   late String title = '';
   late String img = '';
@@ -61,14 +60,14 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
     valueChange.changeTabIndex(0);
     this.controllerListener();
     await this.getDetailData();
+    if (!mounted || res == null) return;
     await this.getCollect();
 
     await this.listSimilarGoodsByOpen();
   }
   Future getCollect() async {
     collect = await BService.collect(goodsIdStr);
-    setState(() {
-    });
+    if (mounted) setState(() {});
   }
   ///监听列表滚动
   void controllerListener() {
@@ -93,23 +92,33 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
   }
   var res;
   ///详情数据
-  var detailDm = DataModel<Map>(object: {'actualPrice': '', 'detailImages':[], 'dtitle':'', 'couponAmount':0});
+  var detailDm = DataModel<Map>(object: {'endPrice': '', 'detailImages': [], 'dtitle': '', 'coupon': 0});
   Future<int> getDetailData() async {
-    var goodsId = widget.data['skuId']??widget.data['itemId']??widget.data['sku_id']
-        ??widget.data['productId']??widget.data['item_id'];
+    var goodsId = widget.data['goodsInfo']?['productId']
+        ?? widget.data['goodsId'] ?? widget.data['skuId'] ?? widget.data['sku_id']
+        ?? widget.data['originalProductId'] ?? widget.data['itemId']
+        ?? widget.data['productId'] ?? widget.data['item_id'];
     goodsIdStr = goodsId.toString();
-    res = await BService.goodsDetailJD(goodsId);
+    try {
+      res = await BService.goodsDetailJD(goodsId);
+    } catch (_) {
+      if (!mounted) return detailDm.flag;
+      ToastUtils.showToast('商品加载失败，请稍后重试');
+      Navigator.pop(context);
+      return detailDm.flag;
+    }
+    if (!mounted) return detailDm.flag;
     if (res != null) {
       detailDm.addObject(res);
-      img = res['picMain'];
-      title = res['skuName'];
-      endPrice = res['actualPrice'].toString();
-      startPrice = res['originPrice'].toString();
+      img = res['img'] ?? '';
+      title = res['title'] ?? '';
+      endPrice = res['endPrice'].toString();
+      startPrice = res['startPrice'].toString();
       
       setState(() {
         loading = false;
       });
-      couponUrl = await BService.goodsWordJD(res['itemId'], res['couponLink'], res['materialUrl']);
+
     }else {
       ToastUtils.showToast('商品已下架');
       Navigator.pop(context);
@@ -122,12 +131,10 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
   ///类似商品
   var listSimilarGoodsByOpenDm = DataModel();
   Future<int> listSimilarGoodsByOpen() async {
-    var res = await BService.goodsSearch(1, title,)
-        .catchError((v) {
-      listSimilarGoodsByOpenDm.toError('网络异常');
-    });
-    if (res != null) {
-      listSimilarGoodsByOpenDm.addList(res, false, 10);
+    var result = await BService.jdList(1, keyword: title);
+    if (!mounted) return listSimilarGoodsByOpenDm.flag;
+    if (result != null) {
+      listSimilarGoodsByOpenDm.addList(result['list'] ?? [], true, 0);
     }
     setState(() {});
     return listSimilarGoodsByOpenDm.flag;
@@ -150,11 +157,11 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
           itemModel: listSimilarGoodsByOpenDm,
           itemModelBuilder: (i, v) {
             return PWidget.container(
-              Global.openFadeContainer(createSimilarItem(i, v), ProductDetails(v)),
+              Global.openFadeContainer(createJdItem(context, i, v), JDDetailsPage(v)),
               [null, null, Colors.white],
               {'crr': 8, 'mg': PFun.lg(PFun.lg2(0, 1).contains(i) ? 0 : 10)},
             );
-            // return Global.openFadeContainer(createSimilarItem(i, v), ProductDetails(v));
+            // return Global.openFadeContainer(createJdItem(context, i, v), JDDetailsPage(v));
           },
         ),
         titleBarView(),
@@ -162,43 +169,6 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
       ]),
     );
   }
-  Widget createSimilarItem(i, v) {
-    String img = v['white_image'] == "" ?v['pict_url'] : v['white_image'];
-    String sale = '';
-    if(!Global.isEmpty(v['tk_total_sales'])){
-      sale = BService.formatNum(int.parse(v['tk_total_sales']));
-    }
-    return PWidget.container(
-      PWidget.column([
-        PWidget.wrapperImage(img, {'ar': 1 / 1}),
-        PWidget.container(
-          PWidget.column([
-            PWidget.row([
-              PWidget.image('assets/images/mall/jd.png', [14, 14],{'pd':[6,0,0,0]}),
-              PWidget.boxw(4),
-              PWidget.text(v['short_title'], [Colors.black.withOpacity(0.75)], {'exp': true}),
-            ]),
-            // PWidget.text('${v['dtitle']}'),
-            PWidget.boxh(8),
-            PWidget.text('', [], {}, [
-              PWidget.textIs('¥', [Colours.app_main, 12, true]),
-              PWidget.textIs('${v['zk_final_price']}', [Colours.app_main, 20, true]),
-            ]),
-            PWidget.boxh(8),
-            PWidget.text('', [], {}, [
-              PWidget.textIs('已售', [Colors.black45, 12]),
-              PWidget.textIs(sale, [Colors.black45, 12]),
-            ]),
-            PWidget.boxh(8),
-            PWidget.text(v['shop_title'], [Colors.black45, 12]),
-          ]),
-          {'pd': 8},
-        ),
-      ]),
-      [null, null, Colors.white],
-    );
-  }
-
   ///底部操作栏
   Widget btmBarView() {
     return PWidget.positioned(
@@ -222,13 +192,16 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
                 {
                   'exp': true,
                   'fun': () => {
-                    onTapDialogLogin(context, fun: (){
+                    onTapDialogLogin(context, fun: () async {
+                      await loadJdWord();
+                      if (!mounted || couponUrl == null || couponUrl!.isEmpty) return;
                       res['klUrl'] = couponUrl;
+                      res['klWord'] = jdWord?['pwd'];
                       Navigator.pushNamed(context, '/sellPage', arguments: {'res':res,'platType':'JD'});
                       // shareGoods(context,
-                      //     detailDm.object?['skuName'],
-                      //     detailDm.object?['originPrice'],
-                      //     detailDm.object?['actualPrice'],
+                      //     detailDm.object?['title'],
+                      //     detailDm.object?['startPrice'],
+                      //     detailDm.object?['endPrice'],
                       //     couponUrl)
                     })
 
@@ -239,8 +212,8 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
                 PWidget.ccolumn([
                   PWidget.text('', [], {'ct': true}, [
                     PWidget.textIs('¥', [Colors.white, 16, true]),
-                    PWidget.textIs('${detailDm.object?['actualPrice']??''} ', [Colors.white, 16, true]),
-                    PWidget.textIs('¥${detailDm.object?['originPrice']??''}', [Colors.white54, 12], {'td': TextDecoration.lineThrough}),
+                    PWidget.textIs('${detailDm.object?['endPrice']??''} ', [Colors.white, 16, true]),
+                    PWidget.textIs('¥${detailDm.object?['startPrice']??''}', [Colors.white54, 12], {'td': TextDecoration.lineThrough}),
                   ]),
                   PWidget.textNormal('领券购买', [Colors.white, 12], {'ct': true})
                 ], '221'),
@@ -261,20 +234,29 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
       [null, detailDm.object!.isEmpty ? -64 : 0, 0, 0],
     );
   }
+  Future<void> loadJdWord() async {
+    if (couponUrl != null && couponUrl!.isNotEmpty) return;
+    try {
+      jdWord = await BService.goodsWordJD(res['itemId'], res['couponLink']);
+    } catch (_) {
+      if (mounted) ToastUtils.showToast('转链失败，请稍后重试');
+      return;
+    }
+    couponUrl = jdWord?['link']?.toString();
+  }
+
   Future launch(showLoading) async {
-    if(couponUrl == null) {
-      if(!showLoading) {
-        Loading.show(context);
-      }
-      await Future.delayed(Duration(milliseconds: 300));
-      launch(true);
-    } else {
-      if(showLoading) {
-        Loading.hide(context);
+    try {
+      await loadJdWord();
+      if (!mounted) return;
+      if (couponUrl == null || couponUrl!.isEmpty) {
+        ToastUtils.showToast('转链失败，请稍后重试');
+        return;
       }
       LaunchApp.launchJd(context, couponUrl);
+    } catch (_) {
+      if (mounted) ToastUtils.showToast('转链失败，请稍后重试');
     }
-
   }
 
   void animateTo(offset) {
@@ -344,11 +326,11 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
 
   List<Widget> get headers {
     var shopLogo = detailDm.object?['shopLogo'];
-    String sale = BService.formatNum(detailDm.object?['inOrderCount30Days']);
-    List detailImgs = detailDm.object?['detailImages'];
+    String sale = BService.formatNum(int.tryParse('${detailDm.object?['sales']}') ?? 0);
+    List detailImgs = List.from(detailDm.object?['detailImages'] ?? []);
     detailImgs.removeWhere((w) => w.contains('s800x800'));
 
-    num fee = detailDm.object?['commission'];
+    num fee = detailDm.object?['fee'] ?? 0;
     var divi = detailDm.object?['subdivisionRank'];
     if(divi == null || divi == 0) {
       divi = 1;
@@ -362,7 +344,7 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
             isAnimatedSize: false,
             initialState: PWidget.container(null, [double.infinity, 200]),
             objectBuilder: (v) {
-              var imgs = detailDm.object?['smallImages'] ?? [];
+              var imgs = List.from(detailDm.object?['banners'] ?? []);
               imgs.removeWhere((w) => w == '');
               return DetailLunboWidget(imgs);
             },
@@ -398,15 +380,15 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
               PWidget.row([
                 PWidget.image('assets/images/mall/jd.png', [14, 14],{'pd':[6,0,0,0]}),
                 PWidget.boxw(4),
-                getTitleWidget(detailDm.object?['skuName'], size: 16, max: 2)
+                getTitleWidget(detailDm.object?['title'], size: 16, max: 2)
               ], '001',),
               {'pd': [8,8,12,8]},
             ),
 
             PWidget.container(
               PWidget.row([
-                getPriceWidget(detailDm.object?['actualPrice']??''
-                    , detailDm.object?['originPrice']??'', endTextSize: 24, startPrefix: '原价 '
+                getPriceWidget(detailDm.object?['endPrice']??''
+                    , detailDm.object?['startPrice']??'', endTextSize: 24, startPrefix: '原价 '
                     ,endPrefixSize: 16
                     ,endTextColor: Colours.jd_main),
                 PWidget.spacer(),
@@ -445,18 +427,18 @@ class _JDDetailsPageState extends State<JDDetailsPage> {
             PWidget.boxw(8),
             PWidget.column([
               PWidget.row([
-                detailDm.object?['isOwner'] == 1 ? PWidget.container(
+                detailDm.object?['owner'].toString() == '1' ? PWidget.container(
                   PWidget.text('自营', [Colors.white, 10]),
                   [null, null, Colours.jd_main],
                   {'bd': PFun.bdAllLg(Colours.jd_main, 0.5), 'pd': PFun.lg(1, 1, 4, 4), 'br': PFun.lg(4, 4, 4, 4)},
                 ) : SizedBox(),
-                detailDm.object?['isOwner'] == 1 ? PWidget.boxw(4): SizedBox(),
+                detailDm.object?['owner'].toString() == '1' ? PWidget.boxw(4): SizedBox(),
                 PWidget.text(detailDm.object?['shopName'], [Colors.black, 14, true], {'exp': true}),
               ]),
               PWidget.boxh(8),
               Builder(builder: (context) {
                 var data = detailDm.object!;
-                String comments = BService.formatNum(data['comments']);
+                String comments = BService.formatNum(int.tryParse('${data['comments']}') ?? 0);
                 var goodsCommentShare = data['goodsCommentShare'];
 
                 return PWidget.textNormal('评论数：$comments   好评率：$goodsCommentShare%',

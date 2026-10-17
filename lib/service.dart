@@ -10,6 +10,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:maixs_utils/model/data_model.dart';
 
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:sufenbao/util/login_util.dart';
@@ -166,28 +167,17 @@ abstract class BService {
         'goodsId': goodsId
       },
     );
-    if(res.data['data'] == null) {
-      return null;
-    }
-    return res.data['data'][0];
+    final data = res.data['data'];
+    return data is Map && data.isNotEmpty ? data : null;
   }
 
-  static Future<String> goodsWordJD(itemId, couponLink, materialUrl) async {
+  static Future<Map> goodsWordJD(itemId, couponLink) async {
     await setAuthInfo();
-    var res = await suClient.get(
-      API.goodsWordJD,
-      queryParameters: {
-        'goodsId': itemId,
-        'couponLink': couponLink,
-        'materialUrl': materialUrl
-      },
-    );
-    // 后端可能直接返回 String 链接，也可能返回 {link, pwd} 结构，统一取出链接
-    var data = res.data['data'];
-    if (data is Map) {
-      return (data['link'] ?? '').toString();
-    }
-    return data?.toString() ?? '';
+    var res = await suClient.get(API.goodsWordJD, queryParameters: {
+      'goodsId': itemId,
+      'couponLink': couponLink,
+    });
+    return Map.from(res.data['data'] ?? {});
   }
   static Future<Map> goodsDetailPDD(goodsSign) async {
     var res = await suClient.get(
@@ -632,10 +622,29 @@ abstract class BService {
     );
     return res.data['data'];
   }
-  static Future jdRankList(page) async {
+  static Future<List> jdRankCate() async {
+    var res = await suClient.get('/jd/rank/cate');
+    return res.data['data'] ?? [];
+  }
+
+  /// Apply the provider cursor rather than assuming consecutive page numbers.
+  static void addJdList(DataModel model, Map data, int page, bool isRef) {
+    final items = data['list'] as List? ?? [];
+    final total = data['total'];
+    model.addList(items, isRef, total ?? 0);
+    if (total == null) {
+      final next = int.tryParse('${data['minId']}');
+      model.hasNext = items.isNotEmpty && next != null && next > page;
+      model.page = model.hasNext ? next! : page;
+    }
+  }
+
+  static Future jdRankList(page, {int rankId = 200000, int sortType = 1}) async {
     var res = await suClient.get(
         API.rankListJD,
         queryParameters: {
+          'rankId': rankId,
+          'sortType': sortType,
           'pageId': page,
           'pageSize': 10
         }

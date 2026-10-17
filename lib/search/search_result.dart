@@ -122,10 +122,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   Future<int> jdSearch({int page = 1, bool isRef = false}) async {
     var sortKey = searchParam.getJdSortKey(sort);
-    //京东销量排序第一页全是广告，从第二页开始搜
-    if (sort == 2) {
-      page = page + 1;
-    }
     var res = await BService.jdList(page,
             keyword: keyword,
             sortName: sortKey['sortName'],
@@ -134,7 +130,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
       superSearchDm.toError('网络异常');
     });
     if (res != null) {
-      superSearchDm.addList(res['list'], isRef, res['totalNum']);
+      BService.addJdList(superSearchDm, res, page, isRef);
     }
     setState(() {
       loading = false;
@@ -318,16 +314,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
         shopName = data['shopName'];
         platform = PDD;
       } else if (tabIndex == 2) {
-        title = data['skuName'];
-        img = data['whiteImage'] == ''
-            ? data['imageUrlList'][0]
-            : data['whiteImage'];
-        sale = data['inOrderCount30Days'].toString();
-        fee = data['couponCommission'];
-        endPrice = data['lowestCouponPrice'].toString();
-        startPrice = data['lowestPrice'].toString();
-        shopName = data['shopName'];
-        jdOwner = data['owner'];
+        title = data['title'] ?? '';
+        img = data['img'] ?? '';
+        sale = '${data['sales'] ?? 0}';
+        fee = data['fee'] ?? 0;
+        endPrice = '${data['endPrice'] ?? 0}';
+        startPrice = '${data['startPrice'] ?? 0}';
+        shopName = data['shopName'] ?? '';
+        jdOwner = '${data['owner'] ?? ''}';
         platform = JD;
       } else if (tabIndex == 3) {
         title = data['title'];
