@@ -65,8 +65,8 @@ abstract class API {
   static const customCate = '/ku/custom/cate';
   static const customList = '/ku/custom/list';
   static const activityDetail = '/ku/activity/detail';
-  //抖音盛夏洗护
-  static const dyBannerWord = '/ku/dy/banner/word';
+  //抖音活动转链
+  static const dyActivityWord = '/ku/dy/activity/word';
   static const goodsWordPDDHAODANKU = '/ku/pdd/goods/word';
   static const shortLink = '/ku/shortLink';
 

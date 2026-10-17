@@ -344,6 +344,11 @@ class Global {
           Loading.hide(context);
           LaunchApp.launchJd(context, url);
           return;
+        } else if (terrace == 9) {
+          Loading.show(context);
+          Map data = await BService.dyBannerWord(activityDetail['activity_id']);
+          LaunchApp.launchDy(context, data['deeplink'],data['zlink']);
+          Loading.hide(context);
         }
         if (url != '') {
           LaunchApp.launchApp(url);
@@ -352,12 +357,6 @@ class Global {
       });
     } else if (v['id'] == 380) {
       Navigator.pushNamed(context, '/miniPage');
-    } else if (v['title'] == '抖音盛夏洗护') {
-      Loading.show(context);
-      BService.dyBannerWord().then((value) {
-        LaunchApp.launchDy(context, value['deep_link'],value['deep_link']);
-      });
-      Loading.hide(context);
     } else if (v['link_type'] == 3) {
       String link = v['link'];
       String tag;

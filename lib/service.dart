@@ -923,9 +923,12 @@ abstract class BService {
     );
     return res.data['data']['list'];
   }
-  static Future<Map> dyBannerWord() async {
+  static Future<Map> dyBannerWord(String activityId) async {
     var res = await suClient.get(
-      API.dyBannerWord,
+      API.dyActivityWord,
+      queryParameters: {
+        'activityId': activityId,
+      },
     );
     return res.data['data'];
   }
