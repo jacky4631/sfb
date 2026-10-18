@@ -77,7 +77,7 @@ android {
     lint {
         disable 'InvalidPackage'
     }
-    namespace "com.mailvor.sufenbao"
+    namespace 'com.mailvor.sufenbao'
     splits {
         abi {
             enable false          // 启用ABI拆分
