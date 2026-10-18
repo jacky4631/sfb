@@ -50,7 +50,7 @@ class _Settings extends State<Settings> {
               margin: EdgeInsetsDirectional.only(top: 5),
               tiles: <SettingsTile>[
                 if(Global.login)
-                  SettingsTile.navigation(
+                  SettingsTile(
                   title: Text('完善个人信息'),
                   trailing: createArrowIcon(),
                   onPressed: (context){
@@ -58,7 +58,7 @@ class _Settings extends State<Settings> {
                   },
                 ),
                 if(Global.login)
-                SettingsTile.navigation(
+                SettingsTile(
                   title: Text('账户与安全'),
                   trailing: createArrowIcon(),
                   onPressed: (context){
@@ -66,14 +66,14 @@ class _Settings extends State<Settings> {
                   },
                 ),
                 if(Global.login)
-                SettingsTile.navigation(
+                SettingsTile(
                   title: Text('地址管理'),
                   trailing: createArrowIcon(),
                   onPressed: (context){
                     Navigator.pushNamed(context, "/addressList");
                   },
                 ),
-                SettingsTile.navigation(
+                SettingsTile(
                   title: Text('隐私政策'),
                   trailing: createArrowIcon(),
                   onPressed: (context){
@@ -81,14 +81,14 @@ class _Settings extends State<Settings> {
                   },
                 ),
                 if(Global.login)
-                SettingsTile.navigation(
+                SettingsTile(
                   title: Text('吐槽我们'),
                   trailing: createArrowIcon(),
                   onPressed: (context){
                     Navigator.pushNamed(context, '/feedback');
                   },
                 ),
-                SettingsTile.navigation(
+                SettingsTile(
                   title: Text('推送设置'),
                   trailing: createArrowIcon(),
                   onPressed: (context){
@@ -96,21 +96,21 @@ class _Settings extends State<Settings> {
                     jpush.openSettingsForNotification();
                   },
                 ),
-                SettingsTile.navigation(
+                SettingsTile(
                   title: Text(S.of(context).aboutUs),
                   trailing: createArrowIcon(),
                   onPressed: (context){
                     Navigator.pushNamed(context, '/aboutUs');
                   },
                 ),
-                SettingsTile.navigation(
+                SettingsTile(
                   title: Text('个人信息收集清单'),
                   trailing: createArrowIcon(),
                   onPressed: (context){
                     Global.showProtocolPage(Global.collectUrl,'个人信息收集清单');
                   },
                 ),
-                SettingsTile.navigation(
+                SettingsTile(
                   title: Text('个人信息共享清单'),
                   trailing: createArrowIcon(),
                   onPressed: (context){

@@ -78,9 +78,10 @@ class _PersonalState extends State<Personal> with TickerProviderStateMixin {
 
   createTiles() {
     return <SettingsTile>[
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('头像'),
         trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             if(!Global.isEmpty(imgUrl))
             ClipRRect(
@@ -121,7 +122,7 @@ class _PersonalState extends State<Personal> with TickerProviderStateMixin {
 
         },
       ),
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('昵称'),
         trailing: Icon(
           Icons.arrow_forward_ios,
@@ -134,9 +135,10 @@ class _PersonalState extends State<Personal> with TickerProviderStateMixin {
           });
         },
       ),
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('邀请口令绑定'),
         trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             spreadUid == 0 ? Text('未绑定') : Text('已绑定'),
             PWidget.boxw(4),

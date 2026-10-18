@@ -122,9 +122,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
   createTiles() {
     return <SettingsTile>[
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('手机号'),
         trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(BService.formatPhone(phone)),
             PWidget.boxw(4),
@@ -142,9 +143,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           });
         },
       ),
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('实名'),
         trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(BService.formatName(realName)),
             PWidget.boxw(4),
@@ -162,9 +164,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           });
         },
       ),
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('加盟认证'),
         trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             loading ? SizedBox() : (!isSign ? Text('未认证') : Text('已认证')),
             PWidget.boxw(4),
@@ -180,9 +183,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
         },
       ),
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('微信授权'),
         trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             wxProfile.isEmpty ? Text('未授权') : Text('已授权'),
             PWidget.boxw(4),
@@ -202,9 +206,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           }
         },
       ),
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('支付宝授权'),
         trailing: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             isEmpty(aliProfile) ? Text('未授权') : Text('已授权'),
             PWidget.boxw(4),
@@ -224,8 +229,9 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
         },
       ),
-      SettingsTile.navigation(
+      SettingsTile(
         title: Text('账户注销'),
+        trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
         onPressed: (context) {
           Navigator.pushNamed(context, '/accountCancel');
         },
