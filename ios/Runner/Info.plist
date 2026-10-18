@@ -85,6 +85,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>您没有开启相机权限，开启后可用于设置头像、人脸识别</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>苏分宝需要获取您的位置信息，以确定所在城市并展示附近的团购商品。</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>您没有开启定位权限，开启后可用于查看附近团购商品</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
