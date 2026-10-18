@@ -6,8 +6,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_alibc/alibc_model.dart';
-import 'package:flutter_alibc/flutter_alibc.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -27,7 +25,6 @@ import 'package:sufenbao/widget/CustomWidgetPage.dart';
 import '../login/login_shanyan.dart';
 import '../me/listener/WxPayNotifier.dart';
 import '../page/product_details.dart';
-import '../shop/ali_face.dart';
 import '../util/colors.dart';
 import '../util/global.dart';
 import '../util/single_flight.dart';
@@ -93,11 +90,11 @@ class _FirstPageState extends State<FirstPage> {
     showHuodongDialog();
     initShake();
     await Global.update(packageInfo);
-    initThird(packageInfo);
+    initThird();
     return 0;
   });
 
-  Future initThird(PackageInfo packageInfo) async {
+  Future initThird() async {
     if (!agree || init) {
       return;
     }
@@ -111,11 +108,8 @@ class _FirstPageState extends State<FirstPage> {
           wxPayNotifier.value = response;
         }
       });
-      initFaceService();
+      //合规：人脸与百川(支付宝系)SDK 不在启动期初始化，改为用户触发时按需初始化
       await LoginShanyan.getInstance().init();
-      if(!this.init) {
-        InitModel initModel = await FlutterAlibc.initAlibc(version:packageInfo.version,appName:APP_NAME);
-      }
     }
     init = true;
   }

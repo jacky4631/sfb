@@ -12,6 +12,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/colors.dart';
+import 'package:sufenbao/util/alibc_init.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 
 import 'package:dio/dio.dart';
@@ -102,10 +103,15 @@ class _ChannelAuthDialogState extends State<ChannelAuthDialog> {
     ToastUtils.showToast(message);
   }
 
-  void _authorize() {
+  Future<void> _authorize() async {
     setState(() {
       _authorizing = true;
     });
+    //合规：百川 SDK 按需初始化，用户点击授权时才初始化
+    if (!await AlibcInit.ensure()) {
+      _showFailure(TaobaoAuthError.fallback);
+      return;
+    }
     // 与 TSQ 一致：重新登录，确保切换淘宝账号后获取新的授权凭证。
     FlutterAlibc.loginOut();
     FlutterAlibc.loginTaoBao(loginCallback: (LoginModel model) async {

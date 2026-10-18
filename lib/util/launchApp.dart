@@ -14,6 +14,7 @@ import 'package:sufenbao/util/toast_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 
+import 'alibc_init.dart';
 import 'global.dart';
 
 class LaunchApp {
@@ -116,8 +117,13 @@ class LaunchApp {
       if(Global.isIOS()) {
         //如果是淘宝调用百川，不是继续愿流程
           if(data['package'] == taobao) {
-            FlutterAlibc.openByUrl(url: url,
-                schemeType:AlibcSchemeType.AlibcSchemeTaoBao,);
+            //合规：百川 SDK 按需初始化，用户触发淘宝跳转时才初始化
+            if(await AlibcInit.ensure()) {
+              FlutterAlibc.openByUrl(url: url,
+                  schemeType:AlibcSchemeType.AlibcSchemeTaoBao,);
+            } else {
+              await launchInBrowser(parsedUrl);
+            }
           } else {
             await launchInBrowser(parsedUrl);
           }
