@@ -43,7 +43,7 @@ android {
         multiDexEnabled true
         ndk {
             //选择要添加的对应 cpu 类型的 .so 库。todo 如果只是手机端，只需要设置arm64-v8a，如果需要模拟器运行，加上x86_64
-            abiFilters 'arm64-v8a', 'x86_64'
+            abiFilters 'arm64-v8a'
 //            abiFilters 'armeabi-v7a', 'x86_64',  'arm64-v8a'
         }
         manifestPlaceholders = [
