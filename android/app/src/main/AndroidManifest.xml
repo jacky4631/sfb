@@ -59,8 +59,8 @@
         android:xlargeScreens="true" />
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"  tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"  tools:node="remove" />
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Remove READ_MEDIA_IMAGES if you don't need to load photos. -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
