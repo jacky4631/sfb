@@ -77,7 +77,11 @@ class _VipPageState extends State<VipPage> {
   _initGradeData(index) {
     gradeModel = _grades[index];
     selectedGrade = gradeModel['grade'];
-    if(rechargeType == 0) {
+    if (rechargeType == 2 && _hasMonthlyPlan) {
+      price = _monthlyPrice!;
+      valid = _monthlyValidDays!;
+    } else {
+      rechargeType = 0;
       price = gradeModel['money'];
       valid = gradeModel['validDate'];
     }
@@ -518,6 +522,16 @@ class _VipPageState extends State<VipPage> {
     return '${(scale * 100).toInt()}%';
   }
 
+  num? _positiveNumber(dynamic value) {
+    final number = num.tryParse(value?.toString() ?? '');
+    return number != null && number.isFinite && number > 0 ? number : null;
+  }
+
+  num? get _monthlyPrice => _positiveNumber(gradeModel['monthMoney']);
+  num? get _monthlyValidDays => _positiveNumber(gradeModel['monthValidDate']);
+  bool get _hasMonthlyPlan =>
+      _monthlyPrice != null && _monthlyValidDays != null;
+
   signCashierPage() {
     return PWidget.container(
       PWidget.column([
@@ -526,21 +540,23 @@ class _VipPageState extends State<VipPage> {
         PWidget.textNormal('请选择加盟方式', [Colors.black,14],{'ct':true}),
         PWidget.boxh(15),
         PWidget.row([
-          TextButton(onPressed: (){
-            price = gradeModel['monthMoney'];
-            valid = gradeModel['monthValidDate'];
-            rechargeType = 2;
-            //有效期一个月
-            press(context);
-          },
-              child: Text("月会员￥${gradeModel['monthMoney']}",style: TextStyle(color: Colors.white,fontSize: 14)),
-              style : TextButton.styleFrom(
-                padding: EdgeInsets.only(top: 4, left: 14, right: 14, bottom: 4),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                backgroundColor: Colors.orange,)),
-          PWidget.boxw(20),
+          if (_hasMonthlyPlan)
+            TextButton(onPressed: (){
+              price = _monthlyPrice!;
+              valid = _monthlyValidDays!;
+              rechargeType = 2;
+              //有效期一个月
+              press(context);
+            },
+                child: Text("月会员￥$_monthlyPrice",style: TextStyle(color: Colors.white,fontSize: 14)),
+                style : TextButton.styleFrom(
+                  padding: EdgeInsets.only(top: 4, left: 14, right: 14, bottom: 4),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                  backgroundColor: Colors.orange,)),
+          if (_hasMonthlyPlan) PWidget.boxw(20),
           TextButton(onPressed: (){
             price = gradeModel['money'];
+            valid = gradeModel['validDate'];
             rechargeType = 0;
             press(context);
           },
