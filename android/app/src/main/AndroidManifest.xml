@@ -10,6 +10,10 @@
         <package android:name="com.sankuai.meituan"/>
         <package android:name="com.tencent.mm"/>
         <package android:name="me.ele"/>
+        <package android:name="com.taobao.idlefish"/>
+        <package android:name="com.eg.android.AlipayGphone"/>
+        <package android:name="com.sdu.didi.psnger"/>
+
         <!-- If your app checks for call support -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -48,6 +52,26 @@
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="openjdlite" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="alipays" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="alipay" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="imeituan" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="didi" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="diditaxi" />
+        </intent>
     </queries>
 
 
@@ -59,18 +83,22 @@
         android:xlargeScreens="true" />
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"  tools:node="remove" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"  tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove" />
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Remove READ_MEDIA_IMAGES if you don't need to load photos. -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <!-- Remove READ_MEDIA_VIDEO if you don't need to load videos. -->
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <!-- Remove READ_MEDIA_AUDIO if you don't need to load audios. -->
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+<!--    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove"/>
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:node="remove"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:node="remove"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:node="remove"/>
 
     <application
         android:name="${applicationName}"

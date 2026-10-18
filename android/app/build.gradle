@@ -23,16 +23,16 @@ if (flutterVersionName == null) {
 }
 
 android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = '17'
-    }
     compileSdkVersion 37
     useLibrary 'org.apache.http.legacy'
     ndkVersion "28.2.13676358"
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def appName = "tsq" // 文件名
+            def createTime = new Date().format('yyyyMMddHHmmss') // 打包时间 2021_09_25_16_45_52
+            outputFileName = "${appName}_${variant.buildType.name}_${defaultConfig.versionName}_${createTime}.apk"
+        }
+    }
     defaultConfig {
         applicationId "com.mailvor.sufenbao"
 
@@ -41,16 +41,11 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
-        ndk {
-            //选择要添加的对应 cpu 类型的 .so 库。todo 如果只是手机端，只需要设置arm64-v8a，如果需要模拟器运行，加上x86_64
-            abiFilters 'arm64-v8a'
-//            abiFilters 'armeabi-v7a', 'x86_64',  'arm64-v8a'
-        }
         manifestPlaceholders = [
                 JPUSH_PKGNAME : applicationId,
                 JPUSH_APPKEY : "f4b96adeec4eb2a41d831551", // NOTE: JPush 上注册的包名对应的 Appkey.
                 JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
-                applicationName : "android.app.Application"
+                applicationName : "io.flutter.app.FlutterApplication"
         ]
     }
 
@@ -82,13 +77,20 @@ android {
     lint {
         disable 'InvalidPackage'
     }
-    namespace 'com.mailvor.sufenbao'
+    namespace "com.mailvor.sufenbao"
+    splits {
+        abi {
+            enable false          // 启用ABI拆分
+            reset()              // 清空默认的所有架构
+            include 'arm64-v8a'  // 只包含arm64-v8a
+            universalApk false   // 不生成包含所有架构的通用APK（关键）
+        }
+    }
     packagingOptions {//加上这些代码  More than one file was found with OS independent path 'lib/x86/libc++_shared.so'
-        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-        pickFirst 'lib/armeabi-v8a/libc++_shared.so'
-        pickFirst 'lib/arm64-v8a/libc++_shared.so'
-        pickFirst 'lib/x86/libc++_shared.so'
-        pickFirst 'lib/x86_64/libc++_shared.so'
+        exclude 'lib/armeabi-v7a/**'
+        exclude 'lib/x86/**'
+        exclude 'lib/x86_64/**'
+        exclude 'lib/armeabi/**'
     }
 }
 
