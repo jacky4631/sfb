@@ -31,6 +31,7 @@
 .pub/
 /build/
 ios/Podfile.lock
+ios/Flutter/ephemeral
 android/keystore/sufenbao.jks
 
 # Web related
