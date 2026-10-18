@@ -39,11 +39,19 @@ class ChannelAuthDialog extends Dialog {
           PWidget.image('assets/images/mall/tb.png', [38, 38], {'crr': 19}),
         ], '221'),
         PWidget.boxh(8),
-        PWidget.text('必须淘宝授权才可自动绑定订单',[Colors.black.withOpacity(0.75), 15, true]),
+        PWidget.text('淘宝授权后可自动绑定订单',[Colors.black.withOpacity(0.75), 15, true]),
         PWidget.boxh(8),
-        PWidget.text('请点击下方按钮进行淘宝授权',[Colors.black.withOpacity(0.75), 13],{'max':2}),
+        PWidget.text('您可以前往淘宝授权，也可以直接购买',[Colors.black.withOpacity(0.75), 13],{'max':2}),
         PWidget.boxh(8),
-        _createButton()
+        _createButton(),
+        if (data['showDirectBuy'] == true) ...[
+          PWidget.boxh(8),
+          TextButton(
+            onPressed: data['fun'],
+            child: const Text('暂不授权，直接购买',
+                style: TextStyle(color: Colours.app_main, fontSize: 14)),
+          ),
+        ],
       ], '221'),
     );
   }

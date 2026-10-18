@@ -636,7 +636,8 @@ class Global {
     }
   });
 
-  static Future showChannelAuthDialog(callback) async {
+  static Future showChannelAuthDialog(callback,
+      {bool showDirectBuy = false, Future<void> Function()? onDirectBuy}) async {
       if(dialogShowing) {
         return;
       }
@@ -645,7 +646,14 @@ class Global {
           context: context,
           dialogType: DialogType.noHeader,
           showCloseIcon: true,
-          body: ChannelAuthDialog({'callback':callback}),
+          body: ChannelAuthDialog({
+            'callback': callback,
+            'showDirectBuy': showDirectBuy && onDirectBuy != null,
+            'fun': () async {
+              Navigator.pop(context);
+              if (onDirectBuy != null) await onDirectBuy();
+            },
+          }),
           onDismissCallback: (DismissType type){
             dialogShowing = false;
           }

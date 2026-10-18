@@ -204,7 +204,12 @@ class _ContentParseDialogState extends State<ContentParseDialog> {
         }
 
         if (product.platform == 'tb') {
-          await Global.showChannelAuthDialog(afterAuth);
+          await Global.showChannelAuthDialog(
+            afterAuth,
+            showDirectBuy: true,
+            onDirectBuy: () => _openProduct(pageContext,
+                refreshTaobao: !_parsedWhileLoggedIn),
+          );
         } else {
           await Global.showPddAuthDialog(afterAuth);
         }

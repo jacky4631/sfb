@@ -244,13 +244,44 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
       ]),
     );
   }
-  tipClick(){
+  tipClick() => _showTaobaoAuth();
+
+  bool _checkingTaobaoAuth = false;
+
+  Future<void> _buyTaobao() async {
+    if (_checkingTaobaoAuth) return;
+    _checkingTaobaoAuth = true;
+    try {
+      final auth = await BService.tbAuthQuery();
+      if (!mounted) return;
+      if (auth['auth'] != true) {
+        _showTaobaoAuth(buyAfterAuth: true);
+        return;
+      }
+      await getKlData();
+      if (mounted) await launchTb();
+    } catch (error) {
+      ToastUtils.showToast('领取优惠失败，请稍后重试');
+    } finally {
+      _checkingTaobaoAuth = false;
+    }
+  }
+
+  void _showTaobaoAuth({bool buyAfterAuth = false}) {
     Global.showChannelAuthDialog(() async {
       Navigator.pop(context);
-      await Future.delayed(Duration(seconds: 2), );
+      await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
       await initChannelId();
-      setState(() {
-
+      await getKlData();
+      if (mounted) {
+        setState(() {});
+        if (buyAfterAuth && !showChannelWidget) await launchTb();
+      }
+    }, showDirectBuy: true, onDirectBuy: () async {
+      onTapDialogLogin(context, fun: () async {
+        await getKlData();
+        if (mounted) await launchTb();
       });
     });
   }
@@ -339,7 +370,7 @@ class _ProductDetailsState extends State<ProductDetails> with AuthTip{
                 {
                   'exp': true,
                   'fun': () {
-                    onTapDialogLogin(context, fun: launchTb);
+                    onTapDialogLogin(context, fun: _buyTaobao);
                   }
 
                 },
