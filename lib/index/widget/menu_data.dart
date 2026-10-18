@@ -34,19 +34,19 @@ const List menuData = [
       'color': Color(0xFFF12929),
     },
     {
-      "title": "饿了么",
+      "title": "淘宝闪购",
       "img":
       "https://img.alicdn.com/imgextra/i2/2053469401/O1CN01ZiytSl2JJi9mY2paN_!!2053469401.png",
-      'path': 'assets/images/ele.gif',
+      'path': 'assets/images/menu/sg.png',
       "type": "1",
       "url": "/elePage",
     },
     {
       'img': 'https://mailvor.oss-cn-shanghai.aliyuncs.com/sufenbao/fuli4.png',
-      'path': 'assets/images/menu/6.png',
-      'title': '本地团购',
+      'path': 'assets/images/menu/miaosha.gif',
+      'title': '小样种草',
       'type': '1',
-      'url': '/localPage',
+      'url': '/miniPage',
       'color': Colors.green,
     },
     {

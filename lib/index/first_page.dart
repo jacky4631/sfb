@@ -84,11 +84,9 @@ class _FirstPageState extends State<FirstPage> {
     huodongNotify.changeIsShowTabbar(false);
     agree = await Global.getAgree();
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    if (!mounted) return 0;
     await getBannerData();
     await getTilesData();
     await Global.init();
-    await getSearchData(isRef: true);
     await getCardData();
     await getBrandList(isRef: true);
     await getListData(isRef: true);
@@ -237,22 +235,6 @@ class _FirstPageState extends State<FirstPage> {
     }
     if (mounted) setState(() {});
     return listDm.flag;
-  }
-  ///大家都在领
-  var searchDm = DataModel();
-  Future<int> getSearchData({int page = 1, bool isRef = false}) async {
-    var res =
-        await _loadSection(http.get(Uri.parse(BService.getEveryBuyUrl())).timeout(const Duration(seconds: 20)), searchDm);
-    if (res != null) {
-      var json = jsonDecode(res.body);
-      if(json['success'] != null && json['success']) {
-        var list = json['data']['list'];
-        var totalNum = int.parse('${json['data']['totalNum']}');
-        searchDm.addList(list, isRef, totalNum);
-      }
-    }
-    if (mounted) setState(() {});
-    return searchDm.flag;
   }
 
   ///品牌特卖
@@ -440,10 +422,6 @@ class _FirstPageState extends State<FirstPage> {
         child: PWidget.image('assets/images/mall/tileholder.png', {'br': 8, 'pd': [16,8,8,8]})
       ),
 
-      // ///大家都在领
-      // (searchDm.list != null && searchDm.list.isNotEmpty)
-      //     ? EveryoneWidget(searchDm):SizedBox(height: 250,),
-      //
       ///卡片
       if(!(cardGoodsList == null || cardGoodsList.isEmpty || cardHot == null || cardHot.isEmpty))
         CardWidget(cardDm),
