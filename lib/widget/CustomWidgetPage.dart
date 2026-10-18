@@ -28,8 +28,8 @@ import '../util/paixs_fun.dart';
 import '../vip/vip_detail_page.dart';
 
 getMoneyWidget(BuildContext context, num commission, String platform,
-    {canClick = true, column = true, txtColor = Colours.app_main,
-      bgColor = Colours.hb_bg, priceTxtColor = Colours.app_main, txtSize=11,
+    {canClick = true, column = true, txtColor = Colours.commission_text,
+      bgColor = Colours.commission_bg, priceTxtColor = Colours.commission_text, txtSize=11,
     pd, br}) {
 
   if(pd == null) {
@@ -55,7 +55,7 @@ getMoneyWidget(BuildContext context, num commission, String platform,
       {
     'fun': canClick ? () {
       showRed(context, commission, platform);
-    } : null,'bd': PFun.bdAllLg(bgColor), 'pd': pd, 'br': br
+    } : null, 'pd': pd, 'br': br
   }
   );
 }
@@ -250,7 +250,7 @@ Widget createPddItem(context, i, v) {
           getPriceWidget(PddGoods.price(v), v['startPrice'] ?? 0, endTextColor: Colours.pdd_main,
               endPrefix: '抢购价 ', endPrefixColor: Colors.black54),
           fee == 0 ? SizedBox() : PWidget.boxh(8),
-          fee == 0 ? SizedBox() : getMoneyWidget(context, fee, PDD,priceTxtColor: Colours.pdd_main),
+          fee == 0 ? SizedBox() : getMoneyWidget(context, fee, PDD),
           PWidget.boxh(8),
           PWidget.text(v['shopName'] ?? '', [Colors.black45, 12]),
           PWidget.boxh(8),
@@ -283,7 +283,7 @@ Widget createDyItem(context, i, v) {
           getPriceWidget(endPrice, startPrice, endTextColor: Colours.dy_main, endPrefix: '抢购价 ',
               endPrefixColor: Colors.black54),
           fee == 0 ? SizedBox() : PWidget.boxh(8),
-          fee == 0 ? SizedBox() : getMoneyWidget(context, fee, DY,priceTxtColor: Colours.dy_main),
+          fee == 0 ? SizedBox() : getMoneyWidget(context, fee, DY),
           PWidget.boxh(8),
           PWidget.text(shopName, [Colors.black45, 12]),
           PWidget.boxh(8),
@@ -336,7 +336,7 @@ Widget createVipItem(context, data) {
 
           ]),
           PWidget.boxh(8),
-          getMoneyWidget(context, fee, VIP,priceTxtColor: Colours.vip_main),
+          getMoneyWidget(context, fee, VIP),
         ], {
           'exp': 1,
         }),

@@ -424,7 +424,7 @@ class _DyDetailPageState extends State<DyDetailPage> {
             ),
 
             fee == 0 ? SizedBox() : PWidget.container(PWidget.row([
-              getMoneyWidget(context, fee, DY, column: false, priceTxtColor: Colours.dy_main),
+              getMoneyWidget(context, fee, DY, column: false),
             ]),
               {'pd': [8,8,12,8]},
             ),

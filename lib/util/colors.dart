@@ -11,6 +11,9 @@ class Colours {
   static const Color energy_bg = Color(0xffF7F3DB);
 
   static const Color hb_bg = Color(0xFFFFECEC);
+  // 佣金标签采用与橙红主题协调的浅暖橙底、深橙字。
+  static const Color commission_bg = Color(0xFFFFF2EB);
+  static const Color commission_text = Color(0xFFC75A2A);
   static const Color share_bg = Color(0xffFAEDE0);
 
   static const Color material_bg = Color(0xFFFFFFFF);

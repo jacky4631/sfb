@@ -400,7 +400,7 @@ class _PddDetailPageState extends State<PddDetailPage> with AuthTip{
               {'pd': [8,8,12,8]},
             ),
             fee == 0 ? SizedBox() : PWidget.container(PWidget.row([
-              getMoneyWidget(context, fee, PDD, column: false, priceTxtColor: Colours.pdd_main),
+              getMoneyWidget(context, fee, PDD, column: false),
             ]),
               {'pd': [8,8,12,8]},
             ),

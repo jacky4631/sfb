@@ -447,7 +447,7 @@ class _VipDetailPageState extends State<VipDetailPage> {
               {'pd': [8,8,12,8]},
             ),
             fee == 0 ? SizedBox() : PWidget.container(PWidget.row([
-              getMoneyWidget(context, fee, VIP, column: false, priceTxtColor: Colours.vip_main),
+              getMoneyWidget(context, fee, VIP, column: false),
             ]),
               {'pd': [8,8,12,8]},
             ),
