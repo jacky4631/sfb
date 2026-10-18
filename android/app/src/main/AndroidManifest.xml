@@ -68,8 +68,9 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <!-- Remove READ_MEDIA_AUDIO if you don't need to load audios. -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
-<!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" tools:node="remove"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:node="remove"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" tools:node="remove"/>
 
     <application
         android:name="${applicationName}"
