@@ -27,7 +27,6 @@ class _IndexState extends State<Index>
   HomeProvider provider = HomeProvider();
   late PageController _pageController;
 
-  bool agree = false;
   //实现监听flutter中App的一些状态， 比如 进入前后台
   @override
   void initState() {
@@ -39,8 +38,8 @@ class _IndexState extends State<Index>
 
   @override
   void dispose() {
-    super.dispose();
     _pageController.dispose();
+    super.dispose();
   }
 
   void initData() {

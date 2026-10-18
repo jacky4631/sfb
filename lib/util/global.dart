@@ -606,25 +606,24 @@ class Global {
   }
 
 
-  static Future showContentParseDialog(data) async {
-    if(dialogShowing) {
-      return;
-    }
+  static Future<bool> showContentParseDialog(Map data) async {
+    if (dialogShowing) return false;
     dialogShowing = true;
-    Future.delayed(Duration(seconds: 1), () {
-      AwesomeDialog(
+    try {
+      await AwesomeDialog(
         dismissOnTouchOutside: false,
         context: context,
         dialogType: DialogType.noHeader,
         showCloseIcon: true,
-        body: ContentParseDialog(data['code'] ?? -1, data['data'] ?? {}),
-          onDismissCallback: (DismissType type){
-            dialogShowing = false;
-          }
-        // btnCancelOnPress: () {},
-        // btnOkOnPress: () {},
-      )..show();
-    });
+        body: ContentParseDialog(
+          int.tryParse('${data['code']}') ?? -1,
+          data['data'] is Map ? data['data'] as Map : {},
+        ),
+      ).show();
+      return true;
+    } finally {
+      dialogShowing = false;
+    }
   }
 
   static Future<void> initCommissionInfo() => _initializers.run<void>('commissionInfo', () async {

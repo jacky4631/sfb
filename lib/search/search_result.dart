@@ -57,7 +57,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   ///初始化函数
   Future initData() async {
-    keyword = widget.data['keyword']??widget.data['itemName']
+    keyword = widget.data['keyword']??widget.data['title']??widget.data['itemName']
         ??widget.data['item_title']??widget.data['originContent'];
 
     await saveHistory();

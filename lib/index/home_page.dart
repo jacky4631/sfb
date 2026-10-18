@@ -2,7 +2,6 @@
  *  Copyright (C) 2018-2026
  *  All rights reserved, Designed By www.mailvor.com
  */
-import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:maixs_utils/model/data_model.dart';
@@ -30,13 +29,56 @@ class _HomePageState extends State<HomePage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   FocusNode _searchFocus = FocusNode();
   bool agree = false;
+  bool _parsingClipboard = false;
   @override
   void initState() {
-    initData();
     super.initState();
-
-    //2.页面初始化的时候，添加一个状态的监听者
     WidgetsBinding.instance.addObserver(this);
+    initData();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) parseContent();
+  }
+
+  /// 首页统一监听剪贴板，防止冷启动和 resumed 重复查券。
+  Future<void> parseContent() async {
+    if (_parsingClipboard || Global.dialogShowing) return;
+    _parsingClipboard = true;
+    try {
+      if (!await Global.getAgree()) return;
+      await Future<void>.delayed(const Duration(seconds: 1));
+      if (!mounted || Global.dialogShowing) return;
+      final original = (await Clipboard.getData(Clipboard.kTextPlain))?.text ?? '';
+      String content = original.trim();
+      if (content.isEmpty || Global.isOrder(content) || content.length > 1200) return;
+      if (content.startsWith('%') && content.endsWith('%')) {
+        final parts = content.substring(1, content.length - 1).split(r'$%$');
+        Global.savePrefs(PREFS_INVITE_CODE, parts.first);
+        if (parts.length < 2) return;
+        content = parts[1].trim();
+        Global.savePrefs(PREFS_GOODS_CODE, content);
+      }
+      if (content.isEmpty) return;
+      final result = await BService.parseContent(content, Global.login);
+      if (!mounted || result.isEmpty || result['data'] is! Map ||
+          (result['data'] as Map).isEmpty) return;
+      final response = Map<String, dynamic>.from(result);
+      response['data'] = {
+        ...Map<String, dynamic>.from(result['data']),
+        'originContent': content,
+      };
+      final shown = await Global.showContentParseDialog(response);
+      // 用户查券期间复制的新内容不能被旧请求清除。
+      if (shown && (await Clipboard.getData(Clipboard.kTextPlain))?.text == original) {
+        await Clipboard.setData(const ClipboardData(text: ''));
+      }
+    } catch (error) {
+      debugPrint('剪贴板查券失败：$error');
+    } finally {
+      _parsingClipboard = false;
+    }
   }
 
   ///初始化函数
@@ -52,7 +94,7 @@ class _HomePageState extends State<HomePage>
     await Global.initCommissionInfo();
     if (!mounted) return;
     await _initUser();
-    parseContent();
+    WidgetsBinding.instance.addPostFrameCallback((_) => parseContent());
 
   }
   ///搜索排名列表
@@ -113,9 +155,9 @@ class _HomePageState extends State<HomePage>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
     //3. 页面销毁时，移出监听者
-    WidgetsBinding.instance.removeObserver(this);
   }
 
   _page() {
@@ -189,76 +231,6 @@ class _HomePageState extends State<HomePage>
 
   @override
   bool get wantKeepAlive => true;
-
-  //剪切板识别
-  Future parseContent() async {
-    if (agree) {
-      //延迟1秒 不然获取不到粘贴板数据
-      await Future.delayed(Duration(seconds: 1));
-      String content = await FlutterClipboard.paste();
-      if (!Global.isEmpty(content.trim()) && !Global.isOrder(content.trim())) {
-        var length = content.length;
-        //长度大于800 中止查券
-        if(length > 1000) {
-          return;
-        }
-
-        //判断是否复制了邀请码，如果复制了，保存到prefs
-        if(content.startsWith('%') && content.endsWith('%')) {
-          List splitContent = content.substring(1, content.length-1).split('\$\%\$');
-          int size = splitContent.length;
-
-          Global.savePrefs(PREFS_INVITE_CODE, splitContent[0]);
-          if(size == 1) {
-            return;
-          } else if(size > 1) {
-            //保存产品口令
-            Global.savePrefs(PREFS_GOODS_CODE, splitContent[1]);
-            content = splitContent[1];
-          }
-        }
-
-        var data = await BService.parseContent(content, Global.login);
-        //当没有查券数据时不弹窗
-        if (data.isEmpty) {
-          return;
-        }
-        await Global.showContentParseDialog(data);
-
-        Clipboard.setData(ClipboardData(text: ''));
-
-      }
-    }
-  }
-
-  //监听程序进入前后台的状态改变的方法
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // TODO: implement didChangeAppLifecycleState
-    super.didChangeAppLifecycleState(state);
-    switch (state) {
-      //进入应用时候不会触发该状态 应用程序处于可见状态，并且可以响应用户的输入事件。它相当于 Android 中Activity的onResume
-      case AppLifecycleState.resumed:
-        parseContent();
-        print("应用进入前台======");
-        break;
-      //应用状态处于闲置状态，并且没有用户的输入事件，
-      // 注意：这个状态切换到 前后台 会触发，所以流程应该是先冻结窗口，然后停止UI
-      case AppLifecycleState.inactive:
-        print("应用处于闲置状态，这种状态的应用应该假设他们可能在任何时候暂停 切换到后台会触发======");
-        break;
-      //当前页面即将退出
-      case AppLifecycleState.detached:
-        print("当前页面即将退出======");
-        break;
-      // 应用程序处于不可见状态
-      case AppLifecycleState.paused:
-        print("应用处于不可见状态 后台======");
-        break;
-      case AppLifecycleState.hidden:
-      // TODO: Handle this case.
-    }
-  }
 
   // Future showPrivacyDialog({func}) async {
   //   var agree = await Global.getAgree();
