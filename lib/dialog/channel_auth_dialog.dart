@@ -9,17 +9,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_alibc/alibc_model.dart';
 import 'package:flutter_alibc/flutter_alibc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:maixs_utils/util/utils.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:sufenbao/service.dart';
 import 'package:sufenbao/util/colors.dart';
 import 'package:sufenbao/util/toast_utils.dart';
 
-import '../widget/loading.dart';
+import 'package:dio/dio.dart';
+import 'taobao_auth_error.dart';
 
-class ChannelAuthDialog extends Dialog {
+class ChannelAuthDialog extends StatefulWidget {
   final Map data;
   ChannelAuthDialog(this.data, {Key? key}) : super(key: key);
+
+  @override
+  State<ChannelAuthDialog> createState() => _ChannelAuthDialogState();
+}
+
+class _ChannelAuthDialogState extends State<ChannelAuthDialog> {
+  Map get data => widget.data;
+  bool _authorizing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +55,7 @@ class ChannelAuthDialog extends Dialog {
         if (data['showDirectBuy'] == true) ...[
           PWidget.boxh(8),
           TextButton(
-            onPressed: data['fun'],
+            onPressed: _authorizing ? null : data['fun'],
             child: const Text('暂不授权，直接购买',
                 style: TextStyle(color: Colours.app_main, fontSize: 14)),
           ),
@@ -64,36 +72,7 @@ class ChannelAuthDialog extends Dialog {
             shape: MaterialStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(25)),
             ))),
-        onPressed: () async {
-
-            // FlutterAlibc.loginOut();
-
-            FlutterAlibc.loginTaoBao(loginCallback: (LoginModel model) async{
-              Loading.show(context);
-              //todo 使用topAccessToken=sessionKey 后台调用taobao.tbk.sc.publisher.info.save，获取渠道
-              //并绑定到用户/user/binding
-              bool success = false;
-              String failMsg = '授权失败';
-              if(model.errorCode == '0') {
-                print("登录淘宝  ${model.toString()} ");
-                Map data = await BService.channelAuth(model.data?.topAccessToken);
-                if(data['success']) {
-                  ToastUtils.showToast('授权成功');
-                  success = true;
-                }else {
-                  failMsg = data['msg'];
-                }
-              }
-              if(!success) {
-                ToastUtils.showToast(failMsg);
-              }
-              if(data['callback']!=null) {
-               data['callback']();
-              }
-              Loading.hide(context);
-            });
-
-        },
+        onPressed: _authorizing ? null : _authorize,
         child: Padding(
           padding: EdgeInsets.only(left: 30, right: 30),
           child: Row(
@@ -104,7 +83,7 @@ class ChannelAuthDialog extends Dialog {
                       padding: EdgeInsets.only(left: 5),
                     ),
                     Text(
-                      '前往淘宝授权',
+                      _authorizing ? '正在授权…' : '前往淘宝授权',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14,
@@ -113,6 +92,51 @@ class ChannelAuthDialog extends Dialog {
                   ]
           ),
         ));
+  }
+
+  void _showFailure(String message) {
+    if (!mounted) return;
+    setState(() {
+      _authorizing = false;
+    });
+    ToastUtils.showToast(message);
+  }
+
+  void _authorize() {
+    setState(() {
+      _authorizing = true;
+    });
+    // 与 TSQ 一致：重新登录，确保切换淘宝账号后获取新的授权凭证。
+    FlutterAlibc.loginOut();
+    FlutterAlibc.loginTaoBao(loginCallback: (LoginModel model) async {
+      if (!mounted) return;
+      if (model.errorCode != '0') {
+        _showFailure(TaobaoAuthError.sdk(model.errorMessage, model.errorCode));
+        return;
+      }
+      final token = model.data?.topAccessToken?.trim() ?? '';
+      if (token.isEmpty) {
+        _showFailure(TaobaoAuthError.missingToken);
+        return;
+      }
+      try {
+        final result = await BService.channelAuth(token);
+        if (!mounted) return;
+        if (result['success'] != true) {
+          _showFailure(TaobaoAuthError.response(result));
+          return;
+        }
+        setState(() => _authorizing = false);
+        ToastUtils.showToast('授权成功');
+        if (data['callback'] != null) data['callback']();
+      } on DioException catch (error) {
+        final body = error.response?.data;
+        _showFailure(body is Map ? TaobaoAuthError.response(body)
+            : TaobaoAuthError.fallback);
+      } catch (error) {
+        _showFailure(TaobaoAuthError.fallback);
+      }
+    });
   }
 
 }
