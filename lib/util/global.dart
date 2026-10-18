@@ -288,6 +288,11 @@ class Global {
     return Platform.isIOS;
   }
   static Future<bool> isHuawei() async {
+    //device_info_plus 的 androidInfo 会把当前平台的设备信息按 Android 结构解析，
+    //非 Android 平台缺少 release/manufacturer 等字段会抛 TypeError，这里必须先拦掉
+    if(!isAndroid()) {
+      return false;
+    }
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
     if(androidInfo != null && androidInfo.manufacturer != null) {
@@ -748,6 +753,10 @@ class Global {
   }
 
   static Future<int> getAndroidVersion() async {
+    //同 isHuawei，非 Android 平台解析 androidInfo 会抛 TypeError
+    if(!isAndroid()) {
+      return 0;
+    }
     AndroidDeviceInfo androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
     return androidDeviceInfo.version.sdkInt;
   }

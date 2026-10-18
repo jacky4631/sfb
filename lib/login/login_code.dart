@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:maixs_utils/widget/paixs_widget.dart';
 import 'package:maixs_utils/widget/scaffold_widget.dart';
 import 'package:maixs_utils/widget/views.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 
 import '../util/toast_utils.dart';
 import '../service.dart';
@@ -72,11 +71,7 @@ class _LoginCodeState extends State<LoginCode> {
 
     //如果未配置跳过 校验是否是华为手机 是可跳过 因为华为不允许强制邀请码的app存在
     if(!skipCode) {
-      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      if(androidInfo != null && androidInfo.manufacturer != null) {
-        skipCode = androidInfo.manufacturer.toLowerCase() == 'huawei';
-      }
+      skipCode = await Global.isHuawei();
     }
     setState(() {
 
